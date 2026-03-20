@@ -6,6 +6,9 @@ import {
   type CalendarDay,
   type CalendarYear,
   type DayType,
+  getCalendarPalette,
+  getDayTypeColors,
+  type DayTypeColors,
 } from '../../../entities/calendar';
 import { AppLogo } from '../../../shared/ui/AppLogo';
 
@@ -14,91 +17,17 @@ const WEEKDAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 type YearHomeScreenProps = {
   calendar: CalendarYear;
   isDarkMode: boolean;
-};
-
-type DayTypeColors = {
-  backgroundColor: string;
-  borderColor: string;
-  color: string;
+  onOpenMonth: (month: number) => void;
 };
 
 export function YearHomeScreen({
   calendar,
   isDarkMode,
+  onOpenMonth,
 }: YearHomeScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
-  const palette = isDarkMode
-    ? {
-        background: '#12141A',
-        surface: '#1B1F27',
-        surfaceMuted: '#232834',
-        border: '#2C3442',
-        title: '#E8EAEF',
-        subtitle: '#9AA3B2',
-        icon: '#D6DAE3',
-        workdayFill: '#1B1F27',
-        workdayBorder: '#3A4252',
-        weekendFill: '#1E3A5F',
-        weekendBorder: '#3B82F6',
-        holidayFill: '#472326',
-        holidayBorder: '#F87171',
-        shortenedFill: '#4A371A',
-        shortenedBorder: '#F59E0B',
-        workdayText: '#E8EAEF',
-        accentText: '#F8FAFC',
-      }
-    : {
-        background: '#F5F7FA',
-        surface: '#FFFFFF',
-        surfaceMuted: '#F8FAFC',
-        border: '#E2E6ED',
-        title: '#1A1D26',
-        subtitle: '#5C667A',
-        icon: '#374151',
-        workdayFill: '#FFFFFF',
-        workdayBorder: '#E5E7EB',
-        weekendFill: '#DBEAFE',
-        weekendBorder: '#3B82F6',
-        holidayFill: '#FEE2E2',
-        holidayBorder: '#EF4444',
-        shortenedFill: '#FEF3C7',
-        shortenedBorder: '#F59E0B',
-        workdayText: '#1A1D26',
-        accentText: '#0F172A',
-      };
+  const palette = getCalendarPalette(isDarkMode);
   const monthSummaries = buildYearMonthSummaries(calendar);
-
-  const getDayTypeColors = (type: DayType): DayTypeColors => {
-    if (type === 'weekend') {
-      return {
-        backgroundColor: palette.weekendFill,
-        borderColor: palette.weekendBorder,
-        color: palette.accentText,
-      };
-    }
-
-    if (type === 'holiday') {
-      return {
-        backgroundColor: palette.holidayFill,
-        borderColor: palette.holidayBorder,
-        color: palette.accentText,
-      };
-    }
-
-    if (type === 'shortened') {
-      return {
-        backgroundColor: palette.shortenedFill,
-        borderColor: palette.shortenedBorder,
-        color: palette.accentText,
-      };
-    }
-
-    return {
-      backgroundColor: palette.workdayFill,
-      borderColor: palette.workdayBorder,
-      color: palette.workdayText,
-    };
-  };
 
   return (
     <ScrollView
@@ -154,7 +83,7 @@ export function YearHomeScreen({
           { label: 'Holiday', type: 'holiday' as const },
           { label: 'Shortened', type: 'shortened' as const },
         ].map(item => {
-          const colors = getDayTypeColors(item.type);
+          const colors = getDayTypeColors(item.type, palette);
 
           return (
             <View key={item.label} style={styles.legendItem}>
@@ -179,7 +108,7 @@ export function YearHomeScreen({
         {monthSummaries.map(summary => (
           <Pressable
             key={summary.month}
-            onPress={() => undefined}
+            onPress={() => onOpenMonth(summary.month)}
             style={[
               styles.monthCard,
               {
@@ -201,9 +130,9 @@ export function YearHomeScreen({
               <Text style={[styles.weekNumberLabel, { color: palette.subtitle }]}>
                 #
               </Text>
-              {WEEKDAY_LABELS.map(label => (
+              {WEEKDAY_LABELS.map((label, index) => (
                 <Text
-                  key={`${summary.month}-${label}`}
+                  key={`${summary.month}-${label}-${index}`}
                   style={[styles.weekdayLabel, { color: palette.subtitle }]}
                 >
                   {label}
@@ -223,7 +152,9 @@ export function YearHomeScreen({
                     <MonthDayCell
                       key={`${summary.month}-${week.isoWeek}-${dayIndex}`}
                       day={day}
-                      getDayTypeColors={getDayTypeColors}
+                      getDayTypeColors={type =>
+                        getDayTypeColors(type, palette)
+                      }
                     />
                   ))}
                 </View>

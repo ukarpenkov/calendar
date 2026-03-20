@@ -6,9 +6,11 @@ import React from 'react';
 import ReactTestRenderer from 'react-test-renderer';
 import App from '../src/app/App';
 import {
+  getMonthCalendar,
   getYearCalendar,
   seedBundledYearIfNeeded,
 } from '../src/entities/calendar';
+import { YearHomeScreen } from '../src/pages/year/ui/YearHomeScreen';
 
 jest.mock('react-native-safe-area-context', () => {
   const React = require('react');
@@ -26,14 +28,17 @@ jest.mock('react-native-safe-area-context', () => {
 
 jest.mock('../src/entities/calendar', () => ({
   ...jest.requireActual('../src/entities/calendar'),
+  getMonthCalendar: jest.fn(),
   getYearCalendar: jest.fn(),
   seedBundledYearIfNeeded: jest.fn(),
 }));
 
+const mockedGetMonthCalendar = jest.mocked(getMonthCalendar);
 const mockedSeedBundledYearIfNeeded = jest.mocked(seedBundledYearIfNeeded);
 const mockedGetYearCalendar = jest.mocked(getYearCalendar);
 
 beforeEach(() => {
+  mockedGetMonthCalendar.mockReset();
   mockedSeedBundledYearIfNeeded.mockReset();
   mockedGetYearCalendar.mockReset();
 });
@@ -77,6 +82,58 @@ test('shows year home when bootstrap succeeds', async () => {
   expect(JSON.stringify(renderer!.toJSON())).toContain(
     'Active year is loaded from local SQLite storage',
   );
+});
+
+test('opens month detail after the year screen requests a month', async () => {
+  mockedSeedBundledYearIfNeeded.mockResolvedValue({
+    year: 2026,
+    days: [],
+  });
+  mockedGetYearCalendar.mockResolvedValue({
+    year: 2026,
+    days: [],
+  });
+  mockedGetMonthCalendar.mockResolvedValue([
+    {
+      date: '2026-01-01',
+      year: 2026,
+      month: 1,
+      day: 1,
+      weekday: 4,
+      type: 'holiday',
+      holidayNameRu: 'Новый год',
+      holidayNameEn: "New Year's Day",
+      isShortened: false,
+      workHours: 0,
+    },
+    {
+      date: '2026-01-02',
+      year: 2026,
+      month: 1,
+      day: 2,
+      weekday: 5,
+      type: 'workday',
+      holidayNameRu: null,
+      holidayNameEn: null,
+      isShortened: false,
+      workHours: 8,
+    },
+  ]);
+
+  let renderer: ReactTestRenderer.ReactTestRenderer;
+
+  await ReactTestRenderer.act(async () => {
+    renderer = ReactTestRenderer.create(<App />);
+  });
+
+  await ReactTestRenderer.act(async () => {
+    await renderer!.root.findByType(YearHomeScreen).props.onOpenMonth(1);
+  });
+
+  expect(mockedGetMonthCalendar).toHaveBeenCalledWith(2026, 1);
+  expect(JSON.stringify(renderer!.toJSON())).toContain('Month detail');
+  expect(JSON.stringify(renderer!.toJSON())).toContain('January');
+  expect(JSON.stringify(renderer!.toJSON())).toContain('Working days');
 });
 
 test('shows error state when bootstrap fails', async () => {
