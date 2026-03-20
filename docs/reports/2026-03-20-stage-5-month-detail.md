@@ -49,3 +49,8 @@
 ## Что осталось дальше
 
 Следующий шаг по плану: перейти к `Settings`, связать экран года с меню в правом верхнем углу и начать flow импорта года из локального `JSON`.
+
+## Wishlist
+
+- Add previous and next month navigation directly on `Month detail` to reduce round-trips back to the yearly overview.
+- Keep the same SQLite-backed loading path for adjacent months so the interaction stays aligned with the active year data source.

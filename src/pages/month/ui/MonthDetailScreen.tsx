@@ -18,6 +18,8 @@ type MonthDetailScreenProps = {
   days: CalendarDay[];
   isDarkMode: boolean;
   onBack: () => void;
+  onOpenPreviousMonth?: () => void;
+  onOpenNextMonth?: () => void;
 };
 
 export function MonthDetailScreen({
@@ -26,6 +28,8 @@ export function MonthDetailScreen({
   days,
   isDarkMode,
   onBack,
+  onOpenPreviousMonth,
+  onOpenNextMonth,
 }: MonthDetailScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
   const palette = getCalendarPalette(isDarkMode);
@@ -59,16 +63,33 @@ export function MonthDetailScreen({
       ]}
     >
       <View style={styles.appBar}>
-        <Pressable
-          onPress={onBack}
-          style={[styles.iconButton, { borderColor: palette.border }]}
-        >
-          <Text style={[styles.iconButtonText, { color: palette.icon }]}>{'<'}</Text>
-        </Pressable>
-        <Text style={[styles.appBarTitle, { color: palette.title }]}>
-          {detail.shortLabel} {detail.year}
-        </Text>
-        <View style={[styles.iconButton, styles.iconButtonPlaceholder]} />
+        <View style={[styles.appBarSide, styles.appBarSideStart]}>
+          <Pressable
+            onPress={onBack}
+            style={[styles.iconButton, { borderColor: palette.border }]}
+          >
+            <Text style={[styles.iconButtonText, { color: palette.icon }]}>
+              {'<'}
+            </Text>
+          </Pressable>
+        </View>
+        <View style={styles.appBarTitleWrap}>
+          <Text style={[styles.appBarTitle, { color: palette.title }]}>
+            {detail.shortLabel} {detail.year}
+          </Text>
+        </View>
+        <View style={[styles.appBarSide, styles.appBarActions]}>
+          <MonthNavigationButton
+            icon="<"
+            isDarkMode={isDarkMode}
+            onPress={onOpenPreviousMonth}
+          />
+          <MonthNavigationButton
+            icon=">"
+            isDarkMode={isDarkMode}
+            onPress={onOpenNextMonth}
+          />
+        </View>
       </View>
 
       <View
@@ -185,6 +206,45 @@ export function MonthDetailScreen({
   );
 }
 
+type MonthNavigationButtonProps = {
+  icon: '<' | '>';
+  isDarkMode: boolean;
+  onPress?: () => void;
+};
+
+function MonthNavigationButton({
+  icon,
+  isDarkMode,
+  onPress,
+}: MonthNavigationButtonProps) {
+  const palette = getCalendarPalette(isDarkMode);
+  const isDisabled = !onPress;
+
+  return (
+    <Pressable
+      disabled={isDisabled}
+      onPress={onPress}
+      style={[
+        styles.iconButton,
+        {
+          borderColor: palette.border,
+          backgroundColor: isDisabled ? palette.surfaceMuted : palette.surface,
+          opacity: isDisabled ? 0.45 : 1,
+        },
+      ]}
+    >
+      <Text
+        style={[
+          styles.iconButtonText,
+          { color: isDisabled ? palette.subtitle : palette.icon },
+        ]}
+      >
+        {icon}
+      </Text>
+    </Pressable>
+  );
+}
+
 type MonthDetailDayCellProps = {
   day: CalendarDay | null;
   isSelected: boolean;
@@ -267,8 +327,23 @@ const styles = StyleSheet.create({
   appBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     minHeight: 56,
+    gap: 12,
+  },
+  appBarSide: {
+    width: 80,
+  },
+  appBarSideStart: {
+    alignItems: 'flex-start',
+  },
+  appBarTitleWrap: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  appBarActions: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 8,
   },
   iconButton: {
     width: 36,
@@ -277,9 +352,6 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  iconButtonPlaceholder: {
-    opacity: 0,
   },
   iconButtonText: {
     fontSize: 18,

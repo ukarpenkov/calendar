@@ -10,6 +10,7 @@ import {
   getYearCalendar,
   seedBundledYearIfNeeded,
 } from '../src/entities/calendar';
+import { MonthDetailScreen } from '../src/pages/month/ui/MonthDetailScreen';
 import { YearHomeScreen } from '../src/pages/year/ui/YearHomeScreen';
 
 jest.mock('react-native-safe-area-context', () => {
@@ -134,6 +135,68 @@ test('opens month detail after the year screen requests a month', async () => {
   expect(JSON.stringify(renderer!.toJSON())).toContain('Month detail');
   expect(JSON.stringify(renderer!.toJSON())).toContain('January');
   expect(JSON.stringify(renderer!.toJSON())).toContain('Working days');
+});
+
+test('switches to the next month from month detail', async () => {
+  mockedSeedBundledYearIfNeeded.mockResolvedValue({
+    year: 2026,
+    days: [],
+  });
+  mockedGetYearCalendar.mockResolvedValue({
+    year: 2026,
+    days: [],
+  });
+  mockedGetMonthCalendar.mockImplementation(async (_year, month) => {
+    if (month === 1) {
+      return [
+        {
+          date: '2026-01-01',
+          year: 2026,
+          month: 1,
+          day: 1,
+          weekday: 4,
+          type: 'holiday',
+          holidayNameRu: 'Новый год',
+          holidayNameEn: "New Year's Day",
+          isShortened: false,
+          workHours: 0,
+        },
+      ];
+    }
+
+    return [
+      {
+        date: '2026-02-01',
+        year: 2026,
+        month: 2,
+        day: 1,
+        weekday: 7,
+        type: 'weekend',
+        holidayNameRu: null,
+        holidayNameEn: null,
+        isShortened: false,
+        workHours: 0,
+      },
+    ];
+  });
+
+  let renderer: ReactTestRenderer.ReactTestRenderer;
+
+  await ReactTestRenderer.act(async () => {
+    renderer = ReactTestRenderer.create(<App />);
+  });
+
+  await ReactTestRenderer.act(async () => {
+    await renderer!.root.findByType(YearHomeScreen).props.onOpenMonth(1);
+  });
+
+  await ReactTestRenderer.act(async () => {
+    await renderer!.root.findByType(MonthDetailScreen).props.onOpenNextMonth();
+  });
+
+  expect(mockedGetMonthCalendar).toHaveBeenNthCalledWith(1, 2026, 1);
+  expect(mockedGetMonthCalendar).toHaveBeenNthCalledWith(2, 2026, 2);
+  expect(JSON.stringify(renderer!.toJSON())).toContain('February');
 });
 
 test('shows error state when bootstrap fails', async () => {

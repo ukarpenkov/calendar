@@ -123,6 +123,10 @@ function AppContent({ isDarkMode }: AppContentProps) {
   }
 
   const openMonth = async (month: number) => {
+    if (month < 1 || month > 12) {
+      return;
+    }
+
     setStatus(currentStatus => {
       if (currentStatus.kind !== 'ready') {
         return currentStatus;
@@ -233,13 +237,29 @@ function AppContent({ isDarkMode }: AppContentProps) {
   }
 
   if (status.screen.name === 'month') {
+    const currentMonth = status.screen.month;
+
     return (
       <MonthDetailScreen
         year={status.calendar.year}
-        month={status.screen.month}
+        month={currentMonth}
         days={status.screen.days}
         isDarkMode={isDarkMode}
         onBack={closeMonth}
+        onOpenPreviousMonth={
+          currentMonth > 1
+            ? () => {
+                void openMonth(currentMonth - 1);
+              }
+            : undefined
+        }
+        onOpenNextMonth={
+          currentMonth < 12
+            ? () => {
+                void openMonth(currentMonth + 1);
+              }
+            : undefined
+        }
       />
     );
   }

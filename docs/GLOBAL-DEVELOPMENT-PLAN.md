@@ -235,6 +235,12 @@ flowchart TD
 
 - пользователь может открыть любой месяц и увидеть все нужные итоги
 
+### Wishlist
+
+- Add previous and next month navigation inside `Month detail` so users can move across the active year without returning to `Year`.
+- Keep the interaction scoped to the current active year: disable previous on January and next on December.
+- Mirror the control in design variants and treat it as a UX enhancement on top of the current month detail baseline.
+
 ### Этап 6. Экран `Settings`
 
 Опора на дизайн: `X7ItR`, `TKvmB`
