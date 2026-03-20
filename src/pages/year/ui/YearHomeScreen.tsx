@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -6,28 +7,29 @@ import {
   type CalendarDay,
   type CalendarYear,
   type DayType,
-  getCalendarPalette,
   getDayTypeColors,
   type DayTypeColors,
 } from '../../../entities/calendar';
+import { useAppTheme } from '../../../app/providers/theme';
 import { AppLogo } from '../../../shared/ui/AppLogo';
 
 const WEEKDAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
 type YearHomeScreenProps = {
   calendar: CalendarYear;
-  isDarkMode: boolean;
   onOpenMonth: (month: number) => void;
+  onOpenSettings: () => void;
 };
 
 export function YearHomeScreen({
   calendar,
-  isDarkMode,
   onOpenMonth,
+  onOpenSettings,
 }: YearHomeScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
-  const palette = getCalendarPalette(isDarkMode);
+  const { isDarkMode, palette } = useAppTheme();
   const monthSummaries = buildYearMonthSummaries(calendar);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <ScrollView
@@ -46,14 +48,52 @@ export function YearHomeScreen({
       ]}
     >
       <View style={styles.appBar}>
-        <View style={[styles.iconButton, { borderColor: palette.border }]}>
-          <Text style={[styles.iconButtonText, { color: palette.icon }]}>≡</Text>
-        </View>
+        <View style={styles.appBarSpacer} />
         <Text style={[styles.appBarTitle, { color: palette.title }]}>
           {calendar.year}
         </Text>
-        <View style={[styles.iconButton, { borderColor: palette.border }]}>
-          <Text style={[styles.iconButtonText, { color: palette.icon }]}>⋮</Text>
+        <View style={styles.menuAnchor}>
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => {
+              setIsMenuOpen(currentValue => !currentValue);
+            }}
+            style={[styles.iconButton, { borderColor: palette.border }]}
+          >
+            <Text style={[styles.iconButtonText, { color: palette.icon }]}>⋮</Text>
+          </Pressable>
+          {isMenuOpen ? (
+            <>
+              <Pressable
+                onPress={() => {
+                  setIsMenuOpen(false);
+                }}
+                style={styles.menuBackdrop}
+              />
+              <View
+                style={[
+                  styles.menuSurface,
+                  {
+                    backgroundColor: palette.surface,
+                    borderColor: palette.border,
+                  },
+                ]}
+              >
+                <Pressable
+                  accessibilityRole="menuitem"
+                  onPress={() => {
+                    setIsMenuOpen(false);
+                    onOpenSettings();
+                  }}
+                  style={styles.menuItem}
+                >
+                  <Text style={[styles.menuItemText, { color: palette.title }]}>
+                    Settings
+                  </Text>
+                </Pressable>
+              </View>
+            </>
+          ) : null}
         </View>
       </View>
 
@@ -152,7 +192,7 @@ export function YearHomeScreen({
                     <MonthDayCell
                       key={`${summary.month}-${week.isoWeek}-${dayIndex}`}
                       day={day}
-                      getDayTypeColors={type =>
+                      resolveDayTypeColors={type =>
                         getDayTypeColors(type, palette)
                       }
                     />
@@ -196,15 +236,15 @@ export function YearHomeScreen({
 
 type MonthDayCellProps = {
   day: CalendarDay | null;
-  getDayTypeColors: (type: DayType) => DayTypeColors;
+  resolveDayTypeColors: (type: DayType) => DayTypeColors;
 };
 
-function MonthDayCell({ day, getDayTypeColors }: MonthDayCellProps) {
+function MonthDayCell({ day, resolveDayTypeColors }: MonthDayCellProps) {
   if (!day) {
     return <View style={styles.emptyDayCell} />;
   }
 
-  const colors = getDayTypeColors(day.type);
+  const colors = resolveDayTypeColors(day.type);
 
   return (
     <View
@@ -237,6 +277,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     minHeight: 56,
   },
+  appBarSpacer: {
+    width: 36,
+    height: 36,
+  },
+  menuAnchor: {
+    position: 'relative',
+  },
   iconButton: {
     width: 36,
     height: 36,
@@ -248,6 +295,38 @@ const styles = StyleSheet.create({
   iconButtonText: {
     fontSize: 18,
     fontWeight: '700',
+  },
+  menuBackdrop: {
+    position: 'absolute',
+    top: -24,
+    right: -16,
+    bottom: -1200,
+    left: -320,
+    zIndex: 1,
+  },
+  menuSurface: {
+    position: 'absolute',
+    top: 44,
+    right: 0,
+    minWidth: 152,
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingVertical: 6,
+    zIndex: 2,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 18,
+    elevation: 8,
+  },
+  menuItem: {
+    minHeight: 44,
+    justifyContent: 'center',
+    paddingHorizontal: 14,
+  },
+  menuItemText: {
+    fontSize: 15,
+    fontWeight: '600',
   },
   appBarTitle: {
     fontSize: 24,

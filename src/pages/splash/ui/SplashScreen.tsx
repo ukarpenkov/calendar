@@ -1,27 +1,12 @@
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useAppTheme } from '../../../app/providers/theme';
 import { AppLogo } from '../../../shared/ui/AppLogo';
 
-type SplashScreenProps = {
-  isDarkMode: boolean;
-};
-
-export function SplashScreen({ isDarkMode }: SplashScreenProps) {
+export function SplashScreen() {
   const safeAreaInsets = useSafeAreaInsets();
-  const palette = isDarkMode
-    ? {
-        background: '#020617',
-        title: '#f8fafc',
-        subtitle: '#94a3b8',
-        accent: '#60a5fa',
-      }
-    : {
-        background: '#f8fafc',
-        title: '#0f172a',
-        subtitle: '#475569',
-        accent: '#2563eb',
-      };
+  const { isDarkMode, palette } = useAppTheme();
 
   return (
     <View
@@ -43,7 +28,7 @@ export function SplashScreen({ isDarkMode }: SplashScreenProps) {
       </View>
 
       <View style={styles.footer}>
-        <ActivityIndicator size="small" color={palette.accent} />
+        <ActivityIndicator size="small" color={palette.selectedBorder} />
         <Text style={[styles.footerText, { color: palette.subtitle }]}>
           Initializing local calendar data...
         </Text>

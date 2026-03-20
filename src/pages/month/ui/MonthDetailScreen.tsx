@@ -4,11 +4,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   buildMonthDetail,
-  getCalendarPalette,
   getDayTypeColors,
   getDayTypeLabel,
+  type CalendarPalette,
   type CalendarDay,
 } from '../../../entities/calendar';
+import { useAppTheme } from '../../../app/providers/theme';
 
 const WEEKDAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -16,7 +17,6 @@ type MonthDetailScreenProps = {
   year: number;
   month: number;
   days: CalendarDay[];
-  isDarkMode: boolean;
   onBack: () => void;
   onOpenPreviousMonth?: () => void;
   onOpenNextMonth?: () => void;
@@ -26,13 +26,12 @@ export function MonthDetailScreen({
   year,
   month,
   days,
-  isDarkMode,
   onBack,
   onOpenPreviousMonth,
   onOpenNextMonth,
 }: MonthDetailScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
-  const palette = getCalendarPalette(isDarkMode);
+  const { palette } = useAppTheme();
   const detail = useMemo(
     () => buildMonthDetail(year, month, days),
     [days, month, year],
@@ -81,12 +80,12 @@ export function MonthDetailScreen({
         <View style={[styles.appBarSide, styles.appBarActions]}>
           <MonthNavigationButton
             icon="<"
-            isDarkMode={isDarkMode}
+            palette={palette}
             onPress={onOpenPreviousMonth}
           />
           <MonthNavigationButton
             icon=">"
-            isDarkMode={isDarkMode}
+            palette={palette}
             onPress={onOpenNextMonth}
           />
         </View>
@@ -140,7 +139,7 @@ export function MonthDetailScreen({
                   key={`${detail.month}-${week.isoWeek}-${dayIndex}`}
                   day={day}
                   isSelected={day?.date === selectedDay?.date}
-                  isDarkMode={isDarkMode}
+                  palette={palette}
                   onPress={() => {
                     if (day) {
                       setSelectedDate(day.date);
@@ -208,16 +207,15 @@ export function MonthDetailScreen({
 
 type MonthNavigationButtonProps = {
   icon: '<' | '>';
-  isDarkMode: boolean;
+  palette: CalendarPalette;
   onPress?: () => void;
 };
 
 function MonthNavigationButton({
   icon,
-  isDarkMode,
+  palette,
   onPress,
 }: MonthNavigationButtonProps) {
-  const palette = getCalendarPalette(isDarkMode);
   const isDisabled = !onPress;
 
   return (
@@ -226,10 +224,10 @@ function MonthNavigationButton({
       onPress={onPress}
       style={[
         styles.iconButton,
+        isDisabled ? styles.iconButtonDisabled : null,
         {
           borderColor: palette.border,
           backgroundColor: isDisabled ? palette.surfaceMuted : palette.surface,
-          opacity: isDisabled ? 0.45 : 1,
         },
       ]}
     >
@@ -248,18 +246,16 @@ function MonthNavigationButton({
 type MonthDetailDayCellProps = {
   day: CalendarDay | null;
   isSelected: boolean;
-  isDarkMode: boolean;
+  palette: CalendarPalette;
   onPress: () => void;
 };
 
 function MonthDetailDayCell({
   day,
   isSelected,
-  isDarkMode,
+  palette,
   onPress,
 }: MonthDetailDayCellProps) {
-  const palette = getCalendarPalette(isDarkMode);
-
   if (!day) {
     return <View style={styles.emptyDayCell} />;
   }
@@ -296,7 +292,7 @@ function MonthDetailDayCell({
 type TotalCardProps = {
   label: string;
   value: string;
-  palette: ReturnType<typeof getCalendarPalette>;
+  palette: CalendarPalette;
 };
 
 function TotalCard({ label, value, palette }: TotalCardProps) {
@@ -352,6 +348,9 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  iconButtonDisabled: {
+    opacity: 0.45,
   },
   iconButtonText: {
     fontSize: 18,

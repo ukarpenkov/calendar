@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { StatusBar, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import { StatusBar, StyleSheet, Text, View } from 'react-native';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -12,33 +12,43 @@ import {
   type CalendarDay,
   type CalendarYear,
 } from '../entities/calendar';
+import { AppThemeProvider, useAppTheme } from './providers/theme';
 import { MonthDetailScreen } from '../pages/month/ui/MonthDetailScreen';
+import { SettingsScreen } from '../pages/settings/ui/SettingsScreen';
 import { SplashScreen } from '../pages/splash/ui/SplashScreen';
 import { YearHomeScreen } from '../pages/year/ui/YearHomeScreen';
 
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent isDarkMode={isDarkMode} />
+      <AppThemeProvider>
+        <AppRoot />
+      </AppThemeProvider>
     </SafeAreaProvider>
   );
 }
 
-type AppContentProps = {
-  isDarkMode: boolean;
-};
-
 type ReadyScreen =
   | { name: 'year' }
+  | { name: 'settings' }
   | { name: 'month-loading'; month: number }
   | { name: 'month-error'; month: number }
   | { name: 'month'; month: number; days: CalendarDay[] };
 
-function AppContent({ isDarkMode }: AppContentProps) {
+function AppRoot() {
+  const { isDarkMode } = useAppTheme();
+
+  return (
+    <>
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+      <AppContent />
+    </>
+  );
+}
+
+function AppContent() {
   const safeAreaInsets = useSafeAreaInsets();
+  const { palette } = useAppTheme();
   const [status, setStatus] = useState<
     | { kind: 'loading' }
     | { kind: 'ready'; calendar: CalendarYear; screen: ReadyScreen }
@@ -64,14 +74,14 @@ function AppContent({ isDarkMode }: AppContentProps) {
             screen: { name: 'year' },
           });
         }
-      } catch (error) {
+      } catch {
         if (isMounted) {
           setStatus({ kind: 'error' });
         }
       }
     };
 
-    void bootstrapDatabase();
+    bootstrapDatabase();
 
     return () => {
       isMounted = false;
@@ -79,24 +89,10 @@ function AppContent({ isDarkMode }: AppContentProps) {
   }, []);
 
   if (status.kind === 'loading') {
-    return <SplashScreen isDarkMode={isDarkMode} />;
+    return <SplashScreen />;
   }
 
   if (status.kind === 'error') {
-    const palette = isDarkMode
-      ? {
-          background: '#020617',
-          title: '#f8fafc',
-          subtitle: '#94a3b8',
-          border: '#1e293b',
-        }
-      : {
-          background: '#f8fafc',
-          title: '#0f172a',
-          subtitle: '#475569',
-          border: '#cbd5e1',
-        };
-
     return (
       <View
         style={[
@@ -115,7 +111,7 @@ function AppContent({ isDarkMode }: AppContentProps) {
             Failed to initialize local calendar data.
           </Text>
           <Text style={[styles.subtitle, { color: palette.subtitle }]}>
-          Fix the storage error and relaunch the app.
+            Fix the storage error and relaunch the app.
           </Text>
         </View>
       </View>
@@ -159,7 +155,7 @@ function AppContent({ isDarkMode }: AppContentProps) {
           },
         };
       });
-    } catch (error) {
+    } catch {
       setStatus(currentStatus => {
         if (currentStatus.kind !== 'ready') {
           return currentStatus;
@@ -186,25 +182,37 @@ function AppContent({ isDarkMode }: AppContentProps) {
     });
   };
 
+  const openSettings = () => {
+    setStatus(currentStatus => {
+      if (currentStatus.kind !== 'ready') {
+        return currentStatus;
+      }
+
+      return {
+        ...currentStatus,
+        screen: { name: 'settings' },
+      };
+    });
+  };
+
+  const closeSettings = () => {
+    setStatus(currentStatus => {
+      if (currentStatus.kind !== 'ready') {
+        return currentStatus;
+      }
+
+      return {
+        ...currentStatus,
+        screen: { name: 'year' },
+      };
+    });
+  };
+
   if (status.screen.name === 'month-loading') {
-    return <SplashScreen isDarkMode={isDarkMode} />;
+    return <SplashScreen />;
   }
 
   if (status.screen.name === 'month-error') {
-    const palette = isDarkMode
-      ? {
-          background: '#020617',
-          title: '#f8fafc',
-          subtitle: '#94a3b8',
-          border: '#1e293b',
-        }
-      : {
-          background: '#f8fafc',
-          title: '#0f172a',
-          subtitle: '#475569',
-          border: '#cbd5e1',
-        };
-
     return (
       <View
         style={[
@@ -244,19 +252,18 @@ function AppContent({ isDarkMode }: AppContentProps) {
         year={status.calendar.year}
         month={currentMonth}
         days={status.screen.days}
-        isDarkMode={isDarkMode}
         onBack={closeMonth}
         onOpenPreviousMonth={
           currentMonth > 1
             ? () => {
-                void openMonth(currentMonth - 1);
+                openMonth(currentMonth - 1);
               }
             : undefined
         }
         onOpenNextMonth={
           currentMonth < 12
             ? () => {
-                void openMonth(currentMonth + 1);
+                openMonth(currentMonth + 1);
               }
             : undefined
         }
@@ -264,11 +271,17 @@ function AppContent({ isDarkMode }: AppContentProps) {
     );
   }
 
+  if (status.screen.name === 'settings') {
+    return (
+      <SettingsScreen activeYear={status.calendar.year} onBack={closeSettings} />
+    );
+  }
+
   return (
     <YearHomeScreen
       calendar={status.calendar}
-      isDarkMode={isDarkMode}
       onOpenMonth={openMonth}
+      onOpenSettings={openSettings}
     />
   );
 }
