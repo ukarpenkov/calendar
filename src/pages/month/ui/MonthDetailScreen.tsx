@@ -57,7 +57,7 @@ export function MonthDetailScreen({
       contentContainerStyle={[
         styles.content,
         {
-          paddingBottom: safeAreaInsets.bottom + 24,
+          paddingBottom: safeAreaInsets.bottom + 72,
         },
       ]}
     >
