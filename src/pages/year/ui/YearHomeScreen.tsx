@@ -41,7 +41,7 @@ export function YearHomeScreen({
       contentContainerStyle={[
         styles.content,
         {
-          paddingBottom: safeAreaInsets.bottom + 24,
+          paddingBottom: safeAreaInsets.bottom + 72,
         },
       ]}
     >
@@ -367,6 +367,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   summaryRow: {
+    marginTop: 'auto',
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderRadius: 12,
