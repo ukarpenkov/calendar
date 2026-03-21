@@ -21,3 +21,7 @@ jest.mock('@react-native-documents/picker', () => ({
         typeof error.code === 'string',
     ),
 }));
+
+jest.mock('@dr.pogodin/react-native-fs', () => ({
+  readFile: jest.fn(),
+}));

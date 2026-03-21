@@ -4,6 +4,7 @@
 
 declare function require(moduleName: string): unknown;
 
+import { readFile } from '@dr.pogodin/react-native-fs';
 import { errorCodes, keepLocalCopy, pick } from '@react-native-documents/picker';
 
 import {
@@ -12,6 +13,10 @@ import {
 } from '../src/features/calendar-import';
 
 const bundledCalendar = require('../calendar2026.json');
+
+jest.mock('@dr.pogodin/react-native-fs', () => ({
+  readFile: jest.fn(),
+}));
 
 jest.mock('@react-native-documents/picker', () => ({
   keepLocalCopy: jest.fn(),
@@ -32,14 +37,15 @@ jest.mock('@react-native-documents/picker', () => ({
     ),
 }));
 
+const mockedReadFile = jest.mocked(readFile);
 const mockedKeepLocalCopy = jest.mocked(keepLocalCopy);
 const mockedPick = jest.mocked(pick);
 
 describe('calendar device import', () => {
   beforeEach(() => {
+    mockedReadFile.mockReset();
     mockedKeepLocalCopy.mockReset();
     mockedPick.mockReset();
-    global.fetch = jest.fn();
   });
 
   it('returns null when the user cancels picking a file', async () => {
@@ -73,10 +79,7 @@ describe('calendar device import', () => {
         localUri: 'file:///cache/calendar2026.json',
       },
     ]);
-    jest.mocked(global.fetch).mockResolvedValue({
-      ok: true,
-      text: jest.fn().mockResolvedValue(JSON.stringify(bundledCalendar)),
-    } as unknown as Response);
+    mockedReadFile.mockResolvedValue(JSON.stringify(bundledCalendar));
 
     const result = await pickAndPrepareCalendarImport();
 
@@ -89,7 +92,7 @@ describe('calendar device import', () => {
       ],
       destination: 'cachesDirectory',
     });
-    expect(global.fetch).toHaveBeenCalledWith('file:///cache/calendar2026.json');
+    expect(mockedReadFile).toHaveBeenCalledWith('/cache/calendar2026.json', 'utf8');
     expect(result?.file.name).toBe('calendar2026.json');
     expect(result?.calendar.year).toBe(2026);
   });
@@ -114,6 +117,6 @@ describe('calendar device import', () => {
     >({
       code: 'UNSUPPORTED_FILE',
     });
-    expect(global.fetch).not.toHaveBeenCalled();
+    expect(mockedReadFile).not.toHaveBeenCalled();
   });
 });

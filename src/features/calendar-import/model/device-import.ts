@@ -1,3 +1,4 @@
+import { readFile } from '@dr.pogodin/react-native-fs';
 import {
   errorCodes,
   isErrorWithCode,
@@ -51,13 +52,9 @@ function mapPickedFile(file: DocumentPickerResponse): CalendarImportSourceFile {
   };
 }
 
-function getReadableLocalUri(localUri: string): string {
+function getReadableLocalPath(localUri: string): string {
   if (localUri.startsWith('file://')) {
-    return localUri;
-  }
-
-  if (localUri.startsWith('/')) {
-    return `file://${localUri}`;
+    return localUri.slice('file://'.length);
   }
 
   return localUri;
@@ -83,35 +80,18 @@ async function createReadableLocalCopy(
     );
   }
 
-  return getReadableLocalUri(copyResult.localUri);
+  return getReadableLocalPath(copyResult.localUri);
 }
 
 async function readPickedFileText(file: CalendarImportSourceFile): Promise<string> {
-  let response: Response;
-  const readableUri = await createReadableLocalCopy(file);
+  const readablePath = await createReadableLocalCopy(file);
 
   try {
-    response = await fetch(readableUri);
+    return await readFile(readablePath, 'utf8');
   } catch {
     throw new CalendarImportSourceError(
       'FILE_READ_FAILED',
       `Could not read the selected file "${file.name}".`,
-    );
-  }
-
-  if (!response.ok) {
-    throw new CalendarImportSourceError(
-      'FILE_READ_FAILED',
-      `Could not read the selected file "${file.name}".`,
-    );
-  }
-
-  try {
-    return await response.text();
-  } catch {
-    throw new CalendarImportSourceError(
-      'FILE_READ_FAILED',
-      `Could not decode the selected file "${file.name}" as text.`,
     );
   }
 }
