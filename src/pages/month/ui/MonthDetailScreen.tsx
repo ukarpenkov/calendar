@@ -12,12 +12,14 @@ import {
 import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
 import { getShortWeekdayLabels } from '../../../shared/lib/i18n';
+import { SettingsOverflowMenu } from '../../../shared/ui/SettingsOverflowMenu';
 
 type MonthDetailScreenProps = {
   year: number;
   month: number;
   days: CalendarDay[];
   onBack: () => void;
+  onOpenSettings: () => void;
   onOpenPreviousMonth?: () => void;
   onOpenNextMonth?: () => void;
 };
@@ -27,6 +29,7 @@ export function MonthDetailScreen({
   month,
   days,
   onBack,
+  onOpenSettings,
   onOpenPreviousMonth,
   onOpenNextMonth,
 }: MonthDetailScreenProps) {
@@ -89,6 +92,11 @@ export function MonthDetailScreen({
             icon=">"
             palette={palette}
             onPress={onOpenNextMonth}
+          />
+          <SettingsOverflowMenu
+            palette={palette}
+            settingsLabel={t('year.menu.settings')}
+            onOpenSettings={onOpenSettings}
           />
         </View>
       </View>
@@ -332,7 +340,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   appBarSide: {
-    width: 80,
+    minWidth: 80,
   },
   appBarSideStart: {
     alignItems: 'flex-start',

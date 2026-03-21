@@ -9,7 +9,6 @@ import {
   getMonthCalendar,
   getYearCalendar,
   seedBundledYearIfNeeded,
-  type CalendarDay,
   type CalendarYear,
 } from '../entities/calendar';
 import {
@@ -17,6 +16,7 @@ import {
   useAppLocalization,
 } from './providers/localization';
 import { AppThemeProvider, useAppTheme } from './providers/theme';
+import type { AppContentStatus } from './model/user-flow';
 import { ImportEntryScreen } from '../pages/import-entry/ui/ImportEntryScreen';
 import { MonthDetailScreen } from '../pages/month/ui/MonthDetailScreen';
 import { SettingsScreen } from '../pages/settings/ui/SettingsScreen';
@@ -35,14 +35,6 @@ function App() {
   );
 }
 
-type ReadyScreen =
-  | { name: 'year' }
-  | { name: 'settings' }
-  | { name: 'import-entry' }
-  | { name: 'month-loading'; month: number }
-  | { name: 'month-error'; month: number }
-  | { name: 'month'; month: number; days: CalendarDay[] };
-
 function AppRoot() {
   const { isDarkMode } = useAppTheme();
 
@@ -58,11 +50,7 @@ function AppContent() {
   const safeAreaInsets = useSafeAreaInsets();
   const { palette } = useAppTheme();
   const { t } = useAppLocalization();
-  const [status, setStatus] = useState<
-    | { kind: 'loading' }
-    | { kind: 'ready'; calendar: CalendarYear; screen: ReadyScreen }
-    | { kind: 'error' }
-  >({ kind: 'loading' });
+  const [status, setStatus] = useState<AppContentStatus>({ kind: 'loading' });
 
   useEffect(() => {
     let isMounted = true;
@@ -302,6 +290,7 @@ function AppContent() {
         month={currentMonth}
         days={status.screen.days}
         onBack={closeMonth}
+        onOpenSettings={openSettings}
         onOpenPreviousMonth={
           currentMonth > 1
             ? () => {

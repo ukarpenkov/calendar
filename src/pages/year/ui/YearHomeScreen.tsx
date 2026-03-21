@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -15,6 +14,7 @@ import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
 import { getCompactWeekdayLabels } from '../../../shared/lib/i18n';
 import { AppLogo } from '../../../shared/ui/AppLogo';
+import { SettingsOverflowMenu } from '../../../shared/ui/SettingsOverflowMenu';
 
 type YearHomeScreenProps = {
   calendar: CalendarYear;
@@ -32,8 +32,6 @@ export function YearHomeScreen({
   const { language, t } = useAppLocalization();
   const monthSummaries = buildYearMonthSummaries(calendar, language);
   const weekdayLabels = getCompactWeekdayLabels(language);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   return (
     <ScrollView
       style={[
@@ -55,49 +53,11 @@ export function YearHomeScreen({
         <Text style={[styles.appBarTitle, { color: palette.title }]}>
           {calendar.year}
         </Text>
-        <View style={styles.menuAnchor}>
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => {
-              setIsMenuOpen(currentValue => !currentValue);
-            }}
-            style={[styles.iconButton, { borderColor: palette.border }]}
-          >
-            <Text style={[styles.iconButtonText, { color: palette.icon }]}>⋮</Text>
-          </Pressable>
-          {isMenuOpen ? (
-            <>
-              <Pressable
-                onPress={() => {
-                  setIsMenuOpen(false);
-                }}
-                style={styles.menuBackdrop}
-              />
-              <View
-                style={[
-                  styles.menuSurface,
-                  {
-                    backgroundColor: palette.surface,
-                    borderColor: palette.border,
-                  },
-                ]}
-              >
-                <Pressable
-                  accessibilityRole="menuitem"
-                  onPress={() => {
-                    setIsMenuOpen(false);
-                    onOpenSettings();
-                  }}
-                  style={styles.menuItem}
-                >
-                  <Text style={[styles.menuItemText, { color: palette.title }]}>
-                    {t('year.menu.settings')}
-                  </Text>
-                </Pressable>
-              </View>
-            </>
-          ) : null}
-        </View>
+        <SettingsOverflowMenu
+          palette={palette}
+          settingsLabel={t('year.menu.settings')}
+          onOpenSettings={onOpenSettings}
+        />
       </View>
 
       <View style={styles.header}>
@@ -283,53 +243,6 @@ const styles = StyleSheet.create({
   appBarSpacer: {
     width: 36,
     height: 36,
-  },
-  menuAnchor: {
-    position: 'relative',
-  },
-  iconButton: {
-    width: 36,
-    height: 36,
-    borderWidth: 1,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconButtonText: {
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  menuBackdrop: {
-    position: 'absolute',
-    top: -24,
-    right: -16,
-    bottom: -1200,
-    left: -320,
-    zIndex: 1,
-  },
-  menuSurface: {
-    position: 'absolute',
-    top: 44,
-    right: 0,
-    minWidth: 152,
-    borderWidth: 1,
-    borderRadius: 14,
-    paddingVertical: 6,
-    zIndex: 2,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.12,
-    shadowRadius: 18,
-    elevation: 8,
-  },
-  menuItem: {
-    minHeight: 44,
-    justifyContent: 'center',
-    paddingHorizontal: 14,
-  },
-  menuItemText: {
-    fontSize: 15,
-    fontWeight: '600',
   },
   appBarTitle: {
     fontSize: 24,
