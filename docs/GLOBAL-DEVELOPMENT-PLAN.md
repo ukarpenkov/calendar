@@ -217,7 +217,7 @@ flowchart TD
 - Сформировать 12 карточек месяцев.
 - Для каждого месяца построить мини-сетку дней на основе данных из БД.
 - Добавить переход по нажатию на месяц.
-- Добавить открытие `Settings` через меню в правом верхнем углу.
+- Добавить открытие `Settings` через кнопку-шестерёнку в правом верхнем углу.
 
 Результат:
 
@@ -251,6 +251,7 @@ flowchart TD
 - Add previous and next month navigation inside `Month detail` so users can move across the active year without returning to `Year`.
 - Keep the interaction scoped to the current active year: disable previous on January and next on December.
 - Mirror the control in design variants and treat it as a UX enhancement on top of the current month detail baseline.
+- **Settings entry (иконка):** вместо overflow-меню (`⋯`) с одним пунктом «Настройки» вывести в правой части app bar **прямую кнопку с иконкой шестерёнки**, ведущую на экран `Settings` (год и месяц); overflow оставить в резерве, если позже появится несколько второстепенных действий в одной зоне.
 
 ### Этап 6. Экран `Settings`
 
@@ -261,7 +262,7 @@ flowchart TD
 Части реализации:
 
 1. `Settings entry`
-   - добавить переход в `Settings` через меню в правом верхнем углу
+   - добавить переход в `Settings` через кнопку-шестерёнку в правом верхнем углу
    - построить экран настроек по структуре дизайна
    - показать текущий активный год и служебный блок `About`
    - на этом шаге интерактивные настройки могут быть временно заглушены
@@ -388,7 +389,7 @@ flowchart TD
 - Построить верхнюю панель, заголовок года и легенду.
 - Вывести 12 карточек месяцев на основе данных из БД.
 - Добавить переход в `Month detail`.
-- Добавить вход в `Settings` через overflow-меню.
+- Добавить вход в `Settings` через кнопку-шестерёнку в app bar.
 
 Критерий готовности:
 
@@ -426,7 +427,7 @@ flowchart TD
 Части задачи:
 
 1. `P4.1 Settings entry`
-   - открыть `Settings` через overflow-меню
+   - открыть `Settings` через кнопку-шестерёнку в app bar
    - собрать layout в соответствии с текущим UI приложения (узлы Pencil — ориентир по структуре)
    - показать текущий активный год и `About`
 2. `P4.2 Theme context`

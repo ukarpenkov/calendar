@@ -14,7 +14,7 @@ import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
 import { getCompactWeekdayLabels } from '../../../shared/lib/i18n';
 import { AppLogo } from '../../../shared/ui/AppLogo';
-import { SettingsOverflowMenu } from '../../../shared/ui/SettingsOverflowMenu';
+import { SettingsGearButton } from '../../../shared/ui/SettingsGearButton';
 
 type YearHomeScreenProps = {
   calendar: CalendarYear;
@@ -53,10 +53,10 @@ export function YearHomeScreen({
         <Text style={[styles.appBarTitle, { color: palette.title }]}>
           {calendar.year}
         </Text>
-        <SettingsOverflowMenu
+        <SettingsGearButton
           palette={palette}
-          settingsLabel={t('year.menu.settings')}
-          onOpenSettings={onOpenSettings}
+          accessibilityLabel={t('year.menu.settings')}
+          onPress={onOpenSettings}
         />
       </View>
 

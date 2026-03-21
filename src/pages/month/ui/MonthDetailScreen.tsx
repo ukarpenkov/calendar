@@ -12,7 +12,7 @@ import {
 import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
 import { getShortWeekdayLabels } from '../../../shared/lib/i18n';
-import { SettingsOverflowMenu } from '../../../shared/ui/SettingsOverflowMenu';
+import { SettingsGearButton } from '../../../shared/ui/SettingsGearButton';
 
 type MonthDetailScreenProps = {
   year: number;
@@ -93,10 +93,10 @@ export function MonthDetailScreen({
             palette={palette}
             onPress={onOpenNextMonth}
           />
-          <SettingsOverflowMenu
+          <SettingsGearButton
             palette={palette}
-            settingsLabel={t('year.menu.settings')}
-            onOpenSettings={onOpenSettings}
+            accessibilityLabel={t('year.menu.settings')}
+            onPress={onOpenSettings}
           />
         </View>
       </View>
