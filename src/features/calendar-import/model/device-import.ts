@@ -1,6 +1,7 @@
 import {
   errorCodes,
   isErrorWithCode,
+  keepLocalCopy,
   pick,
   types,
   type DocumentPickerResponse,
@@ -50,11 +51,47 @@ function mapPickedFile(file: DocumentPickerResponse): CalendarImportSourceFile {
   };
 }
 
+function getReadableLocalUri(localUri: string): string {
+  if (localUri.startsWith('file://')) {
+    return localUri;
+  }
+
+  if (localUri.startsWith('/')) {
+    return `file://${localUri}`;
+  }
+
+  return localUri;
+}
+
+async function createReadableLocalCopy(
+  file: CalendarImportSourceFile,
+): Promise<string> {
+  const [copyResult] = await keepLocalCopy({
+    files: [
+      {
+        uri: file.uri,
+        fileName: file.name,
+      },
+    ],
+    destination: 'cachesDirectory',
+  });
+
+  if (copyResult.status !== 'success') {
+    throw new CalendarImportSourceError(
+      'FILE_READ_FAILED',
+      `Could not create a local copy of "${file.name}".`,
+    );
+  }
+
+  return getReadableLocalUri(copyResult.localUri);
+}
+
 async function readPickedFileText(file: CalendarImportSourceFile): Promise<string> {
   let response: Response;
+  const readableUri = await createReadableLocalCopy(file);
 
   try {
-    response = await fetch(file.uri);
+    response = await fetch(readableUri);
   } catch {
     throw new CalendarImportSourceError(
       'FILE_READ_FAILED',

@@ -4,7 +4,7 @@
 
 declare function require(moduleName: string): unknown;
 
-import { errorCodes, pick } from '@react-native-documents/picker';
+import { errorCodes, keepLocalCopy, pick } from '@react-native-documents/picker';
 
 import {
   pickAndPrepareCalendarImport,
@@ -14,6 +14,7 @@ import {
 const bundledCalendar = require('../calendar2026.json');
 
 jest.mock('@react-native-documents/picker', () => ({
+  keepLocalCopy: jest.fn(),
   pick: jest.fn(),
   types: {
     json: 'application/json',
@@ -31,10 +32,12 @@ jest.mock('@react-native-documents/picker', () => ({
     ),
 }));
 
+const mockedKeepLocalCopy = jest.mocked(keepLocalCopy);
 const mockedPick = jest.mocked(pick);
 
 describe('calendar device import', () => {
   beforeEach(() => {
+    mockedKeepLocalCopy.mockReset();
     mockedPick.mockReset();
     global.fetch = jest.fn();
   });
@@ -63,6 +66,13 @@ describe('calendar device import', () => {
         hasRequestedType: true,
       },
     ]);
+    mockedKeepLocalCopy.mockResolvedValue([
+      {
+        status: 'success',
+        sourceUri: 'content://calendar2026.json',
+        localUri: 'file:///cache/calendar2026.json',
+      },
+    ]);
     jest.mocked(global.fetch).mockResolvedValue({
       ok: true,
       text: jest.fn().mockResolvedValue(JSON.stringify(bundledCalendar)),
@@ -70,7 +80,16 @@ describe('calendar device import', () => {
 
     const result = await pickAndPrepareCalendarImport();
 
-    expect(global.fetch).toHaveBeenCalledWith('content://calendar2026.json');
+    expect(mockedKeepLocalCopy).toHaveBeenCalledWith({
+      files: [
+        {
+          uri: 'content://calendar2026.json',
+          fileName: 'calendar2026.json',
+        },
+      ],
+      destination: 'cachesDirectory',
+    });
+    expect(global.fetch).toHaveBeenCalledWith('file:///cache/calendar2026.json');
     expect(result?.file.name).toBe('calendar2026.json');
     expect(result?.calendar.year).toBe(2026);
   });

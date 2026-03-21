@@ -47,6 +47,7 @@ jest.mock('../src/shared/lib/settings', () => ({
 }));
 
 jest.mock('@react-native-documents/picker', () => ({
+  keepLocalCopy: jest.fn(),
   pick: jest.fn(),
   types: {
     json: 'application/json',
