@@ -218,7 +218,7 @@ export function ImportEntryScreen({
       contentContainerStyle={[
         styles.content,
         {
-          paddingBottom: safeAreaInsets.bottom + 32,
+          paddingBottom: safeAreaInsets.bottom + 80,
         },
       ]}
     >
