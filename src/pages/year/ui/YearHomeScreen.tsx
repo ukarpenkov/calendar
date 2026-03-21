@@ -8,12 +8,13 @@ import {
   type CalendarYear,
   type DayType,
   getDayTypeColors,
+  getDayTypeLabel,
   type DayTypeColors,
 } from '../../../entities/calendar';
+import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
+import { getCompactWeekdayLabels } from '../../../shared/lib/i18n';
 import { AppLogo } from '../../../shared/ui/AppLogo';
-
-const WEEKDAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
 type YearHomeScreenProps = {
   calendar: CalendarYear;
@@ -28,7 +29,9 @@ export function YearHomeScreen({
 }: YearHomeScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
   const { isDarkMode, palette } = useAppTheme();
-  const monthSummaries = buildYearMonthSummaries(calendar);
+  const { language, t } = useAppLocalization();
+  const monthSummaries = buildYearMonthSummaries(calendar, language);
+  const weekdayLabels = getCompactWeekdayLabels(language);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -88,7 +91,7 @@ export function YearHomeScreen({
                   style={styles.menuItem}
                 >
                   <Text style={[styles.menuItemText, { color: palette.title }]}>
-                    Settings
+                    {t('year.menu.settings')}
                   </Text>
                 </Pressable>
               </View>
@@ -100,11 +103,10 @@ export function YearHomeScreen({
       <View style={styles.header}>
         <AppLogo isDarkMode={isDarkMode} size="small" />
         <Text style={[styles.eyebrow, { color: palette.subtitle }]}>
-          Production calendar
+          {t('year.header.eyebrow')}
         </Text>
         <Text style={[styles.subtitle, { color: palette.subtitle }]}>
-          Active year is loaded from local SQLite storage and rendered as a
-          month-by-month overview.
+          {t('year.header.subtitle')}
         </Text>
       </View>
 
@@ -118,15 +120,16 @@ export function YearHomeScreen({
         ]}
       >
         {[
-          { label: 'Workday', type: 'workday' as const },
-          { label: 'Weekend', type: 'weekend' as const },
-          { label: 'Holiday', type: 'holiday' as const },
-          { label: 'Shortened', type: 'shortened' as const },
+          { type: 'workday' as const },
+          { type: 'weekend' as const },
+          { type: 'holiday' as const },
+          { type: 'shortened' as const },
         ].map(item => {
           const colors = getDayTypeColors(item.type, palette);
+          const label = getDayTypeLabel(item.type, language);
 
           return (
-            <View key={item.label} style={styles.legendItem}>
+            <View key={item.type} style={styles.legendItem}>
               <View
                 style={[
                   styles.legendSwatch,
@@ -137,7 +140,7 @@ export function YearHomeScreen({
                 ]}
               />
               <Text style={[styles.legendLabel, { color: palette.subtitle }]}>
-                {item.label}
+                {label}
               </Text>
             </View>
           );
@@ -162,7 +165,7 @@ export function YearHomeScreen({
                 {summary.label}
               </Text>
               <Text style={[styles.monthMeta, { color: palette.subtitle }]}>
-                {summary.workHours} h
+                {summary.workHours} {t('common.hoursUnit')}
               </Text>
             </View>
 
@@ -170,7 +173,7 @@ export function YearHomeScreen({
               <Text style={[styles.weekNumberLabel, { color: palette.subtitle }]}>
                 #
               </Text>
-              {WEEKDAY_LABELS.map((label, index) => (
+              {weekdayLabels.map((label, index) => (
                 <Text
                   key={`${summary.month}-${label}-${index}`}
                   style={[styles.weekdayLabel, { color: palette.subtitle }]}
@@ -204,7 +207,7 @@ export function YearHomeScreen({
             <View style={[styles.summaryRow, { backgroundColor: palette.surfaceMuted }]}>
               <View style={styles.summaryItem}>
                 <Text style={[styles.summaryLabel, { color: palette.subtitle }]}>
-                  Work
+                  {t('year.summary.work')}
                 </Text>
                 <Text style={[styles.summaryValue, { color: palette.title }]}>
                   {summary.workingDays}
@@ -212,7 +215,7 @@ export function YearHomeScreen({
               </View>
               <View style={styles.summaryItem}>
                 <Text style={[styles.summaryLabel, { color: palette.subtitle }]}>
-                  Off
+                  {t('year.summary.off')}
                 </Text>
                 <Text style={[styles.summaryValue, { color: palette.title }]}>
                   {summary.nonWorkingDays}
@@ -220,7 +223,7 @@ export function YearHomeScreen({
               </View>
               <View style={styles.summaryItem}>
                 <Text style={[styles.summaryLabel, { color: palette.subtitle }]}>
-                  Days
+                  {t('year.summary.days')}
                 </Text>
                 <Text style={[styles.summaryValue, { color: palette.title }]}>
                   {summary.totalDays}
@@ -411,8 +414,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   weekdayLabel: {
-    width: 18,
-    fontSize: 10,
+    width: 20,
+    fontSize: 9,
     fontWeight: '600',
     textAlign: 'center',
   },
@@ -430,11 +433,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   emptyDayCell: {
-    width: 18,
+    width: 20,
     height: 18,
   },
   dayCell: {
-    width: 18,
+    width: 20,
     height: 18,
     borderWidth: 1,
     borderRadius: 5,

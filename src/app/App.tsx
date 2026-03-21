@@ -12,6 +12,10 @@ import {
   type CalendarDay,
   type CalendarYear,
 } from '../entities/calendar';
+import {
+  AppLocalizationProvider,
+  useAppLocalization,
+} from './providers/localization';
 import { AppThemeProvider, useAppTheme } from './providers/theme';
 import { MonthDetailScreen } from '../pages/month/ui/MonthDetailScreen';
 import { SettingsScreen } from '../pages/settings/ui/SettingsScreen';
@@ -22,7 +26,9 @@ function App() {
   return (
     <SafeAreaProvider>
       <AppThemeProvider>
-        <AppRoot />
+        <AppLocalizationProvider>
+          <AppRoot />
+        </AppLocalizationProvider>
       </AppThemeProvider>
     </SafeAreaProvider>
   );
@@ -49,6 +55,7 @@ function AppRoot() {
 function AppContent() {
   const safeAreaInsets = useSafeAreaInsets();
   const { palette } = useAppTheme();
+  const { t } = useAppLocalization();
   const [status, setStatus] = useState<
     | { kind: 'loading' }
     | { kind: 'ready'; calendar: CalendarYear; screen: ReadyScreen }
@@ -108,10 +115,10 @@ function AppContent() {
       >
         <View style={[styles.errorCard, { borderColor: palette.border }]}>
           <Text style={[styles.title, { color: palette.title }]}>
-            Failed to initialize local calendar data.
+            {t('app.error.bootstrapTitle')}
           </Text>
           <Text style={[styles.subtitle, { color: palette.subtitle }]}>
-            Fix the storage error and relaunch the app.
+            {t('app.error.bootstrapSubtitle')}
           </Text>
         </View>
       </View>
@@ -228,16 +235,16 @@ function AppContent() {
       >
         <View style={[styles.errorCard, { borderColor: palette.border }]}>
           <Text style={[styles.title, { color: palette.title }]}>
-            Failed to open the selected month.
+            {t('app.error.monthTitle')}
           </Text>
           <Text style={[styles.subtitle, { color: palette.subtitle }]}>
-            Return to the year overview and try again.
+            {t('app.error.monthSubtitle')}
           </Text>
           <Text
             onPress={closeMonth}
             style={[styles.errorAction, { color: palette.title }]}
           >
-            Back to year
+            {t('common.backToYear')}
           </Text>
         </View>
       </View>

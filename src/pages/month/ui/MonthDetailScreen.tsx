@@ -9,9 +9,9 @@ import {
   type CalendarPalette,
   type CalendarDay,
 } from '../../../entities/calendar';
+import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
-
-const WEEKDAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+import { getShortWeekdayLabels } from '../../../shared/lib/i18n';
 
 type MonthDetailScreenProps = {
   year: number;
@@ -32,10 +32,12 @@ export function MonthDetailScreen({
 }: MonthDetailScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
   const { palette } = useAppTheme();
+  const { language, t } = useAppLocalization();
   const detail = useMemo(
-    () => buildMonthDetail(year, month, days),
-    [days, month, year],
+    () => buildMonthDetail(year, month, days, language),
+    [days, language, month, year],
   );
+  const weekdayLabels = getShortWeekdayLabels(language);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   useEffect(() => {
@@ -101,13 +103,13 @@ export function MonthDetailScreen({
         ]}
       >
         <Text style={[styles.headerEyebrow, { color: palette.subtitle }]}>
-          Month detail
+          {t('month.header.eyebrow')}
         </Text>
         <Text style={[styles.headerTitle, { color: palette.title }]}>
           {detail.label} {detail.year}
         </Text>
         <Text style={[styles.headerSubtitle, { color: palette.subtitle }]}>
-          Full month grid with stored day states and monthly totals from SQLite.
+          {t('month.header.subtitle')}
         </Text>
       </View>
 
@@ -121,7 +123,7 @@ export function MonthDetailScreen({
         ]}
       >
         <View style={styles.weekHeaderRow}>
-          {WEEKDAY_LABELS.map(label => (
+          {weekdayLabels.map(label => (
             <Text
               key={`${detail.month}-${label}`}
               style={[styles.weekdayLabel, { color: palette.subtitle }]}
@@ -163,17 +165,20 @@ export function MonthDetailScreen({
           ]}
         >
           <Text style={[styles.selectedDayEyebrow, { color: palette.subtitle }]}>
-            Selected day
+            {t('month.selectedDay.eyebrow')}
           </Text>
           <Text style={[styles.selectedDayTitle, { color: palette.title }]}>
             {detail.label} {selectedDay.day}
           </Text>
           <Text style={[styles.selectedDayMeta, { color: palette.subtitle }]}>
-            {getDayTypeLabel(selectedDay.type)} - {selectedDay.workHours} h
+            {getDayTypeLabel(selectedDay.type, language)} - {selectedDay.workHours}{' '}
+            {t('common.hoursUnit')}
           </Text>
-          {selectedDay.holidayNameEn ? (
+          {selectedDay.holidayNameRu || selectedDay.holidayNameEn ? (
             <Text style={[styles.selectedDayHoliday, { color: palette.title }]}>
-              {selectedDay.holidayNameEn}
+              {language === 'ru'
+                ? selectedDay.holidayNameRu ?? selectedDay.holidayNameEn
+                : selectedDay.holidayNameEn ?? selectedDay.holidayNameRu}
             </Text>
           ) : null}
         </View>
@@ -181,23 +186,23 @@ export function MonthDetailScreen({
 
       <View style={styles.totalsGrid}>
         <TotalCard
-          label="Total days"
+          label={t('month.totals.totalDays')}
           value={String(detail.totalDays)}
           palette={palette}
         />
         <TotalCard
-          label="Working days"
+          label={t('month.totals.workingDays')}
           value={String(detail.workingDays)}
           palette={palette}
         />
         <TotalCard
-          label="Non-working days"
+          label={t('month.totals.nonWorkingDays')}
           value={String(detail.nonWorkingDays)}
           palette={palette}
         />
         <TotalCard
-          label="Work hours"
-          value={`${detail.workHours} h`}
+          label={t('month.totals.workHours')}
+          value={`${detail.workHours} ${t('common.hoursUnit')}`}
           palette={palette}
         />
       </View>

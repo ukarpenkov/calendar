@@ -14,8 +14,6 @@ import { MonthDetailScreen } from '../src/pages/month/ui/MonthDetailScreen';
 import { YearHomeScreen } from '../src/pages/year/ui/YearHomeScreen';
 
 jest.mock('react-native-safe-area-context', () => {
-  const React = require('react');
-
   return {
     SafeAreaProvider: ({ children }: { children: React.ReactNode }) => children,
     useSafeAreaInsets: () => ({
@@ -32,6 +30,16 @@ jest.mock('../src/entities/calendar', () => ({
   getMonthCalendar: jest.fn(),
   getYearCalendar: jest.fn(),
   seedBundledYearIfNeeded: jest.fn(),
+}));
+
+jest.mock('../src/shared/lib/i18n', () => ({
+  ...jest.requireActual('../src/shared/lib/i18n'),
+  detectDeviceLanguage: () => 'en',
+}));
+
+jest.mock('../src/shared/lib/settings', () => ({
+  getStoredLanguage: jest.fn().mockResolvedValue(null),
+  setStoredLanguage: jest.fn().mockResolvedValue(undefined),
 }));
 
 const mockedGetMonthCalendar = jest.mocked(getMonthCalendar);

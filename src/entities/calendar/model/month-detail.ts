@@ -1,9 +1,9 @@
 import {
-  buildMonthWeeks,
-  MONTH_LABELS,
-  MONTH_SHORT_LABELS,
-  type CalendarMonthWeek,
-} from './month-helpers';
+  getMonthLabel,
+  getMonthShortLabel,
+  type AppLanguage,
+} from '../../../shared/lib/i18n';
+import { buildMonthWeeks, type CalendarMonthWeek } from './month-helpers';
 import type { CalendarDay } from './types';
 
 export interface CalendarMonthDetail {
@@ -23,8 +23,8 @@ export function buildMonthDetail(
   year: number,
   month: number,
   days: CalendarDay[],
+  language: AppLanguage,
 ): CalendarMonthDetail {
-  const monthIndex = month - 1;
   const workingDays = days.filter(
     day => day.type === 'workday' || day.type === 'shortened',
   ).length;
@@ -33,8 +33,8 @@ export function buildMonthDetail(
   return {
     year,
     month,
-    label: MONTH_LABELS[monthIndex] ?? `Month ${month}`,
-    shortLabel: MONTH_SHORT_LABELS[monthIndex] ?? String(month),
+    label: getMonthLabel(language, month),
+    shortLabel: getMonthShortLabel(language, month),
     totalDays: days.length,
     workingDays,
     nonWorkingDays: days.length - workingDays,

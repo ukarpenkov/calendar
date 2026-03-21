@@ -1,9 +1,9 @@
 import {
-  buildMonthWeeks,
-  MONTH_LABELS,
-  MONTH_SHORT_LABELS,
-  type CalendarMonthWeek,
-} from './month-helpers';
+  getMonthLabel,
+  getMonthShortLabel,
+  type AppLanguage,
+} from '../../../shared/lib/i18n';
+import { buildMonthWeeks, type CalendarMonthWeek } from './month-helpers';
 import type { CalendarYear } from './types';
 
 export interface CalendarMonthSummary {
@@ -19,8 +19,9 @@ export interface CalendarMonthSummary {
 
 export function buildYearMonthSummaries(
   calendar: CalendarYear,
+  language: AppLanguage,
 ): CalendarMonthSummary[] {
-  return MONTH_LABELS.map((label, index) => {
+  return Array.from({ length: 12 }, (_, index) => {
     const month = index + 1;
     const days = calendar.days.filter(day => day.month === month);
 
@@ -32,8 +33,8 @@ export function buildYearMonthSummaries(
 
     return {
       month,
-      label,
-      shortLabel: MONTH_SHORT_LABELS[index],
+      label: getMonthLabel(language, month),
+      shortLabel: getMonthShortLabel(language, month),
       totalDays: days.length,
       workingDays,
       nonWorkingDays,

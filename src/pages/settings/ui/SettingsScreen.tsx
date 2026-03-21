@@ -2,7 +2,10 @@ import type { ReactNode } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
+import { getLanguageLabel, getThemeModeLabel } from '../../../shared/lib/i18n';
+import { LanguageSwitch } from '../../../shared/ui/LanguageSwitch';
 import { ThemeSwitch } from '../../../shared/ui/ThemeSwitch';
 
 type SettingsScreenProps = {
@@ -16,6 +19,7 @@ export function SettingsScreen({
 }: SettingsScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
   const { isDarkMode, palette, themeMode, toggleTheme } = useAppTheme();
+  const { language, setLanguage, t } = useAppLocalization();
 
   return (
     <ScrollView
@@ -41,18 +45,20 @@ export function SettingsScreen({
         >
           <Text style={[styles.iconButtonText, { color: palette.icon }]}>{'<'}</Text>
         </Pressable>
-        <Text style={[styles.appBarTitle, { color: palette.title }]}>Settings</Text>
+        <Text style={[styles.appBarTitle, { color: palette.title }]}>
+          {t('settings.title')}
+        </Text>
         <View style={styles.appBarSpacer} />
       </View>
 
       <SectionCard
-        title="Calendar data"
-        subtitle="Current active year and upcoming import actions."
+        title={t('settings.sections.calendarData.title')}
+        subtitle={t('settings.sections.calendarData.subtitle')}
         palette={palette}
       >
         <SettingRow
-          title="Active year"
-          subtitle={`The SQLite-backed dataset currently loaded in the app is ${activeYear}.`}
+          title={t('settings.rows.activeYear.title')}
+          subtitle={t('settings.rows.activeYear.subtitle', { year: activeYear })}
           trailing={
             <Text style={[styles.badgeText, { color: palette.title }]}>
               {activeYear}
@@ -62,11 +68,11 @@ export function SettingsScreen({
         />
         <Divider palette={palette} />
         <SettingRow
-          title="Import year (JSON)"
-          subtitle="The entry point will be connected in the next implementation step."
+          title={t('settings.rows.importYear.title')}
+          subtitle={t('settings.rows.importYear.subtitle')}
           trailing={
             <Text style={[styles.placeholderText, { color: palette.subtitle }]}>
-              Soon
+              {t('settings.rows.importYear.soon')}
             </Text>
           }
           palette={palette}
@@ -74,13 +80,15 @@ export function SettingsScreen({
       </SectionCard>
 
       <SectionCard
-        title="Appearance"
-        subtitle="Theme settings are now controlled through the global app context."
+        title={t('settings.sections.appearance.title')}
+        subtitle={t('settings.sections.appearance.subtitle')}
         palette={palette}
       >
         <SettingRow
-          title="Dark theme"
-          subtitle={`Current mode: ${themeMode === 'dark' ? 'Dark' : 'Light'}.`}
+          title={t('settings.rows.darkTheme.title')}
+          subtitle={t('settings.rows.darkTheme.subtitle', {
+            mode: getThemeModeLabel(language, themeMode),
+          })}
           trailing={
             <ThemeSwitch checked={isDarkMode} onPress={toggleTheme} />
           }
@@ -89,15 +97,61 @@ export function SettingsScreen({
       </SectionCard>
 
       <SectionCard
-        title="About"
-        subtitle="Service information for the current local-first build."
+        title={t('settings.sections.localization.title')}
+        subtitle={t('settings.sections.localization.subtitle')}
+        palette={palette}
+      >
+        <SettingRow
+          title={t('settings.rows.language.title')}
+          subtitle={t('settings.rows.language.subtitle', {
+            language: getLanguageLabel(language, language),
+          })}
+          trailing={
+            <LanguageSwitch
+              selectedLanguage={language}
+              onSelectLanguage={setLanguage}
+              palette={palette}
+              labels={{
+                ru: getLanguageLabel(language, 'ru'),
+                en: getLanguageLabel(language, 'en'),
+              }}
+            />
+          }
+          palette={palette}
+        />
+      </SectionCard>
+
+      <SectionCard
+        title={t('settings.sections.about.title')}
+        subtitle={t('settings.sections.about.subtitle')}
         palette={palette}
       >
         <View style={styles.aboutList}>
-          <AboutLine label="App" value="Calendar" palette={palette} />
-          <AboutLine label="Storage" value="Offline SQLite" palette={palette} />
-          <AboutLine label="Default dataset" value="Production calendar 2026" palette={palette} />
-          <AboutLine label="Theme" value={themeMode === 'dark' ? 'Dark' : 'Light'} palette={palette} />
+          <AboutLine
+            label={t('settings.about.app')}
+            value={t('settings.about.appValue')}
+            palette={palette}
+          />
+          <AboutLine
+            label={t('settings.about.storage')}
+            value={t('settings.about.storageValue')}
+            palette={palette}
+          />
+          <AboutLine
+            label={t('settings.about.defaultDataset')}
+            value={t('settings.about.defaultDatasetValue')}
+            palette={palette}
+          />
+          <AboutLine
+            label={t('settings.about.theme')}
+            value={getThemeModeLabel(language, themeMode)}
+            palette={palette}
+          />
+          <AboutLine
+            label={t('settings.about.language')}
+            value={getLanguageLabel(language, language)}
+            palette={palette}
+          />
         </View>
       </SectionCard>
     </ScrollView>
@@ -245,7 +299,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   rowTrailing: {
-    minWidth: 72,
+    minWidth: 110,
     alignItems: 'flex-end',
   },
   badgeText: {

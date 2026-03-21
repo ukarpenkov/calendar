@@ -1,7 +1,10 @@
 import {
+  useCallback,
   createContext,
   useContext,
+  useEffect,
   useMemo,
+  useRef,
   useState,
   type PropsWithChildren,
 } from 'react';
@@ -11,6 +14,7 @@ import {
   getCalendarPalette,
   type CalendarPalette,
 } from '../../../entities/calendar';
+import { getStoredTheme, setStoredTheme } from '../../../shared/lib/settings';
 
 export type ThemeMode = 'light' | 'dark';
 
@@ -29,19 +33,55 @@ export function AppThemeProvider({ children }: PropsWithChildren) {
   const [themeMode, setThemeMode] = useState<ThemeMode>(
     systemColorScheme === 'dark' ? 'dark' : 'light',
   );
+  const hasManualThemeSelectionRef = useRef(false);
   const isDarkMode = themeMode === 'dark';
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const hydrateStoredTheme = async () => {
+      try {
+        const storedTheme = await getStoredTheme();
+
+        if (isMounted && storedTheme && !hasManualThemeSelectionRef.current) {
+          setThemeMode(storedTheme);
+        }
+      } catch {
+        // Ignore preference hydration failures and keep the system default.
+      }
+    };
+
+    hydrateStoredTheme().catch(() => {
+      // Ignore preference hydration failures and keep the system default.
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleSetThemeMode = useCallback((nextThemeMode: ThemeMode) => {
+    hasManualThemeSelectionRef.current = true;
+    setThemeMode(nextThemeMode);
+
+    setStoredTheme(nextThemeMode).catch(() => {
+      // Ignore persistence failures to keep theme switching responsive.
+    });
+  }, []);
+
+  const handleToggleTheme = useCallback(() => {
+    handleSetThemeMode(themeMode === 'dark' ? 'light' : 'dark');
+  }, [handleSetThemeMode, themeMode]);
 
   const value = useMemo<AppThemeContextValue>(
     () => ({
       themeMode,
       isDarkMode,
       palette: getCalendarPalette(isDarkMode),
-      setThemeMode,
-      toggleTheme: () => {
-        setThemeMode(currentMode => (currentMode === 'dark' ? 'light' : 'dark'));
-      },
+      setThemeMode: handleSetThemeMode,
+      toggleTheme: handleToggleTheme,
     }),
-    [isDarkMode, themeMode],
+    [handleSetThemeMode, handleToggleTheme, isDarkMode, themeMode],
   );
 
   return (

@@ -63,7 +63,7 @@ describe('buildYearMonthSummaries', () => {
       ],
     };
 
-    const january = buildYearMonthSummaries(calendar)[0];
+    const january = buildYearMonthSummaries(calendar, 'en')[0];
 
     expect(january.label).toBe('January');
     expect(january.totalDays).toBe(4);

@@ -1,3 +1,4 @@
+import type { AppLanguage } from '../../../shared/lib/i18n';
 import type { DayType } from '../model/types';
 
 export type CalendarPalette = {
@@ -111,7 +112,23 @@ export function getDayTypeColors(
   };
 }
 
-export function getDayTypeLabel(type: DayType): string {
+export function getDayTypeLabel(type: DayType, language: AppLanguage): string {
+  if (language === 'ru') {
+    if (type === 'weekend') {
+      return 'Выходной';
+    }
+
+    if (type === 'holiday') {
+      return 'Праздник';
+    }
+
+    if (type === 'shortened') {
+      return 'Сокращенный';
+    }
+
+    return 'Рабочий день';
+  }
+
   if (type === 'weekend') {
     return 'Weekend';
   }
