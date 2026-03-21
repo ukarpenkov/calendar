@@ -14,6 +14,7 @@ import { parseValidateAndNormalizeCalendarImport } from '../src/features/calenda
 import { initializeDatabase } from '../src/shared/lib/db';
 
 const bundledCalendar = require('../calendar2026.json');
+const importedCalendar2025 = require('../calendar2025.json');
 
 describe('calendar sqlite repository', () => {
   let db: DB;
@@ -80,5 +81,28 @@ describe('calendar sqlite repository', () => {
 
     expect(seededCalendar.days).toHaveLength(365);
     expect(await repository.getActiveYear()).toBe(2026);
+  });
+
+  it('replaces the active dataset when a different year is imported', async () => {
+    const calendar2026 = parseValidateAndNormalizeCalendarImport(bundledCalendar);
+    const calendar2025 = parseValidateAndNormalizeCalendarImport(importedCalendar2025);
+
+    await repository.replaceActiveYear(calendar2026);
+    await repository.replaceActiveYear(calendar2025);
+
+    expect(await repository.getActiveYear()).toBe(2025);
+    expect(await repository.getYearCalendar(2026)).toBeNull();
+    expect(await repository.getYearCalendar(2025)).toMatchObject({
+      year: 2025,
+    });
+    expect(await repository.getMonthCalendar(2025, 11)).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          date: '2025-11-01',
+          type: 'shortened',
+          workHours: 7,
+        }),
+      ]),
+    );
   });
 });

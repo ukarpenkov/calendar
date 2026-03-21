@@ -136,4 +136,28 @@ describe('calendar import pipeline', () => {
       ]),
     );
   });
+
+  it('rejects inconsistent weekend and shortened-day combinations', () => {
+    const error = expectValidationError(() =>
+      validateCalendarImportData({
+        year: 2025,
+        holidays: [],
+        weekends: ['2025-03-07', '2025-03-08'],
+        preholidays: ['2025-03-08'],
+      }),
+    );
+
+    expect(error.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'INCONSISTENT_DAY_TYPE',
+          path: 'weekends[0]',
+        }),
+        expect.objectContaining({
+          code: 'INCONSISTENT_DAY_TYPE',
+          path: 'preholidays[0]',
+        }),
+      ]),
+    );
+  });
 });

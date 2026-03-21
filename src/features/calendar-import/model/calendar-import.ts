@@ -257,6 +257,61 @@ function validateHolidays(
   return holidays;
 }
 
+function validateDayTypeConsistency(
+  year: number,
+  holidays: RawHolidayEntry[],
+  weekends: string[],
+  preholidays: string[],
+  issues: CalendarImportValidationIssue[],
+) {
+  const holidayDates = new Set(holidays.map(holiday => holiday.date));
+  const weekendDates = new Set(weekends);
+
+  weekends.forEach((date, index) => {
+    const parsed = parseIsoDate(date);
+
+    if (!parsed || parsed.year !== year) {
+      return;
+    }
+
+    const weekday = getIsoWeekday(parsed.date.getUTCDay());
+
+    if (weekday < 6) {
+      issues.push(
+        createIssue(
+          'INCONSISTENT_DAY_TYPE',
+          `Field "weekends[${index}]" must fall on Saturday or Sunday.`,
+          `weekends[${index}]`,
+        ),
+      );
+    }
+  });
+
+  preholidays.forEach((date, index) => {
+    const path = `preholidays[${index}]`;
+
+    if (holidayDates.has(date)) {
+      issues.push(
+        createIssue(
+          'INCONSISTENT_DAY_TYPE',
+          `Field "${path}" cannot overlap with a holiday date.`,
+          path,
+        ),
+      );
+    }
+
+    if (weekendDates.has(date)) {
+      issues.push(
+        createIssue(
+          'INCONSISTENT_DAY_TYPE',
+          `Field "${path}" cannot overlap with a weekend date.`,
+          path,
+        ),
+      );
+    }
+  });
+}
+
 export function parseCalendarImportJson(json: string): RawCalendarImport {
   try {
     const parsed = JSON.parse(json) as unknown;
@@ -356,6 +411,8 @@ export function validateCalendarImportData(
       ? []
       : validateDateArray(preholidaysValue, 'preholidays', year, issues);
 
+  assertIssues(issues);
+  validateDayTypeConsistency(year, holidays, weekends, preholidays, issues);
   assertIssues(issues);
 
   return {

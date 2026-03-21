@@ -1,5 +1,6 @@
 module.exports = {
   preset: 'react-native',
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   moduleNameMapper: {
     '^@op-engineering/op-sqlite$':
       '<rootDir>/node_modules/@op-engineering/op-sqlite/node/dist/index.js',

@@ -53,6 +53,7 @@ const translations = {
     'common.appName': 'Calendar',
     'common.hoursUnit': 'h',
     'common.backToYear': 'Back to year',
+    'common.cancel': 'Cancel',
     'app.error.bootstrapTitle': 'Failed to initialize local calendar data.',
     'app.error.bootstrapSubtitle': 'Fix the storage error and relaunch the app.',
     'app.error.monthTitle': 'Failed to open the selected month.',
@@ -113,20 +114,65 @@ const translations = {
       'This screen is now the dedicated entry point for replacing the active year with a local JSON file.',
     'importEntry.currentYear.title': 'Current active year',
     'importEntry.currentYear.subtitle':
-      'If you continue with import later, the SQLite dataset for {{year}} will be replaced, not merged.',
-    'importEntry.flow.title': 'What the flow will do next',
+      'If you confirm the next step, the SQLite dataset for {{year}} will be replaced, not merged.',
+    'importEntry.fileCard.title': 'Selected JSON file',
+    'importEntry.fileCard.idleSubtitle':
+      'Choose a local JSON file to start validation. The active year stays unchanged until the replacement is confirmed.',
+    'importEntry.fileCard.readySubtitle':
+      'The selected file was validated successfully and is ready to replace the active SQLite dataset.',
+    'importEntry.fileCard.fileName': 'File',
+    'importEntry.fileCard.detectedYear': 'Detected year',
+    'importEntry.fileCard.fileSize': 'Size',
+    'importEntry.preview.title': 'Validated import preview',
+    'importEntry.preview.subtitle':
+      'Year {{year}} passed validation and can now replace the current local dataset.',
+    'importEntry.preview.totalDays': 'Total days',
+    'importEntry.preview.workingDays': 'Working days',
+    'importEntry.preview.nonWorkingDays': 'Non-working days',
+    'importEntry.preview.workHours': 'Work hours',
+    'importEntry.actions.chooseFile': 'Choose JSON file',
+    'importEntry.actions.chooseAnotherFile': 'Choose another file',
+    'importEntry.actions.validating': 'Validating file...',
+    'importEntry.actions.replaceYear': 'Replace active year',
+    'importEntry.actions.importing': 'Replacing local dataset...',
+    'importEntry.confirm.title': 'Replace active calendar year?',
+    'importEntry.confirm.body':
+      'The current year {{currentYear}} will be fully replaced by year {{importedYear}} in local SQLite storage. This action does not merge data.',
+    'importEntry.confirm.action': 'Replace year',
+    'importEntry.error.validationTitle': 'Validation failed',
+    'importEntry.error.validationBody':
+      'The selected JSON file did not pass validation. The active calendar year was not changed.',
+    'importEntry.error.unsupportedTitle': 'Unsupported file',
+    'importEntry.error.unsupportedBody':
+      'Choose a `.json` file with the calendar import structure.',
+    'importEntry.error.readTitle': 'Failed to read the file',
+    'importEntry.error.readBody':
+      'The selected file could not be read from device storage. The active calendar year was not changed.',
+    'importEntry.error.pickerTitle': 'Failed to open file picker',
+    'importEntry.error.pickerBody':
+      'The system file picker did not return a readable JSON file.',
+    'importEntry.error.replaceTitle': 'Failed to replace active year',
+    'importEntry.error.replaceBody':
+      'Validation succeeded, but the new year could not be written to SQLite. The current calendar remains active.',
+    'importEntry.error.replaceDetail':
+      'Check local storage availability and try the import again.',
+    'importEntry.error.genericTitle': 'Import failed',
+    'importEntry.error.genericBody':
+      'The import flow stopped before replacing the active calendar year.',
+    'importEntry.error.genericDetail':
+      'Review the selected file and try again.',
+    'importEntry.flow.title': 'How this import works',
     'importEntry.flow.step1': '1. Choose a local JSON file from the device.',
-    'importEntry.flow.step2': '2. Validate and normalize the selected year before any write.',
+    'importEntry.flow.step2':
+      '2. Validate and normalize the selected year before any write.',
     'importEntry.flow.step3':
       '3. Ask for confirmation before replacing the active SQLite dataset.',
-    'importEntry.nextStep.title': 'Next implementation step',
-    'importEntry.nextStep.subtitle':
-      'The next task can attach the file picker and hand this entry screen over to the confirm and validating states.',
   },
   ru: {
     'common.appName': 'Календарь',
     'common.hoursUnit': 'ч',
     'common.backToYear': 'Назад к году',
+    'common.cancel': 'Отмена',
     'app.error.bootstrapTitle': 'Не удалось инициализировать локальные данные календаря.',
     'app.error.bootstrapSubtitle': 'Исправьте ошибку хранилища и перезапустите приложение.',
     'app.error.monthTitle': 'Не удалось открыть выбранный месяц.',
@@ -188,16 +234,59 @@ const translations = {
       'Этот экран теперь служит отдельной точкой входа для замены активного года файлом JSON с устройства.',
     'importEntry.currentYear.title': 'Текущий активный год',
     'importEntry.currentYear.subtitle':
-      'Когда дальнейший импорт будет подтвержден, набор данных {{year}} в SQLite заменится полностью, без объединения.',
-    'importEntry.flow.title': 'Что дальше сделает flow',
-    'importEntry.flow.step1': '1. Даст выбрать локальный JSON-файл на устройстве.',
+      'После подтверждения следующий шаг полностью заменит набор данных {{year}} в SQLite, без объединения.',
+    'importEntry.fileCard.title': 'Выбранный JSON-файл',
+    'importEntry.fileCard.idleSubtitle':
+      'Выберите локальный JSON-файл, чтобы запустить валидацию. Активный год не изменится, пока замена не будет подтверждена.',
+    'importEntry.fileCard.readySubtitle':
+      'Выбранный файл успешно прошел валидацию и готов заменить активный набор данных в SQLite.',
+    'importEntry.fileCard.fileName': 'Файл',
+    'importEntry.fileCard.detectedYear': 'Определенный год',
+    'importEntry.fileCard.fileSize': 'Размер',
+    'importEntry.preview.title': 'Предпросмотр валидированного импорта',
+    'importEntry.preview.subtitle':
+      'Год {{year}} прошел валидацию и теперь может заменить текущий локальный набор данных.',
+    'importEntry.preview.totalDays': 'Всего дней',
+    'importEntry.preview.workingDays': 'Рабочих дней',
+    'importEntry.preview.nonWorkingDays': 'Нерабочих дней',
+    'importEntry.preview.workHours': 'Рабочих часов',
+    'importEntry.actions.chooseFile': 'Выбрать JSON-файл',
+    'importEntry.actions.chooseAnotherFile': 'Выбрать другой файл',
+    'importEntry.actions.validating': 'Проверяем файл...',
+    'importEntry.actions.replaceYear': 'Заменить активный год',
+    'importEntry.actions.importing': 'Обновляем локальный набор...',
+    'importEntry.confirm.title': 'Заменить активный календарный год?',
+    'importEntry.confirm.body':
+      'Текущий год {{currentYear}} будет полностью заменен годом {{importedYear}} в локальном SQLite-хранилище. Объединения данных не будет.',
+    'importEntry.confirm.action': 'Заменить год',
+    'importEntry.error.validationTitle': 'Валидация не пройдена',
+    'importEntry.error.validationBody':
+      'Выбранный JSON-файл не прошел проверку. Активный календарный год не изменился.',
+    'importEntry.error.unsupportedTitle': 'Неподдерживаемый файл',
+    'importEntry.error.unsupportedBody':
+      'Выберите файл `.json` со структурой импорта календаря.',
+    'importEntry.error.readTitle': 'Не удалось прочитать файл',
+    'importEntry.error.readBody':
+      'Выбранный файл не удалось прочитать из памяти устройства. Активный календарный год не изменился.',
+    'importEntry.error.pickerTitle': 'Не удалось открыть выбор файла',
+    'importEntry.error.pickerBody':
+      'Системный file picker не вернул читаемый JSON-файл.',
+    'importEntry.error.replaceTitle': 'Не удалось заменить активный год',
+    'importEntry.error.replaceBody':
+      'Валидация прошла успешно, но новый год не удалось записать в SQLite. Текущий календарь остался активным.',
+    'importEntry.error.replaceDetail':
+      'Проверьте доступность локального хранилища и попробуйте импорт еще раз.',
+    'importEntry.error.genericTitle': 'Импорт не завершен',
+    'importEntry.error.genericBody':
+      'Flow импорта остановился до замены активного календарного года.',
+    'importEntry.error.genericDetail':
+      'Проверьте выбранный файл и повторите попытку.',
+    'importEntry.flow.title': 'Как работает этот импорт',
+    'importEntry.flow.step1': '1. Дает выбрать локальный JSON-файл на устройстве.',
     'importEntry.flow.step2':
       '2. Провалидирует и нормализует выбранный год до любой записи в БД.',
     'importEntry.flow.step3':
       '3. Запросит явное подтверждение перед заменой активного набора в SQLite.',
-    'importEntry.nextStep.title': 'Следующий шаг реализации',
-    'importEntry.nextStep.subtitle':
-      'Следующая задача может подключить file picker и передать этот экран в состояния подтверждения и валидации.',
   },
 } as const;
 

@@ -243,6 +243,20 @@ function AppContent() {
     });
   };
 
+  const completeImportEntry = (calendar: CalendarYear) => {
+    setStatus(currentStatus => {
+      if (currentStatus.kind !== 'ready') {
+        return currentStatus;
+      }
+
+      return {
+        ...currentStatus,
+        calendar,
+        screen: { name: 'year' },
+      };
+    });
+  };
+
   if (status.screen.name === 'month-loading') {
     return <SplashScreen />;
   }
@@ -321,6 +335,7 @@ function AppContent() {
       <ImportEntryScreen
         activeYear={status.calendar.year}
         onBack={closeImportEntry}
+        onImportCompleted={completeImportEntry}
       />
     );
   }

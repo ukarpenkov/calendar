@@ -8,8 +8,10 @@ import App from '../src/app/App';
 import {
   getMonthCalendar,
   getYearCalendar,
+  replaceActiveYear,
   seedBundledYearIfNeeded,
 } from '../src/entities/calendar';
+import { ImportEntryScreen } from '../src/pages/import-entry/ui/ImportEntryScreen';
 import { MonthDetailScreen } from '../src/pages/month/ui/MonthDetailScreen';
 import { SettingsScreen } from '../src/pages/settings/ui/SettingsScreen';
 import { YearHomeScreen } from '../src/pages/year/ui/YearHomeScreen';
@@ -30,6 +32,7 @@ jest.mock('../src/entities/calendar', () => ({
   ...jest.requireActual('../src/entities/calendar'),
   getMonthCalendar: jest.fn(),
   getYearCalendar: jest.fn(),
+  replaceActiveYear: jest.fn(),
   seedBundledYearIfNeeded: jest.fn(),
 }));
 
@@ -43,12 +46,32 @@ jest.mock('../src/shared/lib/settings', () => ({
   setStoredLanguage: jest.fn().mockResolvedValue(undefined),
 }));
 
+jest.mock('@react-native-documents/picker', () => ({
+  pick: jest.fn(),
+  types: {
+    json: 'application/json',
+    plainText: 'text/plain',
+  },
+  errorCodes: {
+    OPERATION_CANCELED: 'OPERATION_CANCELED',
+  },
+  isErrorWithCode: (error: unknown) =>
+    Boolean(
+      error &&
+        typeof error === 'object' &&
+        'code' in error &&
+        typeof (error as { code?: unknown }).code === 'string',
+    ),
+}));
+
 const mockedGetMonthCalendar = jest.mocked(getMonthCalendar);
+const mockedReplaceActiveYear = jest.mocked(replaceActiveYear);
 const mockedSeedBundledYearIfNeeded = jest.mocked(seedBundledYearIfNeeded);
 const mockedGetYearCalendar = jest.mocked(getYearCalendar);
 
 beforeEach(() => {
   mockedGetMonthCalendar.mockReset();
+  mockedReplaceActiveYear.mockReset();
   mockedSeedBundledYearIfNeeded.mockReset();
   mockedGetYearCalendar.mockReset();
 });
@@ -250,4 +273,39 @@ test('opens dedicated JSON import entry from settings', async () => {
   expect(JSON.stringify(renderer!.toJSON())).toContain(
     'dedicated entry point for replacing the active year',
   );
+});
+
+test('returns to year overview with the imported calendar after success', async () => {
+  mockedSeedBundledYearIfNeeded.mockResolvedValue({
+    year: 2026,
+    days: [],
+  });
+  mockedGetYearCalendar.mockResolvedValue({
+    year: 2026,
+    days: [],
+  });
+
+  let renderer: ReactTestRenderer.ReactTestRenderer;
+
+  await ReactTestRenderer.act(async () => {
+    renderer = ReactTestRenderer.create(<App />);
+  });
+
+  await ReactTestRenderer.act(async () => {
+    renderer!.root.findByType(YearHomeScreen).props.onOpenSettings();
+  });
+
+  await ReactTestRenderer.act(async () => {
+    renderer!.root.findByType(SettingsScreen).props.onOpenImportEntry();
+  });
+
+  await ReactTestRenderer.act(async () => {
+    renderer!.root.findByType(ImportEntryScreen).props.onImportCompleted({
+      year: 2025,
+      days: [],
+    });
+  });
+
+  expect(mockedReplaceActiveYear).not.toHaveBeenCalled();
+  expect(JSON.stringify(renderer!.toJSON())).toContain('2025');
 });
