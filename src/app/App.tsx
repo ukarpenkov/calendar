@@ -111,7 +111,7 @@ function AppContent() {
           {
             backgroundColor: palette.background,
             paddingTop: safeAreaInsets.top + 24,
-            paddingBottom: safeAreaInsets.bottom + 24,
+            paddingBottom: safeAreaInsets.bottom + 56,
           },
         ]}
       >
@@ -271,7 +271,7 @@ function AppContent() {
           {
             backgroundColor: palette.background,
             paddingTop: safeAreaInsets.top + 24,
-            paddingBottom: safeAreaInsets.bottom + 24,
+            paddingBottom: safeAreaInsets.bottom + 56,
           },
         ]}
       >
