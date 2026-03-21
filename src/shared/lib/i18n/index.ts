@@ -83,8 +83,8 @@ const translations = {
       'The SQLite-backed dataset currently loaded in the app is {{year}}.',
     'settings.rows.importYear.title': 'Import year (JSON)',
     'settings.rows.importYear.subtitle':
-      'The entry point will be connected in the next implementation step.',
-    'settings.rows.importYear.soon': 'Soon',
+      'Open a dedicated import entry screen and continue with the JSON replacement flow.',
+    'settings.rows.importYear.action': 'Open',
     'settings.sections.appearance.title': 'Appearance',
     'settings.sections.appearance.subtitle':
       'Theme settings are now controlled through the global app context.',
@@ -106,6 +106,22 @@ const translations = {
     'settings.about.appValue': 'Calendar',
     'settings.about.storageValue': 'Offline SQLite',
     'settings.about.defaultDatasetValue': 'Production calendar 2026',
+    'importEntry.title': 'JSON import',
+    'importEntry.eyebrow': 'Import flow entry',
+    'importEntry.heroTitle': 'Prepare a local JSON replacement',
+    'importEntry.heroSubtitle':
+      'This screen is now the dedicated entry point for replacing the active year with a local JSON file.',
+    'importEntry.currentYear.title': 'Current active year',
+    'importEntry.currentYear.subtitle':
+      'If you continue with import later, the SQLite dataset for {{year}} will be replaced, not merged.',
+    'importEntry.flow.title': 'What the flow will do next',
+    'importEntry.flow.step1': '1. Choose a local JSON file from the device.',
+    'importEntry.flow.step2': '2. Validate and normalize the selected year before any write.',
+    'importEntry.flow.step3':
+      '3. Ask for confirmation before replacing the active SQLite dataset.',
+    'importEntry.nextStep.title': 'Next implementation step',
+    'importEntry.nextStep.subtitle':
+      'The next task can attach the file picker and hand this entry screen over to the confirm and validating states.',
   },
   ru: {
     'common.appName': 'Календарь',
@@ -142,8 +158,8 @@ const translations = {
       'Сейчас в приложении загружен набор данных {{year}}, сохраненный в SQLite.',
     'settings.rows.importYear.title': 'Импорт года (JSON)',
     'settings.rows.importYear.subtitle':
-      'Точка входа будет подключена на следующем шаге реализации.',
-    'settings.rows.importYear.soon': 'Скоро',
+      'Открывает отдельный экран входа в flow замены года через локальный JSON.',
+    'settings.rows.importYear.action': 'Открыть',
     'settings.sections.appearance.title': 'Оформление',
     'settings.sections.appearance.subtitle':
       'Параметры темы управляются через глобальный контекст приложения.',
@@ -165,6 +181,23 @@ const translations = {
     'settings.about.appValue': 'Календарь',
     'settings.about.storageValue': 'Локальный SQLite',
     'settings.about.defaultDatasetValue': 'Производственный календарь 2026',
+    'importEntry.title': 'Импорт JSON',
+    'importEntry.eyebrow': 'Точка входа в импорт',
+    'importEntry.heroTitle': 'Подготовка замены года локальным JSON',
+    'importEntry.heroSubtitle':
+      'Этот экран теперь служит отдельной точкой входа для замены активного года файлом JSON с устройства.',
+    'importEntry.currentYear.title': 'Текущий активный год',
+    'importEntry.currentYear.subtitle':
+      'Когда дальнейший импорт будет подтвержден, набор данных {{year}} в SQLite заменится полностью, без объединения.',
+    'importEntry.flow.title': 'Что дальше сделает flow',
+    'importEntry.flow.step1': '1. Даст выбрать локальный JSON-файл на устройстве.',
+    'importEntry.flow.step2':
+      '2. Провалидирует и нормализует выбранный год до любой записи в БД.',
+    'importEntry.flow.step3':
+      '3. Запросит явное подтверждение перед заменой активного набора в SQLite.',
+    'importEntry.nextStep.title': 'Следующий шаг реализации',
+    'importEntry.nextStep.subtitle':
+      'Следующая задача может подключить file picker и передать этот экран в состояния подтверждения и валидации.',
   },
 } as const;
 

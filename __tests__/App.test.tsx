@@ -11,6 +11,7 @@ import {
   seedBundledYearIfNeeded,
 } from '../src/entities/calendar';
 import { MonthDetailScreen } from '../src/pages/month/ui/MonthDetailScreen';
+import { SettingsScreen } from '../src/pages/settings/ui/SettingsScreen';
 import { YearHomeScreen } from '../src/pages/year/ui/YearHomeScreen';
 
 jest.mock('react-native-safe-area-context', () => {
@@ -218,5 +219,35 @@ test('shows error state when bootstrap fails', async () => {
 
   expect(JSON.stringify(renderer!.toJSON())).toContain(
     'Failed to initialize local calendar data.',
+  );
+});
+
+test('opens dedicated JSON import entry from settings', async () => {
+  mockedSeedBundledYearIfNeeded.mockResolvedValue({
+    year: 2026,
+    days: [],
+  });
+  mockedGetYearCalendar.mockResolvedValue({
+    year: 2026,
+    days: [],
+  });
+
+  let renderer: ReactTestRenderer.ReactTestRenderer;
+
+  await ReactTestRenderer.act(async () => {
+    renderer = ReactTestRenderer.create(<App />);
+  });
+
+  await ReactTestRenderer.act(async () => {
+    renderer!.root.findByType(YearHomeScreen).props.onOpenSettings();
+  });
+
+  await ReactTestRenderer.act(async () => {
+    renderer!.root.findByType(SettingsScreen).props.onOpenImportEntry();
+  });
+
+  expect(JSON.stringify(renderer!.toJSON())).toContain('JSON import');
+  expect(JSON.stringify(renderer!.toJSON())).toContain(
+    'dedicated entry point for replacing the active year',
   );
 });

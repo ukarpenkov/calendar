@@ -11,11 +11,13 @@ import { ThemeSwitch } from '../../../shared/ui/ThemeSwitch';
 type SettingsScreenProps = {
   activeYear: number;
   onBack: () => void;
+  onOpenImportEntry: () => void;
 };
 
 export function SettingsScreen({
   activeYear,
   onBack,
+  onOpenImportEntry,
 }: SettingsScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
   const { isDarkMode, palette, themeMode, toggleTheme } = useAppTheme();
@@ -71,11 +73,12 @@ export function SettingsScreen({
           title={t('settings.rows.importYear.title')}
           subtitle={t('settings.rows.importYear.subtitle')}
           trailing={
-            <Text style={[styles.placeholderText, { color: palette.subtitle }]}>
-              {t('settings.rows.importYear.soon')}
+            <Text style={[styles.actionText, { color: palette.title }]}>
+              {t('settings.rows.importYear.action')}
             </Text>
           }
           palette={palette}
+          onPress={onOpenImportEntry}
         />
       </SectionCard>
 
@@ -190,10 +193,17 @@ type SettingRowProps = {
   subtitle: string;
   trailing: ReactNode;
   palette: ReturnType<typeof useAppTheme>['palette'];
+  onPress?: () => void;
 };
 
-function SettingRow({ title, subtitle, trailing, palette }: SettingRowProps) {
-  return (
+function SettingRow({
+  title,
+  subtitle,
+  trailing,
+  palette,
+  onPress,
+}: SettingRowProps) {
+  const content = (
     <View style={styles.row}>
       <View style={styles.rowCopy}>
         <Text style={[styles.rowTitle, { color: palette.title }]}>{title}</Text>
@@ -204,6 +214,16 @@ function SettingRow({ title, subtitle, trailing, palette }: SettingRowProps) {
       <View style={styles.rowTrailing}>{trailing}</View>
     </View>
   );
+
+  if (onPress) {
+    return (
+      <Pressable accessibilityRole="button" onPress={onPress} style={styles.rowPressable}>
+        {content}
+      </Pressable>
+    );
+  }
+
+  return content;
 }
 
 function Divider({
@@ -306,7 +326,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '700',
   },
-  placeholderText: {
+  rowPressable: {
+    borderRadius: 16,
+  },
+  actionText: {
     fontSize: 13,
     fontWeight: '600',
   },

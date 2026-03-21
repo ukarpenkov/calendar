@@ -17,6 +17,7 @@ import {
   useAppLocalization,
 } from './providers/localization';
 import { AppThemeProvider, useAppTheme } from './providers/theme';
+import { ImportEntryScreen } from '../pages/import-entry/ui/ImportEntryScreen';
 import { MonthDetailScreen } from '../pages/month/ui/MonthDetailScreen';
 import { SettingsScreen } from '../pages/settings/ui/SettingsScreen';
 import { SplashScreen } from '../pages/splash/ui/SplashScreen';
@@ -37,6 +38,7 @@ function App() {
 type ReadyScreen =
   | { name: 'year' }
   | { name: 'settings' }
+  | { name: 'import-entry' }
   | { name: 'month-loading'; month: number }
   | { name: 'month-error'; month: number }
   | { name: 'month'; month: number; days: CalendarDay[] };
@@ -215,6 +217,32 @@ function AppContent() {
     });
   };
 
+  const openImportEntry = () => {
+    setStatus(currentStatus => {
+      if (currentStatus.kind !== 'ready') {
+        return currentStatus;
+      }
+
+      return {
+        ...currentStatus,
+        screen: { name: 'import-entry' },
+      };
+    });
+  };
+
+  const closeImportEntry = () => {
+    setStatus(currentStatus => {
+      if (currentStatus.kind !== 'ready') {
+        return currentStatus;
+      }
+
+      return {
+        ...currentStatus,
+        screen: { name: 'settings' },
+      };
+    });
+  };
+
   if (status.screen.name === 'month-loading') {
     return <SplashScreen />;
   }
@@ -280,7 +308,20 @@ function AppContent() {
 
   if (status.screen.name === 'settings') {
     return (
-      <SettingsScreen activeYear={status.calendar.year} onBack={closeSettings} />
+      <SettingsScreen
+        activeYear={status.calendar.year}
+        onBack={closeSettings}
+        onOpenImportEntry={openImportEntry}
+      />
+    );
+  }
+
+  if (status.screen.name === 'import-entry') {
+    return (
+      <ImportEntryScreen
+        activeYear={status.calendar.year}
+        onBack={closeImportEntry}
+      />
     );
   }
 
