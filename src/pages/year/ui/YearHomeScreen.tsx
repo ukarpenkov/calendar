@@ -130,36 +130,52 @@ export function YearHomeScreen({
             </View>
 
             <View style={styles.weekHeaderRow}>
-              <Text style={[styles.weekNumberLabel, { color: palette.subtitle }]}>
-                #
-              </Text>
-              {weekdayLabels.map((label, index) => (
-                <Text
-                  key={`${summary.month}-${label}-${index}`}
-                  style={[styles.weekdayLabel, { color: palette.subtitle }]}
-                >
-                  {label}
+              <View style={styles.weekNumberColumn}>
+                <Text style={[styles.weekNumberLabel, { color: palette.subtitle }]}>
+                  #
                 </Text>
-              ))}
+              </View>
+              <View style={styles.daysHeaderStrip}>
+                {weekdayLabels.map((label, index) => (
+                  <View
+                    key={`${summary.month}-${label}-${index}`}
+                    style={styles.dayColumnHeader}
+                  >
+                    <Text
+                      style={[styles.weekdayLabel, { color: palette.subtitle }]}
+                    >
+                      {label}
+                    </Text>
+                  </View>
+                ))}
+              </View>
             </View>
 
             <View style={styles.weeksList}>
               {summary.weeks.map(week => (
                 <View key={`${summary.month}-${week.isoWeek}`} style={styles.weekRow}>
-                  <Text
-                    style={[styles.weekNumberValue, { color: palette.subtitle }]}
-                  >
-                    {week.isoWeek}
-                  </Text>
-                  {week.days.map((day, dayIndex) => (
-                    <MonthDayCell
-                      key={`${summary.month}-${week.isoWeek}-${dayIndex}`}
-                      day={day}
-                      resolveDayTypeColors={type =>
-                        getDayTypeColors(type, palette)
-                      }
-                    />
-                  ))}
+                  <View style={styles.weekNumberColumn}>
+                    <Text
+                      style={[styles.weekNumberValue, { color: palette.subtitle }]}
+                    >
+                      {week.isoWeek}
+                    </Text>
+                  </View>
+                  <View style={styles.daysStrip}>
+                    {week.days.map((day, dayIndex) => (
+                      <View
+                        key={`${summary.month}-${week.isoWeek}-${dayIndex}`}
+                        style={styles.dayColumn}
+                      >
+                        <MonthDayCell
+                          day={day}
+                          resolveDayTypeColors={type =>
+                            getDayTypeColors(type, palette)
+                          }
+                        />
+                      </View>
+                    ))}
+                  </View>
                 </View>
               ))}
             </View>
@@ -219,7 +235,10 @@ function MonthDayCell({ day, resolveDayTypeColors }: MonthDayCellProps) {
         },
       ]}
     >
-      <Text style={[styles.dayCellText, { color: colors.color }]}>
+      <Text
+        style={[styles.dayCellText, { color: colors.color }]}
+        numberOfLines={1}
+      >
         {day.day}
       </Text>
     </View>
@@ -320,38 +339,73 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 2,
+    width: '100%',
+    minWidth: 0,
+  },
+  weekNumberColumn: {
+    width: 22,
+    flexShrink: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   weekNumberLabel: {
-    width: 16,
     fontSize: 9,
     textAlign: 'center',
   },
+  daysHeaderStrip: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+    minWidth: 0,
+  },
   weekdayLabel: {
-    width: 20,
     fontSize: 9,
     fontWeight: '600',
     textAlign: 'center',
   },
   weeksList: {
     gap: 4,
+    width: '100%',
+    minWidth: 0,
   },
   weekRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 2,
+    width: '100%',
+    minWidth: 0,
   },
   weekNumberValue: {
-    width: 16,
     fontSize: 9,
     textAlign: 'center',
   },
+  daysStrip: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+    minWidth: 0,
+  },
+  dayColumnHeader: {
+    flex: 1,
+    minWidth: 0,
+    alignItems: 'center',
+  },
+  dayColumn: {
+    flex: 1,
+    minWidth: 0,
+    alignItems: 'stretch',
+  },
   emptyDayCell: {
-    width: 20,
     height: 18,
+    minWidth: 0,
+    alignSelf: 'stretch',
   },
   dayCell: {
-    width: 20,
     height: 18,
+    minWidth: 0,
+    alignSelf: 'stretch',
     borderWidth: 1,
     borderRadius: 5,
     alignItems: 'center',
