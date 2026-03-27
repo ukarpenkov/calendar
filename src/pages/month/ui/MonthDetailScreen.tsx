@@ -1,17 +1,34 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Animated,
+  Easing,
+  NativeSyntheticEvent,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  type NativeScrollEvent,
+  useWindowDimensions,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   buildMonthDetail,
+  getCalendarDaysForMonth,
   getDayTypeColors,
   getDayTypeLabel,
   type CalendarPalette,
   type CalendarDay,
+  type CalendarYear,
 } from '../../../entities/calendar';
 import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
-import { getShortWeekdayLabels } from '../../../shared/lib/i18n';
+import {
+  getShortWeekdayLabels,
+  type AppLanguage,
+  type TranslationKey,
+} from '../../../shared/lib/i18n';
 import { layout } from '../../../shared/lib/ui/layout';
 import { IconCircleButton } from '../../../shared/ui/IconCircleButton';
 import {
@@ -22,32 +39,74 @@ import {
 import { SettingsGearButton } from '../../../shared/ui/SettingsGearButton';
 
 type MonthDetailScreenProps = {
-  year: number;
+  calendar: CalendarYear;
   month: number;
-  days: CalendarDay[];
   onBack: () => void;
   onOpenSettings: () => void;
-  onOpenPreviousMonth?: () => void;
-  onOpenNextMonth?: () => void;
+  onMonthChange: (month: number) => void;
 };
 
 export function MonthDetailScreen({
-  year,
+  calendar,
   month,
-  days,
   onBack,
   onOpenSettings,
-  onOpenPreviousMonth,
-  onOpenNextMonth,
+  onMonthChange,
 }: MonthDetailScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const { palette } = useAppTheme();
   const { language, t } = useAppLocalization();
-  const detail = useMemo(
-    () => buildMonthDetail(year, month, days, language),
-    [days, language, month, year],
-  );
   const weekdayLabels = getShortWeekdayLabels(language);
+
+  const sheetTranslateY = useRef(
+    new Animated.Value(Math.max(windowHeight, 1)),
+  ).current;
+  const horizontalRef = useRef<ScrollView>(null);
+  const [pagerReady, setPagerReady] = useState(false);
+  const entryAnimationStartedRef = useRef(false);
+
+  const pageWidth = windowWidth;
+
+  useEffect(() => {
+    if (entryAnimationStartedRef.current || windowHeight < 1) {
+      return;
+    }
+    entryAnimationStartedRef.current = true;
+    sheetTranslateY.setValue(windowHeight);
+    Animated.timing(sheetTranslateY, {
+      toValue: 0,
+      duration: 360,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    }).start();
+  }, [sheetTranslateY, windowHeight]);
+
+  const runClose = useCallback(() => {
+    Animated.timing(sheetTranslateY, {
+      toValue: Math.max(windowHeight, 1),
+      duration: 300,
+      easing: Easing.in(Easing.cubic),
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      if (finished) {
+        onBack();
+      }
+    });
+  }, [onBack, sheetTranslateY, windowHeight]);
+
+  const prevMonth = month > 1 ? month - 1 : null;
+  const nextMonth = month < 12 ? month + 1 : null;
+
+  const centerDays = useMemo(
+    () => getCalendarDaysForMonth(calendar, month),
+    [calendar, month],
+  );
+  const detail = useMemo(
+    () => buildMonthDetail(calendar.year, month, centerDays, language),
+    [calendar.year, centerDays, language, month],
+  );
+
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   useEffect(() => {
@@ -57,66 +116,263 @@ export function MonthDetailScreen({
   const selectedDay =
     detail.days.find(day => day.date === selectedDate) ?? detail.days[0] ?? null;
 
+  const scrollToCenter = useCallback(
+    (animated: boolean) => {
+      horizontalRef.current?.scrollTo({
+        x: pageWidth,
+        animated,
+      });
+    },
+    [pageWidth],
+  );
+
+  useEffect(() => {
+    if (pagerReady) {
+      scrollToCenter(false);
+    }
+  }, [month, pagerReady, scrollToCenter]);
+
+  const onHorizontalLayout = useCallback(() => {
+    scrollToCenter(false);
+    setPagerReady(true);
+  }, [scrollToCenter]);
+
+  const onMomentumScrollEnd = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const x = event.nativeEvent.contentOffset.x;
+      const page = Math.round(x / pageWidth);
+
+      if (page === 0) {
+        if (prevMonth !== null) {
+          onMonthChange(prevMonth);
+        } else {
+          scrollToCenter(true);
+        }
+        return;
+      }
+
+      if (page === 2) {
+        if (nextMonth !== null) {
+          onMonthChange(nextMonth);
+        } else {
+          scrollToCenter(true);
+        }
+      }
+    },
+    [nextMonth, onMonthChange, pageWidth, prevMonth, scrollToCenter],
+  );
+
+  return (
+    <View style={styles.overlayRoot} pointerEvents="box-none">
+      <Animated.View
+        style={[
+          styles.sheet,
+          {
+            backgroundColor: palette.background,
+            paddingTop: safeAreaInsets.top + layout.safeAreaTopExtra,
+            transform: [{ translateY: sheetTranslateY }],
+          },
+        ]}
+      >
+        <View style={styles.appBar}>
+          <View style={[styles.appBarSide, styles.appBarSideStart]}>
+            <IconCircleButton
+              onPress={runClose}
+              palette={palette}
+              accessibilityLabel={t('common.backToYear')}
+            >
+              <ArrowBackIcon color={palette.icon} size={20} />
+            </IconCircleButton>
+          </View>
+          <View style={styles.appBarTitleWrap}>
+            <Text style={[styles.appBarTitle, { color: palette.title }]}>
+              {detail.shortLabel} {detail.year}
+            </Text>
+          </View>
+          <View style={[styles.appBarSide, styles.appBarActions]}>
+            <IconCircleButton
+              onPress={
+                prevMonth !== null ? () => onMonthChange(prevMonth) : undefined
+              }
+              palette={palette}
+              accessibilityLabel={t('month.nav.previousMonth')}
+            >
+              <ChevronLeftIcon
+                color={prevMonth !== null ? palette.icon : palette.subtitle}
+                size={20}
+              />
+            </IconCircleButton>
+            <IconCircleButton
+              onPress={
+                nextMonth !== null ? () => onMonthChange(nextMonth) : undefined
+              }
+              palette={palette}
+              accessibilityLabel={t('month.nav.nextMonth')}
+            >
+              <ChevronRightIcon
+                color={nextMonth !== null ? palette.icon : palette.subtitle}
+                size={20}
+              />
+            </IconCircleButton>
+            <SettingsGearButton
+              palette={palette}
+              accessibilityLabel={t('year.menu.settings')}
+              onPress={onOpenSettings}
+            />
+          </View>
+        </View>
+
+        <ScrollView
+          ref={horizontalRef}
+          horizontal
+          pagingEnabled
+          nestedScrollEnabled
+          showsHorizontalScrollIndicator={false}
+          bounces={false}
+          decelerationRate="fast"
+          keyboardShouldPersistTaps="handled"
+          onLayout={onHorizontalLayout}
+          onMomentumScrollEnd={onMomentumScrollEnd}
+          style={styles.horizontalScroll}
+          contentContainerStyle={styles.horizontalContent}
+        >
+          <View style={[styles.page, { width: pageWidth }]}>
+            <MonthPageScroll
+              calendar={calendar}
+              month={prevMonth}
+              palette={palette}
+              language={language}
+              t={t}
+              weekdayLabels={weekdayLabels}
+              bottomInset={safeAreaInsets.bottom + layout.yearMonthScrollBottom}
+            />
+          </View>
+          <View style={[styles.page, { width: pageWidth }]}>
+            <ScrollView
+              nestedScrollEnabled
+              style={styles.pageVertical}
+              contentContainerStyle={[
+                styles.pageVerticalContent,
+                {
+                  paddingBottom:
+                    safeAreaInsets.bottom + layout.yearMonthScrollBottom,
+                },
+              ]}
+              keyboardShouldPersistTaps="handled"
+            >
+              <MonthDetailBody
+                detail={detail}
+                palette={palette}
+                language={language}
+                t={t}
+                weekdayLabels={weekdayLabels}
+                selectedDay={selectedDay}
+                onSelectDay={setSelectedDate}
+              />
+            </ScrollView>
+          </View>
+          <View style={[styles.page, { width: pageWidth }]}>
+            <MonthPageScroll
+              calendar={calendar}
+              month={nextMonth}
+              palette={palette}
+              language={language}
+              t={t}
+              weekdayLabels={weekdayLabels}
+              bottomInset={safeAreaInsets.bottom + layout.yearMonthScrollBottom}
+            />
+          </View>
+        </ScrollView>
+      </Animated.View>
+    </View>
+  );
+}
+
+type LocalizationParams = Record<string, number | string>;
+
+type MonthPageScrollProps = {
+  calendar: CalendarYear;
+  month: number | null;
+  palette: CalendarPalette;
+  language: AppLanguage;
+  t: (key: TranslationKey, params?: LocalizationParams) => string;
+  weekdayLabels: readonly string[];
+  bottomInset: number;
+};
+
+function MonthPageScroll({
+  calendar,
+  month,
+  palette,
+  language,
+  t,
+  weekdayLabels,
+  bottomInset,
+}: MonthPageScrollProps) {
+  const days = month !== null ? getCalendarDaysForMonth(calendar, month) : [];
+  const detail = useMemo(() => {
+    if (month === null || days.length === 0) {
+      return null;
+    }
+    return buildMonthDetail(calendar.year, month, days, language);
+  }, [calendar.year, days, language, month]);
+
+  if (!detail) {
+    return (
+      <View
+        style={[
+          styles.pageVertical,
+          styles.placeholderPage,
+          { backgroundColor: palette.background },
+        ]}
+      />
+    );
+  }
+
   return (
     <ScrollView
-      style={[
-        styles.container,
-        {
-          backgroundColor: palette.background,
-          paddingTop: safeAreaInsets.top + layout.safeAreaTopExtra,
-        },
-      ]}
+      nestedScrollEnabled
+      style={styles.pageVertical}
       contentContainerStyle={[
-        styles.content,
-        {
-          paddingBottom: safeAreaInsets.bottom + layout.yearMonthScrollBottom,
-        },
+        styles.pageVerticalContent,
+        { paddingBottom: bottomInset },
       ]}
+      keyboardShouldPersistTaps="handled"
     >
-      <View style={styles.appBar}>
-        <View style={[styles.appBarSide, styles.appBarSideStart]}>
-          <IconCircleButton
-            onPress={onBack}
-            palette={palette}
-            accessibilityLabel={t('common.backToYear')}
-          >
-            <ArrowBackIcon color={palette.icon} size={20} />
-          </IconCircleButton>
-        </View>
-        <View style={styles.appBarTitleWrap}>
-          <Text style={[styles.appBarTitle, { color: palette.title }]}>
-            {detail.shortLabel} {detail.year}
-          </Text>
-        </View>
-        <View style={[styles.appBarSide, styles.appBarActions]}>
-          <IconCircleButton
-            onPress={onOpenPreviousMonth}
-            palette={palette}
-            accessibilityLabel={t('month.nav.previousMonth')}
-          >
-            <ChevronLeftIcon
-              color={onOpenPreviousMonth ? palette.icon : palette.subtitle}
-              size={20}
-            />
-          </IconCircleButton>
-          <IconCircleButton
-            onPress={onOpenNextMonth}
-            palette={palette}
-            accessibilityLabel={t('month.nav.nextMonth')}
-          >
-            <ChevronRightIcon
-              color={onOpenNextMonth ? palette.icon : palette.subtitle}
-              size={20}
-            />
-          </IconCircleButton>
-          <SettingsGearButton
-            palette={palette}
-            accessibilityLabel={t('year.menu.settings')}
-            onPress={onOpenSettings}
-          />
-        </View>
-      </View>
+      <MonthDetailBody
+        detail={detail}
+        palette={palette}
+        language={language}
+        t={t}
+        weekdayLabels={weekdayLabels}
+        selectedDay={null}
+        onSelectDay={() => {}}
+      />
+    </ScrollView>
+  );
+}
 
+type MonthDetailBodyProps = {
+  detail: ReturnType<typeof buildMonthDetail>;
+  palette: CalendarPalette;
+  language: AppLanguage;
+  t: (key: TranslationKey, params?: LocalizationParams) => string;
+  weekdayLabels: readonly string[];
+  selectedDay: CalendarDay | null;
+  onSelectDay: (date: string) => void;
+};
+
+function MonthDetailBody({
+  detail,
+  palette,
+  language,
+  t,
+  weekdayLabels,
+  selectedDay,
+  onSelectDay,
+}: MonthDetailBodyProps) {
+  return (
+    <>
       <View
         style={[
           styles.headerCard,
@@ -168,7 +424,7 @@ export function MonthDetailScreen({
                   palette={palette}
                   onPress={() => {
                     if (day) {
-                      setSelectedDate(day.date);
+                      onSelectDay(day.date);
                     }
                   }}
                 />
@@ -230,7 +486,7 @@ export function MonthDetailScreen({
           palette={palette}
         />
       </View>
-    </ScrollView>
+    </>
   );
 }
 
@@ -305,18 +561,40 @@ function TotalCard({ label, value, palette }: TotalCardProps) {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  overlayRoot: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  sheet: {
+    flex: 1,
+    borderTopLeftRadius: 22,
+    borderTopRightRadius: 22,
+    overflow: 'hidden',
+  },
+  horizontalScroll: {
     flex: 1,
   },
-  content: {
+  horizontalContent: {
+    flexGrow: 1,
+  },
+  page: {
+    flexGrow: 1,
+  },
+  pageVertical: {
+    flex: 1,
+  },
+  pageVerticalContent: {
     paddingHorizontal: layout.screenPaddingH,
     gap: layout.contentStackGap,
+  },
+  placeholderPage: {
+    flex: 1,
   },
   appBar: {
     flexDirection: 'row',
     alignItems: 'center',
     minHeight: 56,
     gap: 12,
+    paddingHorizontal: layout.screenPaddingH,
   },
   appBarSide: {
     minWidth: 80,

@@ -2,15 +2,17 @@
  * @format
  */
 
+declare function require(moduleName: string): unknown;
+
 import React from 'react';
 import ReactTestRenderer from 'react-test-renderer';
 import App from '../src/app/App';
 import {
-  getMonthCalendar,
   getYearCalendar,
   replaceActiveYear,
   seedBundledYearIfNeeded,
 } from '../src/entities/calendar';
+import { parseValidateAndNormalizeCalendarImport } from '../src/features/calendar-import';
 import { ImportEntryScreen } from '../src/pages/import-entry/ui/ImportEntryScreen';
 import { MonthDetailScreen } from '../src/pages/month/ui/MonthDetailScreen';
 import { SettingsScreen } from '../src/pages/settings/ui/SettingsScreen';
@@ -30,7 +32,6 @@ jest.mock('react-native-safe-area-context', () => {
 
 jest.mock('../src/entities/calendar', () => ({
   ...jest.requireActual('../src/entities/calendar'),
-  getMonthCalendar: jest.fn(),
   getYearCalendar: jest.fn(),
   replaceActiveYear: jest.fn(),
   seedBundledYearIfNeeded: jest.fn(),
@@ -65,13 +66,15 @@ jest.mock('@react-native-documents/picker', () => ({
     ),
 }));
 
-const mockedGetMonthCalendar = jest.mocked(getMonthCalendar);
+const bundledCalendar2026 = parseValidateAndNormalizeCalendarImport(
+  require('../calendar2026.json'),
+);
+
 const mockedReplaceActiveYear = jest.mocked(replaceActiveYear);
 const mockedSeedBundledYearIfNeeded = jest.mocked(seedBundledYearIfNeeded);
 const mockedGetYearCalendar = jest.mocked(getYearCalendar);
 
 beforeEach(() => {
-  mockedGetMonthCalendar.mockReset();
   mockedReplaceActiveYear.mockReset();
   mockedSeedBundledYearIfNeeded.mockReset();
   mockedGetYearCalendar.mockReset();
@@ -119,40 +122,8 @@ test('shows year home when bootstrap succeeds', async () => {
 });
 
 test('opens month detail after the year screen requests a month', async () => {
-  mockedSeedBundledYearIfNeeded.mockResolvedValue({
-    year: 2026,
-    days: [],
-  });
-  mockedGetYearCalendar.mockResolvedValue({
-    year: 2026,
-    days: [],
-  });
-  mockedGetMonthCalendar.mockResolvedValue([
-    {
-      date: '2026-01-01',
-      year: 2026,
-      month: 1,
-      day: 1,
-      weekday: 4,
-      type: 'holiday',
-      holidayNameRu: 'Новый год',
-      holidayNameEn: "New Year's Day",
-      isShortened: false,
-      workHours: 0,
-    },
-    {
-      date: '2026-01-02',
-      year: 2026,
-      month: 1,
-      day: 2,
-      weekday: 5,
-      type: 'workday',
-      holidayNameRu: null,
-      holidayNameEn: null,
-      isShortened: false,
-      workHours: 8,
-    },
-  ]);
+  mockedSeedBundledYearIfNeeded.mockResolvedValue(bundledCalendar2026);
+  mockedGetYearCalendar.mockResolvedValue(bundledCalendar2026);
 
   let renderer: ReactTestRenderer.ReactTestRenderer;
 
@@ -164,54 +135,14 @@ test('opens month detail after the year screen requests a month', async () => {
     await renderer!.root.findByType(YearHomeScreen).props.onOpenMonth(1);
   });
 
-  expect(mockedGetMonthCalendar).toHaveBeenCalledWith(2026, 1);
   expect(JSON.stringify(renderer!.toJSON())).toContain('Month detail');
   expect(JSON.stringify(renderer!.toJSON())).toContain('January');
   expect(JSON.stringify(renderer!.toJSON())).toContain('Working days');
 });
 
 test('switches to the next month from month detail', async () => {
-  mockedSeedBundledYearIfNeeded.mockResolvedValue({
-    year: 2026,
-    days: [],
-  });
-  mockedGetYearCalendar.mockResolvedValue({
-    year: 2026,
-    days: [],
-  });
-  mockedGetMonthCalendar.mockImplementation(async (_year, month) => {
-    if (month === 1) {
-      return [
-        {
-          date: '2026-01-01',
-          year: 2026,
-          month: 1,
-          day: 1,
-          weekday: 4,
-          type: 'holiday',
-          holidayNameRu: 'Новый год',
-          holidayNameEn: "New Year's Day",
-          isShortened: false,
-          workHours: 0,
-        },
-      ];
-    }
-
-    return [
-      {
-        date: '2026-02-01',
-        year: 2026,
-        month: 2,
-        day: 1,
-        weekday: 7,
-        type: 'weekend',
-        holidayNameRu: null,
-        holidayNameEn: null,
-        isShortened: false,
-        workHours: 0,
-      },
-    ];
-  });
+  mockedSeedBundledYearIfNeeded.mockResolvedValue(bundledCalendar2026);
+  mockedGetYearCalendar.mockResolvedValue(bundledCalendar2026);
 
   let renderer: ReactTestRenderer.ReactTestRenderer;
 
@@ -224,11 +155,9 @@ test('switches to the next month from month detail', async () => {
   });
 
   await ReactTestRenderer.act(async () => {
-    await renderer!.root.findByType(MonthDetailScreen).props.onOpenNextMonth();
+    await renderer!.root.findByType(MonthDetailScreen).props.onMonthChange(2);
   });
 
-  expect(mockedGetMonthCalendar).toHaveBeenNthCalledWith(1, 2026, 1);
-  expect(mockedGetMonthCalendar).toHaveBeenNthCalledWith(2, 2026, 2);
   expect(JSON.stringify(renderer!.toJSON())).toContain('February');
 });
 

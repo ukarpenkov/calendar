@@ -12,6 +12,10 @@ export {
   buildMonthDetail,
   type CalendarMonthDetail,
 } from './model/month-detail';
+export {
+  getCalendarDaysForMonth,
+  getUtcDaysInMonth,
+} from './model/month-from-year';
 export type { CalendarMonthWeek } from './model/month-helpers';
 export { buildYearMonthSummaries } from './model/year-summary';
 export type { CalendarDay, CalendarYear, DayType } from './model/types';

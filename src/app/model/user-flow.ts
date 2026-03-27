@@ -1,4 +1,4 @@
-import type { CalendarDay, CalendarYear } from '../../entities/calendar';
+import type { CalendarYear } from '../../entities/calendar';
 
 /**
  * Discriminated union of screens shown after bootstrap (splash / DB ready).
@@ -8,9 +8,8 @@ export type ReadyScreen =
   | { name: 'year' }
   | { name: 'settings' }
   | { name: 'import-entry' }
-  | { name: 'month-loading'; month: number }
   | { name: 'month-error'; month: number }
-  | { name: 'month'; month: number; days: CalendarDay[] };
+  | { name: 'month'; month: number };
 
 export type AppContentStatus =
   | { kind: 'loading' }

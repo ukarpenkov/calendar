@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
-import { StatusBar, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Animated, Easing, StatusBar, StyleSheet, Text, View } from 'react-native';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 
 import {
-  getMonthCalendar,
+  getCalendarDaysForMonth,
   getYearCalendar,
   seedBundledYearIfNeeded,
   type CalendarYear,
@@ -51,6 +51,34 @@ function AppContent() {
   const { palette } = useAppTheme();
   const { t } = useAppLocalization();
   const [status, setStatus] = useState<AppContentStatus>({ kind: 'loading' });
+  const yearUnderlayProgress = useRef(new Animated.Value(0)).current;
+
+  const isMonthOverlayOpen =
+    status.kind === 'ready' && status.screen.name === 'month';
+
+  useEffect(() => {
+    Animated.timing(yearUnderlayProgress, {
+      toValue: isMonthOverlayOpen ? 1 : 0,
+      duration: 340,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    }).start();
+  }, [isMonthOverlayOpen, yearUnderlayProgress]);
+
+  const yearUnderlayStyle = {
+    opacity: yearUnderlayProgress.interpolate({
+      inputRange: [0, 1],
+      outputRange: [1, 0.48],
+    }),
+    transform: [
+      {
+        scale: yearUnderlayProgress.interpolate({
+          inputRange: [0, 1],
+          outputRange: [1, 0.94],
+        }),
+      },
+    ],
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -115,7 +143,7 @@ function AppContent() {
     );
   }
 
-  const openMonth = async (month: number) => {
+  const goToMonth = (month: number) => {
     if (month < 1 || month > 12) {
       return;
     }
@@ -125,45 +153,20 @@ function AppContent() {
         return currentStatus;
       }
 
-      return {
-        ...currentStatus,
-        screen: { name: 'month-loading', month },
-      };
-    });
-
-    try {
-      const monthDays = await getMonthCalendar(status.calendar.year, month);
+      const monthDays = getCalendarDaysForMonth(currentStatus.calendar, month);
 
       if (monthDays.length === 0) {
-        throw new Error('Month data was not found.');
-      }
-
-      setStatus(currentStatus => {
-        if (currentStatus.kind !== 'ready') {
-          return currentStatus;
-        }
-
-        return {
-          ...currentStatus,
-          screen: {
-            name: 'month',
-            month,
-            days: monthDays,
-          },
-        };
-      });
-    } catch {
-      setStatus(currentStatus => {
-        if (currentStatus.kind !== 'ready') {
-          return currentStatus;
-        }
-
         return {
           ...currentStatus,
           screen: { name: 'month-error', month },
         };
-      });
-    }
+      }
+
+      return {
+        ...currentStatus,
+        screen: { name: 'month', month },
+      };
+    });
   };
 
   const closeMonth = () => {
@@ -245,10 +248,6 @@ function AppContent() {
     });
   };
 
-  if (status.screen.name === 'month-loading') {
-    return <SplashScreen />;
-  }
-
   if (status.screen.name === 'month-error') {
     return (
       <View
@@ -281,34 +280,6 @@ function AppContent() {
     );
   }
 
-  if (status.screen.name === 'month') {
-    const currentMonth = status.screen.month;
-
-    return (
-      <MonthDetailScreen
-        year={status.calendar.year}
-        month={currentMonth}
-        days={status.screen.days}
-        onBack={closeMonth}
-        onOpenSettings={openSettings}
-        onOpenPreviousMonth={
-          currentMonth > 1
-            ? () => {
-                openMonth(currentMonth - 1);
-              }
-            : undefined
-        }
-        onOpenNextMonth={
-          currentMonth < 12
-            ? () => {
-                openMonth(currentMonth + 1);
-              }
-            : undefined
-        }
-      />
-    );
-  }
-
   if (status.screen.name === 'settings') {
     return (
       <SettingsScreen
@@ -330,15 +301,31 @@ function AppContent() {
   }
 
   return (
-    <YearHomeScreen
-      calendar={status.calendar}
-      onOpenMonth={openMonth}
-      onOpenSettings={openSettings}
-    />
+    <View style={styles.layerStack}>
+      <Animated.View style={[{ flex: 1 }, yearUnderlayStyle]}>
+        <YearHomeScreen
+          calendar={status.calendar}
+          onOpenMonth={goToMonth}
+          onOpenSettings={openSettings}
+        />
+      </Animated.View>
+      {status.screen.name === 'month' ? (
+        <MonthDetailScreen
+          calendar={status.calendar}
+          month={status.screen.month}
+          onBack={closeMonth}
+          onOpenSettings={openSettings}
+          onMonthChange={goToMonth}
+        />
+      ) : null}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  layerStack: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
