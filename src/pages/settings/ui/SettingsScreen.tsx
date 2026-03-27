@@ -4,9 +4,16 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
+import {
+  openWorkingCalendarTelegram,
+  WORKING_CALENDAR_TELEGRAM_PATH,
+} from '../../../features/year-end-reminder';
 import { getLanguageLabel, getThemeModeLabel } from '../../../shared/lib/i18n';
 import { layout } from '../../../shared/lib/ui/layout';
-import { ArrowBackIcon } from '../../../shared/ui/icons/NavigationIcons';
+import {
+  ArrowBackIcon,
+  TelegramIcon,
+} from '../../../shared/ui/icons/NavigationIcons';
 import { IconCircleButton } from '../../../shared/ui/IconCircleButton';
 import { LanguageSwitch } from '../../../shared/ui/LanguageSwitch';
 import { ThemeSwitch } from '../../../shared/ui/ThemeSwitch';
@@ -158,6 +165,14 @@ export function SettingsScreen({
             value={getLanguageLabel(language, language)}
             palette={palette}
           />
+          <AboutLinkLine
+            label={t('settings.about.telegram')}
+            value={WORKING_CALENDAR_TELEGRAM_PATH}
+            palette={palette}
+            onPress={() => {
+              void openWorkingCalendarTelegram();
+            }}
+          />
         </View>
       </SectionCard>
     </ScrollView>
@@ -259,6 +274,31 @@ function AboutLine({ label, value, palette }: AboutLineProps) {
   );
 }
 
+type AboutLinkLineProps = AboutLineProps & {
+  onPress: () => void;
+};
+
+function AboutLinkLine({ label, value, palette, onPress }: AboutLinkLineProps) {
+  return (
+    <View style={styles.aboutLine}>
+      <Text style={[styles.aboutLabel, { color: palette.subtitle }]}>{label}</Text>
+      <Pressable
+        accessibilityRole="link"
+        onPress={onPress}
+        style={({ pressed }) => [
+          styles.aboutLinkPressable,
+          { opacity: pressed ? 0.88 : 1 },
+        ]}
+      >
+        <TelegramIcon color={palette.selectedBorder} size={16} />
+        <Text style={[styles.aboutLinkValue, { color: palette.selectedBorder }]}>
+          {value}
+        </Text>
+      </Pressable>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -352,5 +392,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     textAlign: 'right',
+  },
+  aboutLinkPressable: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  aboutLinkValue: {
+    fontSize: 14,
+    fontWeight: '700',
   },
 });

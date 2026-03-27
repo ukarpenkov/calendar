@@ -44,7 +44,9 @@ jest.mock('../src/shared/lib/i18n', () => ({
 
 jest.mock('../src/shared/lib/settings', () => ({
   getStoredLanguage: jest.fn().mockResolvedValue(null),
+  getStoredTheme: jest.fn().mockResolvedValue(null),
   setStoredLanguage: jest.fn().mockResolvedValue(undefined),
+  setStoredTheme: jest.fn().mockResolvedValue(undefined),
 }));
 
 jest.mock('@react-native-documents/picker', () => ({
@@ -203,6 +205,60 @@ test('opens dedicated JSON import entry from settings', async () => {
   expect(JSON.stringify(renderer!.toJSON())).toContain(
     'Load a calendar year from a JSON file',
   );
+});
+
+test('shows Telegram link in the settings about section', async () => {
+  mockedSeedBundledYearIfNeeded.mockResolvedValue({
+    year: 2026,
+    days: [],
+  });
+  mockedGetYearCalendar.mockResolvedValue({
+    year: 2026,
+    days: [],
+  });
+
+  let renderer: ReactTestRenderer.ReactTestRenderer;
+
+  await ReactTestRenderer.act(async () => {
+    renderer = ReactTestRenderer.create(<App />);
+  });
+
+  await ReactTestRenderer.act(async () => {
+    renderer!.root.findByType(YearHomeScreen).props.onOpenSettings();
+  });
+
+  expect(JSON.stringify(renderer!.toJSON())).toContain('t.me/workingcalendar');
+});
+
+test('shows year-end reminder with Telegram link late in the active year', async () => {
+  jest.useFakeTimers();
+  jest.setSystemTime(new Date('2026-11-15T12:00:00.000Z'));
+
+  mockedSeedBundledYearIfNeeded.mockResolvedValue({
+    year: 2026,
+    days: [],
+  });
+  mockedGetYearCalendar.mockResolvedValue({
+    year: 2026,
+    days: [],
+  });
+
+  let renderer: ReactTestRenderer.ReactTestRenderer;
+
+  try {
+    await ReactTestRenderer.act(async () => {
+      renderer = ReactTestRenderer.create(<App />);
+    });
+
+    expect(JSON.stringify(renderer!.toJSON())).toContain(
+      'Next year JSON template',
+    );
+    expect(JSON.stringify(renderer!.toJSON())).toContain(
+      't.me/workingcalendar',
+    );
+  } finally {
+    jest.useRealTimers();
+  }
 });
 
 test('returns to year overview with the imported calendar after success', async () => {

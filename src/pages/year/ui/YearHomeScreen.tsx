@@ -2,6 +2,12 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
+  openWorkingCalendarTelegram,
+  shouldShowYearEndReminder,
+  WORKING_CALENDAR_TELEGRAM_PATH,
+  YearEndReminderCard,
+} from '../../../features/year-end-reminder';
+import {
   buildYearMonthSummaries,
   type CalendarDay,
   type CalendarYear,
@@ -33,6 +39,8 @@ export function YearHomeScreen({
   const { language, t } = useAppLocalization();
   const monthSummaries = buildYearMonthSummaries(calendar, language);
   const weekdayLabels = getCompactWeekdayLabels(language);
+  const showYearEndReminder = shouldShowYearEndReminder(calendar.year);
+
   return (
     <ScrollView
       style={[
@@ -70,6 +78,19 @@ export function YearHomeScreen({
           {t('year.header.subtitle')}
         </Text>
       </View>
+
+      {showYearEndReminder ? (
+        <YearEndReminderCard
+          palette={palette}
+          title={t('year.reminder.title')}
+          body={t('year.reminder.body', { year: calendar.year + 1 })}
+          actionLabel={t('year.reminder.action')}
+          linkLabel={WORKING_CALENDAR_TELEGRAM_PATH}
+          onPress={() => {
+            void openWorkingCalendarTelegram();
+          }}
+        />
+      ) : null}
 
       <View
         style={[
