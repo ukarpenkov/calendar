@@ -14,6 +14,23 @@ import {
 
 const bundledCalendar = require('../calendar2026.json');
 
+function isoWeekendDatesForYear(year: number): string[] {
+  const dates: string[] = [];
+  const startUtc = Date.UTC(year, 0, 1);
+  const endUtc = Date.UTC(year + 1, 0, 1);
+
+  for (let timestamp = startUtc; timestamp < endUtc; timestamp += 24 * 60 * 60 * 1000) {
+    const current = new Date(timestamp);
+    const weekday = current.getUTCDay();
+
+    if (weekday === 0 || weekday === 6) {
+      dates.push(current.toISOString().slice(0, 10));
+    }
+  }
+
+  return dates;
+}
+
 function expectValidationError(callback: () => unknown) {
   try {
     callback();
@@ -132,6 +149,51 @@ describe('calendar import pipeline', () => {
         expect.objectContaining({
           code: 'DUPLICATE_DATE',
           path: 'preholidays[1]',
+        }),
+      ]),
+    );
+  });
+
+  it('normalizes a leap year to 366 days', () => {
+    const calendar = parseValidateAndNormalizeCalendarImport({
+      year: 2024,
+      holidays: [],
+      weekends: isoWeekendDatesForYear(2024),
+      preholidays: [],
+    });
+
+    expect(calendar.year).toBe(2024);
+    expect(calendar.days).toHaveLength(366);
+    expect(calendar.days[59]?.date).toBe('2024-02-29');
+    expect(calendar.days[59]?.type).toBe('workday');
+  });
+
+  it('rejects non-object JSON roots before field validation', () => {
+    const error = expectValidationError(() => validateCalendarImportData(null));
+
+    expect(error.issues).toEqual([
+      expect.objectContaining({
+        code: 'INVALID_ROOT',
+        path: 'root',
+      }),
+    ]);
+  });
+
+  it('rejects invalid year values with a clear issue', () => {
+    const error = expectValidationError(() =>
+      validateCalendarImportData({
+        year: 1800,
+        holidays: [],
+        weekends: [],
+        preholidays: [],
+      }),
+    );
+
+    expect(error.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'INVALID_YEAR',
+          path: 'year',
         }),
       ]),
     );

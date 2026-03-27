@@ -172,6 +172,65 @@ test('shows error state when bootstrap fails', async () => {
   );
 });
 
+test('retries bootstrap from the error screen', async () => {
+  mockedSeedBundledYearIfNeeded
+    .mockRejectedValueOnce(new Error('db failed'))
+    .mockResolvedValueOnce({
+      year: 2026,
+      days: [],
+    });
+  mockedGetYearCalendar.mockResolvedValue({
+    year: 2026,
+    days: [],
+  });
+
+  let renderer: ReactTestRenderer.ReactTestRenderer;
+
+  await ReactTestRenderer.act(async () => {
+    renderer = ReactTestRenderer.create(<App />);
+  });
+
+  expect(JSON.stringify(renderer!.toJSON())).toContain(
+    'Failed to initialize local calendar data.',
+  );
+
+  await ReactTestRenderer.act(async () => {
+    renderer!.root.findByProps({ testID: 'app-bootstrap-retry' }).props.onPress();
+  });
+
+  expect(JSON.stringify(renderer!.toJSON())).toContain('Year 2026');
+});
+
+test('shows month error when stored days do not match the calendar month', async () => {
+  const corruptCalendar = {
+    ...bundledCalendar2026,
+    days: bundledCalendar2026.days.filter(day => day.date !== '2026-02-28'),
+  };
+
+  mockedSeedBundledYearIfNeeded.mockResolvedValue(corruptCalendar);
+  mockedGetYearCalendar.mockResolvedValue(corruptCalendar);
+
+  let renderer: ReactTestRenderer.ReactTestRenderer;
+
+  await ReactTestRenderer.act(async () => {
+    renderer = ReactTestRenderer.create(<App />);
+  });
+
+  await ReactTestRenderer.act(async () => {
+    await renderer!.root.findByType(YearHomeScreen).props.onOpenMonth(2);
+  });
+
+  expect(JSON.stringify(renderer!.toJSON())).toContain(
+    'Failed to open the selected month.',
+  );
+
+  await ReactTestRenderer.act(async () => {
+    renderer!.root.findByProps({ testID: 'app-month-error-back' }).props.onPress();
+  });
+
+  expect(JSON.stringify(renderer!.toJSON())).toContain('Year 2026');
+});
+
 test('opens dedicated JSON import entry from settings', async () => {
   mockedSeedBundledYearIfNeeded.mockResolvedValue({
     year: 2026,

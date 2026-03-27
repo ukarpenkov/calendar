@@ -56,7 +56,9 @@ const translations = {
     'common.navigateBack': 'Go back',
     'common.cancel': 'Cancel',
     'app.error.bootstrapTitle': 'Failed to initialize local calendar data.',
-    'app.error.bootstrapSubtitle': 'Fix the storage error and relaunch the app.',
+    'app.error.bootstrapSubtitle':
+      'Check device storage, then try again. You can also relaunch the app.',
+    'app.error.bootstrapRetry': 'Try again',
     'app.error.monthTitle': 'Failed to open the selected month.',
     'app.error.monthSubtitle': 'Return to the year overview and try again.',
     'splash.loadingTitle': 'Loading your offline year view',
@@ -208,7 +210,9 @@ const translations = {
     'common.navigateBack': 'Назад',
     'common.cancel': 'Отмена',
     'app.error.bootstrapTitle': 'Не удалось инициализировать локальные данные календаря.',
-    'app.error.bootstrapSubtitle': 'Исправьте ошибку хранилища и перезапустите приложение.',
+    'app.error.bootstrapSubtitle':
+      'Проверьте память устройства и нажмите «Повторить». При необходимости перезапустите приложение.',
+    'app.error.bootstrapRetry': 'Повторить',
     'app.error.monthTitle': 'Не удалось открыть выбранный месяц.',
     'app.error.monthSubtitle':
       'Вернитесь к годовому обзору и попробуйте снова.',

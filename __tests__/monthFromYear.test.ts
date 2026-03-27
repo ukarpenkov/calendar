@@ -37,4 +37,16 @@ describe('getCalendarDaysForMonth', () => {
     expect(getCalendarDaysForMonth(calendar, 0)).toEqual([]);
     expect(getCalendarDaysForMonth(calendar, 13)).toEqual([]);
   });
+
+  it('returns empty when a month contains the wrong number of day rows', () => {
+    const februaryFirst = calendar.days.find(day => day.date === '2026-02-01');
+    expect(februaryFirst).toBeDefined();
+
+    const corruptedYear = {
+      year: calendar.year,
+      days: [...calendar.days, februaryFirst!],
+    };
+
+    expect(getCalendarDaysForMonth(corruptedYear, 2)).toEqual([]);
+  });
 });

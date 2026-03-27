@@ -1,5 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { Animated, Easing, StatusBar, StyleSheet, Text, View } from 'react-native';
+import {
+  Animated,
+  Easing,
+  Pressable,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -51,6 +59,7 @@ function AppContent() {
   const { palette } = useAppTheme();
   const { t } = useAppLocalization();
   const [status, setStatus] = useState<AppContentStatus>({ kind: 'loading' });
+  const [bootstrapGeneration, setBootstrapGeneration] = useState(0);
   const yearUnderlayProgress = useRef(new Animated.Value(0)).current;
 
   const isMonthOverlayOpen =
@@ -111,7 +120,12 @@ function AppContent() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [bootstrapGeneration]);
+
+  const retryBootstrap = () => {
+    setStatus({ kind: 'loading' });
+    setBootstrapGeneration(generation => generation + 1);
+  };
 
   if (status.kind === 'loading') {
     return <SplashScreen />;
@@ -138,6 +152,23 @@ function AppContent() {
           <Text style={[styles.subtitle, { color: palette.subtitle }]}>
             {t('app.error.bootstrapSubtitle')}
           </Text>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('app.error.bootstrapRetry')}
+            testID="app-bootstrap-retry"
+            onPress={retryBootstrap}
+            style={({ pressed }) => [
+              styles.errorPrimaryAction,
+              {
+                backgroundColor: palette.selectedBorder,
+                opacity: pressed ? 0.9 : 1,
+              },
+            ]}
+          >
+            <Text style={styles.errorPrimaryActionText}>
+              {t('app.error.bootstrapRetry')}
+            </Text>
+          </Pressable>
         </View>
       </View>
     );
@@ -269,12 +300,20 @@ function AppContent() {
           <Text style={[styles.subtitle, { color: palette.subtitle }]}>
             {t('app.error.monthSubtitle')}
           </Text>
-          <Text
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('common.backToYear')}
+            testID="app-month-error-back"
             onPress={closeMonth}
-            style={[styles.errorAction, { color: palette.title }]}
+            style={({ pressed }) => [
+              styles.errorSecondaryAction,
+              { opacity: pressed ? 0.75 : 1 },
+            ]}
           >
-            {t('common.backToYear')}
-          </Text>
+            <Text style={[styles.errorAction, { color: palette.title }]}>
+              {t('common.backToYear')}
+            </Text>
+          </Pressable>
         </View>
       </View>
     );
@@ -356,10 +395,27 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   errorAction: {
-    marginTop: 16,
     fontSize: 15,
     fontWeight: '700',
     textAlign: 'center',
+  },
+  errorPrimaryAction: {
+    marginTop: 20,
+    minHeight: 46,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  errorPrimaryActionText: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  errorSecondaryAction: {
+    marginTop: 16,
+    minHeight: 44,
+    justifyContent: 'center',
   },
 });
 
