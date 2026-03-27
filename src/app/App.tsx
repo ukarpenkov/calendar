@@ -1,14 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import {
-  Animated,
-  BackHandler,
-  Easing,
-  Pressable,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { useEffect, useState } from 'react';
+import { BackHandler, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -61,19 +52,6 @@ function AppContent() {
   const { t } = useAppLocalization();
   const [status, setStatus] = useState<AppContentStatus>({ kind: 'loading' });
   const [bootstrapGeneration, setBootstrapGeneration] = useState(0);
-  const yearUnderlayProgress = useRef(new Animated.Value(0)).current;
-
-  const isMonthOverlayOpen =
-    status.kind === 'ready' && status.screen.name === 'month';
-
-  useEffect(() => {
-    Animated.timing(yearUnderlayProgress, {
-      toValue: isMonthOverlayOpen ? 1 : 0,
-      duration: 340,
-      easing: Easing.out(Easing.cubic),
-      useNativeDriver: true,
-    }).start();
-  }, [isMonthOverlayOpen, yearUnderlayProgress]);
 
   useEffect(() => {
     const onBackPress = () => {
@@ -111,21 +89,6 @@ function AppContent() {
     const sub = BackHandler.addEventListener('hardwareBackPress', onBackPress);
     return () => sub.remove();
   }, [status]);
-
-  const yearUnderlayStyle = {
-    opacity: yearUnderlayProgress.interpolate({
-      inputRange: [0, 1],
-      outputRange: [1, 0.48],
-    }),
-    transform: [
-      {
-        scale: yearUnderlayProgress.interpolate({
-          inputRange: [0, 1],
-          outputRange: [1, 0.94],
-        }),
-      },
-    ],
-  };
 
   useEffect(() => {
     let isMounted = true;
@@ -379,13 +342,13 @@ function AppContent() {
 
   return (
     <View style={styles.layerStack}>
-      <Animated.View style={[{ flex: 1 }, yearUnderlayStyle]}>
+      <View style={styles.yearLayer}>
         <YearHomeScreen
           calendar={status.calendar}
           onOpenMonth={goToMonth}
           onOpenSettings={openSettings}
         />
-      </Animated.View>
+      </View>
       {status.screen.name === 'month' ? (
         <MonthDetailScreen
           calendar={status.calendar}
@@ -401,6 +364,9 @@ function AppContent() {
 
 const styles = StyleSheet.create({
   layerStack: {
+    flex: 1,
+  },
+  yearLayer: {
     flex: 1,
   },
   container: {

@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Animated,
-  Easing,
   NativeSyntheticEvent,
   Pressable,
   ScrollView,
@@ -54,46 +52,15 @@ export function MonthDetailScreen({
   onMonthChange,
 }: MonthDetailScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
-  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+  const { width: windowWidth } = useWindowDimensions();
   const { palette } = useAppTheme();
   const { language, t } = useAppLocalization();
   const weekdayLabels = getShortWeekdayLabels(language);
 
-  const sheetTranslateY = useRef(
-    new Animated.Value(Math.max(windowHeight, 1)),
-  ).current;
   const horizontalRef = useRef<ScrollView>(null);
   const [pagerReady, setPagerReady] = useState(false);
-  const entryAnimationStartedRef = useRef(false);
 
   const pageWidth = windowWidth;
-
-  useEffect(() => {
-    if (entryAnimationStartedRef.current || windowHeight < 1) {
-      return;
-    }
-    entryAnimationStartedRef.current = true;
-    sheetTranslateY.setValue(windowHeight);
-    Animated.timing(sheetTranslateY, {
-      toValue: 0,
-      duration: 360,
-      easing: Easing.out(Easing.cubic),
-      useNativeDriver: true,
-    }).start();
-  }, [sheetTranslateY, windowHeight]);
-
-  const runClose = useCallback(() => {
-    Animated.timing(sheetTranslateY, {
-      toValue: Math.max(windowHeight, 1),
-      duration: 300,
-      easing: Easing.in(Easing.cubic),
-      useNativeDriver: true,
-    }).start(({ finished }) => {
-      if (finished) {
-        onBack();
-      }
-    });
-  }, [onBack, sheetTranslateY, windowHeight]);
 
   const prevMonth = month > 1 ? month - 1 : null;
   const nextMonth = month < 12 ? month + 1 : null;
@@ -164,20 +131,19 @@ export function MonthDetailScreen({
 
   return (
     <View style={styles.overlayRoot} pointerEvents="box-none">
-      <Animated.View
+      <View
         style={[
           styles.sheet,
           {
             backgroundColor: palette.background,
             paddingTop: safeAreaInsets.top + layout.safeAreaTopExtra,
-            transform: [{ translateY: sheetTranslateY }],
           },
         ]}
       >
         <View style={styles.appBar}>
           <View style={[styles.appBarSide, styles.appBarSideStart]}>
             <IconCircleButton
-              onPress={runClose}
+              onPress={onBack}
               palette={palette}
               accessibilityLabel={t('common.backToYear')}
             >
@@ -283,7 +249,7 @@ export function MonthDetailScreen({
             />
           </View>
         </ScrollView>
-      </Animated.View>
+      </View>
     </View>
   );
 }
