@@ -28,17 +28,27 @@ export function AppLogo({
 }: AppLogoProps) {
   const { width } = SIZE_PRESETS[size];
   const platePad = withPlate ? Math.round(10 * (width / 124)) : 0;
+  const cornerRadius = Math.max(4, Math.round(width * 0.2));
 
   const image = (
-    <Image
-      accessibilityIgnoresInvertColors
-      accessibilityLabel={accessibilityLabel}
-      accessibilityRole="image"
-      importantForAccessibility="yes"
-      source={LOGO_SOURCE}
-      style={{ width, height: width }}
-      resizeMode="contain"
-    />
+    <View
+      style={{
+        width,
+        height: width,
+        borderRadius: cornerRadius,
+        overflow: 'hidden',
+      }}
+    >
+      <Image
+        accessibilityIgnoresInvertColors
+        accessibilityLabel={accessibilityLabel}
+        accessibilityRole="image"
+        importantForAccessibility="yes"
+        source={LOGO_SOURCE}
+        style={{ width, height: width }}
+        resizeMode="contain"
+      />
+    </View>
   );
 
   if (!withPlate) {

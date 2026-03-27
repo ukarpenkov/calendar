@@ -9,13 +9,15 @@ export function SplashScreen() {
   const safeAreaInsets = useSafeAreaInsets();
   const { isDarkMode, palette } = useAppTheme();
   const { t } = useAppLocalization();
+  const splashBackground = isDarkMode ? palette.background : '#FFFFFF';
+  const spinnerColor = isDarkMode ? '#FFFFFF' : palette.subtitle;
 
   return (
     <View
       style={[
         styles.container,
         {
-          backgroundColor: palette.background,
+          backgroundColor: splashBackground,
           paddingTop: safeAreaInsets.top + 32,
           paddingBottom: safeAreaInsets.bottom + 32,
         },
@@ -32,7 +34,7 @@ export function SplashScreen() {
       </View>
 
       <View style={styles.footer}>
-        <ActivityIndicator size="small" color={palette.selectedBorder} />
+        <ActivityIndicator size="small" color={spinnerColor} />
         <Text style={[styles.footerText, { color: palette.subtitle }]}>
           {t('splash.loadingSubtitle')}
         </Text>

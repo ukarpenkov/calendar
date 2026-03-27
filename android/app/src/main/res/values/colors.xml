@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Adaptive launcher background: matches mint plate in raster launcher art. -->
-    <color name="ic_launcher_background">#8CC9BA</color>
+    <!-- Adaptive launcher + cold start splash plate (solid white). -->
+    <color name="ic_launcher_background">#FFFFFF</color>
 </resources>

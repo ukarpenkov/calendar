@@ -1,4 +1,6 @@
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
+
+import { SettingsGearIcon } from './icons/SettingsGearIcon';
 
 type SettingsGearButtonPalette = {
   border: string;
@@ -31,7 +33,7 @@ export function SettingsGearButton({
         },
       ]}
     >
-      <Text style={[styles.icon, { color: palette.icon }]}>⚙</Text>
+      <SettingsGearIcon color={palette.icon} size={20} />
     </Pressable>
   );
 }
@@ -44,11 +46,5 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  icon: {
-    fontSize: 18,
-    lineHeight: 20,
-    fontWeight: '600',
-    textAlign: 'center',
   },
 });
