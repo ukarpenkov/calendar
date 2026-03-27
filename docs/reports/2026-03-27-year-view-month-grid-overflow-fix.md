@@ -1,15 +1,15 @@
-# Year view: month mini-grid overflow on device
+# Отчёт: переполнение мини-сетки месяца в годовом виде на устройстве
 
-## What changed
+## Что изменено
 
-- In `src/pages/year/ui/YearHomeScreen.tsx`, the month card calendar used fixed pixel widths for the week-number column and seven day cells (~170px total plus gaps), while each card is only `width: '47%'` of the scroll content with horizontal padding—so the usable inner width on real phones was often **smaller** than the fixed grid.
-- Replaced that layout with a **flex row**: fixed `weekNumberColumn` (22px) plus a `flex: 1` strip of seven equal `dayColumn` / `dayColumnHeader` slots (`minWidth: 0` so flex children can shrink on Android).
-- Day cells and empty placeholders use `alignSelf: 'stretch'` and no fixed width so they always match their column; weekday headers stay centered in the same column widths.
+- В `src/pages/year/ui/YearHomeScreen.tsx` у мини-календаря в карточке месяца были заданы фиксированные ширины для колонки номера недели и семи ячеек дня (~170px плюс зазоры), при том что сама карточка — `width: '47%'` от контента скролла с горизонтальным padding; на реальных телефонах доступная внутренняя ширина часто **меньше**, чем эта сетка.
+- Вместо этого — **flex-ряд**: фиксированная `weekNumberColumn` (22px) и полоса из семи равных колонок `dayColumn` / `dayColumnHeader` с `flex: 1` и `minWidth: 0`, чтобы дочерние flex-элементы могли сжиматься на Android.
+- Ячейки дня и пустые заглушки с `alignSelf: 'stretch'` без фиксированной ширины всегда совпадают с колонкой; заголовки дней недели центрируются в тех же ширинах колонок.
 
-## What was verified
+## Что проверено
 
-- `npx tsc --noEmit` passes.
+- `npx tsc --noEmit` без ошибок.
 
-## Follow-up
+## Дальнейшие шаги
 
-- Re-check on the same physical device after a release/debug build; if any locale uses wider weekday glyphs, typography can be tuned without changing the flex model.
+- После сборки снова проверить на том же физическом устройстве; если в какой-то локали глифы дней шире, типографику можно подстроить без смены flex-модели.

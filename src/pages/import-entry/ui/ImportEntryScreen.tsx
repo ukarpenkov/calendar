@@ -19,6 +19,7 @@ import {
   pickAndPrepareCalendarImport,
   type PreparedCalendarImport,
 } from '../../../features/calendar-import';
+import { layout } from '../../../shared/lib/ui/layout';
 
 type ImportEntryScreenProps = {
   activeYear: number;
@@ -212,13 +213,13 @@ export function ImportEntryScreen({
         styles.container,
         {
           backgroundColor: palette.background,
-          paddingTop: safeAreaInsets.top + 12,
+          paddingTop: safeAreaInsets.top + layout.safeAreaTopExtra,
         },
       ]}
       contentContainerStyle={[
         styles.content,
         {
-          paddingBottom: safeAreaInsets.bottom + 80,
+          paddingBottom: safeAreaInsets.bottom + layout.settingsScrollBottom,
         },
       ]}
     >
@@ -226,7 +227,14 @@ export function ImportEntryScreen({
         <Pressable
           accessibilityRole="button"
           onPress={onBack}
-          style={[styles.backButton, { borderColor: palette.border }]}
+          style={({ pressed }) => [
+            styles.backButton,
+            {
+              borderColor: palette.border,
+              backgroundColor: palette.surface,
+              opacity: pressed ? 0.88 : 1,
+            },
+          ]}
         >
           <Text style={[styles.backButtonText, { color: palette.icon }]}>{'<'}</Text>
         </Pressable>
@@ -462,12 +470,12 @@ function ActionButton({
       accessibilityRole="button"
       onPress={onPress}
       disabled={disabled}
-      style={[
+      style={({ pressed }) => [
         styles.actionButton,
         {
           backgroundColor,
+          opacity: disabled ? 0.7 : pressed ? 0.9 : 1,
         },
-        disabled ? styles.actionButtonDisabled : null,
       ]}
     >
       {isBusy ? (
@@ -501,8 +509,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingHorizontal: 16,
-    gap: 16,
+    paddingHorizontal: layout.screenPaddingH,
+    gap: layout.contentStackGap,
   },
   appBar: {
     flexDirection: 'row',
@@ -533,7 +541,7 @@ const styles = StyleSheet.create({
   },
   heroCard: {
     borderWidth: 1,
-    borderRadius: 24,
+    borderRadius: 20,
     padding: 20,
     gap: 10,
   },
@@ -541,7 +549,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '700',
     textTransform: 'uppercase',
-    letterSpacing: 1,
+    letterSpacing: 0.8,
   },
   heroTitle: {
     fontSize: 24,
@@ -596,9 +604,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 16,
-  },
-  actionButtonDisabled: {
-    opacity: 0.7,
   },
   actionButtonText: {
     color: '#FFFFFF',

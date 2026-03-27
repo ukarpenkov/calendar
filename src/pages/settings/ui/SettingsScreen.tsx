@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
 import { getLanguageLabel, getThemeModeLabel } from '../../../shared/lib/i18n';
+import { layout } from '../../../shared/lib/ui/layout';
 import { LanguageSwitch } from '../../../shared/ui/LanguageSwitch';
 import { ThemeSwitch } from '../../../shared/ui/ThemeSwitch';
 
@@ -29,13 +30,13 @@ export function SettingsScreen({
         styles.container,
         {
           backgroundColor: palette.background,
-          paddingTop: safeAreaInsets.top + 12,
+          paddingTop: safeAreaInsets.top + layout.safeAreaTopExtra,
         },
       ]}
       contentContainerStyle={[
         styles.content,
         {
-          paddingBottom: safeAreaInsets.bottom + 80,
+          paddingBottom: safeAreaInsets.bottom + layout.settingsScrollBottom,
         },
       ]}
     >
@@ -43,7 +44,14 @@ export function SettingsScreen({
         <Pressable
           accessibilityRole="button"
           onPress={onBack}
-          style={[styles.iconButton, { borderColor: palette.border }]}
+          style={({ pressed }) => [
+            styles.iconButton,
+            {
+              borderColor: palette.border,
+              backgroundColor: palette.surface,
+              opacity: pressed ? 0.88 : 1,
+            },
+          ]}
         >
           <Text style={[styles.iconButtonText, { color: palette.icon }]}>{'<'}</Text>
         </Pressable>
@@ -217,7 +225,14 @@ function SettingRow({
 
   if (onPress) {
     return (
-      <Pressable accessibilityRole="button" onPress={onPress} style={styles.rowPressable}>
+      <Pressable
+        accessibilityRole="button"
+        onPress={onPress}
+        style={({ pressed }) => [
+          styles.rowPressable,
+          { opacity: pressed ? 0.88 : 1 },
+        ]}
+      >
         {content}
       </Pressable>
     );
@@ -254,8 +269,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingHorizontal: 16,
-    gap: 16,
+    paddingHorizontal: layout.screenPaddingH,
+    gap: layout.contentStackGap,
   },
   appBar: {
     flexDirection: 'row',

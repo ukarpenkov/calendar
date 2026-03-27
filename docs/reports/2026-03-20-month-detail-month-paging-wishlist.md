@@ -1,24 +1,24 @@
-# Report: Month Detail Month Paging Wishlist
+# Отчёт: переключение месяцев на экране «Месяц» (отложенные идеи)
 
-Date: `2026-03-20`
+Дата: `2026-03-20`
 
-Related plan context: `docs/GLOBAL-DEVELOPMENT-PLAN.md`
+Контекст плана: `docs/GLOBAL-DEVELOPMENT-PLAN.md`
 
-## What changed
+## Что изменено
 
-- Added previous and next month navigation to `src/pages/month/ui/MonthDetailScreen.tsx`.
-- Wired adjacent month loading through the existing SQLite-backed `getMonthCalendar` flow in `src/app/App.tsx`.
-- Updated the month detail test coverage in `__tests__/App.test.tsx` for in-screen month switching.
-- Added a `Wishlist` section in the month-detail planning and reporting docs.
-- Updated `pencil-new.pen` month detail designs to show adjacent month navigation controls.
+- Добавлена навигация на предыдущий и следующий месяц в `src/pages/month/ui/MonthDetailScreen.tsx`.
+- Загрузка соседних месяцев подключена через существующий поток `getMonthCalendar` с SQLite в `src/app/App.tsx`.
+- Обновлено покрытие тестами экрана месяца в `__tests__/App.test.tsx` для переключения месяца внутри экрана.
+- В документации по планированию и отчётам для экрана месяца добавлен раздел с отложенными идеями (wishlist).
+- В `pencil-new.pen` обновлены макеты экрана месяца: видны контролы навигации на соседние месяцы.
 
-## What was verified
+## Что проверено
 
 - `npm test -- --runInBand __tests__/App.test.tsx __tests__/monthDetail.test.ts`
-- IDE diagnostics for the edited files
-- Visual check of the updated month detail design in `pencil-new.pen`
+- Диагностика IDE по изменённым файлам
+- Визуальная проверка обновлённого макета month detail в `pencil-new.pen`
 
-## Follow-up
+## Дальнейшие шаги
 
-- Consider replacing tap-only navigation with swipe gestures if the month detail interaction still feels too heavy.
-- Revisit the final iconography once the app switches to the shared `@rneui/themed` component set.
+- При необходимости заменить только тапы на свайпы, если взаимодействие с экраном месяца всё ещё ощущается тяжёлым.
+- Вернуться к финальной иконографии, когда приложение перейдёт на общий набор компонентов `@rneui/themed`.

@@ -12,6 +12,7 @@ import {
 import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
 import { getShortWeekdayLabels } from '../../../shared/lib/i18n';
+import { layout } from '../../../shared/lib/ui/layout';
 import { SettingsGearButton } from '../../../shared/ui/SettingsGearButton';
 
 type MonthDetailScreenProps = {
@@ -56,13 +57,13 @@ export function MonthDetailScreen({
         styles.container,
         {
           backgroundColor: palette.background,
-          paddingTop: safeAreaInsets.top + 12,
+          paddingTop: safeAreaInsets.top + layout.safeAreaTopExtra,
         },
       ]}
       contentContainerStyle={[
         styles.content,
         {
-          paddingBottom: safeAreaInsets.bottom + 72,
+          paddingBottom: safeAreaInsets.bottom + layout.yearMonthScrollBottom,
         },
       ]}
     >
@@ -70,7 +71,14 @@ export function MonthDetailScreen({
         <View style={[styles.appBarSide, styles.appBarSideStart]}>
           <Pressable
             onPress={onBack}
-            style={[styles.iconButton, { borderColor: palette.border }]}
+            style={({ pressed }) => [
+              styles.iconButton,
+              {
+                borderColor: palette.border,
+                backgroundColor: palette.surface,
+                opacity: pressed ? 0.88 : 1,
+              },
+            ]}
           >
             <Text style={[styles.iconButtonText, { color: palette.icon }]}>
               {'<'}
@@ -235,12 +243,12 @@ function MonthNavigationButton({
     <Pressable
       disabled={isDisabled}
       onPress={onPress}
-      style={[
+      style={({ pressed }) => [
         styles.iconButton,
-        isDisabled ? styles.iconButtonDisabled : null,
         {
           borderColor: palette.border,
           backgroundColor: isDisabled ? palette.surfaceMuted : palette.surface,
+          opacity: isDisabled ? 0.45 : pressed ? 0.88 : 1,
         },
       ]}
     >
@@ -278,13 +286,14 @@ function MonthDetailDayCell({
   return (
     <Pressable
       onPress={onPress}
-      style={[
+      style={({ pressed }) => [
         styles.dayCell,
         {
           backgroundColor: isSelected
             ? palette.selectedFill
             : colors.backgroundColor,
           borderColor: isSelected ? palette.selectedBorder : colors.borderColor,
+          opacity: pressed ? 0.9 : 1,
         },
       ]}
     >
@@ -330,8 +339,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingHorizontal: 16,
-    gap: 16,
+    paddingHorizontal: layout.screenPaddingH,
+    gap: layout.contentStackGap,
   },
   appBar: {
     flexDirection: 'row',
@@ -361,9 +370,6 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  iconButtonDisabled: {
-    opacity: 0.45,
   },
   iconButtonText: {
     fontSize: 18,

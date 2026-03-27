@@ -51,7 +51,11 @@ export function LanguageSwitch({
             key={language}
             accessibilityRole="button"
             onPress={() => onSelectLanguage(language)}
-            style={[styles.option, optionPaletteStyle]}
+            style={({ pressed }) => [
+              styles.option,
+              optionPaletteStyle,
+              { opacity: pressed ? 0.88 : 1 },
+            ]}
           >
             <Text style={[styles.optionText, optionTextStyle]}>
               {labels[language]}

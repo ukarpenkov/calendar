@@ -13,6 +13,7 @@ import {
 import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
 import { getCompactWeekdayLabels } from '../../../shared/lib/i18n';
+import { layout } from '../../../shared/lib/ui/layout';
 import { AppLogo } from '../../../shared/ui/AppLogo';
 import { SettingsGearButton } from '../../../shared/ui/SettingsGearButton';
 
@@ -38,13 +39,13 @@ export function YearHomeScreen({
         styles.container,
         {
           backgroundColor: palette.background,
-          paddingTop: safeAreaInsets.top + 12,
+          paddingTop: safeAreaInsets.top + layout.safeAreaTopExtra,
         },
       ]}
       contentContainerStyle={[
         styles.content,
         {
-          paddingBottom: safeAreaInsets.bottom + 72,
+          paddingBottom: safeAreaInsets.bottom + layout.yearMonthScrollBottom,
         },
       ]}
     >
@@ -112,11 +113,12 @@ export function YearHomeScreen({
           <Pressable
             key={summary.month}
             onPress={() => onOpenMonth(summary.month)}
-            style={[
+            style={({ pressed }) => [
               styles.monthCard,
               {
                 backgroundColor: palette.surface,
                 borderColor: palette.border,
+                opacity: pressed ? 0.92 : 1,
               },
             ]}
           >
@@ -250,8 +252,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingHorizontal: 16,
-    gap: 16,
+    paddingHorizontal: layout.screenPaddingH,
+    gap: layout.contentStackGap,
   },
   appBar: {
     flexDirection: 'row',
@@ -276,7 +278,7 @@ const styles = StyleSheet.create({
   eyebrow: {
     marginTop: 8,
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 0.8,
   },

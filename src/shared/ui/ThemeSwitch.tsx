@@ -65,9 +65,10 @@ export function ThemeSwitch({ checked, onPress }: ThemeSwitchProps) {
       accessibilityRole="switch"
       accessibilityState={{ checked }}
       onPress={onPress}
-      style={[
+      style={({ pressed }) => [
         styles.switch,
         checked ? styles.switchChecked : styles.switchUnchecked,
+        { opacity: pressed ? 0.92 : 1 },
       ]}
     >
       <Animated.View style={[styles.star, styles.starOne, { opacity: starsOpacity }]} />

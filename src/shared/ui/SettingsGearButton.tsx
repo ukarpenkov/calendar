@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text } from 'react-native';
 type SettingsGearButtonPalette = {
   border: string;
   icon: string;
+  surface: string;
 };
 
 type SettingsGearButtonProps = {
@@ -21,7 +22,14 @@ export function SettingsGearButton({
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
       onPress={onPress}
-      style={[styles.button, { borderColor: palette.border }]}
+      style={({ pressed }) => [
+        styles.button,
+        {
+          borderColor: palette.border,
+          backgroundColor: palette.surface,
+          opacity: pressed ? 0.88 : 1,
+        },
+      ]}
     >
       <Text style={[styles.icon, { color: palette.icon }]}>⚙</Text>
     </Pressable>
