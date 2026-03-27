@@ -10,6 +10,7 @@ import {
 } from '../../../features/year-end-reminder';
 import { getLanguageLabel, getThemeModeLabel } from '../../../shared/lib/i18n';
 import { layout } from '../../../shared/lib/ui/layout';
+import { AppLogo } from '../../../shared/ui/AppLogo';
 import {
   ArrowBackIcon,
   TelegramIcon,
@@ -60,7 +61,13 @@ export function SettingsScreen({
         <Text style={[styles.appBarTitle, { color: palette.title }]}>
           {t('settings.title')}
         </Text>
-        <View style={styles.appBarSpacer} />
+        <View style={styles.appBarTrailing}>
+          <AppLogo
+            isDarkMode={isDarkMode}
+            size="toolbar"
+            accessibilityLabel={t('common.appName')}
+          />
+        </View>
       </View>
 
       <SectionCard
@@ -318,9 +325,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '600',
   },
-  appBarSpacer: {
+  appBarTrailing: {
     width: 36,
     height: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   sectionCard: {
     borderWidth: 1,

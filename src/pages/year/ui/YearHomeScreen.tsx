@@ -20,6 +20,7 @@ import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
 import { getCompactWeekdayLabels } from '../../../shared/lib/i18n';
 import { layout } from '../../../shared/lib/ui/layout';
+import { AppLogo } from '../../../shared/ui/AppLogo';
 import { SettingsGearButton } from '../../../shared/ui/SettingsGearButton';
 
 type YearHomeScreenProps = {
@@ -34,7 +35,7 @@ export function YearHomeScreen({
   onOpenSettings,
 }: YearHomeScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
-  const { palette } = useAppTheme();
+  const { isDarkMode, palette } = useAppTheme();
   const { language, t } = useAppLocalization();
   const monthSummaries = buildYearMonthSummaries(calendar, language);
   const weekdayLabels = getCompactWeekdayLabels(language);
@@ -57,15 +58,22 @@ export function YearHomeScreen({
       ]}
     >
       <View style={styles.appBar}>
-        <View style={styles.appBarSpacer} />
+        <View style={styles.appBarLead} />
         <Text style={[styles.appBarTitle, { color: palette.title }]}>
           {calendar.year}
         </Text>
-        <SettingsGearButton
-          palette={palette}
-          accessibilityLabel={t('year.menu.settings')}
-          onPress={onOpenSettings}
-        />
+        <View style={styles.appBarTrailing}>
+          <AppLogo
+            isDarkMode={isDarkMode}
+            size="toolbar"
+            accessibilityLabel={t('common.appName')}
+          />
+          <SettingsGearButton
+            palette={palette}
+            accessibilityLabel={t('year.menu.settings')}
+            onPress={onOpenSettings}
+          />
+        </View>
       </View>
 
       {showYearEndReminder ? (
@@ -271,9 +279,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     minHeight: 56,
   },
-  appBarSpacer: {
-    width: 36,
+  /** Balances toolbar cluster: logo (32) + gap (8) + gear (36). */
+  appBarLead: {
+    width: 32 + 8 + 36,
     height: 36,
+  },
+  appBarTrailing: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   appBarTitle: {
     fontSize: 24,

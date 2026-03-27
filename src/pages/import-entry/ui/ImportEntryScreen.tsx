@@ -19,6 +19,7 @@ import {
   type PreparedCalendarImport,
 } from '../../../features/calendar-import';
 import { layout } from '../../../shared/lib/ui/layout';
+import { AppLogo } from '../../../shared/ui/AppLogo';
 import { ArrowBackIcon } from '../../../shared/ui/icons/NavigationIcons';
 import { IconCircleButton } from '../../../shared/ui/IconCircleButton';
 
@@ -102,7 +103,7 @@ export function ImportEntryScreen({
   onImportCompleted,
 }: ImportEntryScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
-  const { palette } = useAppTheme();
+  const { isDarkMode, palette } = useAppTheme();
   const { t } = useAppLocalization();
   const [panel, setPanel] = useState<ImportPanel>('choose');
   const [preparedImport, setPreparedImport] = useState<PreparedCalendarImport | null>(
@@ -311,7 +312,13 @@ export function ImportEntryScreen({
         <Text style={[styles.appBarTitle, { color: palette.title }]}>
           {t('importEntry.title')}
         </Text>
-        <View style={styles.appBarSpacer} />
+        <View style={styles.appBarTrailing}>
+          <AppLogo
+            isDarkMode={isDarkMode}
+            size="toolbar"
+            accessibilityLabel={t('common.appName')}
+          />
+        </View>
       </View>
 
       <ImportStepper
@@ -898,9 +905,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '600',
   },
-  appBarSpacer: {
+  appBarTrailing: {
     width: 36,
     height: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   stepperRow: {
     flexDirection: 'row',

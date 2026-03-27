@@ -30,6 +30,7 @@ import {
   type TranslationKey,
 } from '../../../shared/lib/i18n';
 import { layout } from '../../../shared/lib/ui/layout';
+import { AppLogo } from '../../../shared/ui/AppLogo';
 import { IconCircleButton } from '../../../shared/ui/IconCircleButton';
 import {
   ArrowBackIcon,
@@ -55,7 +56,7 @@ export function MonthDetailScreen({
 }: MonthDetailScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
-  const { palette } = useAppTheme();
+  const { isDarkMode, palette } = useAppTheme();
   const { language, t } = useAppLocalization();
   const weekdayLabels = getShortWeekdayLabels(language);
 
@@ -214,6 +215,11 @@ export function MonthDetailScreen({
                 size={20}
               />
             </IconCircleButton>
+            <AppLogo
+              isDarkMode={isDarkMode}
+              size="toolbar"
+              accessibilityLabel={t('common.appName')}
+            />
             <SettingsGearButton
               palette={palette}
               accessibilityLabel={t('year.menu.settings')}
