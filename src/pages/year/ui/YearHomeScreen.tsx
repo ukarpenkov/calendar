@@ -58,16 +58,17 @@ export function YearHomeScreen({
       ]}
     >
       <View style={styles.appBar}>
-        <View style={styles.appBarLead} />
-        <Text style={[styles.appBarTitle, { color: palette.title }]}>
-          {calendar.year}
-        </Text>
-        <View style={styles.appBarTrailing}>
+        <View style={styles.appBarLeading}>
           <AppLogo
             isDarkMode={isDarkMode}
             size="toolbar"
             accessibilityLabel={t('common.appName')}
           />
+        </View>
+        <Text style={[styles.appBarTitle, { color: palette.title }]}>
+          {calendar.year}
+        </Text>
+        <View style={styles.appBarTrailing}>
           <SettingsGearButton
             palette={palette}
             accessibilityLabel={t('year.menu.settings')}
@@ -276,20 +277,24 @@ const styles = StyleSheet.create({
   appBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     minHeight: 56,
   },
-  /** Balances toolbar cluster: logo (32) + gap (8) + gear (36). */
-  appBarLead: {
+  /** Same width as trailing column so the year stays visually centered. */
+  appBarLeading: {
     width: 32 + 8 + 36,
     height: 36,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
   },
   appBarTrailing: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+    width: 32 + 8 + 36,
+    height: 36,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
   },
   appBarTitle: {
+    flex: 1,
+    textAlign: 'center',
     fontSize: 24,
     fontWeight: '600',
   },
