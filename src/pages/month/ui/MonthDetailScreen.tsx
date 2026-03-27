@@ -564,6 +564,7 @@ const styles = StyleSheet.create({
   },
   pageVerticalContent: {
     paddingHorizontal: layout.screenPaddingH,
+    paddingTop: layout.monthScrollPaddingTop,
     gap: layout.contentStackGap,
   },
   placeholderPage: {
