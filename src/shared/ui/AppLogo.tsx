@@ -13,21 +13,19 @@ const CANVAS_W = 240;
 const CANVAS_H = 260;
 
 const SIZE_PRESETS = {
-  large: { width: 100 },
-  small: { width: 74 },
+  large: { width: 124 },
+  small: { width: 92 },
 } as const;
 
-/** Brand colors from pencil-new.pen (Android icon • Material You / brand light) */
+/** Brand colors from pencil-new.pen (gprPl plate + kCRJe mark) */
 const COLORS = {
   card: '#FFFFFF',
   monthBar: '#E4EDF2',
   cell: '#BCCAD6',
   accent: '#F4978E',
   gear: '#FFFFFF',
-  plateLight: '#E4EDF2',
-  plateDark: '#2C3834',
-  plateBorderLight: 'rgba(42, 61, 53, 0.08)',
-  plateBorderDark: 'rgba(255, 255, 255, 0.1)',
+  /** Splash plate: same as adaptive launcher background (no light “mint” panel / stroke). */
+  plateBrand: '#4A7D6E',
 } as const;
 
 /** Material-style settings (filled), viewBox 0 0 24 24 */
@@ -43,8 +41,8 @@ export function AppLogo({
   const s = outW / CANVAS_W;
   const outH = CANVAS_H * s;
   const cardShadowOpacity = isDarkMode ? 0.2 : 0.125;
-  const platePad = 14 * s;
-  const plateRadius = 32 * s;
+  const platePad = 10 * s;
+  const plateRadius = 28 * s;
 
   const card = {
     left: 4 * s,
@@ -206,10 +204,7 @@ export function AppLogo({
         {
           padding: platePad,
           borderRadius: plateRadius,
-          backgroundColor: isDarkMode ? COLORS.plateDark : COLORS.plateLight,
-          borderColor: isDarkMode
-            ? COLORS.plateBorderDark
-            : COLORS.plateBorderLight,
+          backgroundColor: COLORS.plateBrand,
         },
       ]}
     >
@@ -221,7 +216,6 @@ export function AppLogo({
 const styles = StyleSheet.create({
   plate: {
     alignSelf: 'center',
-    borderWidth: StyleSheet.hairlineWidth,
   },
   canvas: {
     position: 'relative',

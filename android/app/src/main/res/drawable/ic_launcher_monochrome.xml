@@ -5,12 +5,9 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
     <!--
-      Opaque base matches adaptive background (#4A7D6E) so the foreground layer has no transparent fringe (avoids tinted halo on some launchers).
-      Logo from Pencil kCRJe; scale from pivot (128,119), translate center → (54,54).
+      Themed icons (API 33+): single-color silhouette; launcher tints this layer.
+      Same geometry as ic_launcher_foreground mark; all fills white on transparent.
     -->
-    <path
-        android:fillColor="#4A7D6E"
-        android:pathData="M0,0h108v108h-108z" />
     <group
         android:translateX="-74"
         android:translateY="-65">
@@ -23,60 +20,59 @@
                 android:fillColor="#FFFFFF"
                 android:pathData="M58,72H182A30,30,0,0,1,212,102V198A30,30,0,0,1,182,228H58A30,30,0,0,1,28,198V102A30,30,0,0,1,58,72Z" />
             <path
-                android:fillColor="#E4EDF2"
+                android:fillColor="#FFFFFF"
                 android:pathData="M52,84H188A8,8,0,0,1,196,92V92A8,8,0,0,1,188,100H52A8,8,0,0,1,44,92V92A8,8,0,0,1,52,84Z" />
             <path
-                android:fillColor="#BCCAD6"
+                android:fillColor="#FFFFFF"
                 android:pathData="M51,106H69A7,7,0,0,1,76,113V123A7,7,0,0,1,69,130H51A7,7,0,0,1,44,123V113A7,7,0,0,1,51,106Z" />
             <path
-                android:fillColor="#BCCAD6"
+                android:fillColor="#FFFFFF"
                 android:pathData="M91,106H109A7,7,0,0,1,116,113V123A7,7,0,0,1,109,130H91A7,7,0,0,1,84,123V113A7,7,0,0,1,91,106Z" />
             <path
-                android:fillColor="#BCCAD6"
+                android:fillColor="#FFFFFF"
                 android:pathData="M131,106H149A7,7,0,0,1,156,113V123A7,7,0,0,1,149,130H131A7,7,0,0,1,124,123V113A7,7,0,0,1,131,106Z" />
             <path
-                android:fillColor="#BCCAD6"
+                android:fillColor="#FFFFFF"
                 android:pathData="M171,106H189A7,7,0,0,1,196,113V123A7,7,0,0,1,189,130H171A7,7,0,0,1,164,123V113A7,7,0,0,1,171,106Z" />
             <path
-                android:fillColor="#BCCAD6"
+                android:fillColor="#FFFFFF"
                 android:pathData="M58,134H66A7,7,0,0,1,73,141V151A7,7,0,0,1,66,158H58A7,7,0,0,1,51,151V141A7,7,0,0,1,58,134Z" />
             <path
-                android:fillColor="#F4978E"
+                android:fillColor="#FFFFFF"
                 android:pathData="M86,134H126A7,7,0,0,1,133,141V151A7,7,0,0,1,126,158H86A7,7,0,0,1,79,151V141A7,7,0,0,1,86,134Z" />
             <path
-                android:fillColor="#BCCAD6"
+                android:fillColor="#FFFFFF"
                 android:pathData="M146,134H154A7,7,0,0,1,161,141V151A7,7,0,0,1,154,158H146A7,7,0,0,1,139,151V141A7,7,0,0,1,146,134Z" />
             <path
-                android:fillColor="#BCCAD6"
+                android:fillColor="#FFFFFF"
                 android:pathData="M174,134H182A7,7,0,0,1,189,141V151A7,7,0,0,1,182,158H174A7,7,0,0,1,167,151V141A7,7,0,0,1,174,134Z" />
             <path
-                android:fillColor="#BCCAD6"
+                android:fillColor="#FFFFFF"
                 android:pathData="M60,162H68A7,7,0,0,1,75,169V179A7,7,0,0,1,68,186H60A7,7,0,0,1,53,179V169A7,7,0,0,1,60,162Z" />
             <path
-                android:fillColor="#BCCAD6"
+                android:fillColor="#FFFFFF"
                 android:pathData="M88,162H96A7,7,0,0,1,103,169V179A7,7,0,0,1,96,186H88A7,7,0,0,1,81,179V169A7,7,0,0,1,88,162Z" />
             <path
-                android:fillColor="#BCCAD6"
+                android:fillColor="#FFFFFF"
                 android:pathData="M116,162H124A7,7,0,0,1,131,169V179A7,7,0,0,1,124,186H116A7,7,0,0,1,109,179V169A7,7,0,0,1,116,162Z" />
             <path
-                android:fillColor="#BCCAD6"
+                android:fillColor="#FFFFFF"
                 android:pathData="M144,162H152A7,7,0,0,1,159,169V179A7,7,0,0,1,152,186H144A7,7,0,0,1,137,179V169A7,7,0,0,1,144,162Z" />
             <path
-                android:fillColor="#BCCAD6"
+                android:fillColor="#FFFFFF"
                 android:pathData="M172,162H180A7,7,0,0,1,187,169V179A7,7,0,0,1,180,186H172A7,7,0,0,1,165,179V169A7,7,0,0,1,172,162Z" />
             <path
-                android:fillColor="#BCCAD6"
+                android:fillColor="#FFFFFF"
                 android:pathData="M74,190H82A7,7,0,0,1,89,197V207A7,7,0,0,1,82,214H74A7,7,0,0,1,67,207V197A7,7,0,0,1,74,190Z" />
             <path
-                android:fillColor="#BCCAD6"
+                android:fillColor="#FFFFFF"
                 android:pathData="M102,190H110A7,7,0,0,1,117,197V207A7,7,0,0,1,110,214H102A7,7,0,0,1,95,207V197A7,7,0,0,1,102,190Z" />
             <path
-                android:fillColor="#BCCAD6"
+                android:fillColor="#FFFFFF"
                 android:pathData="M130,190H138A7,7,0,0,1,145,197V207A7,7,0,0,1,138,214H130A7,7,0,0,1,123,207V197A7,7,0,0,1,130,190Z" />
             <path
-                android:fillColor="#BCCAD6"
+                android:fillColor="#FFFFFF"
                 android:pathData="M158,190H166A7,7,0,0,1,173,197V207A7,7,0,0,1,166,214H158A7,7,0,0,1,151,207V197A7,7,0,0,1,158,190Z" />
-            <!-- Material settings (filled), 24dp → ~80dp to match Pencil gear -->
             <group
                 android:translateX="148"
                 android:translateY="10">
