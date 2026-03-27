@@ -68,9 +68,6 @@ const translations = {
     'year.summary.work': 'Work',
     'year.summary.off': 'Off',
     'year.summary.days': 'Days',
-    'month.header.eyebrow': 'Month detail',
-    'month.header.subtitle':
-      'Full month grid with stored day states and monthly totals from SQLite.',
     'month.selectedDay.eyebrow': 'Selected day',
     'month.totals.totalDays': 'Total days',
     'month.totals.workingDays': 'Working days',
@@ -191,9 +188,6 @@ const translations = {
     'year.summary.work': 'Раб.',
     'year.summary.off': 'Вых.',
     'year.summary.days': 'Дни',
-    'month.header.eyebrow': 'Детали месяца',
-    'month.header.subtitle':
-      'Полная сетка месяца с сохраненными типами дней и месячными итогами из SQLite.',
     'month.selectedDay.eyebrow': 'Выбранный день',
     'month.totals.totalDays': 'Всего дней',
     'month.totals.workingDays': 'Рабочие дни',

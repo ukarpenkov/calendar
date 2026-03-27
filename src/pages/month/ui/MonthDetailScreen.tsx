@@ -375,26 +375,6 @@ function MonthDetailBody({
     <>
       <View
         style={[
-          styles.headerCard,
-          {
-            backgroundColor: palette.surface,
-            borderColor: palette.border,
-          },
-        ]}
-      >
-        <Text style={[styles.headerEyebrow, { color: palette.subtitle }]}>
-          {t('month.header.eyebrow')}
-        </Text>
-        <Text style={[styles.headerTitle, { color: palette.title }]}>
-          {detail.label} {detail.year}
-        </Text>
-        <Text style={[styles.headerSubtitle, { color: palette.subtitle }]}>
-          {t('month.header.subtitle')}
-        </Text>
-      </View>
-
-      <View
-        style={[
           styles.calendarCard,
           {
             backgroundColor: palette.surface,
@@ -614,26 +594,6 @@ const styles = StyleSheet.create({
   appBarTitle: {
     fontSize: 24,
     fontWeight: '600',
-  },
-  headerCard: {
-    borderWidth: 1,
-    borderRadius: 20,
-    padding: 16,
-    gap: 8,
-  },
-  headerEyebrow: {
-    fontSize: 12,
-    fontWeight: '700',
-    letterSpacing: 0.8,
-    textTransform: 'uppercase',
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: '700',
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    lineHeight: 20,
   },
   calendarCard: {
     borderWidth: 1,

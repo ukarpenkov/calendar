@@ -135,7 +135,7 @@ test('opens month detail after the year screen requests a month', async () => {
     await renderer!.root.findByType(YearHomeScreen).props.onOpenMonth(1);
   });
 
-  expect(JSON.stringify(renderer!.toJSON())).toContain('Month detail');
+  expect(JSON.stringify(renderer!.toJSON())).toContain('Selected day');
   expect(JSON.stringify(renderer!.toJSON())).toContain('January');
   expect(JSON.stringify(renderer!.toJSON())).toContain('Working days');
 });
