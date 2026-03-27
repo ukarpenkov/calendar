@@ -6,7 +6,7 @@
 
 ## Что проверено
 
-Логику Gradle не запускали в этой сессии; после `assembleRelease` ожидается файл `prod-calendar-release.apk` в каталоге вывода модуля `app`.
+`gradlew :app:assembleRelease` — успешно; в `android/app/build/outputs/apk/release/` появляется `prod-calendar-release.apk`.
 
 ## Дальнейшие шаги
 
