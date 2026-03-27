@@ -10,7 +10,7 @@ type AppLogoProps = {
   accessibilityLabel?: string;
 };
 
-/** Same square asset as `assets/launcher-icon-source.png` / Android `ic_launcher_full`. */
+/** Same art as `icons/play_store_512.png` (synced to assets by `scripts/generate-launcher-pngs.ps1`). */
 const LOGO_SOURCE = require('../../../assets/launcher-icon-source.png');
 
 const SIZE_PRESETS = {

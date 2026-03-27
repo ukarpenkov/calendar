@@ -1,13 +1,39 @@
 $ErrorActionPreference = 'Stop'
 $repoRoot = Join-Path $PSScriptRoot '..' | Resolve-Path
-$src = Join-Path $repoRoot 'assets\launcher-icon-source.png'
-if (-not (Test-Path $src)) {
-  throw "Missing launcher source PNG: $src"
+$iconsRoot = Join-Path $repoRoot 'icons' | Resolve-Path
+$play512 = Join-Path $iconsRoot 'play_store_512.png'
+if (-not (Test-Path $play512)) {
+  throw "Missing Play-style source PNG: $play512"
 }
 $base = Join-Path $repoRoot 'android\app\src\main\res' | Resolve-Path
 
+$mipmapFolders = @(
+  'mipmap-mdpi',
+  'mipmap-hdpi',
+  'mipmap-xhdpi',
+  'mipmap-xxhdpi',
+  'mipmap-xxxhdpi'
+)
+foreach ($folder in $mipmapFolders) {
+  $srcDir = Join-Path $iconsRoot $folder
+  if (-not (Test-Path $srcDir)) {
+    throw "Missing folder under icons: $srcDir"
+  }
+  $dstDir = Join-Path $base $folder
+  if (-not (Test-Path $dstDir)) {
+    New-Item -ItemType Directory -Path $dstDir | Out-Null
+  }
+  foreach ($name in @('ic_launcher.png', 'ic_launcher_round.png')) {
+    $from = Join-Path $srcDir $name
+    if (-not (Test-Path $from)) {
+      throw "Missing $from"
+    }
+    Copy-Item -Path $from -Destination (Join-Path $dstDir $name) -Force
+  }
+}
+
 Add-Type -AssemblyName System.Drawing
-$img = [System.Drawing.Image]::FromFile($src)
+$img = [System.Drawing.Image]::FromFile($play512)
 
 $sizes = @{
   'drawable-mdpi'    = 108
@@ -35,31 +61,7 @@ foreach ($folder in $sizes.Keys) {
   $bmp.Dispose()
 }
 
-$mipmapSizes = @{
-  'mipmap-mdpi'    = 48
-  'mipmap-hdpi'    = 72
-  'mipmap-xhdpi'   = 96
-  'mipmap-xxhdpi'  = 144
-  'mipmap-xxxhdpi' = 192
-}
-
-foreach ($folder in $mipmapSizes.Keys) {
-  $dir = Join-Path $base $folder
-  if (-not (Test-Path $dir)) {
-    New-Item -ItemType Directory -Path $dir | Out-Null
-  }
-  $w = $mipmapSizes[$folder]
-  $bmp = New-Object System.Drawing.Bitmap $w, $w
-  $g = [System.Drawing.Graphics]::FromImage($bmp)
-  $g.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
-  $g.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::HighQuality
-  $g.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
-  $g.DrawImage($img, 0, 0, $w, $w)
-  $bmp.Save((Join-Path $dir 'ic_launcher.png'), [System.Drawing.Imaging.ImageFormat]::Png)
-  $bmp.Save((Join-Path $dir 'ic_launcher_round.png'), [System.Drawing.Imaging.ImageFormat]::Png)
-  $g.Dispose()
-  $bmp.Dispose()
-}
-
 $img.Dispose()
-Write-Host "Wrote ic_launcher_full.png + mipmap ic_launcher(s) under $base"
+$assetsDest = Join-Path $repoRoot 'assets\launcher-icon-source.png'
+Copy-Item -Path $play512 -Destination $assetsDest -Force
+Write-Host "Synced mipmap from $iconsRoot, wrote ic_launcher_full + assets from play_store_512.png"
