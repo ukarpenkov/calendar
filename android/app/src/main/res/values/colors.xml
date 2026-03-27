@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Adaptive launcher background; aligns with in-app logo plate (AppLogo plateLight). -->
+    <color name="ic_launcher_background">#D4E2E8</color>
+</resources>

@@ -4,6 +4,8 @@ import Svg, { Path } from 'react-native-svg';
 type AppLogoProps = {
   isDarkMode: boolean;
   size?: 'large' | 'small';
+  /** Rounded backdrop behind the mark; defaults to on for splash (`large`), off in compact headers (`small`). */
+  withPlate?: boolean;
 };
 
 /** Design canvas for Pencil node kCRJe (Logo / Calendar + settings), px */
@@ -22,17 +24,27 @@ const COLORS = {
   cell: '#BCCAD6',
   accent: '#F4978E',
   gear: '#FFFFFF',
+  plateLight: '#E4EDF2',
+  plateDark: '#2C3834',
+  plateBorderLight: 'rgba(42, 61, 53, 0.08)',
+  plateBorderDark: 'rgba(255, 255, 255, 0.1)',
 } as const;
 
 /** Material-style settings (filled), viewBox 0 0 24 24 */
 const GEAR_PATH =
   'M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94L14.4 2.81c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41L9.25 5.35C8.66 5.59 8.12 5.92 7.63 6.29L5.24 5.33c-.22-.08-.47 0-.59.22L2.74 8.87C2.62 9.08 2.66 9.34 2.86 9.48l2.03 1.58C4.84 11.36 4.8 11.69 4.8 12s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61L19.14 12.94zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.98 3.6-3.6 3.6z';
 
-export function AppLogo({ isDarkMode, size = 'large' }: AppLogoProps) {
+export function AppLogo({
+  isDarkMode,
+  size = 'large',
+  withPlate = size === 'large',
+}: AppLogoProps) {
   const { width: outW } = SIZE_PRESETS[size];
   const s = outW / CANVAS_W;
   const outH = CANVAS_H * s;
   const cardShadowOpacity = isDarkMode ? 0.2 : 0.125;
+  const platePad = 14 * s;
+  const plateRadius = 32 * s;
 
   const card = {
     left: 4 * s,
@@ -56,7 +68,7 @@ export function AppLogo({ isDarkMode, size = 'large' }: AppLogoProps) {
   const r2 = { h: 28 * s, gap: 5 * s, r: 9 * s, w: [26 * s, 62 * s, 26 * s, 26 * s, 26 * s] as const };
   const r34 = { cell: 28 * s, gap: 5 * s, r: 9 * s };
 
-  return (
+  const mark = (
     <View
       accessible={false}
       style={[styles.canvas, { width: outW, height: outH }]}
@@ -181,9 +193,36 @@ export function AppLogo({ isDarkMode, size = 'large' }: AppLogoProps) {
       </View>
     </View>
   );
+
+  if (!withPlate) {
+    return mark;
+  }
+
+  return (
+    <View
+      accessible={false}
+      style={[
+        styles.plate,
+        {
+          padding: platePad,
+          borderRadius: plateRadius,
+          backgroundColor: isDarkMode ? COLORS.plateDark : COLORS.plateLight,
+          borderColor: isDarkMode
+            ? COLORS.plateBorderDark
+            : COLORS.plateBorderLight,
+        },
+      ]}
+    >
+      {mark}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
+  plate: {
+    alignSelf: 'center',
+    borderWidth: StyleSheet.hairlineWidth,
+  },
   canvas: {
     position: 'relative',
   },
