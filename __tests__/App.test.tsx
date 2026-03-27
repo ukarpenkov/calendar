@@ -115,12 +115,7 @@ test('shows year home when bootstrap succeeds', async () => {
   });
 
   expect(JSON.stringify(renderer!.toJSON())).toContain('2026');
-  expect(JSON.stringify(renderer!.toJSON())).toContain(
-    'Production calendar',
-  );
-  expect(JSON.stringify(renderer!.toJSON())).toContain(
-    'Active year is loaded from local SQLite storage',
-  );
+  expect(JSON.stringify(renderer!.toJSON())).toContain('January');
 });
 
 test('opens month detail after the year screen requests a month', async () => {

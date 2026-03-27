@@ -62,9 +62,6 @@ const translations = {
     'splash.loadingTitle': 'Loading your offline year view',
     'splash.loadingSubtitle': 'Initializing local calendar data...',
     'year.menu.settings': 'Settings',
-    'year.header.eyebrow': 'Production calendar',
-    'year.header.subtitle':
-      'Active year is loaded from local SQLite storage and rendered as a month-by-month overview.',
     'year.summary.work': 'Work',
     'year.summary.off': 'Off',
     'year.summary.days': 'Days',
@@ -217,9 +214,6 @@ const translations = {
     'splash.loadingTitle': 'Загружаем локальный календарь',
     'splash.loadingSubtitle': 'Инициализируем локальные данные календаря...',
     'year.menu.settings': 'Настройки',
-    'year.header.eyebrow': 'Производственный календарь',
-    'year.header.subtitle':
-      'Активный год загружается из локального хранилища SQLite и показывается как обзор по месяцам.',
     'year.summary.work': 'Раб.',
     'year.summary.off': 'Вых.',
     'year.summary.days': 'Дни',

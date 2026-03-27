@@ -20,7 +20,6 @@ import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
 import { getCompactWeekdayLabels } from '../../../shared/lib/i18n';
 import { layout } from '../../../shared/lib/ui/layout';
-import { AppLogo } from '../../../shared/ui/AppLogo';
 import { SettingsGearButton } from '../../../shared/ui/SettingsGearButton';
 
 type YearHomeScreenProps = {
@@ -35,7 +34,7 @@ export function YearHomeScreen({
   onOpenSettings,
 }: YearHomeScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
-  const { isDarkMode, palette } = useAppTheme();
+  const { palette } = useAppTheme();
   const { language, t } = useAppLocalization();
   const monthSummaries = buildYearMonthSummaries(calendar, language);
   const weekdayLabels = getCompactWeekdayLabels(language);
@@ -67,16 +66,6 @@ export function YearHomeScreen({
           accessibilityLabel={t('year.menu.settings')}
           onPress={onOpenSettings}
         />
-      </View>
-
-      <View style={styles.header}>
-        <AppLogo isDarkMode={isDarkMode} size="small" />
-        <Text style={[styles.eyebrow, { color: palette.subtitle }]}>
-          {t('year.header.eyebrow')}
-        </Text>
-        <Text style={[styles.subtitle, { color: palette.subtitle }]}>
-          {t('year.header.subtitle')}
-        </Text>
       </View>
 
       {showYearEndReminder ? (
@@ -289,25 +278,6 @@ const styles = StyleSheet.create({
   appBarTitle: {
     fontSize: 24,
     fontWeight: '600',
-  },
-  header: {
-    alignItems: 'center',
-    gap: 8,
-    paddingTop: 8,
-    paddingBottom: 4,
-  },
-  eyebrow: {
-    marginTop: 8,
-    fontSize: 12,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-    letterSpacing: 0.8,
-  },
-  subtitle: {
-    maxWidth: 340,
-    fontSize: 14,
-    lineHeight: 20,
-    textAlign: 'center',
   },
   legendCard: {
     flexDirection: 'row',
