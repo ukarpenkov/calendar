@@ -114,7 +114,7 @@ test('shows year home when bootstrap succeeds', async () => {
     renderer = ReactTestRenderer.create(<App />);
   });
 
-  expect(JSON.stringify(renderer!.toJSON())).toContain('2026');
+  expect(JSON.stringify(renderer!.toJSON())).toContain('Year 2026');
   expect(JSON.stringify(renderer!.toJSON())).toContain('January');
 });
 

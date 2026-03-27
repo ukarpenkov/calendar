@@ -58,6 +58,8 @@ test('builds localized year month summaries', () => {
 });
 
 test('returns localized interface labels and day types', () => {
+  expect(getTranslation('en', 'year.home.title', { year: 2026 })).toBe('Year 2026');
+  expect(getTranslation('ru', 'year.home.title', { year: 2026 })).toBe('Год 2026');
   expect(getTranslation('ru', 'settings.title')).toBe('Настройки');
   expect(getThemeModeLabel('ru', 'dark')).toBe('Темная');
   expect(getCompactWeekdayLabels('en')).toEqual(['M', 'T', 'W', 'T', 'F', 'S', 'S']);

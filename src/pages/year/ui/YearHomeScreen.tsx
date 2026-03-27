@@ -66,7 +66,7 @@ export function YearHomeScreen({
           />
         </View>
         <Text style={[styles.appBarTitle, { color: palette.title }]}>
-          {calendar.year}
+          {t('year.home.title', { year: calendar.year })}
         </Text>
         <View style={styles.appBarTrailing}>
           <SettingsGearButton
