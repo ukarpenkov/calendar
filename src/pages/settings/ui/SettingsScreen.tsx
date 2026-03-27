@@ -6,6 +6,8 @@ import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
 import { getLanguageLabel, getThemeModeLabel } from '../../../shared/lib/i18n';
 import { layout } from '../../../shared/lib/ui/layout';
+import { ArrowBackIcon } from '../../../shared/ui/icons/NavigationIcons';
+import { IconCircleButton } from '../../../shared/ui/IconCircleButton';
 import { LanguageSwitch } from '../../../shared/ui/LanguageSwitch';
 import { ThemeSwitch } from '../../../shared/ui/ThemeSwitch';
 
@@ -41,20 +43,13 @@ export function SettingsScreen({
       ]}
     >
       <View style={styles.appBar}>
-        <Pressable
-          accessibilityRole="button"
+        <IconCircleButton
           onPress={onBack}
-          style={({ pressed }) => [
-            styles.iconButton,
-            {
-              borderColor: palette.border,
-              backgroundColor: palette.surface,
-              opacity: pressed ? 0.88 : 1,
-            },
-          ]}
+          palette={palette}
+          accessibilityLabel={t('common.navigateBack')}
         >
-          <Text style={[styles.iconButtonText, { color: palette.icon }]}>{'<'}</Text>
-        </Pressable>
+          <ArrowBackIcon color={palette.icon} size={20} />
+        </IconCircleButton>
         <Text style={[styles.appBarTitle, { color: palette.title }]}>
           {t('settings.title')}
         </Text>
@@ -276,18 +271,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     minHeight: 56,
-  },
-  iconButton: {
-    width: 36,
-    height: 36,
-    borderWidth: 1,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconButtonText: {
-    fontSize: 18,
-    fontWeight: '700',
   },
   appBarTitle: {
     flex: 1,

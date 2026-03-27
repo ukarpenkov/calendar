@@ -20,6 +20,8 @@ import {
   type PreparedCalendarImport,
 } from '../../../features/calendar-import';
 import { layout } from '../../../shared/lib/ui/layout';
+import { ArrowBackIcon } from '../../../shared/ui/icons/NavigationIcons';
+import { IconCircleButton } from '../../../shared/ui/IconCircleButton';
 
 type ImportEntryScreenProps = {
   activeYear: number;
@@ -224,20 +226,13 @@ export function ImportEntryScreen({
       ]}
     >
       <View style={styles.appBar}>
-        <Pressable
-          accessibilityRole="button"
+        <IconCircleButton
           onPress={onBack}
-          style={({ pressed }) => [
-            styles.backButton,
-            {
-              borderColor: palette.border,
-              backgroundColor: palette.surface,
-              opacity: pressed ? 0.88 : 1,
-            },
-          ]}
+          palette={palette}
+          accessibilityLabel={t('common.navigateBack')}
         >
-          <Text style={[styles.backButtonText, { color: palette.icon }]}>{'<'}</Text>
-        </Pressable>
+          <ArrowBackIcon color={palette.icon} size={20} />
+        </IconCircleButton>
         <Text style={[styles.appBarTitle, { color: palette.title }]}>
           {t('importEntry.title')}
         </Text>
@@ -516,18 +511,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     minHeight: 56,
-  },
-  backButton: {
-    width: 36,
-    height: 36,
-    borderWidth: 1,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  backButtonText: {
-    fontSize: 18,
-    fontWeight: '700',
   },
   appBarTitle: {
     flex: 1,

@@ -53,6 +53,7 @@ const translations = {
     'common.appName': 'Calendar',
     'common.hoursUnit': 'h',
     'common.backToYear': 'Back to year',
+    'common.navigateBack': 'Go back',
     'common.cancel': 'Cancel',
     'app.error.bootstrapTitle': 'Failed to initialize local calendar data.',
     'app.error.bootstrapSubtitle': 'Fix the storage error and relaunch the app.',
@@ -75,6 +76,8 @@ const translations = {
     'month.totals.workingDays': 'Working days',
     'month.totals.nonWorkingDays': 'Non-working days',
     'month.totals.workHours': 'Work hours',
+    'month.nav.previousMonth': 'Previous month',
+    'month.nav.nextMonth': 'Next month',
     'settings.title': 'Settings',
     'settings.sections.calendarData.title': 'Calendar data',
     'settings.sections.calendarData.subtitle':
@@ -172,6 +175,7 @@ const translations = {
     'common.appName': 'Календарь',
     'common.hoursUnit': 'ч',
     'common.backToYear': 'Назад к году',
+    'common.navigateBack': 'Назад',
     'common.cancel': 'Отмена',
     'app.error.bootstrapTitle': 'Не удалось инициализировать локальные данные календаря.',
     'app.error.bootstrapSubtitle': 'Исправьте ошибку хранилища и перезапустите приложение.',
@@ -195,6 +199,8 @@ const translations = {
     'month.totals.workingDays': 'Рабочие дни',
     'month.totals.nonWorkingDays': 'Нерабочие дни',
     'month.totals.workHours': 'Часы работы',
+    'month.nav.previousMonth': 'Предыдущий месяц',
+    'month.nav.nextMonth': 'Следующий месяц',
     'settings.title': 'Настройки',
     'settings.sections.calendarData.title': 'Данные календаря',
     'settings.sections.calendarData.subtitle':

@@ -13,6 +13,12 @@ import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
 import { getShortWeekdayLabels } from '../../../shared/lib/i18n';
 import { layout } from '../../../shared/lib/ui/layout';
+import { IconCircleButton } from '../../../shared/ui/IconCircleButton';
+import {
+  ArrowBackIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from '../../../shared/ui/icons/NavigationIcons';
 import { SettingsGearButton } from '../../../shared/ui/SettingsGearButton';
 
 type MonthDetailScreenProps = {
@@ -69,21 +75,13 @@ export function MonthDetailScreen({
     >
       <View style={styles.appBar}>
         <View style={[styles.appBarSide, styles.appBarSideStart]}>
-          <Pressable
+          <IconCircleButton
             onPress={onBack}
-            style={({ pressed }) => [
-              styles.iconButton,
-              {
-                borderColor: palette.border,
-                backgroundColor: palette.surface,
-                opacity: pressed ? 0.88 : 1,
-              },
-            ]}
+            palette={palette}
+            accessibilityLabel={t('common.backToYear')}
           >
-            <Text style={[styles.iconButtonText, { color: palette.icon }]}>
-              {'<'}
-            </Text>
-          </Pressable>
+            <ArrowBackIcon color={palette.icon} size={20} />
+          </IconCircleButton>
         </View>
         <View style={styles.appBarTitleWrap}>
           <Text style={[styles.appBarTitle, { color: palette.title }]}>
@@ -91,16 +89,26 @@ export function MonthDetailScreen({
           </Text>
         </View>
         <View style={[styles.appBarSide, styles.appBarActions]}>
-          <MonthNavigationButton
-            icon="<"
-            palette={palette}
+          <IconCircleButton
             onPress={onOpenPreviousMonth}
-          />
-          <MonthNavigationButton
-            icon=">"
             palette={palette}
+            accessibilityLabel={t('month.nav.previousMonth')}
+          >
+            <ChevronLeftIcon
+              color={onOpenPreviousMonth ? palette.icon : palette.subtitle}
+              size={20}
+            />
+          </IconCircleButton>
+          <IconCircleButton
             onPress={onOpenNextMonth}
-          />
+            palette={palette}
+            accessibilityLabel={t('month.nav.nextMonth')}
+          >
+            <ChevronRightIcon
+              color={onOpenNextMonth ? palette.icon : palette.subtitle}
+              size={20}
+            />
+          </IconCircleButton>
           <SettingsGearButton
             palette={palette}
             accessibilityLabel={t('year.menu.settings')}
@@ -226,44 +234,6 @@ export function MonthDetailScreen({
   );
 }
 
-type MonthNavigationButtonProps = {
-  icon: '<' | '>';
-  palette: CalendarPalette;
-  onPress?: () => void;
-};
-
-function MonthNavigationButton({
-  icon,
-  palette,
-  onPress,
-}: MonthNavigationButtonProps) {
-  const isDisabled = !onPress;
-
-  return (
-    <Pressable
-      disabled={isDisabled}
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.iconButton,
-        {
-          borderColor: palette.border,
-          backgroundColor: isDisabled ? palette.surfaceMuted : palette.surface,
-          opacity: isDisabled ? 0.45 : pressed ? 0.88 : 1,
-        },
-      ]}
-    >
-      <Text
-        style={[
-          styles.iconButtonText,
-          { color: isDisabled ? palette.subtitle : palette.icon },
-        ]}
-      >
-        {icon}
-      </Text>
-    </Pressable>
-  );
-}
-
 type MonthDetailDayCellProps = {
   day: CalendarDay | null;
   isSelected: boolean;
@@ -362,18 +332,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     gap: 8,
-  },
-  iconButton: {
-    width: 36,
-    height: 36,
-    borderWidth: 1,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconButtonText: {
-    fontSize: 18,
-    fontWeight: '700',
   },
   appBarTitle: {
     fontSize: 24,

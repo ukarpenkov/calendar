@@ -13327,6 +13327,7 @@
               "width": "fill_container",
               "height": 56,
               "gap": 12,
+              "justifyContent": "space_between",
               "alignItems": "center",
               "children": [
                 {
@@ -13361,10 +13362,65 @@
                 },
                 {
                   "type": "frame",
-                  "id": "UluTJ",
-                  "name": "spM",
-                  "width": 44,
-                  "height": 44
+                  "id": "ifuyx",
+                  "name": "Wishlist / Month Nav",
+                  "width": 104,
+                  "height": 48,
+                  "gap": 8,
+                  "justifyContent": "end",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "UUbu8",
+                      "name": "Previous Month",
+                      "width": 48,
+                      "height": 48,
+                      "cornerRadius": 24,
+                      "stroke": {
+                        "thickness": 1,
+                        "fill": "#E2E6ED"
+                      },
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "m6CQB",
+                          "width": 24,
+                          "height": 24,
+                          "iconFontName": "chevron_left",
+                          "iconFontFamily": "Material Symbols Outlined",
+                          "fill": "#1A1D26"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "YhaLk",
+                      "name": "Next Month",
+                      "width": 48,
+                      "height": 48,
+                      "cornerRadius": 24,
+                      "stroke": {
+                        "thickness": 1,
+                        "fill": "#E2E6ED"
+                      },
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "mLyLU",
+                          "width": 24,
+                          "height": 24,
+                          "iconFontName": "chevron_right",
+                          "iconFontFamily": "Material Symbols Outlined",
+                          "fill": "#1A1D26"
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             },
@@ -29339,6 +29395,7 @@
               "width": "fill_container",
               "height": 56,
               "gap": 12,
+              "justifyContent": "space_between",
               "alignItems": "center",
               "children": [
                 {
@@ -29373,10 +29430,65 @@
                 },
                 {
                   "type": "frame",
-                  "id": "BQzto",
-                  "name": "spM",
-                  "width": 44,
-                  "height": 44
+                  "id": "IpWrq",
+                  "name": "Wishlist / Month Nav",
+                  "width": 104,
+                  "height": 48,
+                  "gap": 8,
+                  "justifyContent": "end",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "WPCHD",
+                      "name": "Previous Month",
+                      "width": 48,
+                      "height": 48,
+                      "cornerRadius": 24,
+                      "stroke": {
+                        "thickness": 1,
+                        "fill": "#2A3140"
+                      },
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "spotU",
+                          "width": 24,
+                          "height": 24,
+                          "iconFontName": "chevron_left",
+                          "iconFontFamily": "Material Symbols Outlined",
+                          "fill": "#E8EAEF"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "lwfCe",
+                      "name": "Next Month",
+                      "width": 48,
+                      "height": 48,
+                      "cornerRadius": 24,
+                      "stroke": {
+                        "thickness": 1,
+                        "fill": "#2A3140"
+                      },
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "dgldQ",
+                          "width": 24,
+                          "height": 24,
+                          "iconFontName": "chevron_right",
+                          "iconFontFamily": "Material Symbols Outlined",
+                          "fill": "#E8EAEF"
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             },
@@ -32556,7 +32668,8 @@
                   "content": "На 1 час короче обычного рабочего дня.",
                   "lineHeight": 1.35,
                   "fontFamily": "Inter",
-                  "fontSize": 13
+                  "fontSize": 13,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -34281,7 +34394,8 @@
                   "content": "Праздничный день — работа не ведётся.",
                   "lineHeight": 1.35,
                   "fontFamily": "Inter",
-                  "fontSize": 13
+                  "fontSize": 13,
+                  "fontWeight": "normal"
                 }
               ]
             },
