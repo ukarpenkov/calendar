@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   Animated,
+  BackHandler,
   Easing,
   Pressable,
   StatusBar,
@@ -73,6 +74,43 @@ function AppContent() {
       useNativeDriver: true,
     }).start();
   }, [isMonthOverlayOpen, yearUnderlayProgress]);
+
+  useEffect(() => {
+    const onBackPress = () => {
+      if (status.kind !== 'ready') {
+        return false;
+      }
+
+      switch (status.screen.name) {
+        case 'month':
+        case 'month-error':
+        case 'settings':
+        case 'import-entry':
+          setStatus(current => {
+            if (current.kind !== 'ready') {
+              return current;
+            }
+            const screenName = current.screen.name;
+            if (screenName === 'month' || screenName === 'month-error') {
+              return { ...current, screen: { name: 'year' } };
+            }
+            if (screenName === 'settings') {
+              return { ...current, screen: { name: 'year' } };
+            }
+            if (screenName === 'import-entry') {
+              return { ...current, screen: { name: 'settings' } };
+            }
+            return current;
+          });
+          return true;
+        default:
+          return false;
+      }
+    };
+
+    const sub = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+    return () => sub.remove();
+  }, [status]);
 
   const yearUnderlayStyle = {
     opacity: yearUnderlayProgress.interpolate({
