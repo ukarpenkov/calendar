@@ -1,4 +1,4 @@
-package com.calendar
+package com.prodyk.calendar
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

@@ -1,4 +1,4 @@
-package com.calendar
+package com.prodyk.calendar
 
 import android.app.Application
 import com.facebook.react.PackageList
