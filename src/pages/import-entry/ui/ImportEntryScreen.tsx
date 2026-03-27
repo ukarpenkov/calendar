@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -34,6 +33,15 @@ type ImportEntryErrorState = {
   body: string;
   details: string[];
 };
+
+type ImportPanel =
+  | 'choose'
+  | 'validating'
+  | 'review'
+  | 'confirm'
+  | 'importing'
+  | 'success'
+  | 'error';
 
 function formatFileSize(size: number | null): string | null {
   if (size === null || Number.isNaN(size)) {
@@ -72,6 +80,22 @@ function getImportPreviewStats(calendar: CalendarYear) {
   );
 }
 
+function getStepperIndex(panel: ImportPanel): number {
+  if (panel === 'success') {
+    return 3;
+  }
+
+  if (panel === 'choose' || panel === 'validating' || panel === 'error') {
+    return 0;
+  }
+
+  if (panel === 'review') {
+    return 1;
+  }
+
+  return 2;
+}
+
 export function ImportEntryScreen({
   activeYear,
   onBack,
@@ -80,14 +104,18 @@ export function ImportEntryScreen({
   const safeAreaInsets = useSafeAreaInsets();
   const { palette } = useAppTheme();
   const { t } = useAppLocalization();
-  const [phase, setPhase] = useState<'idle' | 'validating' | 'ready' | 'importing'>(
-    'idle',
-  );
+  const [panel, setPanel] = useState<ImportPanel>('choose');
   const [preparedImport, setPreparedImport] = useState<PreparedCalendarImport | null>(
     null,
   );
-  const [errorState, setErrorState] = useState<ImportEntryErrorState | null>(null);
-  const isBusy = phase === 'validating' || phase === 'importing';
+  const [successCalendar, setSuccessCalendar] = useState<CalendarYear | null>(null);
+  const [blockingError, setBlockingError] = useState<ImportEntryErrorState | null>(
+    null,
+  );
+  const [reviewError, setReviewError] = useState<ImportEntryErrorState | null>(null);
+
+  const isBlockingAsync = panel === 'validating' || panel === 'importing';
+
   const previewStats = useMemo(
     () =>
       preparedImport ? getImportPreviewStats(preparedImport.calendar) : null,
@@ -137,97 +165,144 @@ export function ImportEntryScreen({
     };
   };
 
-  const handlePickFile = () => {
-    if (isBusy) {
+  const goToChoose = () => {
+    setPreparedImport(null);
+    setBlockingError(null);
+    setReviewError(null);
+    setSuccessCalendar(null);
+    setPanel('choose');
+  };
+
+  const handleHeaderBack = () => {
+    if (isBlockingAsync) {
       return;
     }
 
-    setErrorState(null);
+    if (panel === 'confirm') {
+      setPanel('review');
+      return;
+    }
+
+    if (panel === 'success' && successCalendar) {
+      onImportCompleted(successCalendar);
+      return;
+    }
+
+    if (panel === 'error') {
+      goToChoose();
+      return;
+    }
+
+    onBack();
+  };
+
+  const handlePickFile = () => {
+    if (isBlockingAsync) {
+      return;
+    }
+
+    setBlockingError(null);
+    setReviewError(null);
     setPreparedImport(null);
-    setPhase('validating');
+    setPanel('validating');
 
     pickAndPrepareCalendarImport()
       .then(nextImport => {
         if (!nextImport) {
-          setPhase('idle');
+          setPanel('choose');
           return;
         }
 
         setPreparedImport(nextImport);
-        setPhase('ready');
+        setPanel('review');
       })
       .catch(error => {
-        setPhase('idle');
-        setErrorState(describeImportError(error));
+        setBlockingError(describeImportError(error));
+        setPanel('error');
+      });
+  };
+
+  const handlePickAnotherFromReview = () => {
+    if (isBlockingAsync) {
+      return;
+    }
+
+    setReviewError(null);
+    setPanel('validating');
+
+    pickAndPrepareCalendarImport()
+      .then(nextImport => {
+        if (!nextImport) {
+          setPanel('review');
+          return;
+        }
+
+        setPreparedImport(nextImport);
+        setPanel('review');
+      })
+      .catch(error => {
+        setBlockingError(describeImportError(error));
+        setPanel('error');
       });
   };
 
   const applyPreparedImport = () => {
-    if (!preparedImport) {
+    if (!preparedImport || isBlockingAsync) {
       return;
     }
 
-    setErrorState(null);
-    setPhase('importing');
+    setReviewError(null);
+    setPanel('importing');
 
     replaceActiveYear(preparedImport.calendar)
       .then(() => {
-        onImportCompleted(preparedImport.calendar);
+        setSuccessCalendar(preparedImport.calendar);
+        setPanel('success');
       })
       .catch(() => {
-        setPhase('ready');
-        setErrorState({
+        setReviewError({
           title: t('importEntry.error.replaceTitle'),
           body: t('importEntry.error.replaceBody'),
           details: [t('importEntry.error.replaceDetail')],
         });
+        setPanel('review');
       });
   };
 
-  const handleConfirmImport = () => {
-    if (!preparedImport || isBusy) {
+  const openConfirm = () => {
+    if (!preparedImport || isBlockingAsync) {
       return;
     }
 
-    Alert.alert(
-      t('importEntry.confirm.title'),
-      t('importEntry.confirm.body', {
-        currentYear: activeYear,
-        importedYear: preparedImport.calendar.year,
-      }),
-      [
-        {
-          text: t('common.cancel'),
-          style: 'cancel',
-        },
-        {
-          text: t('importEntry.confirm.action'),
-          style: 'destructive',
-          onPress: applyPreparedImport,
-        },
-      ],
-    );
+    setReviewError(null);
+    setPanel('confirm');
   };
 
+  const retryReplaceFromReview = () => {
+    if (!preparedImport || isBlockingAsync) {
+      return;
+    }
+
+    setReviewError(null);
+    applyPreparedImport();
+  };
+
+  const headerBackDisabled = isBlockingAsync;
+  const stepperIndex = getStepperIndex(panel);
+
   return (
-    <ScrollView
+    <View
       style={[
-        styles.container,
+        styles.root,
         {
           backgroundColor: palette.background,
           paddingTop: safeAreaInsets.top + layout.safeAreaTopExtra,
         },
       ]}
-      contentContainerStyle={[
-        styles.content,
-        {
-          paddingBottom: safeAreaInsets.bottom + layout.settingsScrollBottom,
-        },
-      ]}
     >
       <View style={styles.appBar}>
         <IconCircleButton
-          onPress={onBack}
+          onPress={headerBackDisabled ? undefined : handleHeaderBack}
           palette={palette}
           accessibilityLabel={t('common.navigateBack')}
         >
@@ -239,204 +314,476 @@ export function ImportEntryScreen({
         <View style={styles.appBarSpacer} />
       </View>
 
-      <View
-        style={[
-          styles.heroCard,
-          {
-            backgroundColor: palette.surface,
-            borderColor: palette.border,
-          },
+      <ImportStepper
+        currentIndex={stepperIndex}
+        palette={palette}
+        labels={[
+          t('importEntry.step.file'),
+          t('importEntry.step.preview'),
+          t('importEntry.step.confirm'),
         ]}
-      >
-        <Text style={[styles.eyebrow, { color: palette.subtitle }]}>
-          {t('importEntry.eyebrow')}
-        </Text>
-        <Text style={[styles.heroTitle, { color: palette.title }]}>
-          {t('importEntry.heroTitle')}
-        </Text>
-        <Text style={[styles.heroSubtitle, { color: palette.subtitle }]}>
-          {t('importEntry.heroSubtitle')}
-        </Text>
-      </View>
+      />
 
-      <View
-        style={[
-          styles.infoCard,
-          {
-            backgroundColor: palette.surface,
-            borderColor: palette.border,
-          },
-        ]}
-      >
-        <Text style={[styles.cardTitle, { color: palette.title }]}>
-          {t('importEntry.currentYear.title')}
-        </Text>
-        <Text style={[styles.cardBody, { color: palette.subtitle }]}>
-          {t('importEntry.currentYear.subtitle', { year: activeYear })}
-        </Text>
-        <Text style={[styles.yearBadge, { color: palette.title }]}>{activeYear}</Text>
-      </View>
+      <View style={styles.body}>
+        {panel === 'choose' ? (
+          <ScrollView
+            contentContainerStyle={[
+              styles.scrollBody,
+              { paddingBottom: safeAreaInsets.bottom + layout.settingsScrollBottom },
+            ]}
+            keyboardShouldPersistTaps="handled"
+          >
+            <View
+              style={[
+                styles.heroCard,
+                {
+                  backgroundColor: palette.surface,
+                  borderColor: palette.border,
+                },
+              ]}
+            >
+              <Text style={[styles.eyebrow, { color: palette.subtitle }]}>
+                {t('importEntry.eyebrow')}
+              </Text>
+              <Text style={[styles.heroTitle, { color: palette.title }]}>
+                {t('importEntry.choose.headline')}
+              </Text>
+              <Text style={[styles.heroSubtitle, { color: palette.subtitle }]}>
+                {t('importEntry.choose.supporting')}
+              </Text>
+            </View>
 
-      <View
-        style={[
-          styles.infoCard,
-          {
-            backgroundColor: palette.surface,
-            borderColor: palette.border,
-          },
-        ]}
-      >
-        <Text style={[styles.cardTitle, { color: palette.title }]}>
-          {t('importEntry.fileCard.title')}
-        </Text>
-        <Text style={[styles.cardBody, { color: palette.subtitle }]}>
-          {preparedImport
-            ? t('importEntry.fileCard.readySubtitle')
-            : t('importEntry.fileCard.idleSubtitle')}
-        </Text>
-        {preparedImport ? (
-          <View style={styles.detailList}>
-            <InfoRow
-              label={t('importEntry.fileCard.fileName')}
-              value={preparedImport.file.name}
+            <View
+              style={[
+                styles.infoCard,
+                {
+                  backgroundColor: palette.surface,
+                  borderColor: palette.border,
+                },
+              ]}
+            >
+              <Text style={[styles.cardTitle, { color: palette.title }]}>
+                {t('importEntry.currentYear.title')}
+              </Text>
+              <Text style={[styles.cardBody, { color: palette.subtitle }]}>
+                {t('importEntry.currentYear.subtitle', { year: activeYear })}
+              </Text>
+              <Text style={[styles.yearBadge, { color: palette.title }]}>
+                {activeYear}
+              </Text>
+            </View>
+
+            <ActionButton
+              label={t('importEntry.actions.chooseFile')}
+              onPress={handlePickFile}
+              disabled={false}
               palette={palette}
             />
-            <InfoRow
-              label={t('importEntry.fileCard.detectedYear')}
-              value={String(preparedImport.calendar.year)}
+
+            <View
+              style={[
+                styles.infoCard,
+                {
+                  backgroundColor: palette.surface,
+                  borderColor: palette.border,
+                },
+              ]}
+            >
+              <Text style={[styles.cardTitle, { color: palette.title }]}>
+                {t('importEntry.flow.title')}
+              </Text>
+              <Text style={[styles.stepText, { color: palette.subtitle }]}>
+                {t('importEntry.flow.step1')}
+              </Text>
+              <Text style={[styles.stepText, { color: palette.subtitle }]}>
+                {t('importEntry.flow.step2')}
+              </Text>
+              <Text style={[styles.stepText, { color: palette.subtitle }]}>
+                {t('importEntry.flow.step3')}
+              </Text>
+            </View>
+          </ScrollView>
+        ) : null}
+
+        {panel === 'validating' ? (
+          <CenteredState
+            palette={palette}
+            bottomInset={safeAreaInsets.bottom + layout.settingsScrollBottom}
+            headline={t('importEntry.validating.headline')}
+            supporting={t('importEntry.validating.supporting')}
+            showSpinner
+          />
+        ) : null}
+
+        {panel === 'review' && preparedImport && previewStats ? (
+          <ScrollView
+            contentContainerStyle={[
+              styles.scrollBody,
+              { paddingBottom: safeAreaInsets.bottom + layout.settingsScrollBottom },
+            ]}
+            keyboardShouldPersistTaps="handled"
+          >
+            <Text style={[styles.panelHeadline, { color: palette.title }]}>
+              {t('importEntry.review.headline')}
+            </Text>
+            <Text style={[styles.panelSupporting, { color: palette.subtitle }]}>
+              {t('importEntry.review.supporting')}
+            </Text>
+
+            <View
+              style={[
+                styles.infoCard,
+                {
+                  backgroundColor: palette.surface,
+                  borderColor: palette.border,
+                },
+              ]}
+            >
+              <Text style={[styles.cardTitle, { color: palette.title }]}>
+                {t('importEntry.fileCard.title')}
+              </Text>
+              <Text style={[styles.cardBody, { color: palette.subtitle }]}>
+                {t('importEntry.fileCard.readySubtitle')}
+              </Text>
+              <View style={styles.detailList}>
+                <InfoRow
+                  label={t('importEntry.fileCard.fileName')}
+                  value={preparedImport.file.name}
+                  palette={palette}
+                />
+                <InfoRow
+                  label={t('importEntry.fileCard.detectedYear')}
+                  value={String(preparedImport.calendar.year)}
+                  palette={palette}
+                />
+                {formatFileSize(preparedImport.file.size) ? (
+                  <InfoRow
+                    label={t('importEntry.fileCard.fileSize')}
+                    value={formatFileSize(preparedImport.file.size)!}
+                    palette={palette}
+                  />
+                ) : null}
+              </View>
+            </View>
+
+            <View
+              style={[
+                styles.infoCard,
+                {
+                  backgroundColor: palette.surface,
+                  borderColor: palette.border,
+                },
+              ]}
+            >
+              <Text style={[styles.cardTitle, { color: palette.title }]}>
+                {t('importEntry.preview.title')}
+              </Text>
+              <Text style={[styles.cardBody, { color: palette.subtitle }]}>
+                {t('importEntry.preview.subtitle', {
+                  year: preparedImport.calendar.year,
+                })}
+              </Text>
+              <View style={styles.detailList}>
+                <InfoRow
+                  label={t('importEntry.preview.totalDays')}
+                  value={String(previewStats.totalDays)}
+                  palette={palette}
+                />
+                <InfoRow
+                  label={t('importEntry.preview.workingDays')}
+                  value={String(previewStats.workingDays)}
+                  palette={palette}
+                />
+                <InfoRow
+                  label={t('importEntry.preview.nonWorkingDays')}
+                  value={String(previewStats.nonWorkingDays)}
+                  palette={palette}
+                />
+                <InfoRow
+                  label={t('importEntry.preview.workHours')}
+                  value={String(previewStats.workHours)}
+                  palette={palette}
+                />
+              </View>
+            </View>
+
+            {reviewError ? (
+              <View
+                style={[
+                  styles.infoCard,
+                  {
+                    backgroundColor: palette.surface,
+                    borderColor: palette.holidayBorder,
+                  },
+                ]}
+              >
+                <Text style={[styles.cardTitle, { color: palette.title }]}>
+                  {reviewError.title}
+                </Text>
+                <Text style={[styles.cardBody, { color: palette.subtitle }]}>
+                  {reviewError.body}
+                </Text>
+                <View style={styles.errorList}>
+                  {reviewError.details.map(detail => (
+                    <Text
+                      key={detail}
+                      style={[styles.errorText, { color: palette.subtitle }]}
+                    >
+                      {`\u2022 ${detail}`}
+                    </Text>
+                  ))}
+                </View>
+                <ActionButton
+                  label={t('importEntry.error.tryAgain')}
+                  onPress={retryReplaceFromReview}
+                  disabled={false}
+                  palette={palette}
+                />
+              </View>
+            ) : null}
+
+            <ActionButton
+              label={t('importEntry.actions.replaceYear')}
+              onPress={openConfirm}
+              disabled={false}
+              palette={palette}
+              variant="danger"
+            />
+            <ActionButton
+              label={t('importEntry.actions.chooseAnotherFile')}
+              onPress={handlePickAnotherFromReview}
+              disabled={false}
               palette={palette}
             />
-            {formatFileSize(preparedImport.file.size) ? (
-              <InfoRow
-                label={t('importEntry.fileCard.fileSize')}
-                value={formatFileSize(preparedImport.file.size)!}
-                palette={palette}
+          </ScrollView>
+        ) : null}
+
+        {panel === 'confirm' && preparedImport ? (
+          <ScrollView
+            contentContainerStyle={[
+              styles.scrollBody,
+              { paddingBottom: safeAreaInsets.bottom + layout.settingsScrollBottom },
+            ]}
+            keyboardShouldPersistTaps="handled"
+          >
+            <View
+              style={[
+                styles.infoCard,
+                {
+                  backgroundColor: palette.surface,
+                  borderColor: palette.holidayBorder,
+                },
+              ]}
+            >
+              <Text style={[styles.cardTitle, { color: palette.title }]}>
+                {t('importEntry.confirm.screenTitle')}
+              </Text>
+              <Text style={[styles.confirmCompare, { color: palette.title }]}>
+                {t('importEntry.confirm.compare', {
+                  currentYear: activeYear,
+                  importedYear: preparedImport.calendar.year,
+                })}
+              </Text>
+              <Text style={[styles.cardBody, { color: palette.subtitle }]}>
+                {t('importEntry.confirm.title')}
+              </Text>
+            </View>
+
+            <View
+              style={[
+                styles.infoCard,
+                {
+                  backgroundColor: palette.surface,
+                  borderColor: palette.border,
+                },
+              ]}
+            >
+              <Text style={[styles.stepText, { color: palette.subtitle }]}>
+                {`\u2022 ${t('importEntry.confirm.bullet1')}`}
+              </Text>
+              <Text style={[styles.stepText, { color: palette.subtitle }]}>
+                {`\u2022 ${t('importEntry.confirm.bullet2')}`}
+              </Text>
+              <Text style={[styles.stepText, { color: palette.subtitle }]}>
+                {`\u2022 ${t('importEntry.confirm.bullet3')}`}
+              </Text>
+            </View>
+
+            <ActionButton
+              label={t('importEntry.confirm.action')}
+              onPress={applyPreparedImport}
+              disabled={false}
+              palette={palette}
+              variant="danger"
+            />
+            <GhostButton
+              label={t('importEntry.confirm.backToReview')}
+              onPress={() => setPanel('review')}
+              palette={palette}
+            />
+          </ScrollView>
+        ) : null}
+
+        {panel === 'importing' ? (
+          <CenteredState
+            palette={palette}
+            bottomInset={safeAreaInsets.bottom + layout.settingsScrollBottom}
+            headline={t('importEntry.importing.headline')}
+            supporting={t('importEntry.importing.supporting')}
+            showSpinner
+          />
+        ) : null}
+
+        {panel === 'success' && successCalendar ? (
+          <ScrollView
+            contentContainerStyle={[
+              styles.scrollBody,
+              styles.successScroll,
+              { paddingBottom: safeAreaInsets.bottom + layout.settingsScrollBottom },
+            ]}
+            keyboardShouldPersistTaps="handled"
+          >
+            <Text style={[styles.successMark, { color: palette.selectedBorder }]}>✓</Text>
+            <Text style={[styles.panelHeadline, { color: palette.title }]}>
+              {t('importEntry.success.headline')}
+            </Text>
+            <Text style={[styles.panelSupporting, { color: palette.subtitle }]}>
+              {t('importEntry.success.supporting', { year: successCalendar.year })}
+            </Text>
+            <ActionButton
+              label={t('importEntry.success.toCalendar')}
+              onPress={() => onImportCompleted(successCalendar)}
+              disabled={false}
+              palette={palette}
+            />
+          </ScrollView>
+        ) : null}
+
+        {panel === 'error' && blockingError ? (
+          <ScrollView
+            contentContainerStyle={[
+              styles.scrollBody,
+              styles.successScroll,
+              { paddingBottom: safeAreaInsets.bottom + layout.settingsScrollBottom },
+            ]}
+            keyboardShouldPersistTaps="handled"
+          >
+            <Text style={[styles.errorMark, { color: palette.holidayBorder }]}>!</Text>
+            <Text style={[styles.panelHeadline, { color: palette.title }]}>
+              {blockingError.title}
+            </Text>
+            <Text style={[styles.panelSupporting, { color: palette.subtitle }]}>
+              {blockingError.body}
+            </Text>
+            <View style={styles.errorList}>
+              {blockingError.details.map(detail => (
+                <Text
+                  key={detail}
+                  style={[styles.errorText, { color: palette.subtitle }]}
+                >
+                  {`\u2022 ${detail}`}
+                </Text>
+              ))}
+            </View>
+            <ActionButton
+              label={t('importEntry.error.pickAnotherFile')}
+              onPress={handlePickFile}
+              disabled={false}
+              palette={palette}
+            />
+            <GhostButton
+              label={t('importEntry.error.startOver')}
+              onPress={goToChoose}
+              palette={palette}
+            />
+          </ScrollView>
+        ) : null}
+      </View>
+    </View>
+  );
+}
+
+type ImportStepperProps = {
+  currentIndex: number;
+  labels: [string, string, string];
+  palette: ReturnType<typeof useAppTheme>['palette'];
+};
+
+function ImportStepper({ currentIndex, labels, palette }: ImportStepperProps) {
+  return (
+    <View style={styles.stepperRow}>
+      {labels.map((label, index) => {
+        const isComplete = index < currentIndex;
+        const isCurrent = index === currentIndex;
+
+        const circleStyle = isComplete
+          ? { backgroundColor: palette.selectedBorder, borderColor: palette.selectedBorder }
+          : isCurrent
+            ? { backgroundColor: palette.surface, borderColor: palette.selectedBorder }
+            : { backgroundColor: palette.surfaceMuted, borderColor: palette.border };
+
+        const textColor = isComplete || isCurrent ? palette.title : palette.subtitle;
+
+        return (
+          <View key={label} style={styles.stepperSegment}>
+            <View style={styles.stepperNode}>
+              <View style={[styles.stepperCircle, circleStyle]}>
+                <Text
+                  style={[
+                    styles.stepperCircleText,
+                    { color: isComplete ? '#FFFFFF' : textColor },
+                  ]}
+                >
+                  {isComplete ? '✓' : index + 1}
+                </Text>
+              </View>
+              <Text style={[styles.stepperLabel, { color: textColor }]} numberOfLines={2}>
+                {label}
+              </Text>
+            </View>
+            {index < labels.length - 1 ? (
+              <View
+                style={[
+                  styles.stepperConnector,
+                  {
+                    backgroundColor:
+                      index < currentIndex ? palette.selectedBorder : palette.border,
+                  },
+                ]}
               />
             ) : null}
           </View>
-        ) : null}
-        <ActionButton
-          label={
-            phase === 'validating'
-              ? t('importEntry.actions.validating')
-              : preparedImport
-                ? t('importEntry.actions.chooseAnotherFile')
-                : t('importEntry.actions.chooseFile')
-          }
-          onPress={handlePickFile}
-          disabled={isBusy}
-          palette={palette}
-          isBusy={phase === 'validating'}
-        />
-      </View>
+        );
+      })}
+    </View>
+  );
+}
 
-      {preparedImport && previewStats ? (
-        <View
-          style={[
-            styles.infoCard,
-            {
-              backgroundColor: palette.surface,
-              borderColor: palette.border,
-            },
-          ]}
-        >
-          <Text style={[styles.cardTitle, { color: palette.title }]}>
-            {t('importEntry.preview.title')}
-          </Text>
-          <Text style={[styles.cardBody, { color: palette.subtitle }]}>
-            {t('importEntry.preview.subtitle', {
-              year: preparedImport.calendar.year,
-            })}
-          </Text>
-          <View style={styles.detailList}>
-            <InfoRow
-              label={t('importEntry.preview.totalDays')}
-              value={String(previewStats.totalDays)}
-              palette={palette}
-            />
-            <InfoRow
-              label={t('importEntry.preview.workingDays')}
-              value={String(previewStats.workingDays)}
-              palette={palette}
-            />
-            <InfoRow
-              label={t('importEntry.preview.nonWorkingDays')}
-              value={String(previewStats.nonWorkingDays)}
-              palette={palette}
-            />
-            <InfoRow
-              label={t('importEntry.preview.workHours')}
-              value={String(previewStats.workHours)}
-              palette={palette}
-            />
-          </View>
-          <ActionButton
-            label={
-              phase === 'importing'
-                ? t('importEntry.actions.importing')
-                : t('importEntry.actions.replaceYear')
-            }
-            onPress={handleConfirmImport}
-            disabled={isBusy}
-            palette={palette}
-            isBusy={phase === 'importing'}
-            variant="danger"
-          />
-        </View>
+type CenteredStateProps = {
+  palette: ReturnType<typeof useAppTheme>['palette'];
+  bottomInset: number;
+  headline: string;
+  supporting: string;
+  showSpinner: boolean;
+};
+
+function CenteredState({
+  palette,
+  bottomInset,
+  headline,
+  supporting,
+  showSpinner,
+}: CenteredStateProps) {
+  return (
+    <View style={[styles.centeredWrap, { paddingBottom: bottomInset }]}>
+      {showSpinner ? (
+        <ActivityIndicator size="large" color={palette.selectedBorder} />
       ) : null}
-
-      {errorState ? (
-        <View
-          style={[
-            styles.infoCard,
-            {
-              backgroundColor: palette.surface,
-              borderColor: palette.holidayBorder,
-            },
-          ]}
-        >
-          <Text style={[styles.cardTitle, { color: palette.title }]}>
-            {errorState.title}
-          </Text>
-          <Text style={[styles.cardBody, { color: palette.subtitle }]}>
-            {errorState.body}
-          </Text>
-          <View style={styles.errorList}>
-            {errorState.details.map(detail => (
-              <Text
-                key={detail}
-                style={[styles.errorText, { color: palette.subtitle }]}
-              >
-                {`\u2022 ${detail}`}
-              </Text>
-            ))}
-          </View>
-        </View>
-      ) : null}
-
-      <View
-        style={[
-          styles.infoCard,
-          {
-            backgroundColor: palette.surface,
-            borderColor: palette.border,
-          },
-        ]}
-      >
-        <Text style={[styles.cardTitle, { color: palette.title }]}>
-          {t('importEntry.flow.title')}
-        </Text>
-        <Text style={[styles.stepText, { color: palette.subtitle }]}>
-          {t('importEntry.flow.step1')}
-        </Text>
-        <Text style={[styles.stepText, { color: palette.subtitle }]}>
-          {t('importEntry.flow.step2')}
-        </Text>
-        <Text style={[styles.stepText, { color: palette.subtitle }]}>
-          {t('importEntry.flow.step3')}
-        </Text>
-      </View>
-    </ScrollView>
+      <Text style={[styles.centeredHeadline, { color: palette.title }]}>{headline}</Text>
+      <Text style={[styles.centeredSupporting, { color: palette.subtitle }]}>
+        {supporting}
+      </Text>
+    </View>
   );
 }
 
@@ -464,12 +811,12 @@ function ActionButton({
     <Pressable
       accessibilityRole="button"
       onPress={onPress}
-      disabled={disabled}
+      disabled={disabled || isBusy}
       style={({ pressed }) => [
         styles.actionButton,
         {
           backgroundColor,
-          opacity: disabled ? 0.7 : pressed ? 0.9 : 1,
+          opacity: disabled || isBusy ? 0.7 : pressed ? 0.9 : 1,
         },
       ]}
     >
@@ -478,6 +825,31 @@ function ActionButton({
       ) : (
         <Text style={styles.actionButtonText}>{label}</Text>
       )}
+    </Pressable>
+  );
+}
+
+type GhostButtonProps = {
+  label: string;
+  onPress: () => void;
+  palette: ReturnType<typeof useAppTheme>['palette'];
+};
+
+function GhostButton({ label, onPress, palette }: GhostButtonProps) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.ghostButton,
+        {
+          borderColor: palette.border,
+          backgroundColor: palette.surface,
+          opacity: pressed ? 0.85 : 1,
+        },
+      ]}
+    >
+      <Text style={[styles.ghostButtonText, { color: palette.title }]}>{label}</Text>
     </Pressable>
   );
 }
@@ -500,17 +872,25 @@ function InfoRow({
 }
 
 const styles = StyleSheet.create({
-  container: {
+  root: {
     flex: 1,
   },
-  content: {
+  body: {
+    flex: 1,
+  },
+  scrollBody: {
     paddingHorizontal: layout.screenPaddingH,
     gap: layout.contentStackGap,
+  },
+  successScroll: {
+    flexGrow: 1,
+    justifyContent: 'center',
   },
   appBar: {
     flexDirection: 'row',
     alignItems: 'center',
     minHeight: 56,
+    paddingHorizontal: layout.screenPaddingH,
   },
   appBarTitle: {
     flex: 1,
@@ -521,6 +901,47 @@ const styles = StyleSheet.create({
   appBarSpacer: {
     width: 36,
     height: 36,
+  },
+  stepperRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    paddingHorizontal: layout.screenPaddingH,
+    paddingBottom: 12,
+  },
+  stepperSegment: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  stepperNode: {
+    alignItems: 'center',
+    minWidth: 68,
+    maxWidth: 92,
+  },
+  stepperCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  stepperCircleText: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  stepperLabel: {
+    marginTop: 6,
+    fontSize: 11,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  stepperConnector: {
+    width: 72,
+    height: 2,
+    marginTop: 15,
+    marginHorizontal: 8,
+    borderRadius: 1,
   },
   heroCard: {
     borderWidth: 1,
@@ -535,7 +956,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.8,
   },
   heroTitle: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: '700',
   },
   heroSubtitle: {
@@ -563,6 +984,19 @@ const styles = StyleSheet.create({
   stepText: {
     fontSize: 14,
     lineHeight: 20,
+  },
+  panelHeadline: {
+    fontSize: 22,
+    fontWeight: '700',
+  },
+  panelSupporting: {
+    fontSize: 15,
+    lineHeight: 22,
+  },
+  confirmCompare: {
+    fontSize: 26,
+    fontWeight: '800',
+    letterSpacing: 0.5,
   },
   detailList: {
     gap: 8,
@@ -593,11 +1027,49 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
   },
+  ghostButton: {
+    minHeight: 46,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    borderWidth: 1,
+  },
+  ghostButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
   errorList: {
     gap: 6,
   },
   errorText: {
     fontSize: 13,
     lineHeight: 18,
+  },
+  centeredWrap: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: layout.screenPaddingH,
+    gap: 16,
+  },
+  centeredHeadline: {
+    fontSize: 22,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+  centeredSupporting: {
+    fontSize: 15,
+    lineHeight: 22,
+    textAlign: 'center',
+  },
+  successMark: {
+    fontSize: 56,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+  errorMark: {
+    fontSize: 48,
+    fontWeight: '800',
+    textAlign: 'center',
   },
 });

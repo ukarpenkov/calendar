@@ -201,7 +201,7 @@ test('opens dedicated JSON import entry from settings', async () => {
 
   expect(JSON.stringify(renderer!.toJSON())).toContain('JSON import');
   expect(JSON.stringify(renderer!.toJSON())).toContain(
-    'dedicated entry point for replacing the active year',
+    'Load a calendar year from a JSON file',
   );
 });
 

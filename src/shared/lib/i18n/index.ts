@@ -167,6 +167,36 @@ const translations = {
       '2. Validate and normalize the selected year before any write.',
     'importEntry.flow.step3':
       '3. Ask for confirmation before replacing the active SQLite dataset.',
+    'importEntry.step.file': 'File',
+    'importEntry.step.preview': 'Check',
+    'importEntry.step.confirm': 'Confirm',
+    'importEntry.choose.headline': 'Load a calendar year from a JSON file',
+    'importEntry.choose.supporting':
+      'The app only reads a file you pick on this device. Nothing changes until you confirm replacement.',
+    'importEntry.validating.headline': 'Checking your file',
+    'importEntry.validating.supporting':
+      'Parsing JSON, validating structure, and building the day list. This usually takes a moment.',
+    'importEntry.review.headline': 'File looks good',
+    'importEntry.review.supporting':
+      'Review the summary below. When you continue, you will confirm replacing the active year.',
+    'importEntry.confirm.screenTitle': 'Confirm replacement',
+    'importEntry.confirm.compare': '{{currentYear}} → {{importedYear}}',
+    'importEntry.confirm.bullet1':
+      'The SQLite calendar for the active year is fully replaced; there is no merge.',
+    'importEntry.confirm.bullet2': 'Only this device is affected; there is no cloud upload.',
+    'importEntry.confirm.bullet3':
+      'You can import another file later from settings if you need to correct a mistake.',
+    'importEntry.confirm.backToReview': 'Back to summary',
+    'importEntry.importing.headline': 'Saving to local storage',
+    'importEntry.importing.supporting':
+      'Writing the validated year into SQLite. Please keep the app open.',
+    'importEntry.success.headline': 'Import complete',
+    'importEntry.success.supporting':
+      'Year {{year}} is now the active calendar on this device.',
+    'importEntry.success.toCalendar': 'Open year view',
+    'importEntry.error.tryAgain': 'Try again',
+    'importEntry.error.pickAnotherFile': 'Pick another file',
+    'importEntry.error.startOver': 'Start over',
   },
   ru: {
     'common.appName': 'Календарь',
@@ -287,6 +317,36 @@ const translations = {
       '2. Провалидирует и нормализует выбранный год до любой записи в БД.',
     'importEntry.flow.step3':
       '3. Запросит явное подтверждение перед заменой активного набора в SQLite.',
+    'importEntry.step.file': 'Файл',
+    'importEntry.step.preview': 'Проверка',
+    'importEntry.step.confirm': 'Подтверждение',
+    'importEntry.choose.headline': 'Загрузить год календаря из JSON-файла',
+    'importEntry.choose.supporting':
+      'Приложение читает только файл, который вы выберете на устройстве. Данные не меняются, пока вы не подтвердите замену.',
+    'importEntry.validating.headline': 'Проверяем файл',
+    'importEntry.validating.supporting':
+      'Разбор JSON, проверка структуры и сбор списка дней. Обычно это занимает несколько секунд.',
+    'importEntry.review.headline': 'Файл прошел проверку',
+    'importEntry.review.supporting':
+      'Ниже сводка по году. Далее откроется шаг подтверждения замены активного года.',
+    'importEntry.confirm.screenTitle': 'Подтвердите замену',
+    'importEntry.confirm.compare': '{{currentYear}} → {{importedYear}}',
+    'importEntry.confirm.bullet1':
+      'Календарь активного года в SQLite полностью заменяется; объединения данных нет.',
+    'importEntry.confirm.bullet2':
+      'Изменения только на этом устройстве; облачной синхронизации нет.',
+    'importEntry.confirm.bullet3':
+      'При ошибке вы сможете импортировать другой файл снова из настроек.',
+    'importEntry.confirm.backToReview': 'К сводке',
+    'importEntry.importing.headline': 'Сохраняем в локальное хранилище',
+    'importEntry.importing.supporting':
+      'Записываем проверенный год в SQLite. Не закрывайте приложение.',
+    'importEntry.success.headline': 'Импорт выполнен',
+    'importEntry.success.supporting': 'Год {{year}} теперь активный календарь на устройстве.',
+    'importEntry.success.toCalendar': 'Открыть обзор года',
+    'importEntry.error.tryAgain': 'Повторить',
+    'importEntry.error.pickAnotherFile': 'Выбрать другой файл',
+    'importEntry.error.startOver': 'С начала',
   },
 } as const;
 
