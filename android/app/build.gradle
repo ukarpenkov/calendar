@@ -108,11 +108,11 @@ android {
                             "android/keystore.properties: укажите storeFile, storePassword, keyAlias и keyPassword " +
                             "(шаблон: android/keystore.properties.example)")
                 }
-                def storeFile = rootProject.file(storeFileProp)
-                if (!storeFile.isFile()) {
-                    throw new GradleException("Keystore не найден по пути из storeFile: ${storeFile}")
+                def releaseKeystoreFile = rootProject.file(storeFileProp)
+                if (!releaseKeystoreFile.isFile()) {
+                    throw new GradleException("Keystore не найден по пути из storeFile: ${releaseKeystoreFile}")
                 }
-                storeFile storeFile
+                storeFile releaseKeystoreFile
                 storePassword keystoreProperties['storePassword']
                 keyAlias keyAliasProp
                 keyPassword keystoreProperties['keyPassword']
