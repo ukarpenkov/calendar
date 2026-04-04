@@ -3,17 +3,14 @@ declare function require(moduleName: string): unknown;
 import type { DB, SQLBatchTuple } from '@op-engineering/op-sqlite';
 
 import { parseValidateAndNormalizeCalendarImport } from '../../../features/calendar-import';
+import type { BundledCalendarRegionCode } from '../../../shared/config/agreedLanguagesAndBundledCalendars';
 import {
   ACTIVE_YEAR_METADATA_KEY,
   getDatabase,
   initializeDatabase,
 } from '../../../shared/lib/db';
-import {
-  detectDeviceLanguage,
-  type AppLanguage,
-} from '../../../shared/lib/i18n';
-import { getStoredLanguage } from '../../../shared/lib/settings';
-import { getBundledCalendarJsonObject } from './bundledCalendarJsonByLanguage';
+import { resolveBundledCalendarRegionForSeed } from '../../../shared/lib/settings';
+import { getBundledCalendarJsonForRegion } from './bundledCalendarJsonByLanguage';
 import {
   mapCalendarDayRow,
   mapCalendarDayToSqlParams,
@@ -111,24 +108,23 @@ export interface CalendarRepository {
 
 export type CalendarRepositoryDependencies = {
   /**
-   * Язык для выбора bundled JSON при сидировании пустой/битой БД.
-   * По умолчанию: сохранённый в SQLite язык интерфейса, иначе `detectDeviceLanguage()`.
+   * Регион предзагруженного JSON при сидировании пустой/битой БД.
+   * По умолчанию: явный выбор из настроек или язык UI (`en` → набор `ru`).
    */
-  resolveLanguageForBundledSeed?: () => Promise<AppLanguage>;
+  resolveBundledRegionForSeed?: () => Promise<BundledCalendarRegionCode>;
 };
 
-async function defaultResolveLanguageForBundledSeed(): Promise<AppLanguage> {
-  const stored = await getStoredLanguage();
-  return stored ?? detectDeviceLanguage();
+async function defaultResolveBundledRegionForSeed(): Promise<BundledCalendarRegionCode> {
+  return resolveBundledCalendarRegionForSeed();
 }
 
 export function createCalendarRepository(
   db: DB,
   dependencies?: CalendarRepositoryDependencies,
 ): CalendarRepository {
-  const resolveLanguageForBundledSeed =
-    dependencies?.resolveLanguageForBundledSeed ??
-    defaultResolveLanguageForBundledSeed;
+  const resolveBundledRegionForSeed =
+    dependencies?.resolveBundledRegionForSeed ??
+    defaultResolveBundledRegionForSeed;
 
   return {
     async seedBundledYearIfNeeded() {
@@ -144,8 +140,8 @@ export function createCalendarRepository(
         }
       }
 
-      const appLanguage = await resolveLanguageForBundledSeed();
-      const bundledRaw = getBundledCalendarJsonObject(appLanguage);
+      const region = await resolveBundledRegionForSeed();
+      const bundledRaw = getBundledCalendarJsonForRegion(region);
       const bundledCalendar =
         parseValidateAndNormalizeCalendarImport(bundledRaw);
 

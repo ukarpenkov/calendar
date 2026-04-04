@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BackHandler, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
 import {
   SafeAreaProvider,
@@ -11,6 +11,11 @@ import {
   seedBundledYearIfNeeded,
   type CalendarYear,
 } from '../entities/calendar';
+import {
+  registerCalendarSyncOnBundledRegionChange,
+  syncActiveYearWithBundledRegion,
+} from '../features/calendar-language-sync';
+import { BundledCalendarRegionProvider } from './providers/bundled-calendar-region';
 import {
   AppLocalizationProvider,
   useAppLocalization,
@@ -28,7 +33,9 @@ function App() {
     <SafeAreaProvider>
       <AppThemeProvider>
         <AppLocalizationProvider>
-          <AppRoot />
+          <BundledCalendarRegionProvider>
+            <AppRoot />
+          </BundledCalendarRegionProvider>
         </AppLocalizationProvider>
       </AppThemeProvider>
     </SafeAreaProvider>
@@ -52,6 +59,42 @@ function AppContent() {
   const { t } = useAppLocalization();
   const [status, setStatus] = useState<AppContentStatus>({ kind: 'loading' });
   const [bootstrapGeneration, setBootstrapGeneration] = useState(0);
+  const statusRef = useRef(status);
+  statusRef.current = status;
+
+  useEffect(() => {
+    registerCalendarSyncOnBundledRegionChange(
+      async (_previousRegion, nextRegion) => {
+        const current = statusRef.current;
+        if (current.kind !== 'ready') {
+          return;
+        }
+
+        try {
+          const updated = await syncActiveYearWithBundledRegion({
+            region: nextRegion,
+            activeCalendarYear: current.calendar.year,
+          });
+          if (!updated) {
+            return;
+          }
+
+          setStatus(latest => {
+            if (latest.kind !== 'ready') {
+              return latest;
+            }
+            return { ...latest, calendar: updated };
+          });
+        } catch {
+          // Оставляем текущий календарь в UI; SQLite не меняется при ошибке до завершения replace.
+        }
+      },
+    );
+
+    return () => {
+      registerCalendarSyncOnBundledRegionChange(null);
+    };
+  }, []);
 
   useEffect(() => {
     const onBackPress = () => {

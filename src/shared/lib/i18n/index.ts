@@ -1,4 +1,7 @@
-import type { AgreedAppLanguageCode } from '../../config/agreedLanguagesAndBundledCalendars';
+import type {
+  AgreedAppLanguageCode,
+  BundledCalendarRegionCode,
+} from '../../config/agreedLanguagesAndBundledCalendars';
 
 import { translations, type TranslationKey } from './messages/catalog';
 
@@ -164,11 +167,21 @@ function interpolate(template: string, params?: TranslationParams): string {
   });
 }
 
+const BUNDLED_REGION_LABEL_KEYS: Record<
+  BundledCalendarRegionCode,
+  TranslationKey
+> = {
+  ru: 'settings.bundledCalendar.chip.ru',
+  tr: 'settings.bundledCalendar.chip.tr',
+  id: 'settings.bundledCalendar.chip.id',
+  ja: 'settings.bundledCalendar.chip.ja',
+};
+
 /**
  * Maps a BCP 47 / ICU-style locale string (e.g. from `Intl`) to an app UI language.
- * Used for first-launch UI language when nothing is stored in SQLite; the same mapping
- * applies to the default bundled calendar via `seedBundledYearIfNeeded` (stored language
- * wins when present — see `createCalendarRepository`).
+ * Used for first-launch UI language when nothing is stored in SQLite. Предзагруженный
+ * календарь при пустой БД выбирается через `resolveBundledCalendarRegionForSeed`
+ * (явный регион в настройках или тот же вывод из языка, `en` → набор `ru`).
  */
 export function mapLocaleStringToAppLanguage(locale: string): AppLanguage {
   const normalized = locale.trim().toLowerCase();
@@ -257,4 +270,11 @@ export function getLanguageLabel(
 
 export function getLanguageNativeLabel(targetLanguage: AppLanguage): string {
   return LANGUAGE_NATIVE_AUTONYMS[targetLanguage];
+}
+
+export function getBundledRegionLabel(
+  language: AppLanguage,
+  region: BundledCalendarRegionCode,
+): string {
+  return getTranslation(language, BUNDLED_REGION_LABEL_KEYS[region]);
 }

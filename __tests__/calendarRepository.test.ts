@@ -24,7 +24,7 @@ describe('calendar sqlite repository', () => {
     db = open({ name: 'calendar-test.sqlite', location: ':memory:' });
     await initializeDatabase(db);
     repository = createCalendarRepository(db, {
-      resolveLanguageForBundledSeed: async () => 'en',
+      resolveBundledRegionForSeed: async () => 'ru',
     });
   });
 
@@ -58,9 +58,9 @@ describe('calendar sqlite repository', () => {
     expect(await repository.getActiveYear()).toBe(2026);
   });
 
-  it('seeds regional bundled JSON when resolver selects a non-default language', async () => {
+  it('seeds regional bundled JSON when resolver selects a non-default region', async () => {
     const jaRepository = createCalendarRepository(db, {
-      resolveLanguageForBundledSeed: async () => 'ja',
+      resolveBundledRegionForSeed: async () => 'ja',
     });
 
     const seededCalendar = await jaRepository.seedBundledYearIfNeeded();

@@ -44,8 +44,10 @@ jest.mock('../src/shared/lib/i18n', () => ({
 
 jest.mock('../src/shared/lib/settings', () => ({
   getStoredLanguage: jest.fn().mockResolvedValue(null),
+  getStoredBundledCalendarRegion: jest.fn().mockResolvedValue(null),
   getStoredTheme: jest.fn().mockResolvedValue(null),
   setStoredLanguage: jest.fn().mockResolvedValue(undefined),
+  setStoredBundledCalendarRegion: jest.fn().mockResolvedValue(undefined),
   setStoredTheme: jest.fn().mockResolvedValue(undefined),
 }));
 

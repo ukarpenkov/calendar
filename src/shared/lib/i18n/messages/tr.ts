@@ -37,6 +37,12 @@ export const trTranslations = {
   'settings.rows.importYear.subtitle':
     'JSON ile yıl değiştirme akışı için ayrı bir giriş ekranı açar.',
   'settings.rows.importYear.action': 'Aç',
+  'settings.rows.bundledCalendar.title': 'Üretim takvimi (2026)',
+  'settings.rows.bundledCalendar.subtitle': 'Yerleşik veri kümesi: {{region}}.',
+  'settings.bundledCalendar.chip.ru': 'Rusya',
+  'settings.bundledCalendar.chip.tr': 'Türkiye',
+  'settings.bundledCalendar.chip.id': 'Endonezya',
+  'settings.bundledCalendar.chip.ja': 'Japonya',
   'settings.sections.appearance.title': 'Görünüm',
   'settings.sections.appearance.subtitle':
     'Tema ayarları genel uygulama bağlamı üzerinden yönetilir.',

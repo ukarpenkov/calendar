@@ -35,6 +35,12 @@ export const enTranslations = {
     'settings.rows.importYear.subtitle':
       'Open a dedicated import entry screen and continue with the JSON replacement flow.',
     'settings.rows.importYear.action': 'Open',
+    'settings.rows.bundledCalendar.title': 'Production calendar (2026)',
+    'settings.rows.bundledCalendar.subtitle': 'Bundled dataset: {{region}}.',
+    'settings.bundledCalendar.chip.ru': 'Russia',
+    'settings.bundledCalendar.chip.tr': 'Türkiye',
+    'settings.bundledCalendar.chip.id': 'Indonesia',
+    'settings.bundledCalendar.chip.ja': 'Japan',
     'settings.sections.appearance.title': 'Appearance',
     'settings.sections.appearance.subtitle':
       'Theme settings are now controlled through the global app context.',

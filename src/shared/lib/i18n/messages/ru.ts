@@ -38,6 +38,12 @@ export const ruTranslations: Record<TranslationKey, string> = {
     'settings.rows.importYear.subtitle':
       'Открывает отдельный экран входа в flow замены года через локальный JSON.',
     'settings.rows.importYear.action': 'Открыть',
+    'settings.rows.bundledCalendar.title': 'Производственный календарь (2026)',
+    'settings.rows.bundledCalendar.subtitle': 'Встроенный набор: {{region}}.',
+    'settings.bundledCalendar.chip.ru': 'Россия',
+    'settings.bundledCalendar.chip.tr': 'Турция',
+    'settings.bundledCalendar.chip.id': 'Индонезия',
+    'settings.bundledCalendar.chip.ja': 'Япония',
     'settings.sections.appearance.title': 'Оформление',
     'settings.sections.appearance.subtitle':
       'Параметры темы управляются через глобальный контекст приложения.',

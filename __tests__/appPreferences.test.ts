@@ -61,4 +61,23 @@ describe('app preferences repository', () => {
 
     expect(await repository.getTheme()).toBeNull();
   });
+
+  it('stores and reads back the bundled calendar region', async () => {
+    expect(await repository.getBundledCalendarRegion()).toBeNull();
+
+    await repository.setBundledCalendarRegion('tr');
+    expect(await repository.getBundledCalendarRegion()).toBe('tr');
+
+    await repository.setBundledCalendarRegion('ja');
+    expect(await repository.getBundledCalendarRegion()).toBe('ja');
+  });
+
+  it('ignores invalid bundled calendar region values stored in metadata', async () => {
+    await db.execute(
+      'INSERT INTO app_metadata (key, value) VALUES (?, ?)',
+      ['bundled_calendar_region', 'xx'],
+    );
+
+    expect(await repository.getBundledCalendarRegion()).toBeNull();
+  });
 });

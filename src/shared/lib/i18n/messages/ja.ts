@@ -37,6 +37,12 @@ export const jaTranslations = {
   'settings.rows.importYear.subtitle':
     'ローカル JSON で年を置き換えるフロー用の専用画面を開きます。',
   'settings.rows.importYear.action': '開く',
+  'settings.rows.bundledCalendar.title': '標準の勤務カレンダー（2026）',
+  'settings.rows.bundledCalendar.subtitle': '同梱データ: {{region}}。',
+  'settings.bundledCalendar.chip.ru': 'ロシア',
+  'settings.bundledCalendar.chip.tr': 'トルコ',
+  'settings.bundledCalendar.chip.id': 'インドネシア',
+  'settings.bundledCalendar.chip.ja': '日本',
   'settings.sections.appearance.title': '外観',
   'settings.sections.appearance.subtitle':
     'テーマはアプリ全体のコンテキストで制御されます。',

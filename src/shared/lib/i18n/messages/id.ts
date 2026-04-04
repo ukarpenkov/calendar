@@ -37,6 +37,12 @@ export const idTranslations = {
   'settings.rows.importYear.subtitle':
     'Membuka layar khusus untuk alur penggantian tahun melalui JSON lokal.',
   'settings.rows.importYear.action': 'Buka',
+  'settings.rows.bundledCalendar.title': 'Kalender produksi (2026)',
+  'settings.rows.bundledCalendar.subtitle': 'Dataset bawaan: {{region}}.',
+  'settings.bundledCalendar.chip.ru': 'Rusia',
+  'settings.bundledCalendar.chip.tr': 'Türkiye',
+  'settings.bundledCalendar.chip.id': 'Indonesia',
+  'settings.bundledCalendar.chip.ja': 'Jepang',
   'settings.sections.appearance.title': 'Tampilan',
   'settings.sections.appearance.subtitle':
     'Pengaturan tema dikontrol melalui konteks aplikasi global.',

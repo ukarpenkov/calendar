@@ -60,14 +60,21 @@ export function AppLocalizationProvider({ children }: PropsWithChildren) {
     };
   }, []);
 
-  const handleSetLanguage = useCallback((nextLanguage: AppLanguage) => {
-    hasManualLanguageSelectionRef.current = true;
-    setLanguage(nextLanguage);
+  const handleSetLanguage = useCallback(
+    (nextLanguage: AppLanguage) => {
+      if (nextLanguage === language) {
+        return;
+      }
 
-    setStoredLanguage(nextLanguage).catch(() => {
-      // Ignore persistence failures to keep language switching responsive.
-    });
-  }, []);
+      hasManualLanguageSelectionRef.current = true;
+      setLanguage(nextLanguage);
+
+      setStoredLanguage(nextLanguage).catch(() => {
+        // Ignore persistence failures to keep language switching responsive.
+      });
+    },
+    [language],
+  );
 
   const value = useMemo<AppLocalizationContextValue>(
     () => ({
