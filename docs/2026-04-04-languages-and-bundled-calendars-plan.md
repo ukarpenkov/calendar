@@ -97,8 +97,10 @@
    - При смене языка на не-`en` цепочка с `changeCause: 'app_language'` **не** вызывает `replaceActiveYear`, если флаг установлен (импорт сохраняется). Явная смена региона в настройках (`changeCause: 'settings'`) по-прежнему подставляет выбранный bundled и снимает флаг.  
    - В настройках под блоком языка показывается короткая подсказка `settings.rows.language.userImportHint`, если активный год пришёл из импорта.
 
-7. **Названия праздников в данных**  
-   - В схеме дня уже есть `holiday_name_ru` и `holiday_name_en`; для новых языков либо расширить схему/SQLite, либо показывать fallback (например EN) до миграции БД.
+7. **Названия праздников в данных** — **выполнено (2026-04-04)**  
+   - Расширены SQLite и доменная модель: `holiday_name_tr`, `holiday_name_id`, `holiday_name_ja`; миграция `user_version` 1→2 (`ALTER TABLE … ADD COLUMN`).  
+   - В JSON-импорте необязательные поля `name_tr` / `name_id` / `name_ja`; в bundled `calendar2026TR.json` / `calendar2026IDN.json` / `calendar2026JP.json` заполнены (локальное имя продублировано из прежнего `name_ru` для региона).  
+   - Отображение в UI: `getHolidayDisplayName(day, language)` с fallback EN→RU при отсутствии локального поля (`MonthDetailScreen`).
 
 8. **Тесты**  
    - Юнит-тесты: маппинг locale → `AppLanguage` (в т.ч. `tr-TR`, `id-ID`, `ja-JP`); маппинг язык → выбор bundled; согласованность «системная локаль → UI + сид календаря» на пустой БД; правило «`en` не меняет календарь» при ручной смене языка.  

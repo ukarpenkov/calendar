@@ -17,6 +17,7 @@ import {
 } from '../src/shared/lib/db';
 
 const bundledCalendar = require('../calendar2026.json');
+const bundledCalendarTr = require('../calendar2026TR.json');
 const importedCalendar2025 = require('../calendar2025.json');
 
 describe('calendar sqlite repository', () => {
@@ -74,6 +75,7 @@ describe('calendar sqlite repository', () => {
       type: 'holiday',
       holidayNameRu: '成人の日',
       holidayNameEn: 'Coming of Age Day',
+      holidayNameJa: '成人の日',
     });
   });
 
@@ -139,5 +141,20 @@ describe('calendar sqlite repository', () => {
       [ACTIVE_CALENDAR_USER_JSON_IMPORT_KEY],
     );
     expect(cleared.rows[0]).toBeUndefined();
+  });
+
+  it('persists optional regional holiday name columns from import JSON', async () => {
+    const calendar = parseValidateAndNormalizeCalendarImport(bundledCalendarTr);
+    await repository.replaceActiveYear(calendar, 'bundled');
+
+    const jan1 = (await repository.getMonthCalendar(2026, 1)).find(
+      d => d.date === '2026-01-01',
+    );
+
+    expect(jan1).toMatchObject({
+      type: 'holiday',
+      holidayNameTr: 'Yılbaşı Tatili',
+      holidayNameEn: "New Year's Day",
+    });
   });
 });

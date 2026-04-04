@@ -16,6 +16,7 @@ import {
   getCalendarDaysForMonth,
   getDayTypeColors,
   getDayTypeLabel,
+  getHolidayDisplayName,
   type CalendarPalette,
   type CalendarDay,
   type CalendarYear,
@@ -337,6 +338,11 @@ function MonthDetailBody({
   selectedDay,
   onSelectDay,
 }: MonthDetailBodyProps) {
+  const selectedHolidayLabel =
+    selectedDay !== null
+      ? getHolidayDisplayName(selectedDay, language)
+      : null;
+
   return (
     <>
       <View
@@ -400,11 +406,9 @@ function MonthDetailBody({
             {getDayTypeLabel(selectedDay.type, language)} - {selectedDay.workHours}{' '}
             {t('common.hoursUnit')}
           </Text>
-          {selectedDay.holidayNameRu || selectedDay.holidayNameEn ? (
+          {selectedHolidayLabel ? (
             <Text style={[styles.selectedDayHoliday, { color: palette.title }]}>
-              {language === 'ru'
-                ? selectedDay.holidayNameRu ?? selectedDay.holidayNameEn
-                : selectedDay.holidayNameEn ?? selectedDay.holidayNameRu}
+              {selectedHolidayLabel}
             </Text>
           ) : null}
         </View>

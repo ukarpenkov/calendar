@@ -246,12 +246,49 @@ function validateHolidays(
       return;
     }
 
+    const optionalNameKeys = [
+      { jsonKey: 'name_tr', prop: 'name_tr' as const },
+      { jsonKey: 'name_id', prop: 'name_id' as const },
+      { jsonKey: 'name_ja', prop: 'name_ja' as const },
+    ] as const;
+
+    const entryRecord = entry;
+    for (const { jsonKey, prop } of optionalNameKeys) {
+      if (!(jsonKey in entryRecord)) {
+        continue;
+      }
+
+      const rawOptional = entryRecord[jsonKey];
+
+      if (typeof rawOptional !== 'string' || rawOptional.trim().length === 0) {
+        issues.push(
+          createIssue(
+            'INVALID_TEXT',
+            `Field "${basePath}.${jsonKey}" must be a non-empty string when provided.`,
+            `${basePath}.${jsonKey}`,
+          ),
+        );
+        return;
+      }
+    }
+
     seenDates.add(dateValue);
-    holidays.push({
+    const holidayEntry: RawHolidayEntry = {
       date: dateValue,
       name_ru: nameRu.trim(),
       name_en: nameEn.trim(),
-    });
+    };
+
+    for (const { jsonKey, prop } of optionalNameKeys) {
+      if (jsonKey in entryRecord) {
+        const rawOptional = entryRecord[jsonKey];
+        if (typeof rawOptional === 'string' && rawOptional.trim().length > 0) {
+          holidayEntry[prop] = rawOptional.trim();
+        }
+      }
+    }
+
+    holidays.push(holidayEntry);
   });
 
   return holidays;
@@ -468,6 +505,9 @@ export function normalizeCalendarImport(
       type,
       holidayNameRu: holiday?.name_ru ?? null,
       holidayNameEn: holiday?.name_en ?? null,
+      holidayNameTr: holiday?.name_tr ?? null,
+      holidayNameId: holiday?.name_id ?? null,
+      holidayNameJa: holiday?.name_ja ?? null,
       isShortened,
       workHours,
     });

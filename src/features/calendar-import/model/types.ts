@@ -4,6 +4,12 @@ export interface RawHolidayEntry {
   date: string;
   name_ru: string;
   name_en: string;
+  /** Необязательное локализованное имя для UI на турецком (`name_tr` в JSON). */
+  name_tr?: string;
+  /** Необязательное локализованное имя для UI на индонезийском (`name_id` в JSON). */
+  name_id?: string;
+  /** Необязательное локализованное имя для UI на японском (`name_ja` в JSON). */
+  name_ja?: string;
 }
 
 export interface RawCalendarImport {

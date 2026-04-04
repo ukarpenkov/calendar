@@ -15,9 +15,46 @@ function createDatabase(): DB {
 
 function readSchemaVersion(db: DB): number {
   const result = db.executeSync('PRAGMA user_version');
-  const value = result.rows[0]?.user_version;
+  const row = result.rows[0];
+  if (!row) {
+    return 0;
+  }
 
-  return typeof value === 'number' ? value : 0;
+  const direct = row.user_version;
+  if (typeof direct === 'number' && Number.isInteger(direct)) {
+    return direct;
+  }
+  if (typeof direct === 'string') {
+    const parsed = Number(direct);
+    if (Number.isInteger(parsed)) {
+      return parsed;
+    }
+  }
+
+  const fallback = Object.values(row)[0];
+  if (typeof fallback === 'number' && Number.isInteger(fallback)) {
+    return fallback;
+  }
+  if (typeof fallback === 'string') {
+    const parsed = Number(fallback);
+    if (Number.isInteger(parsed)) {
+      return parsed;
+    }
+  }
+
+  return 0;
+}
+
+async function migrateFromV1ToV2(db: DB): Promise<void> {
+  await db.execute(
+    'ALTER TABLE calendar_days ADD COLUMN holiday_name_tr TEXT',
+  );
+  await db.execute(
+    'ALTER TABLE calendar_days ADD COLUMN holiday_name_id TEXT',
+  );
+  await db.execute(
+    'ALTER TABLE calendar_days ADD COLUMN holiday_name_ja TEXT',
+  );
 }
 
 async function applyMigrations(db: DB, currentVersion: number): Promise<void> {
@@ -29,6 +66,11 @@ async function applyMigrations(db: DB, currentVersion: number): Promise<void> {
 
   if (currentVersion < 1) {
     await db.executeBatch(SCHEMA_COMMANDS);
+  } else if (currentVersion < 2) {
+    await migrateFromV1ToV2(db);
+  }
+
+  if (currentVersion !== DATABASE_SCHEMA_VERSION) {
     await db.execute(`PRAGMA user_version = ${DATABASE_SCHEMA_VERSION}`);
   }
 }

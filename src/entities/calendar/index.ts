@@ -22,6 +22,7 @@ export {
 export type { CalendarMonthWeek } from './model/month-helpers';
 export { buildYearMonthSummaries } from './model/year-summary';
 export type { CalendarDay, CalendarYear, DayType } from './model/types';
+export { getHolidayDisplayName } from './model/holiday-display-name';
 export type { CalendarMonthSummary } from './model/year-summary';
 export {
   getCalendarPalette,

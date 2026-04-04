@@ -57,6 +57,9 @@ async function readYearDays(db: DB, year: number): Promise<CalendarDay[]> {
       type,
       holiday_name_ru,
       holiday_name_en,
+      holiday_name_tr,
+      holiday_name_id,
+      holiday_name_ja,
       is_shortened,
       work_hours
     FROM calendar_days
@@ -100,9 +103,12 @@ async function replaceActiveYearRows(
         type,
         holiday_name_ru,
         holiday_name_en,
+        holiday_name_tr,
+        holiday_name_id,
+        holiday_name_ja,
         is_shortened,
         work_hours
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       mapCalendarDayToSqlParams(day),
     ] as SQLBatchTuple),
     [
@@ -203,6 +209,9 @@ export function createCalendarRepository(
           type,
           holiday_name_ru,
           holiday_name_en,
+          holiday_name_tr,
+          holiday_name_id,
+          holiday_name_ja,
           is_shortened,
           work_hours
         FROM calendar_days

@@ -55,6 +55,9 @@ describe('calendar import pipeline', () => {
       type: 'holiday',
       holidayNameRu: 'Новый год',
       holidayNameEn: "New Year's Day",
+      holidayNameTr: null,
+      holidayNameId: null,
+      holidayNameJa: null,
       isShortened: false,
       workHours: 0,
     });
@@ -221,5 +224,56 @@ describe('calendar import pipeline', () => {
         }),
       ]),
     );
+  });
+
+  it('accepts optional localized holiday names name_tr, name_id, name_ja', () => {
+    const calendar = parseValidateAndNormalizeCalendarImport({
+      year: 2026,
+      holidays: [
+        {
+          date: '2026-01-01',
+          name_ru: 'Новый год',
+          name_en: "New Year's Day",
+          name_tr: 'Yılbaşı',
+          name_id: 'Tahun Baru',
+          name_ja: '元日',
+        },
+      ],
+      weekends: isoWeekendDatesForYear(2026),
+      preholidays: [],
+    });
+
+    expect(calendar.days[0]).toMatchObject({
+      holidayNameRu: 'Новый год',
+      holidayNameEn: "New Year's Day",
+      holidayNameTr: 'Yılbaşı',
+      holidayNameId: 'Tahun Baru',
+      holidayNameJa: '元日',
+    });
+  });
+
+  it('rejects empty optional localized holiday name when the key is present', () => {
+    const error = expectValidationError(() =>
+      validateCalendarImportData({
+        year: 2026,
+        holidays: [
+          {
+            date: '2026-01-01',
+            name_ru: 'Новый год',
+            name_en: "New Year's Day",
+            name_tr: '   ',
+          },
+        ],
+        weekends: isoWeekendDatesForYear(2026),
+        preholidays: [],
+      }),
+    );
+
+    expect(error.issues).toEqual([
+      expect.objectContaining({
+        code: 'INVALID_TEXT',
+        path: 'holidays[0].name_tr',
+      }),
+    ]);
   });
 });

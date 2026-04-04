@@ -4,142 +4,259 @@
     {
       "date": "2026-01-01",
       "name_ru": "Tahun Baru Masehi",
-      "name_en": "New Year's Day"
+      "name_en": "New Year's Day",
+      "name_id": "Tahun Baru Masehi"
     },
     {
       "date": "2026-01-16",
       "name_ru": "Isra Mi'raj Nabi Muhammad SAW",
-      "name_en": "Isra and Mi'raj of Prophet Muhammad"
+      "name_en": "Isra and Mi'raj of Prophet Muhammad",
+      "name_id": "Isra Mi'raj Nabi Muhammad SAW"
     },
     {
       "date": "2026-02-16",
       "name_ru": "Cuti Bersama Tahun Baru Imlek",
-      "name_en": "Collective Leave for Chinese New Year"
+      "name_en": "Collective Leave for Chinese New Year",
+      "name_id": "Cuti Bersama Tahun Baru Imlek"
     },
     {
       "date": "2026-02-17",
       "name_ru": "Tahun Baru Imlek 2577 Kongzili",
-      "name_en": "Chinese New Year 2577"
+      "name_en": "Chinese New Year 2577",
+      "name_id": "Tahun Baru Imlek 2577 Kongzili"
     },
     {
       "date": "2026-03-18",
       "name_ru": "Cuti Bersama Hari Suci Nyepi",
-      "name_en": "Collective Leave for Nyepi"
+      "name_en": "Collective Leave for Nyepi",
+      "name_id": "Cuti Bersama Hari Suci Nyepi"
     },
     {
       "date": "2026-03-19",
       "name_ru": "Hari Suci Nyepi Tahun Baru Saka 1948",
-      "name_en": "Day of Silence, Saka New Year"
+      "name_en": "Day of Silence, Saka New Year",
+      "name_id": "Hari Suci Nyepi Tahun Baru Saka 1948"
     },
     {
       "date": "2026-03-20",
       "name_ru": "Cuti Bersama Hari Raya Idul Fitri",
-      "name_en": "Collective Leave for Eid al-Fitr"
+      "name_en": "Collective Leave for Eid al-Fitr",
+      "name_id": "Cuti Bersama Hari Raya Idul Fitri"
     },
     {
       "date": "2026-03-21",
       "name_ru": "Hari Raya Idul Fitri 1447 H (Hari 1)",
-      "name_en": "Eid al-Fitr 1447 H (Day 1)"
+      "name_en": "Eid al-Fitr 1447 H (Day 1)",
+      "name_id": "Hari Raya Idul Fitri 1447 H (Hari 1)"
     },
     {
       "date": "2026-03-22",
       "name_ru": "Hari Raya Idul Fitri 1447 H (Hari 2)",
-      "name_en": "Eid al-Fitr 1447 H (Day 2)"
+      "name_en": "Eid al-Fitr 1447 H (Day 2)",
+      "name_id": "Hari Raya Idul Fitri 1447 H (Hari 2)"
     },
     {
       "date": "2026-03-23",
       "name_ru": "Cuti Bersama Hari Raya Idul Fitri",
-      "name_en": "Collective Leave for Eid al-Fitr"
+      "name_en": "Collective Leave for Eid al-Fitr",
+      "name_id": "Cuti Bersama Hari Raya Idul Fitri"
     },
     {
       "date": "2026-03-24",
       "name_ru": "Cuti Bersama Hari Raya Idul Fitri",
-      "name_en": "Collective Leave for Eid al-Fitr"
+      "name_en": "Collective Leave for Eid al-Fitr",
+      "name_id": "Cuti Bersama Hari Raya Idul Fitri"
     },
     {
       "date": "2026-04-03",
       "name_ru": "Wafat Isa Al Masih",
-      "name_en": "Good Friday"
+      "name_en": "Good Friday",
+      "name_id": "Wafat Isa Al Masih"
     },
     {
       "date": "2026-04-05",
       "name_ru": "Paskah",
-      "name_en": "Easter Sunday"
+      "name_en": "Easter Sunday",
+      "name_id": "Paskah"
     },
     {
       "date": "2026-05-01",
       "name_ru": "Hari Buruh Internasional",
-      "name_en": "International Workers' Day"
+      "name_en": "International Workers' Day",
+      "name_id": "Hari Buruh Internasional"
     },
     {
       "date": "2026-05-14",
       "name_ru": "Kenaikan Isa Al Masih",
-      "name_en": "Ascension of Jesus Christ"
+      "name_en": "Ascension of Jesus Christ",
+      "name_id": "Kenaikan Isa Al Masih"
     },
     {
       "date": "2026-05-15",
       "name_ru": "Cuti Bersama Kenaikan Isa Al Masih",
-      "name_en": "Collective Leave for Ascension Day"
+      "name_en": "Collective Leave for Ascension Day",
+      "name_id": "Cuti Bersama Kenaikan Isa Al Masih"
     },
     {
       "date": "2026-05-27",
       "name_ru": "Hari Raya Idul Adha 1447 H",
-      "name_en": "Eid al-Adha 1447 H"
+      "name_en": "Eid al-Adha 1447 H",
+      "name_id": "Hari Raya Idul Adha 1447 H"
     },
     {
       "date": "2026-05-28",
       "name_ru": "Cuti Bersama Hari Raya Idul Adha",
-      "name_en": "Collective Leave for Eid al-Adha"
+      "name_en": "Collective Leave for Eid al-Adha",
+      "name_id": "Cuti Bersama Hari Raya Idul Adha"
     },
     {
       "date": "2026-05-31",
       "name_ru": "Hari Raya Waisak 2570 BE",
-      "name_en": "Vesak Day 2570 BE"
+      "name_en": "Vesak Day 2570 BE",
+      "name_id": "Hari Raya Waisak 2570 BE"
     },
     {
       "date": "2026-06-01",
       "name_ru": "Hari Lahir Pancasila",
-      "name_en": "Pancasila Day"
+      "name_en": "Pancasila Day",
+      "name_id": "Hari Lahir Pancasila"
     },
     {
       "date": "2026-06-16",
       "name_ru": "Tahun Baru Islam 1448 H",
-      "name_en": "Islamic New Year 1448 H"
+      "name_en": "Islamic New Year 1448 H",
+      "name_id": "Tahun Baru Islam 1448 H"
     },
     {
       "date": "2026-08-17",
       "name_ru": "Hari Kemerdekaan Republik Indonesia",
-      "name_en": "Independence Day of Indonesia"
+      "name_en": "Independence Day of Indonesia",
+      "name_id": "Hari Kemerdekaan Republik Indonesia"
     },
     {
       "date": "2026-08-25",
       "name_ru": "Maulid Nabi Muhammad SAW",
-      "name_en": "Birthday of Prophet Muhammad"
+      "name_en": "Birthday of Prophet Muhammad",
+      "name_id": "Maulid Nabi Muhammad SAW"
     },
     {
       "date": "2026-12-24",
       "name_ru": "Cuti Bersama Hari Raya Natal",
-      "name_en": "Collective Leave for Christmas"
+      "name_en": "Collective Leave for Christmas",
+      "name_id": "Cuti Bersama Hari Raya Natal"
     },
     {
       "date": "2026-12-25",
       "name_ru": "Hari Raya Natal",
-      "name_en": "Christmas Day"
+      "name_en": "Christmas Day",
+      "name_id": "Hari Raya Natal"
     }
   ],
   "weekends": [
-    "2026-01-03", "2026-01-04", "2026-01-10", "2026-01-11", "2026-01-17", "2026-01-18", "2026-01-24", "2026-01-25", "2026-01-31",
-    "2026-02-01", "2026-02-07", "2026-02-08", "2026-02-14", "2026-02-15", "2026-02-21", "2026-02-22", "2026-02-28",
-    "2026-03-01", "2026-03-07", "2026-03-08", "2026-03-14", "2026-03-15", "2026-03-21", "2026-03-22", "2026-03-28", "2026-03-29",
-    "2026-04-04", "2026-04-05", "2026-04-11", "2026-04-12", "2026-04-18", "2026-04-19", "2026-04-25", "2026-04-26",
-    "2026-05-02", "2026-05-03", "2026-05-09", "2026-05-10", "2026-05-16", "2026-05-17", "2026-05-23", "2026-05-24", "2026-05-30", "2026-05-31",
-    "2026-06-06", "2026-06-07", "2026-06-13", "2026-06-14", "2026-06-20", "2026-06-21", "2026-06-27", "2026-06-28",
-    "2026-07-04", "2026-07-05", "2026-07-11", "2026-07-12", "2026-07-18", "2026-07-19", "2026-07-25", "2026-07-26",
-    "2026-08-01", "2026-08-02", "2026-08-08", "2026-08-09", "2026-08-15", "2026-08-16", "2026-08-22", "2026-08-23", "2026-08-29", "2026-08-30",
-    "2026-09-05", "2026-09-06", "2026-09-12", "2026-09-13", "2026-09-19", "2026-09-20", "2026-09-26", "2026-09-27",
-    "2026-10-03", "2026-10-04", "2026-10-10", "2026-10-11", "2026-10-17", "2026-10-18", "2026-10-24", "2026-10-25", "2026-10-31",
-    "2026-11-01", "2026-11-07", "2026-11-08", "2026-11-14", "2026-11-15", "2026-11-21", "2026-11-22", "2026-11-28", "2026-11-29",
-    "2026-12-05", "2026-12-06", "2026-12-12", "2026-12-13", "2026-12-19", "2026-12-20", "2026-12-26", "2026-12-27"
+    "2026-01-03",
+    "2026-01-04",
+    "2026-01-10",
+    "2026-01-11",
+    "2026-01-17",
+    "2026-01-18",
+    "2026-01-24",
+    "2026-01-25",
+    "2026-01-31",
+    "2026-02-01",
+    "2026-02-07",
+    "2026-02-08",
+    "2026-02-14",
+    "2026-02-15",
+    "2026-02-21",
+    "2026-02-22",
+    "2026-02-28",
+    "2026-03-01",
+    "2026-03-07",
+    "2026-03-08",
+    "2026-03-14",
+    "2026-03-15",
+    "2026-03-21",
+    "2026-03-22",
+    "2026-03-28",
+    "2026-03-29",
+    "2026-04-04",
+    "2026-04-05",
+    "2026-04-11",
+    "2026-04-12",
+    "2026-04-18",
+    "2026-04-19",
+    "2026-04-25",
+    "2026-04-26",
+    "2026-05-02",
+    "2026-05-03",
+    "2026-05-09",
+    "2026-05-10",
+    "2026-05-16",
+    "2026-05-17",
+    "2026-05-23",
+    "2026-05-24",
+    "2026-05-30",
+    "2026-05-31",
+    "2026-06-06",
+    "2026-06-07",
+    "2026-06-13",
+    "2026-06-14",
+    "2026-06-20",
+    "2026-06-21",
+    "2026-06-27",
+    "2026-06-28",
+    "2026-07-04",
+    "2026-07-05",
+    "2026-07-11",
+    "2026-07-12",
+    "2026-07-18",
+    "2026-07-19",
+    "2026-07-25",
+    "2026-07-26",
+    "2026-08-01",
+    "2026-08-02",
+    "2026-08-08",
+    "2026-08-09",
+    "2026-08-15",
+    "2026-08-16",
+    "2026-08-22",
+    "2026-08-23",
+    "2026-08-29",
+    "2026-08-30",
+    "2026-09-05",
+    "2026-09-06",
+    "2026-09-12",
+    "2026-09-13",
+    "2026-09-19",
+    "2026-09-20",
+    "2026-09-26",
+    "2026-09-27",
+    "2026-10-03",
+    "2026-10-04",
+    "2026-10-10",
+    "2026-10-11",
+    "2026-10-17",
+    "2026-10-18",
+    "2026-10-24",
+    "2026-10-25",
+    "2026-10-31",
+    "2026-11-01",
+    "2026-11-07",
+    "2026-11-08",
+    "2026-11-14",
+    "2026-11-15",
+    "2026-11-21",
+    "2026-11-22",
+    "2026-11-28",
+    "2026-11-29",
+    "2026-12-05",
+    "2026-12-06",
+    "2026-12-12",
+    "2026-12-13",
+    "2026-12-19",
+    "2026-12-20",
+    "2026-12-26",
+    "2026-12-27"
   ],
   "preholidays": [
     "2026-05-26",
