@@ -1,0 +1,157 @@
+import type { TranslationKey } from './en';
+
+export const jaTranslations = {
+  'common.appName': 'カレンダー',
+  'common.hoursUnit': '時間',
+  'common.backToYear': '年表示に戻る',
+  'common.navigateBack': '戻る',
+  'common.cancel': 'キャンセル',
+  'app.error.bootstrapTitle': 'ローカルのカレンダーデータを初期化できませんでした。',
+  'app.error.bootstrapSubtitle':
+    '端末のストレージを確認して再試行するか、アプリを再起動してください。',
+  'app.error.bootstrapRetry': '再試行',
+  'app.error.monthTitle': '選択した月を開けませんでした。',
+  'app.error.monthSubtitle': '年の概要に戻ってから再度お試しください。',
+  'splash.loadingTitle': 'オフラインの年表示を読み込み中',
+  'splash.loadingSubtitle': 'ローカルのカレンダーデータを初期化しています...',
+  'year.menu.settings': '設定',
+  'year.home.title': '{{year}}年',
+  'year.summary.work': '勤',
+  'year.summary.off': '休',
+  'year.summary.days': '日',
+  'month.selectedDay.eyebrow': '選択した日',
+  'month.totals.totalDays': '日数',
+  'month.totals.workingDays': '勤務日',
+  'month.totals.nonWorkingDays': '非勤務日',
+  'month.totals.workHours': '労働時間',
+  'month.nav.previousMonth': '前の月',
+  'month.nav.nextMonth': '次の月',
+  'settings.title': '設定',
+  'settings.sections.calendarData.title': 'カレンダーデータ',
+  'settings.sections.calendarData.subtitle':
+    '現在のアクティブな年と今後のインポート操作。',
+  'settings.rows.activeYear.title': 'アクティブな年',
+  'settings.rows.activeYear.subtitle':
+    'アプリに読み込まれている SQLite のデータセットは {{year}} 年です。',
+  'settings.rows.importYear.title': '年のインポート（JSON）',
+  'settings.rows.importYear.subtitle':
+    'ローカル JSON で年を置き換えるフロー用の専用画面を開きます。',
+  'settings.rows.importYear.action': '開く',
+  'settings.sections.appearance.title': '外観',
+  'settings.sections.appearance.subtitle':
+    'テーマはアプリ全体のコンテキストで制御されます。',
+  'settings.rows.darkTheme.title': 'ダークテーマ',
+  'settings.rows.darkTheme.subtitle': '現在のモード: {{mode}}。',
+  'settings.sections.localization.title': '言語',
+  'settings.sections.localization.subtitle':
+    'アプリ全体の表示言語を切り替えます。',
+  'settings.rows.language.title': '表示言語',
+  'settings.rows.language.subtitle': '現在の言語: {{language}}。',
+  'settings.sections.about.title': 'アプリについて',
+  'settings.sections.about.subtitle':
+    'ローカル優先ビルドに関する情報です。',
+  'settings.about.app': 'アプリ',
+  'settings.about.storage': 'ストレージ',
+  'settings.about.defaultDataset': '既定のデータセット',
+  'settings.about.theme': 'テーマ',
+  'settings.about.language': '言語',
+  'settings.about.telegram': 'Telegram',
+  'settings.about.appValue': 'カレンダー',
+  'settings.about.storageValue': 'オフライン SQLite',
+  'settings.about.defaultDatasetValue': '2026 年 勤務カレンダー',
+  'year.reminder.title': '翌年用 JSON テンプレート',
+  'year.reminder.body':
+    '{{year}} 年用テンプレートは Telegram で公開されます。準備ができたらチャンネルから新しい JSON を取得してください。',
+  'year.reminder.action': 'Telegram を開く',
+  'importEntry.title': 'JSON インポート',
+  'importEntry.eyebrow': 'インポートの入口',
+  'importEntry.heroTitle': 'ローカル JSON で年を置き換える準備',
+  'importEntry.heroSubtitle':
+    'この画面は、ローカル JSON ファイルでアクティブな年を置き換えるための専用入口です。',
+  'importEntry.currentYear.title': '現在のアクティブな年',
+  'importEntry.currentYear.subtitle':
+    '次のステップを確認すると、{{year}} 年の SQLite データセットがマージされずに置き換えられます。',
+  'importEntry.fileCard.title': '選択した JSON ファイル',
+  'importEntry.fileCard.idleSubtitle':
+    '検証を開始するにはローカルの JSON を選択してください。置換を確認するまでアクティブな年は変わりません。',
+  'importEntry.fileCard.readySubtitle':
+    '選択したファイルは検証に合格し、アクティブな SQLite データセットの置き換え準備ができています。',
+  'importEntry.fileCard.fileName': 'ファイル',
+  'importEntry.fileCard.detectedYear': '検出された年',
+  'importEntry.fileCard.fileSize': 'サイズ',
+  'importEntry.preview.title': '検証済みインポートのプレビュー',
+  'importEntry.preview.subtitle':
+    '{{year}} 年は検証に合格し、現在のローカルデータセットを置き換えられます。',
+  'importEntry.preview.totalDays': '日数',
+  'importEntry.preview.workingDays': '勤務日',
+  'importEntry.preview.nonWorkingDays': '非勤務日',
+  'importEntry.preview.workHours': '労働時間',
+  'importEntry.actions.chooseFile': 'JSON ファイルを選択',
+  'importEntry.actions.chooseAnotherFile': '別のファイルを選択',
+  'importEntry.actions.validating': 'ファイルを検証しています...',
+  'importEntry.actions.replaceYear': 'アクティブな年を置き換える',
+  'importEntry.actions.importing': 'ローカルデータセットを更新しています...',
+  'importEntry.confirm.title': 'アクティブなカレンダー年を置き換えますか？',
+  'importEntry.confirm.body':
+    '現在の年 {{currentYear}} は、ローカル SQLite 上で年 {{importedYear}} に完全に置き換えられます。データのマージは行われません。',
+  'importEntry.confirm.action': '年を置き換える',
+  'importEntry.error.validationTitle': '検証に失敗しました',
+  'importEntry.error.validationBody':
+    '選択した JSON ファイルは検証に合格しませんでした。アクティブなカレンダー年は変更されていません。',
+  'importEntry.error.unsupportedTitle': '未対応のファイル',
+  'importEntry.error.unsupportedBody':
+    'カレンダーインポート形式の `.json` ファイルを選択してください。',
+  'importEntry.error.readTitle': 'ファイルを読み取れませんでした',
+  'importEntry.error.readBody':
+    '選択したファイルを端末ストレージから読み取れませんでした。アクティブなカレンダー年は変更されていません。',
+  'importEntry.error.pickerTitle': 'ファイルピッカーを開けませんでした',
+  'importEntry.error.pickerBody':
+    'システムのファイルピッカーが読み取り可能な JSON を返しませんでした。',
+  'importEntry.error.replaceTitle': 'アクティブな年を置き換えられませんでした',
+  'importEntry.error.replaceBody':
+    '検証は成功しましたが、新しい年を SQLite に書き込めませんでした。現在のカレンダーのままです。',
+  'importEntry.error.replaceDetail':
+    'ローカルストレージを確認し、インポートを再度お試しください。',
+  'importEntry.error.genericTitle': 'インポートに失敗しました',
+  'importEntry.error.genericBody':
+    'アクティブなカレンダー年を置き換える前にインポートフローが停止しました。',
+  'importEntry.error.genericDetail':
+    '選択したファイルを確認して再度お試しください。',
+  'importEntry.flow.title': 'このインポートの流れ',
+  'importEntry.flow.step1': '1. 端末からローカルの JSON ファイルを選択します。',
+  'importEntry.flow.step2':
+    '2. 書き込み前に選択した年を検証・正規化します。',
+  'importEntry.flow.step3':
+    '3. アクティブな SQLite データセットを置き換える前に確認を求めます。',
+  'importEntry.step.file': 'ファイル',
+  'importEntry.step.preview': '確認',
+  'importEntry.step.confirm': '確定',
+  'importEntry.choose.headline': 'JSON ファイルからカレンダーの年を読み込む',
+  'importEntry.choose.supporting':
+    'アプリはこの端末で選択したファイルのみを読みます。置換を確認するまで変更はありません。',
+  'importEntry.validating.headline': 'ファイルを確認しています',
+  'importEntry.validating.supporting':
+    'JSON を解析し、構造を検証して日リストを作成しています。しばらくお待ちください。',
+  'importEntry.review.headline': 'ファイルは問題なさそうです',
+  'importEntry.review.supporting':
+    '下の概要を確認してください。続行するとアクティブな年の置換を確認します。',
+  'importEntry.confirm.screenTitle': '置換の確認',
+  'importEntry.confirm.compare': '{{currentYear}} → {{importedYear}}',
+  'importEntry.confirm.bullet1':
+    'アクティブ年の SQLite カレンダーは完全に置き換えられ、マージはありません。',
+  'importEntry.confirm.bullet2':
+    '影響があるのはこの端末のみで、クラウドへのアップロードはありません。',
+  'importEntry.confirm.bullet3':
+    '誤りを直す必要がある場合は、後から設定から別ファイルをインポートできます。',
+  'importEntry.confirm.backToReview': '概要に戻る',
+  'importEntry.importing.headline': 'ローカルストレージに保存中',
+  'importEntry.importing.supporting':
+    '検証済みの年を SQLite に書き込んでいます。アプリを開いたままにしてください。',
+  'importEntry.success.headline': 'インポート完了',
+  'importEntry.success.supporting':
+    '{{year}} 年がこの端末でアクティブなカレンダーになりました。',
+  'importEntry.success.toCalendar': '年表示を開く',
+  'importEntry.error.tryAgain': '再試行',
+  'importEntry.error.pickAnotherFile': '別のファイルを選ぶ',
+  'importEntry.error.startOver': '最初からやり直す',
+} satisfies Record<TranslationKey, string>;

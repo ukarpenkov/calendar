@@ -11,14 +11,16 @@ type LanguageSwitchPalette = {
   title: string;
 };
 
+const LANGUAGE_OPTIONS = ['ru', 'en'] as const satisfies readonly AppLanguage[];
+
+type LanguageSwitchOption = (typeof LANGUAGE_OPTIONS)[number];
+
 type LanguageSwitchProps = {
   selectedLanguage: AppLanguage;
   onSelectLanguage: (language: AppLanguage) => void;
   palette: LanguageSwitchPalette;
-  labels: Record<AppLanguage, string>;
+  labels: Record<LanguageSwitchOption, string>;
 };
-
-const LANGUAGE_OPTIONS: AppLanguage[] = ['ru', 'en'];
 
 export function LanguageSwitch({
   selectedLanguage,

@@ -1,5 +1,6 @@
 import type { DB } from '@op-engineering/op-sqlite';
 
+import { AGREED_APP_LANGUAGE_CODES } from '../../config/agreedLanguagesAndBundledCalendars';
 import { getDatabase, initializeDatabase } from '../db';
 import type { AppLanguage } from '../i18n';
 
@@ -8,8 +9,10 @@ const APP_THEME_METADATA_KEY = 'theme';
 
 type AppThemeMode = 'light' | 'dark';
 
+const STORED_LANGUAGE_CODES = new Set<string>(AGREED_APP_LANGUAGE_CODES);
+
 function isAppLanguage(value: unknown): value is AppLanguage {
-  return value === 'en' || value === 'ru';
+  return typeof value === 'string' && STORED_LANGUAGE_CODES.has(value);
 }
 
 function isAppThemeMode(value: unknown): value is AppThemeMode {

@@ -8,6 +8,7 @@ import {
   getCompactWeekdayLabels,
   getThemeModeLabel,
   getTranslation,
+  mapLocaleStringToAppLanguage,
 } from '../src/shared/lib/i18n';
 
 const januaryDays: CalendarDay[] = [
@@ -61,7 +62,21 @@ test('returns localized interface labels and day types', () => {
   expect(getTranslation('en', 'year.home.title', { year: 2026 })).toBe('Year 2026');
   expect(getTranslation('ru', 'year.home.title', { year: 2026 })).toBe('Год 2026');
   expect(getTranslation('ru', 'settings.title')).toBe('Настройки');
+  expect(getTranslation('tr', 'settings.title')).toBe('Ayarlar');
+  expect(getTranslation('ja', 'common.appName')).toBe('カレンダー');
   expect(getThemeModeLabel('ru', 'dark')).toBe('Темная');
+  expect(getThemeModeLabel('ja', 'light')).toBe('ライト');
   expect(getCompactWeekdayLabels('en')).toEqual(['M', 'T', 'W', 'T', 'F', 'S', 'S']);
   expect(getDayTypeLabel('holiday', 'ru')).toBe('Праздник');
+  expect(getDayTypeLabel('holiday', 'id')).toBe('Hari libur');
+});
+
+test('mapLocaleStringToAppLanguage maps ICU-style locales', () => {
+  expect(mapLocaleStringToAppLanguage('ru-RU')).toBe('ru');
+  expect(mapLocaleStringToAppLanguage('tr-TR')).toBe('tr');
+  expect(mapLocaleStringToAppLanguage('id-ID')).toBe('id');
+  expect(mapLocaleStringToAppLanguage('ja-JP')).toBe('ja');
+  expect(mapLocaleStringToAppLanguage('en-US')).toBe('en');
+  expect(mapLocaleStringToAppLanguage('de-DE')).toBe('en');
+  expect(mapLocaleStringToAppLanguage('  JA-jp  ')).toBe('ja');
 });

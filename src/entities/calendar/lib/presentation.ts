@@ -129,6 +129,54 @@ export function getDayTypeLabel(type: DayType, language: AppLanguage): string {
     return 'Рабочий день';
   }
 
+  if (language === 'tr') {
+    if (type === 'weekend') {
+      return 'Hafta sonu';
+    }
+
+    if (type === 'holiday') {
+      return 'Resmi tatil';
+    }
+
+    if (type === 'shortened') {
+      return 'Kısa gün';
+    }
+
+    return 'İş günü';
+  }
+
+  if (language === 'id') {
+    if (type === 'weekend') {
+      return 'Akhir pekan';
+    }
+
+    if (type === 'holiday') {
+      return 'Hari libur';
+    }
+
+    if (type === 'shortened') {
+      return 'Hari pendek';
+    }
+
+    return 'Hari kerja';
+  }
+
+  if (language === 'ja') {
+    if (type === 'weekend') {
+      return '週末';
+    }
+
+    if (type === 'holiday') {
+      return '祝日';
+    }
+
+    if (type === 'shortened') {
+      return '短縮勤務日';
+    }
+
+    return '平日';
+  }
+
   if (type === 'weekend') {
     return 'Weekend';
   }
