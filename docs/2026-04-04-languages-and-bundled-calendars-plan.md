@@ -88,9 +88,9 @@
    - Прописать `require`/Metro-ассеты для каждого так же, как для текущего `calendar2026.json`. — **в коде:** `bundledCalendarJsonByLanguage.ts`.  
    - Прогнать каждый файл через тот же путь валидации, что и импорт (`parseValidateAndNormalizeCalendarImport`). — **в тестах:** `agreedLanguagesAndBundledCalendars.test.ts`.
 
-5. **Связка язык → bundled-календарь**  
-   - Таблица соответствия `AppLanguage` → модуль/путь JSON (для `en` — «не использовать для авто-смены» при варианте A).  
-   - При смене языка (в `LocalizationProvider` или отдельном сервисе): если язык ≠ `en` и есть bundled для активного года — вызвать `replaceActiveYear` и обновить in-memory состояние календаря в приложении.
+5. **Связка язык → bundled-календарь** — **выполнено (2026-04-04)**  
+   - Таблица соответствия `AppLanguage` → модуль/путь JSON (для `en` — «не использовать для авто-смены» при варианте A). — **`BUNDLED_CALENDAR_JSON_FILENAME_BY_LANGUAGE`**, `appLanguageToDefaultBundledRegion` (`en` → регион `ru` без отдельного JSON).  
+   - При **ручной** смене языка в `LocalizationProvider`: если новый язык ≠ `en` — выставляется bundled-регион по языку (`setBundledCalendarRegion`), далее тот же путь, что и при смене региона в настройках: `syncActiveYearWithBundledRegion` / `replaceActiveYear` для года `2026` и обновление `AppContent` state. Переключение на `en` календарь не трогает. Гидратация языка из хранилища по-прежнему через `setLanguage` без уведомления.
 
 6. **Конфликт с пользовательским импортом**  
    - Решить: при смене на не-`en` язык **всегда** затираем импорт, или вводим флаг «пользовательский импорт» и тогда не трогаем SQLite.  

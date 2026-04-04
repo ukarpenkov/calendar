@@ -1,4 +1,9 @@
 export {
+  notifyCalendarSyncOnAppLanguageChange,
+  registerCalendarSyncOnAppLanguageChange,
+  type CalendarSyncOnAppLanguageChangeHandler,
+} from './appLanguageChangeCalendarSyncRegistry';
+export {
   notifyCalendarSyncOnBundledRegionChange,
   registerCalendarSyncOnBundledRegionChange,
   type CalendarSyncOnBundledRegionChangeHandler,

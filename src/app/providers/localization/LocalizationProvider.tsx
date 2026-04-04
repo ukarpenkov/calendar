@@ -9,6 +9,7 @@ import {
   type PropsWithChildren,
 } from 'react';
 
+import { notifyCalendarSyncOnAppLanguageChange } from '../../../features/calendar-language-sync';
 import {
   detectDeviceLanguage,
   getTranslation,
@@ -68,6 +69,7 @@ export function AppLocalizationProvider({ children }: PropsWithChildren) {
 
       hasManualLanguageSelectionRef.current = true;
       setLanguage(nextLanguage);
+      notifyCalendarSyncOnAppLanguageChange(language, nextLanguage);
 
       setStoredLanguage(nextLanguage).catch(() => {
         // Ignore persistence failures to keep language switching responsive.

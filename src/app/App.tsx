@@ -12,10 +12,15 @@ import {
   type CalendarYear,
 } from '../entities/calendar';
 import {
+  registerCalendarSyncOnAppLanguageChange,
   registerCalendarSyncOnBundledRegionChange,
   syncActiveYearWithBundledRegion,
 } from '../features/calendar-language-sync';
-import { BundledCalendarRegionProvider } from './providers/bundled-calendar-region';
+import { appLanguageToDefaultBundledRegion } from '../shared/lib/bundledCalendarRegion';
+import {
+  BundledCalendarRegionProvider,
+  useBundledCalendarRegion,
+} from './providers/bundled-calendar-region';
 import {
   AppLocalizationProvider,
   useAppLocalization,
@@ -57,10 +62,27 @@ function AppContent() {
   const safeAreaInsets = useSafeAreaInsets();
   const { palette } = useAppTheme();
   const { t } = useAppLocalization();
+  const { setBundledCalendarRegion } = useBundledCalendarRegion();
+  const setBundledCalendarRegionRef = useRef(setBundledCalendarRegion);
+  setBundledCalendarRegionRef.current = setBundledCalendarRegion;
   const [status, setStatus] = useState<AppContentStatus>({ kind: 'loading' });
   const [bootstrapGeneration, setBootstrapGeneration] = useState(0);
   const statusRef = useRef(status);
   statusRef.current = status;
+
+  useEffect(() => {
+    registerCalendarSyncOnAppLanguageChange((_previous, nextLanguage) => {
+      if (nextLanguage === 'en') {
+        return;
+      }
+      const targetRegion = appLanguageToDefaultBundledRegion(nextLanguage);
+      setBundledCalendarRegionRef.current(targetRegion);
+    });
+
+    return () => {
+      registerCalendarSyncOnAppLanguageChange(null);
+    };
+  }, []);
 
   useEffect(() => {
     registerCalendarSyncOnBundledRegionChange(
