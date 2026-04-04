@@ -143,6 +143,15 @@ const LANGUAGE_LABELS_BY_UI: Record<AppLanguage, Record<AppLanguage, string>> = 
   },
 };
 
+/** Название языка на нём самом (для списка выбора языка в настройках). */
+const LANGUAGE_NATIVE_AUTONYMS: Record<AppLanguage, string> = {
+  ru: 'Русский',
+  en: 'English',
+  tr: 'Türkçe',
+  id: 'Bahasa Indonesia',
+  ja: '日本語',
+};
+
 function interpolate(template: string, params?: TranslationParams): string {
   if (!params) {
     return template;
@@ -244,4 +253,8 @@ export function getLanguageLabel(
   targetLanguage: AppLanguage,
 ): string {
   return LANGUAGE_LABELS_BY_UI[language][targetLanguage];
+}
+
+export function getLanguageNativeLabel(targetLanguage: AppLanguage): string {
+  return LANGUAGE_NATIVE_AUTONYMS[targetLanguage];
 }

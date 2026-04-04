@@ -48,7 +48,7 @@
 
 - Тип `AppLanguage` и словари месяцев/дней недели: `src/shared/lib/i18n/index.ts`.
 - Автоопределение языка устройства: `detectDeviceLanguage` / `mapLocaleStringToAppLanguage` (`ru` / `tr` / `id` / `ja` / иначе `en`, с `try/catch`).
-- Переключатель в настройках: `src/shared/ui/LanguageSwitch.tsx` (жёстко `['ru', 'en']`), подписи в `SettingsScreen`.
+- Переключатель в настройках: `src/shared/ui/LanguageSwitch.tsx` — опции из `AGREED_APP_LANGUAGE_CODES`, вертикальный список; в списке — нативные автонимы (`getLanguageNativeLabel`); в подзаголовке строки и в «О приложении» для **текущего** языка — `getLanguageLabel` относительно UI (`SettingsScreen`).
 - Сохранение языка: `src/shared/lib/settings/repository.ts`, контекст `LocalizationProvider`.
 - Каноническое хранилище года — **SQLite**; при пустой/битой БД сид через `seedBundledYearIfNeeded` из bundled, выбранного по `getStoredLanguage() ?? detectDeviceLanguage()` и реестру в `bundledCalendarJsonByLanguage.ts` (см. таблицу регионов в этом документе).
 
@@ -79,9 +79,9 @@
    - Обновить `detectDeviceLanguage`: маппинг `Intl` locale → `AppLanguage` (`ru`, `tr`, `id`, `ja`, иначе `en`) с безопасным fallback; тот же маппинг использовать при выборе стартового bundled (см. «Системный язык устройства»).  
    **В коде:** `mapLocaleStringToAppLanguage` / `detectDeviceLanguage` в `src/shared/lib/i18n/index.ts`; при пустой/неполной БД `seedBundledYearIfNeeded` берёт bundled по `getStoredLanguage() ?? detectDeviceLanguage()` и реестру `src/entities/calendar/model/bundledCalendarJsonByLanguage.ts` (согласовано с `BUNDLED_CALENDAR_JSON_FILENAME_BY_LANGUAGE`).
 
-3. **UI выбора языка**  
-   - Заменить/расширить `LanguageSwitch` под N языков (список, сегменты, или модальное меню — по UX).  
-   - В настройках показывать человекочитаемые названия (`getLanguageLabel` для каждой пары язык × текущий UI).
+3. **UI выбора языка** — **выполнено (2026-04-04)**  
+   - `LanguageSwitch` строится по `AGREED_APP_LANGUAGE_CODES`, вертикальный список на всю ширину блока в настройках (`SettingsScreen`).  
+   - Подписи в списке — **нативные названия языков** (`getLanguageNativeLabel`), чтобы каждый пункт читался «на своём» языке. Для текста «сейчас выбран язык …» в подзаголовке и в «О приложении» по-прежнему используется `getLanguageLabel(текущийUI, текущийКод)`.
 
 4. **Предзагруженные календари** — **выполнено (2026-04-04)**  
    - Подключить уже имеющиеся в репозитории файлы: `calendar2026.json`, `calendar2026TR.json`, `calendar2026IDN.json`, `calendar2026JP.json`.  
@@ -118,7 +118,7 @@
 | 1.1 | Зафиксировать список новых `AppLanguage` и приоритет переводов (какие экраны обязательны в первой итерации). |
 | 1.2 | Расширить `translations`, `MONTH_*`, `WEEKDAY_*`, `getDayTypeLabel` и прочие ветки `language === 'ru'` в `presentation.ts` / экранах — убрать хардкод только на два языка где мешает. |
 | 1.3 | Обновить `detectDeviceLanguage` под `tr` / `id` / `ja` и согласовать с политикой «сохранённый язык vs системный» (см. «Системный язык устройства»). |
-| 1.4 | Переделать UI выбора языка под список из N опций; сохранение в `settings` без изменений контракта (значение — строка-код языка). |
+| 1.4 | Переделать UI выбора языка под список из N опций; сохранение в `settings` без изменений контракта (значение — строка-код языка). — **выполнено** |
 | 1.5 | Ручная проверка: splash, год, месяц, настройки, импорт, тёмная тема на одном новом языке. |
 
 **Критерий готовности фазы 1:** можно переключить интерфейс на новые языки.  

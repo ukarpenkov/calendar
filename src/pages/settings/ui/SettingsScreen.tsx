@@ -8,7 +8,13 @@ import {
   openWorkingCalendarTelegram,
   WORKING_CALENDAR_TELEGRAM_PATH,
 } from '../../../features/year-end-reminder';
-import { getLanguageLabel, getThemeModeLabel } from '../../../shared/lib/i18n';
+import { AGREED_APP_LANGUAGE_CODES } from '../../../shared/config/agreedLanguagesAndBundledCalendars';
+import {
+  getLanguageLabel,
+  getLanguageNativeLabel,
+  getThemeModeLabel,
+  type AppLanguage,
+} from '../../../shared/lib/i18n';
 import { layout } from '../../../shared/lib/ui/layout';
 import {
   ArrowBackIcon,
@@ -114,24 +120,24 @@ export function SettingsScreen({
         subtitle={t('settings.sections.localization.subtitle')}
         palette={palette}
       >
-        <SettingRow
-          title={t('settings.rows.language.title')}
-          subtitle={t('settings.rows.language.subtitle', {
-            language: getLanguageLabel(language, language),
-          })}
-          trailing={
-            <LanguageSwitch
-              selectedLanguage={language}
-              onSelectLanguage={setLanguage}
-              palette={palette}
-              labels={{
-                ru: getLanguageLabel(language, 'ru'),
-                en: getLanguageLabel(language, 'en'),
-              }}
-            />
-          }
-          palette={palette}
-        />
+        <View style={styles.languageSettingBlock}>
+          <View style={styles.rowCopy}>
+            <Text style={[styles.rowTitle, { color: palette.title }]}>
+              {t('settings.rows.language.title')}
+            </Text>
+            <Text style={[styles.rowSubtitle, { color: palette.subtitle }]}>
+              {t('settings.rows.language.subtitle', {
+                language: getLanguageLabel(language, language),
+              })}
+            </Text>
+          </View>
+          <LanguageSwitch
+            selectedLanguage={language}
+            onSelectLanguage={setLanguage}
+            palette={palette}
+            labels={LANGUAGE_SWITCH_NATIVE_LABELS}
+          />
+        </View>
       </SectionCard>
 
       <SectionCard
@@ -299,6 +305,13 @@ function AboutLinkLine({ label, value, palette, onPress }: AboutLinkLineProps) {
   );
 }
 
+const LANGUAGE_SWITCH_NATIVE_LABELS = AGREED_APP_LANGUAGE_CODES.reduce<
+  Record<AppLanguage, string>
+>((acc, code) => {
+  acc[code] = getLanguageNativeLabel(code);
+  return acc;
+}, {} as Record<AppLanguage, string>);
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -339,6 +352,9 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   sectionBody: {
+    gap: 12,
+  },
+  languageSettingBlock: {
     gap: 12,
   },
   row: {

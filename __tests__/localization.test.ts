@@ -6,6 +6,7 @@ import {
 } from '../src/entities/calendar';
 import {
   getCompactWeekdayLabels,
+  getLanguageNativeLabel,
   getThemeModeLabel,
   getTranslation,
   mapLocaleStringToAppLanguage,
@@ -69,6 +70,14 @@ test('returns localized interface labels and day types', () => {
   expect(getCompactWeekdayLabels('en')).toEqual(['M', 'T', 'W', 'T', 'F', 'S', 'S']);
   expect(getDayTypeLabel('holiday', 'ru')).toBe('Праздник');
   expect(getDayTypeLabel('holiday', 'id')).toBe('Hari libur');
+});
+
+test('getLanguageNativeLabel returns autonyms for language picker', () => {
+  expect(getLanguageNativeLabel('ru')).toBe('Русский');
+  expect(getLanguageNativeLabel('en')).toBe('English');
+  expect(getLanguageNativeLabel('tr')).toBe('Türkçe');
+  expect(getLanguageNativeLabel('id')).toBe('Bahasa Indonesia');
+  expect(getLanguageNativeLabel('ja')).toBe('日本語');
 });
 
 test('mapLocaleStringToAppLanguage maps ICU-style locales', () => {

@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { AGREED_APP_LANGUAGE_CODES } from '../config/agreedLanguagesAndBundledCalendars';
 import type { AppLanguage } from '../lib/i18n';
 
 type LanguageSwitchPalette = {
@@ -11,15 +12,12 @@ type LanguageSwitchPalette = {
   title: string;
 };
 
-const LANGUAGE_OPTIONS = ['ru', 'en'] as const satisfies readonly AppLanguage[];
-
-type LanguageSwitchOption = (typeof LANGUAGE_OPTIONS)[number];
-
 type LanguageSwitchProps = {
   selectedLanguage: AppLanguage;
   onSelectLanguage: (language: AppLanguage) => void;
   palette: LanguageSwitchPalette;
-  labels: Record<LanguageSwitchOption, string>;
+  /** Подписи опций (обычно нативные автонимы: `getLanguageNativeLabel`). */
+  labels: Record<AppLanguage, string>;
 };
 
 export function LanguageSwitch({
@@ -38,8 +36,8 @@ export function LanguageSwitch({
         },
       ]}
     >
-      {LANGUAGE_OPTIONS.map(language => {
-        const isSelected = language === selectedLanguage;
+      {AGREED_APP_LANGUAGE_CODES.map(code => {
+        const isSelected = code === selectedLanguage;
         const optionPaletteStyle = {
           backgroundColor: isSelected ? palette.selectedFill : 'transparent',
           borderColor: isSelected ? palette.selectedBorder : 'transparent',
@@ -50,18 +48,17 @@ export function LanguageSwitch({
 
         return (
           <Pressable
-            key={language}
+            key={code}
             accessibilityRole="button"
-            onPress={() => onSelectLanguage(language)}
+            accessibilityState={{ selected: isSelected }}
+            onPress={() => onSelectLanguage(code)}
             style={({ pressed }) => [
               styles.option,
               optionPaletteStyle,
               { opacity: pressed ? 0.88 : 1 },
             ]}
           >
-            <Text style={[styles.optionText, optionTextStyle]}>
-              {labels[language]}
-            </Text>
+            <Text style={[styles.optionText, optionTextStyle]}>{labels[code]}</Text>
           </Pressable>
         );
       })}
@@ -71,22 +68,20 @@ export function LanguageSwitch({
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
+    alignSelf: 'stretch',
     borderWidth: 1,
     borderRadius: 14,
     padding: 4,
     gap: 4,
   },
   option: {
-    minWidth: 52,
     borderWidth: 1,
     borderRadius: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 9,
   },
   optionText: {
-    fontSize: 12,
-    fontWeight: '700',
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
