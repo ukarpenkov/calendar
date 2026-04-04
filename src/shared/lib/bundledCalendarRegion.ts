@@ -9,3 +9,16 @@ export function appLanguageToDefaultBundledRegion(
 ): BundledCalendarRegionCode {
   return language === 'en' ? 'ru' : language;
 }
+
+/**
+ * Регион bundled для подстановки в SQLite при ручной смене языка в настройках.
+ * Для `en` — `null`: календарь не заменяем (вариант A, `docs/2026-04-04-languages-and-bundled-calendars-plan.md`).
+ */
+export function getBundledRegionToApplyOnManualAppLanguageChange(
+  nextLanguage: AgreedAppLanguageCode,
+): BundledCalendarRegionCode | null {
+  if (nextLanguage === 'en') {
+    return null;
+  }
+  return appLanguageToDefaultBundledRegion(nextLanguage);
+}

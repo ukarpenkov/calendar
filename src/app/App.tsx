@@ -16,7 +16,7 @@ import {
   registerCalendarSyncOnBundledRegionChange,
   syncActiveYearWithBundledRegion,
 } from '../features/calendar-language-sync';
-import { appLanguageToDefaultBundledRegion } from '../shared/lib/bundledCalendarRegion';
+import { getBundledRegionToApplyOnManualAppLanguageChange } from '../shared/lib/bundledCalendarRegion';
 import {
   BundledCalendarRegionProvider,
   useBundledCalendarRegion,
@@ -72,10 +72,11 @@ function AppContent() {
 
   useEffect(() => {
     registerCalendarSyncOnAppLanguageChange((_previous, nextLanguage) => {
-      if (nextLanguage === 'en') {
+      const targetRegion =
+        getBundledRegionToApplyOnManualAppLanguageChange(nextLanguage);
+      if (targetRegion === null) {
         return;
       }
-      const targetRegion = appLanguageToDefaultBundledRegion(nextLanguage);
       setBundledCalendarRegionRef.current(targetRegion, {
         changeCause: 'app_language',
       });

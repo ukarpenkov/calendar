@@ -102,13 +102,13 @@
    - В JSON-импорте необязательные поля `name_tr` / `name_id` / `name_ja`; в bundled `calendar2026TR.json` / `calendar2026IDN.json` / `calendar2026JP.json` заполнены (локальное имя продублировано из прежнего `name_ru` для региона).  
    - Отображение в UI: `getHolidayDisplayName(day, language)` с fallback EN→RU при отсутствии локального поля (`MonthDetailScreen`).
 
-8. **Тесты**  
-   - Юнит-тесты: маппинг locale → `AppLanguage` (в т.ч. `tr-TR`, `id-ID`, `ja-JP`); маппинг язык → выбор bundled; согласованность «системная локаль → UI + сид календаря» на пустой БД; правило «`en` не меняет календарь» при ручной смене языка.  
-   - Валидация каждого нового JSON тем же кодом, что импорт.
+8. **Тесты** — **выполнено (2026-04-04)**  
+   - Юнит-тесты: маппинг locale → `AppLanguage` (в т.ч. `tr-TR`, `id-ID`, `ja-JP`) — `__tests__/localization.test.ts`; маппинг язык → регион bundled и правило «`en` не меняет календарь» при ручной смене — `getBundledRegionToApplyOnManualAppLanguageChange` + `__tests__/bundledCalendarRegion.test.ts`; согласованность «локаль → регион сида → валидный bundled JSON» — `__tests__/localeToBundledSeedConsistency.test.ts`; сид в пустой БД по региону — `__tests__/calendarRepository.test.ts` (`resolveBundledRegionForSeed`).  
+   - Валидация каждого нового JSON тем же кодом, что импорт — `__tests__/agreedLanguagesAndBundledCalendars.test.ts`.
 
-9. **Документация и отчёт**  
-   - После реализации — краткий отчёт в `docs/reports` (по правилам репозитория).  
-   - При необходимости обновить `docs/development-plan.md` или глобальный план.
+9. **Документация и отчёт** — **выполнено (2026-04-04)**  
+   - Отчёт: `docs/reports/2026-04-04-testy-i-dokumentaciya-yazyki-bundled.md`.  
+   - Обновлён `docs/development-plan.md` (языки и bundled в настройках, ссылка на план).
 
 ---
 
@@ -143,7 +143,7 @@
 | 3.1 | Реализовать обработчик смены языка: если новый язык **не** `en` → `replaceActiveYear` из соответствующего bundled для текущего года; если `en` → только UI. |
 | 3.2 | Синхронизировать глобальное состояние календаря после replace (тот же путь, что после успешного импорта). |
 | 3.3 | Учесть импорт пользователя (см. п. 6 чеклиста) — **выполнено:** флаг в metadata + `changeCause` для смены региона; подсказка в настройках. |
-| 3.4 | Юнит-тесты на правило `en` vs не-`en`. |
+| 3.4 | Юнит-тесты на правило `en` vs не-`en`. — **выполнено:** `getBundledRegionToApplyOnManualAppLanguageChange`, `__tests__/bundledCalendarRegion.test.ts`. |
 
 ### Фаза 4 — Полировка
 
