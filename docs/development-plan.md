@@ -110,6 +110,7 @@ flowchart TD
 - [README.md](./README.md) — оглавление документации по дизайну и продукту.
 - [ACTION-PLAN.md](./ACTION-PLAN.md) — приоритизированный план правок UI в дизайн-макете.
 - [2026-04-04-languages-and-bundled-calendars-plan.md](./2026-04-04-languages-and-bundled-calendars-plan.md) — языки UI, несколько bundled JSON, сиды и правила смены календаря.
+- [2026-04-04-google-play-publishing-ru-id-tr-jp.md](./2026-04-04-google-play-publishing-ru-id-tr-jp.md) — чеклист публикации в Google Play (Россия, Индонезия, Турция, Япония).
 
 ---
 
