@@ -32,7 +32,7 @@
 | ID | Задача | Примечание |
 |----|--------|------------|
 | **GP-B1** | [x] **Release-сборка** через **Android App Bundle (AAB)** — основной формат загрузки в Play. | Артефакт: `android/app/build/outputs/bundle/release/app-release.aab` (`.\gradlew.bat bundleRelease` из `android/`). |
-| **GP-B2** | [ ] Включить **подпись приложения**: **Play App Signing** (рекомендуется Google) + локальный **upload key**. | В Gradle: положить `android/keystore.properties` + upload keystore (шаблон `android/keystore.properties.example`); без файла release пока подписывается debug-ключом — **для загрузки в Play нужен upload keystore**. Сохранить keystore и пароли; backup в безопасном месте. |
+| **GP-B2** | [x] Включить **подпись приложения**: **Play App Signing** (рекомендуется Google) + локальный **upload key**. | В репо: шаблон `android/keystore.properties.example`, `android/app/build.gradle` читает `android/keystore.properties` и подписывает release upload-keystore; без `keystore.properties` release временно на debug. Сгенерировать `.jks`, скопировать шаблон в `keystore.properties`, сделать backup. **Play App Signing** включается в консоли при первой загрузке AAB. |
 | **GP-B3** | [ ] Проверить **targetSdkVersion** и **compileSdk** на соответствие **текущим требованиям Google** к новым приложениям и обновлениям. | Требования повышаются ежегодно — блокер для публикации при отставании. |
 | **GP-B4** | [ ] Проверить **versionCode** (монотонно растёт) и **versionName** (человекочитаемо). | Каждый релиз в прод — новый `versionCode`. |
 | **GP-B5** | [ ] Убедиться, что приложение **64-bit** совместимо (если применимо к вашим нативным библиотекам). | Стандарт для современных устройств. |

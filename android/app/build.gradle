@@ -100,10 +100,22 @@ android {
         }
         release {
             if (keystorePropertiesFile.exists()) {
-                keyAlias keystoreProperties['keyAlias']
-                keyPassword keystoreProperties['keyPassword']
-                storeFile rootProject.file(keystoreProperties['storeFile'])
+                def storeFileProp = keystoreProperties['storeFile']
+                def keyAliasProp = keystoreProperties['keyAlias']
+                if (!storeFileProp || !keyAliasProp
+                        || !keystoreProperties['storePassword'] || !keystoreProperties['keyPassword']) {
+                    throw new GradleException(
+                            "android/keystore.properties: укажите storeFile, storePassword, keyAlias и keyPassword " +
+                            "(шаблон: android/keystore.properties.example)")
+                }
+                def storeFile = rootProject.file(storeFileProp)
+                if (!storeFile.isFile()) {
+                    throw new GradleException("Keystore не найден по пути из storeFile: ${storeFile}")
+                }
+                storeFile storeFile
                 storePassword keystoreProperties['storePassword']
+                keyAlias keyAliasProp
+                keyPassword keystoreProperties['keyPassword']
             }
         }
     }
