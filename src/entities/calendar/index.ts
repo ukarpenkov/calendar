@@ -7,6 +7,7 @@ export {
   replaceActiveYear,
   seedBundledYearIfNeeded,
   type CalendarRepository,
+  type CalendarRepositoryDependencies,
 } from './model/repository';
 export {
   buildMonthDetail,

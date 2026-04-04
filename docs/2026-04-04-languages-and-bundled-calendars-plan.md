@@ -47,10 +47,10 @@
 ## Текущее состояние (отправная точка)
 
 - Тип `AppLanguage` и словари месяцев/дней недели: `src/shared/lib/i18n/index.ts`.
-- Автоопределение языка устройства: `detectDeviceLanguage` (сейчас только `ru` vs остальное → `en`).
+- Автоопределение языка устройства: `detectDeviceLanguage` / `mapLocaleStringToAppLanguage` (`ru` / `tr` / `id` / `ja` / иначе `en`, с `try/catch`).
 - Переключатель в настройках: `src/shared/ui/LanguageSwitch.tsx` (жёстко `['ru', 'en']`), подписи в `SettingsScreen`.
 - Сохранение языка: `src/shared/lib/settings/repository.ts`, контекст `LocalizationProvider`.
-- Каноническое хранилище года — **SQLite**; при пустой/битой БД сид через `seedBundledYearIfNeeded` (сейчас — из одного `calendar2026.json`; после фазы 2 — из выбранного по языку/локали одного из четырёх bundled, см. таблицу регионов).
+- Каноническое хранилище года — **SQLite**; при пустой/битой БД сид через `seedBundledYearIfNeeded` из bundled, выбранного по `getStoredLanguage() ?? detectDeviceLanguage()` и реестру в `bundledCalendarJsonByLanguage.ts` (см. таблицу регионов в этом документе).
 
 ---
 
@@ -73,19 +73,20 @@
    Минимум: существующие `ru`, `en` плюс **`tr` (Турция), `id` (Индонезия), `ja` (Япония)**; к каждому — свой bundled JSON на активный год, связь 1:1. Дополнительные страны — отдельными итерациями.  
    **Зафиксировано в коде:** `src/shared/config/agreedLanguagesAndBundledCalendars.ts` (`AGREED_APP_LANGUAGE_CODES`, `BUNDLED_CALENDAR_JSON_FILENAME_BY_LANGUAGE`, год `BUNDLED_CALENDAR_YEAR = 2026`). Для `en` и `ru` при стартовом bundled используется один файл `calendar2026.json` (как в таблице плана).
 
-2. **Расширить модель локализации**  
+2. **Расширить модель локализации** — **выполнено (2026-04-04)**  
    - Расширить `AppLanguage` и все `Record<AppLanguage, …>` в `i18n`.  
    - Добавить полные переводы строк UI для новых языков (или поэтапно: сначала ключевые экраны).  
-   - Обновить `detectDeviceLanguage`: маппинг `Intl` locale → `AppLanguage` (`ru`, `tr`, `id`, `ja`, иначе `en`) с безопасным fallback; тот же маппинг использовать при выборе стартового bundled (см. «Системный язык устройства»).
+   - Обновить `detectDeviceLanguage`: маппинг `Intl` locale → `AppLanguage` (`ru`, `tr`, `id`, `ja`, иначе `en`) с безопасным fallback; тот же маппинг использовать при выборе стартового bundled (см. «Системный язык устройства»).  
+   **В коде:** `mapLocaleStringToAppLanguage` / `detectDeviceLanguage` в `src/shared/lib/i18n/index.ts`; при пустой/неполной БД `seedBundledYearIfNeeded` берёт bundled по `getStoredLanguage() ?? detectDeviceLanguage()` и реестру `src/entities/calendar/model/bundledCalendarJsonByLanguage.ts` (согласовано с `BUNDLED_CALENDAR_JSON_FILENAME_BY_LANGUAGE`).
 
 3. **UI выбора языка**  
    - Заменить/расширить `LanguageSwitch` под N языков (список, сегменты, или модальное меню — по UX).  
    - В настройках показывать человекочитаемые названия (`getLanguageLabel` для каждой пары язык × текущий UI).
 
-4. **Предзагруженные календари**  
+4. **Предзагруженные календари** — **выполнено (2026-04-04)**  
    - Подключить уже имеющиеся в репозитории файлы: `calendar2026.json`, `calendar2026TR.json`, `calendar2026IDN.json`, `calendar2026JP.json`.  
-   - Прописать `require`/Metro-ассеты для каждого так же, как для текущего `calendar2026.json`.  
-   - Прогнать каждый файл через тот же путь валидации, что и импорт (`parseValidateAndNormalizeCalendarImport`).
+   - Прописать `require`/Metro-ассеты для каждого так же, как для текущего `calendar2026.json`. — **в коде:** `bundledCalendarJsonByLanguage.ts`.  
+   - Прогнать каждый файл через тот же путь валидации, что и импорт (`parseValidateAndNormalizeCalendarImport`). — **в тестах:** `agreedLanguagesAndBundledCalendars.test.ts`.
 
 5. **Связка язык → bundled-календарь**  
    - Таблица соответствия `AppLanguage` → модуль/путь JSON (для `en` — «не использовать для авто-смены» при варианте A).  
@@ -120,16 +121,17 @@
 | 1.4 | Переделать UI выбора языка под список из N опций; сохранение в `settings` без изменений контракта (значение — строка-код языка). |
 | 1.5 | Ручная проверка: splash, год, месяц, настройки, импорт, тёмная тема на одном новом языке. |
 
-**Критерий готовности фазы 1:** можно переключить интерфейс на новые языки; календарь в БД по-прежнему один bundled до фазы 2.
+**Критерий готовности фазы 1:** можно переключить интерфейс на новые языки.  
+**Фаза 2 (стартовый bundled по языку/локали):** см. отмеченные шаги 2.1–2.4 ниже — **выполнено**; автозамена календаря при **ручной** смене языка в настройках — отдельно, фаза 3.
 
 ### Фаза 2 — Несколько bundled-календарей
 
 | Шаг | Действие |
 |-----|----------|
-| 2.1 | Убедиться, что `calendar2026.json`, `calendar2026TR.json`, `calendar2026IDN.json`, `calendar2026JP.json` валидны (тот же год, полная сетка дней, схема); при необходимости поправить данные. |
-| 2.2 | Вынести выбор «какой JSON считать дефолтным при первом запуске»: **та же функция**, что для `detectDeviceLanguage`, определяет и UI, и bundled (`ru`/`tr`/`id`/`ja` → свой JSON, прочее → дефолт для `en`). |
-| 2.3 | Рефакторинг `repository`: не один `require`, а реестр или функция `getBundledCalendarForLanguage(year, language)`. |
-| 2.4 | Обновить `seedBundledYearIfNeeded` с учётом выбранного дефолта (осторожно с миграциями и уже заполненной БД). |
+| 2.1 | Убедиться, что `calendar2026.json`, `calendar2026TR.json`, `calendar2026IDN.json`, `calendar2026JP.json` валидны (тот же год, полная сетка дней, схема); при необходимости поправить данные. — **выполнено:** тест `each bundled JSON for an agreed language validates like an import` в `__tests__/agreedLanguagesAndBundledCalendars.test.ts`. |
+| 2.2 | Вынести выбор «какой JSON считать дефолтным при первом запуске»: **та же функция**, что для `detectDeviceLanguage`, определяет и UI, и bundled (`ru`/`tr`/`id`/`ja` → свой JSON, прочее → дефолт для `en`). — **выполнено:** при отсутствии сохранённого языка в SQLite используется `detectDeviceLanguage()`; иначе сохранённый код языка. |
+| 2.3 | Рефакторинг `repository`: не один `require`, а реестр или функция `getBundledCalendarForLanguage(year, language)`. — **выполнено:** `getBundledCalendarJsonObject` + статические `require` в `bundledCalendarJsonByLanguage.ts`. |
+| 2.4 | Обновить `seedBundledYearIfNeeded` с учётом выбранного дефолта (осторожно с миграциями и уже заполненной БД). — **выполнено:** см. `createCalendarRepository` / `seedBundledYearIfNeeded`; полная БД не пересидывается. |
 
 ### Фаза 3 — Авто-смена календаря при смене языка
 

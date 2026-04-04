@@ -157,7 +157,9 @@ function interpolate(template: string, params?: TranslationParams): string {
 
 /**
  * Maps a BCP 47 / ICU-style locale string (e.g. from `Intl`) to an app UI language.
- * Used for first-launch UI language and (in a later step) the default bundled calendar.
+ * Used for first-launch UI language when nothing is stored in SQLite; the same mapping
+ * applies to the default bundled calendar via `seedBundledYearIfNeeded` (stored language
+ * wins when present — see `createCalendarRepository`).
  */
 export function mapLocaleStringToAppLanguage(locale: string): AppLanguage {
   const normalized = locale.trim().toLowerCase();

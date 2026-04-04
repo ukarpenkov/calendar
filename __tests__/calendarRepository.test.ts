@@ -23,7 +23,9 @@ describe('calendar sqlite repository', () => {
   beforeEach(async () => {
     db = open({ name: 'calendar-test.sqlite', location: ':memory:' });
     await initializeDatabase(db);
-    repository = createCalendarRepository(db);
+    repository = createCalendarRepository(db, {
+      resolveLanguageForBundledSeed: async () => 'en',
+    });
   });
 
   afterEach(() => {
@@ -54,6 +56,22 @@ describe('calendar sqlite repository', () => {
     expect(seededCalendar.year).toBe(2026);
     expect(seededCalendar.days).toHaveLength(365);
     expect(await repository.getActiveYear()).toBe(2026);
+  });
+
+  it('seeds regional bundled JSON when resolver selects a non-default language', async () => {
+    const jaRepository = createCalendarRepository(db, {
+      resolveLanguageForBundledSeed: async () => 'ja',
+    });
+
+    const seededCalendar = await jaRepository.seedBundledYearIfNeeded();
+
+    expect(seededCalendar.year).toBe(2026);
+    const jan12 = seededCalendar.days.find(d => d.date === '2026-01-12');
+    expect(jan12).toMatchObject({
+      type: 'holiday',
+      holidayNameRu: '成人の日',
+      holidayNameEn: 'Coming of Age Day',
+    });
   });
 
   it('reseeds the bundled year when active metadata points to incomplete data', async () => {

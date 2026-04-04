@@ -1,11 +1,13 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { parseValidateAndNormalizeCalendarImport } from '../src/features/calendar-import';
 import {
   AGREED_APP_LANGUAGE_CODES,
   BUNDLED_CALENDAR_JSON_FILENAME_BY_LANGUAGE,
   BUNDLED_CALENDAR_YEAR,
 } from '../src/shared/config/agreedLanguagesAndBundledCalendars';
+import { getBundledCalendarJsonObject } from '../src/entities/calendar/model/bundledCalendarJsonByLanguage';
 
 const repoRoot = path.join(__dirname, '..');
 
@@ -26,4 +28,13 @@ test('each bundled JSON file exists at repository root', () => {
 
 test('bundled calendar year constant matches plan year 2026', () => {
   expect(BUNDLED_CALENDAR_YEAR).toBe(2026);
+});
+
+test('each bundled JSON for an agreed language validates like an import', () => {
+  for (const code of AGREED_APP_LANGUAGE_CODES) {
+    const raw = getBundledCalendarJsonObject(code);
+    const calendar = parseValidateAndNormalizeCalendarImport(raw);
+    expect(calendar.year).toBe(BUNDLED_CALENDAR_YEAR);
+    expect(calendar.days).toHaveLength(365);
+  }
 });

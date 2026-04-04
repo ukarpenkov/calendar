@@ -9,12 +9,16 @@ import {
   initializeDatabase,
 } from '../../../shared/lib/db';
 import {
+  detectDeviceLanguage,
+  type AppLanguage,
+} from '../../../shared/lib/i18n';
+import { getStoredLanguage } from '../../../shared/lib/settings';
+import { getBundledCalendarJsonObject } from './bundledCalendarJsonByLanguage';
+import {
   mapCalendarDayRow,
   mapCalendarDayToSqlParams,
 } from './mappers';
 import type { CalendarDay, CalendarYear } from './types';
-
-const BUNDLED_CALENDAR = require('../../../../calendar2026.json');
 
 function getExpectedDayCount(year: number): number {
   return new Date(Date.UTC(year, 1, 29)).getUTCDate() === 29 ? 366 : 365;
@@ -105,7 +109,27 @@ export interface CalendarRepository {
   replaceActiveYear(calendar: CalendarYear): Promise<void>;
 }
 
-export function createCalendarRepository(db: DB): CalendarRepository {
+export type CalendarRepositoryDependencies = {
+  /**
+   * Язык для выбора bundled JSON при сидировании пустой/битой БД.
+   * По умолчанию: сохранённый в SQLite язык интерфейса, иначе `detectDeviceLanguage()`.
+   */
+  resolveLanguageForBundledSeed?: () => Promise<AppLanguage>;
+};
+
+async function defaultResolveLanguageForBundledSeed(): Promise<AppLanguage> {
+  const stored = await getStoredLanguage();
+  return stored ?? detectDeviceLanguage();
+}
+
+export function createCalendarRepository(
+  db: DB,
+  dependencies?: CalendarRepositoryDependencies,
+): CalendarRepository {
+  const resolveLanguageForBundledSeed =
+    dependencies?.resolveLanguageForBundledSeed ??
+    defaultResolveLanguageForBundledSeed;
+
   return {
     async seedBundledYearIfNeeded() {
       await initializeDatabase(db);
@@ -120,8 +144,10 @@ export function createCalendarRepository(db: DB): CalendarRepository {
         }
       }
 
+      const appLanguage = await resolveLanguageForBundledSeed();
+      const bundledRaw = getBundledCalendarJsonObject(appLanguage);
       const bundledCalendar =
-        parseValidateAndNormalizeCalendarImport(BUNDLED_CALENDAR);
+        parseValidateAndNormalizeCalendarImport(bundledRaw);
 
       await replaceActiveYearRows(db, bundledCalendar);
 
