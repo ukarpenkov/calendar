@@ -13,11 +13,11 @@ import {
 } from '../../../features/year-end-reminder';
 import {
   AGREED_APP_LANGUAGE_CODES,
-  BUNDLED_CALENDAR_REGION_CODES,
-  type BundledCalendarRegionCode,
+  // BUNDLED_CALENDAR_REGION_CODES,
+  // type BundledCalendarRegionCode,
 } from '../../../shared/config/agreedLanguagesAndBundledCalendars';
 import {
-  getBundledRegionLabel,
+  // getBundledRegionLabel,
   getLanguageLabel,
   getLanguageNativeLabel,
   getThemeModeLabel,
@@ -29,7 +29,7 @@ import {
   TelegramIcon,
 } from '../../../shared/ui/icons/NavigationIcons';
 import { IconCircleButton } from '../../../shared/ui/IconCircleButton';
-import { BundledCalendarSwitch } from '../../../shared/ui/BundledCalendarSwitch';
+// import { BundledCalendarSwitch } from '../../../shared/ui/BundledCalendarSwitch';
 import { LanguageSwitch } from '../../../shared/ui/LanguageSwitch';
 import { ThemeSwitch } from '../../../shared/ui/ThemeSwitch';
 
@@ -47,8 +47,7 @@ export function SettingsScreen({
   const safeAreaInsets = useSafeAreaInsets();
   const { isDarkMode, palette, themeMode, toggleTheme } = useAppTheme();
   const { language, setLanguage, t } = useAppLocalization();
-  const { bundledCalendarRegion, setBundledCalendarRegion } =
-    useBundledCalendarRegion();
+  const { bundledCalendarRegion } = useBundledCalendarRegion();
   const [userJsonImportActive, setUserJsonImportActive] = useState(false);
 
   useEffect(() => {
@@ -117,6 +116,7 @@ export function SettingsScreen({
           palette={palette}
         />
         <Divider palette={palette} />
+        {/*
         <View style={styles.languageSettingBlock}>
           <View style={styles.rowCopy}>
             <Text style={[styles.rowTitle, { color: palette.title }]}>
@@ -136,6 +136,7 @@ export function SettingsScreen({
           />
         </View>
         <Divider palette={palette} />
+        */}
         <SettingRow
           title={t('settings.rows.importYear.title')}
           subtitle={t('settings.rows.importYear.subtitle')}
@@ -370,17 +371,17 @@ const LANGUAGE_SWITCH_NATIVE_LABELS = AGREED_APP_LANGUAGE_CODES.reduce<
   return acc;
 }, {} as Record<AppLanguage, string>);
 
-const BUNDLED_CALENDAR_SWITCH_LABELS = AGREED_APP_LANGUAGE_CODES.reduce(
-  (acc, uiLang) => {
-    const labels = {} as Record<BundledCalendarRegionCode, string>;
-    for (const region of BUNDLED_CALENDAR_REGION_CODES) {
-      labels[region] = getBundledRegionLabel(uiLang, region);
-    }
-    acc[uiLang] = labels;
-    return acc;
-  },
-  {} as Record<AppLanguage, Record<BundledCalendarRegionCode, string>>,
-);
+// const BUNDLED_CALENDAR_SWITCH_LABELS = AGREED_APP_LANGUAGE_CODES.reduce(
+//   (acc, uiLang) => {
+//     const labels = {} as Record<BundledCalendarRegionCode, string>;
+//     for (const region of BUNDLED_CALENDAR_REGION_CODES) {
+//       labels[region] = getBundledRegionLabel(uiLang, region);
+//     }
+//     acc[uiLang] = labels;
+//     return acc;
+//   },
+//   {} as Record<AppLanguage, Record<BundledCalendarRegionCode, string>>,
+// );
 
 const styles = StyleSheet.create({
   container: {
