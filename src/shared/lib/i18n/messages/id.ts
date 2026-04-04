@@ -53,6 +53,8 @@ export const idTranslations = {
     'Mengganti bahasa antarmuka di seluruh aplikasi.',
   'settings.rows.language.title': 'Bahasa antarmuka',
   'settings.rows.language.subtitle': 'Bahasa saat ini: {{language}}.',
+  'settings.rows.language.userImportHint':
+    'Kalender dari impor JSON: mengganti bahasa antarmuka tidak mengganti data. Untuk kalender bawaan gunakan bagian «Kalender produksi (2026)» di bawah.',
   'settings.sections.about.title': 'Tentang',
   'settings.sections.about.subtitle':
     'Informasi layanan untuk build lokal-utama ini.',

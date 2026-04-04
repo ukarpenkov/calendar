@@ -6,6 +6,7 @@ export {
 export {
   notifyCalendarSyncOnBundledRegionChange,
   registerCalendarSyncOnBundledRegionChange,
+  type BundledRegionChangeCause,
   type CalendarSyncOnBundledRegionChangeHandler,
 } from './bundledRegionChangeRegistry';
 export {

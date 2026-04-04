@@ -4,6 +4,10 @@ export const DATABASE_NAME = 'calendar.sqlite';
 export const DATABASE_SCHEMA_VERSION = 1;
 export const ACTIVE_YEAR_METADATA_KEY = 'activeYear';
 
+/** Значение `1`, если активный год последним был записан из локального JSON-импорта (не из bundled). */
+export const ACTIVE_CALENDAR_USER_JSON_IMPORT_KEY =
+  'active_calendar_user_json_import';
+
 export const SCHEMA_COMMANDS: SQLBatchTuple[] = [
   ['PRAGMA foreign_keys = ON'],
   [

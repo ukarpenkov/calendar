@@ -53,6 +53,8 @@ export const jaTranslations = {
     'アプリ全体の表示言語を切り替えます。',
   'settings.rows.language.title': '表示言語',
   'settings.rows.language.subtitle': '現在の言語: {{language}}。',
+  'settings.rows.language.userImportHint':
+    'カレンダーは JSON インポート由来のため、表示言語を変えてもデータは置き換わりません。同梱データに切り替える場合は下の「生産カレンダー（2026）」から選んでください。',
   'settings.sections.about.title': 'アプリについて',
   'settings.sections.about.subtitle':
     'ローカル優先ビルドに関する情報です。',

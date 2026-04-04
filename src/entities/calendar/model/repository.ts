@@ -5,6 +5,7 @@ import type { DB, SQLBatchTuple } from '@op-engineering/op-sqlite';
 import { parseValidateAndNormalizeCalendarImport } from '../../../features/calendar-import';
 import type { BundledCalendarRegionCode } from '../../../shared/config/agreedLanguagesAndBundledCalendars';
 import {
+  ACTIVE_CALENDAR_USER_JSON_IMPORT_KEY,
   ACTIVE_YEAR_METADATA_KEY,
   getDatabase,
   initializeDatabase,
@@ -67,10 +68,25 @@ async function readYearDays(db: DB, year: number): Promise<CalendarDay[]> {
   return result.rows.map(mapCalendarDayRow);
 }
 
+export type ReplaceActiveYearSource = 'bundled' | 'user_json_import';
+
 async function replaceActiveYearRows(
   db: DB,
   calendar: CalendarYear,
+  source: ReplaceActiveYearSource,
 ): Promise<void> {
+  const userImportCommands: SQLBatchTuple[] =
+    source === 'user_json_import'
+      ? [
+          [
+            `INSERT INTO app_metadata (key, value)
+             VALUES (?, ?)
+             ON CONFLICT(key) DO UPDATE SET value = excluded.value`,
+            [ACTIVE_CALENDAR_USER_JSON_IMPORT_KEY, '1'],
+          ],
+        ]
+      : [['DELETE FROM app_metadata WHERE key = ?', [ACTIVE_CALENDAR_USER_JSON_IMPORT_KEY]]];
+
   const commands: SQLBatchTuple[] = [
     ['DELETE FROM calendar_days'],
     ['DELETE FROM app_metadata WHERE key = ?', [ACTIVE_YEAR_METADATA_KEY]],
@@ -93,6 +109,7 @@ async function replaceActiveYearRows(
       'INSERT INTO app_metadata (key, value) VALUES (?, ?)',
       [ACTIVE_YEAR_METADATA_KEY, String(calendar.year)],
     ],
+    ...userImportCommands,
   ];
 
   await db.executeBatch(commands);
@@ -103,7 +120,10 @@ export interface CalendarRepository {
   getActiveYear(): Promise<number | null>;
   getYearCalendar(year: number): Promise<CalendarYear | null>;
   getMonthCalendar(year: number, month: number): Promise<CalendarDay[]>;
-  replaceActiveYear(calendar: CalendarYear): Promise<void>;
+  replaceActiveYear(
+    calendar: CalendarYear,
+    source?: ReplaceActiveYearSource,
+  ): Promise<void>;
 }
 
 export type CalendarRepositoryDependencies = {
@@ -145,7 +165,7 @@ export function createCalendarRepository(
       const bundledCalendar =
         parseValidateAndNormalizeCalendarImport(bundledRaw);
 
-      await replaceActiveYearRows(db, bundledCalendar);
+      await replaceActiveYearRows(db, bundledCalendar, 'bundled');
 
       return bundledCalendar;
     },
@@ -194,9 +214,12 @@ export function createCalendarRepository(
       return result.rows.map(mapCalendarDayRow);
     },
 
-    async replaceActiveYear(calendar: CalendarYear) {
+    async replaceActiveYear(
+      calendar: CalendarYear,
+      source: ReplaceActiveYearSource = 'bundled',
+    ) {
       await initializeDatabase(db);
-      await replaceActiveYearRows(db, calendar);
+      await replaceActiveYearRows(db, calendar, source);
     },
   };
 }
@@ -232,8 +255,24 @@ export async function getMonthCalendar(
   return getCalendarRepository().getMonthCalendar(year, month);
 }
 
+async function readUserJsonImportFlag(db: DB): Promise<boolean> {
+  const result = await db.execute(
+    'SELECT value FROM app_metadata WHERE key = ? LIMIT 1',
+    [ACTIVE_CALENDAR_USER_JSON_IMPORT_KEY],
+  );
+  const raw = result.rows[0]?.value;
+  return raw === '1';
+}
+
+export async function getActiveCalendarIsUserJsonImport(): Promise<boolean> {
+  const db = getDatabase();
+  await initializeDatabase(db);
+  return readUserJsonImportFlag(db);
+}
+
 export async function replaceActiveYear(
   calendar: CalendarYear,
+  source: ReplaceActiveYearSource = 'bundled',
 ): Promise<void> {
-  return getCalendarRepository().replaceActiveYear(calendar);
+  return getCalendarRepository().replaceActiveYear(calendar, source);
 }

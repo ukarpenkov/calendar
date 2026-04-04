@@ -1,5 +1,6 @@
 export {
   createCalendarRepository,
+  getActiveCalendarIsUserJsonImport,
   getActiveYear,
   getCalendarRepository,
   getMonthCalendar,
@@ -8,6 +9,7 @@ export {
   seedBundledYearIfNeeded,
   type CalendarRepository,
   type CalendarRepositoryDependencies,
+  type ReplaceActiveYearSource,
 } from './model/repository';
 export {
   buildMonthDetail,

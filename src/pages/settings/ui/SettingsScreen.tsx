@@ -1,8 +1,10 @@
 import type { ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useBundledCalendarRegion } from '../../../app/providers/bundled-calendar-region';
+import { getActiveCalendarIsUserJsonImport } from '../../../entities/calendar';
 import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
 import {
@@ -47,6 +49,27 @@ export function SettingsScreen({
   const { language, setLanguage, t } = useAppLocalization();
   const { bundledCalendarRegion, setBundledCalendarRegion } =
     useBundledCalendarRegion();
+  const [userJsonImportActive, setUserJsonImportActive] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    getActiveCalendarIsUserJsonImport()
+      .then(flag => {
+        if (!cancelled) {
+          setUserJsonImportActive(flag);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setUserJsonImportActive(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activeYear, bundledCalendarRegion]);
 
   return (
     <ScrollView
@@ -165,6 +188,13 @@ export function SettingsScreen({
             palette={palette}
             labels={LANGUAGE_SWITCH_NATIVE_LABELS}
           />
+          {userJsonImportActive ? (
+            <Text
+              style={[styles.languageImportHint, { color: palette.subtitle }]}
+            >
+              {t('settings.rows.language.userImportHint')}
+            </Text>
+          ) : null}
         </View>
       </SectionCard>
 
@@ -396,6 +426,10 @@ const styles = StyleSheet.create({
   },
   languageSettingBlock: {
     gap: 12,
+  },
+  languageImportHint: {
+    fontSize: 12,
+    lineHeight: 17,
   },
   row: {
     flexDirection: 'row',

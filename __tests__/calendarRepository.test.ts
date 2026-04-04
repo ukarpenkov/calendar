@@ -11,7 +11,10 @@ import {
   type CalendarRepository,
 } from '../src/entities/calendar';
 import { parseValidateAndNormalizeCalendarImport } from '../src/features/calendar-import';
-import { initializeDatabase } from '../src/shared/lib/db';
+import {
+  ACTIVE_CALENDAR_USER_JSON_IMPORT_KEY,
+  initializeDatabase,
+} from '../src/shared/lib/db';
 
 const bundledCalendar = require('../calendar2026.json');
 const importedCalendar2025 = require('../calendar2025.json');
@@ -106,7 +109,7 @@ describe('calendar sqlite repository', () => {
     const calendar2025 = parseValidateAndNormalizeCalendarImport(importedCalendar2025);
 
     await repository.replaceActiveYear(calendar2026);
-    await repository.replaceActiveYear(calendar2025);
+    await repository.replaceActiveYear(calendar2025, 'user_json_import');
 
     expect(await repository.getActiveYear()).toBe(2025);
     expect(await repository.getYearCalendar(2026)).toBeNull();
@@ -122,5 +125,19 @@ describe('calendar sqlite repository', () => {
         }),
       ]),
     );
+
+    const importFlag = await db.execute(
+      'SELECT value FROM app_metadata WHERE key = ? LIMIT 1',
+      [ACTIVE_CALENDAR_USER_JSON_IMPORT_KEY],
+    );
+    expect(importFlag.rows[0]?.value).toBe('1');
+
+    await repository.replaceActiveYear(calendar2026);
+
+    const cleared = await db.execute(
+      'SELECT value FROM app_metadata WHERE key = ? LIMIT 1',
+      [ACTIVE_CALENDAR_USER_JSON_IMPORT_KEY],
+    );
+    expect(cleared.rows[0]).toBeUndefined();
   });
 });

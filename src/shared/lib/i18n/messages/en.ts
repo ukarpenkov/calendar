@@ -51,6 +51,8 @@ export const enTranslations = {
       'Switch the language used across the app interface.',
     'settings.rows.language.title': 'Interface language',
     'settings.rows.language.subtitle': 'Current language: {{language}}.',
+    'settings.rows.language.userImportHint':
+      'Your calendar came from a JSON import: changing the interface language will not replace it. Use Production calendar (2026) below to load a bundled dataset.',
     'settings.sections.about.title': 'About',
     'settings.sections.about.subtitle':
       'Service information for the current local-first build.',

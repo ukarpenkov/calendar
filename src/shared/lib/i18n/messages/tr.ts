@@ -53,6 +53,8 @@ export const trTranslations = {
     'Uygulama arayüzünde kullanılan dili değiştirir.',
   'settings.rows.language.title': 'Arayüz dili',
   'settings.rows.language.subtitle': 'Geçerli dil: {{language}}.',
+  'settings.rows.language.userImportHint':
+    'Takvim JSON içe aktarımından geliyor: arayüz dilini değiştirmek veriyi değiştirmez. Paketlenmiş takvim için aşağıdaki «Üretim takvimi (2026)» bölümünü kullanın.',
   'settings.sections.about.title': 'Hakkında',
   'settings.sections.about.subtitle':
     'Yerel öncelikli bu sürüm için servis bilgileri.',

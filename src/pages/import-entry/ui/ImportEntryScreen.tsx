@@ -254,7 +254,7 @@ export function ImportEntryScreen({
     setReviewError(null);
     setPanel('importing');
 
-    replaceActiveYear(preparedImport.calendar)
+    replaceActiveYear(preparedImport.calendar, 'user_json_import')
       .then(() => {
         setSuccessCalendar(preparedImport.calendar);
         setPanel('success');

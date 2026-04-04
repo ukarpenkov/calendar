@@ -76,7 +76,9 @@ function AppContent() {
         return;
       }
       const targetRegion = appLanguageToDefaultBundledRegion(nextLanguage);
-      setBundledCalendarRegionRef.current(targetRegion);
+      setBundledCalendarRegionRef.current(targetRegion, {
+        changeCause: 'app_language',
+      });
     });
 
     return () => {
@@ -86,7 +88,7 @@ function AppContent() {
 
   useEffect(() => {
     registerCalendarSyncOnBundledRegionChange(
-      async (_previousRegion, nextRegion) => {
+      async (_previousRegion, nextRegion, cause) => {
         const current = statusRef.current;
         if (current.kind !== 'ready') {
           return;
@@ -96,6 +98,7 @@ function AppContent() {
           const updated = await syncActiveYearWithBundledRegion({
             region: nextRegion,
             activeCalendarYear: current.calendar.year,
+            changeCause: cause,
           });
           if (!updated) {
             return;

@@ -9,7 +9,10 @@ import {
   type PropsWithChildren,
 } from 'react';
 
-import { notifyCalendarSyncOnBundledRegionChange } from '../../../features/calendar-language-sync';
+import {
+  notifyCalendarSyncOnBundledRegionChange,
+  type BundledRegionChangeCause,
+} from '../../../features/calendar-language-sync';
 import type { BundledCalendarRegionCode } from '../../../shared/config/agreedLanguagesAndBundledCalendars';
 import { appLanguageToDefaultBundledRegion } from '../../../shared/lib/bundledCalendarRegion';
 import { detectDeviceLanguage } from '../../../shared/lib/i18n';
@@ -18,9 +21,16 @@ import {
   setStoredBundledCalendarRegion,
 } from '../../../shared/lib/settings';
 
+export type SetBundledCalendarRegionOptions = {
+  changeCause?: BundledRegionChangeCause;
+};
+
 type BundledCalendarRegionContextValue = {
   bundledCalendarRegion: BundledCalendarRegionCode;
-  setBundledCalendarRegion: (region: BundledCalendarRegionCode) => void;
+  setBundledCalendarRegion: (
+    region: BundledCalendarRegionCode,
+    options?: SetBundledCalendarRegionOptions,
+  ) => void;
 };
 
 const BundledCalendarRegionContext =
@@ -64,12 +74,16 @@ export function BundledCalendarRegionProvider({
   }, []);
 
   const handleSetBundledCalendarRegion = useCallback(
-    (nextRegion: BundledCalendarRegionCode) => {
+    (
+      nextRegion: BundledCalendarRegionCode,
+      options?: SetBundledCalendarRegionOptions,
+    ) => {
       if (nextRegion === bundledCalendarRegion) {
         return;
       }
 
       const previousRegion = bundledCalendarRegion;
+      const cause = options?.changeCause ?? 'settings';
       hasManualSelectionRef.current = true;
       setBundledCalendarRegionState(nextRegion);
 
@@ -77,7 +91,7 @@ export function BundledCalendarRegionProvider({
         // Ignore persistence failures to keep switching responsive.
       });
 
-      notifyCalendarSyncOnBundledRegionChange(previousRegion, nextRegion);
+      notifyCalendarSyncOnBundledRegionChange(previousRegion, nextRegion, cause);
     },
     [bundledCalendarRegion],
   );

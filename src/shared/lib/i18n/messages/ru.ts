@@ -54,6 +54,8 @@ export const ruTranslations: Record<TranslationKey, string> = {
       'Переключение языка интерфейса приложения.',
     'settings.rows.language.title': 'Язык интерфейса',
     'settings.rows.language.subtitle': 'Текущий язык: {{language}}.',
+    'settings.rows.language.userImportHint':
+      'Активный год загружен из JSON: смена языка интерфейса не перезапишет данные. Встроенный календарь можно выбрать в блоке «Производственный календарь (2026)» ниже.',
     'settings.sections.about.title': 'О приложении',
     'settings.sections.about.subtitle':
       'Служебная информация о текущей локальной сборке.',
