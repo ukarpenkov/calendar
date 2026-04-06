@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -38,6 +39,13 @@ export function YearHomeScreen({
   const { isDarkMode, palette } = useAppTheme();
   const { language, t } = useAppLocalization();
   const monthSummaries = buildYearMonthSummaries(calendar, language);
+  const monthSummaryRows = useMemo(
+    () =>
+      Array.from({ length: Math.ceil(monthSummaries.length / 2) }, (_, index) =>
+        monthSummaries.slice(index * 2, index * 2 + 2),
+      ),
+    [monthSummaries],
+  );
   const weekdayLabels = getCompactWeekdayLabels(language);
   const showYearEndReminder = shouldShowYearEndReminder(calendar.year);
 
@@ -84,8 +92,8 @@ export function YearHomeScreen({
           body={t('year.reminder.body', { year: calendar.year + 1 })}
           actionLabel={t('year.reminder.action')}
           linkLabel={WORKING_CALENDAR_TELEGRAM_PATH}
-          onPress={() => {
-            void openWorkingCalendarTelegram();
+          onPress={async () => {
+            await openWorkingCalendarTelegram();
           }}
         />
       ) : null}
@@ -128,106 +136,113 @@ export function YearHomeScreen({
       </View>
 
       <View style={styles.monthsGrid}>
-        {monthSummaries.map(summary => (
-          <Pressable
-            key={summary.month}
-            onPress={() => onOpenMonth(summary.month)}
-            style={({ pressed }) => [
-              styles.monthCard,
-              {
-                backgroundColor: palette.surface,
-                borderColor: palette.border,
-                opacity: pressed ? 0.92 : 1,
-              },
-            ]}
-          >
-            <View style={styles.monthCardHeader}>
-              <Text style={[styles.monthTitle, { color: palette.title }]}>
-                {summary.label}
-              </Text>
-              <Text style={[styles.monthMeta, { color: palette.subtitle }]}>
-                {summary.workHours} {t('common.hoursUnit')}
-              </Text>
-            </View>
+        {monthSummaryRows.map((row, rowIndex) => (
+          <View key={`month-row-${rowIndex}`} style={styles.monthRow}>
+            {row.map(summary => (
+              <Pressable
+                key={summary.month}
+                onPress={() => onOpenMonth(summary.month)}
+                style={({ pressed }) => [
+                  styles.monthCard,
+                  {
+                    backgroundColor: palette.surface,
+                    borderColor: palette.border,
+                    opacity: pressed ? 0.92 : 1,
+                  },
+                ]}
+              >
+                <View style={styles.monthCardHeader}>
+                  <Text style={[styles.monthTitle, { color: palette.title }]}>
+                    {summary.label}
+                  </Text>
+                  <Text style={[styles.monthMeta, { color: palette.subtitle }]}>
+                    {summary.workHours} {t('common.hoursUnit')}
+                  </Text>
+                </View>
 
-            <View style={styles.weekHeaderRow}>
-              <View style={styles.weekNumberColumn}>
-                <Text style={[styles.weekNumberLabel, { color: palette.subtitle }]}>
-                  #
-                </Text>
-              </View>
-              <View style={styles.daysHeaderStrip}>
-                {weekdayLabels.map((label, index) => (
-                  <View
-                    key={`${summary.month}-${label}-${index}`}
-                    style={styles.dayColumnHeader}
-                  >
-                    <Text
-                      style={[styles.weekdayLabel, { color: palette.subtitle }]}
-                    >
-                      {label}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            </View>
-
-            <View style={styles.weeksList}>
-              {summary.weeks.map(week => (
-                <View key={`${summary.month}-${week.isoWeek}`} style={styles.weekRow}>
+                <View style={styles.weekHeaderRow}>
                   <View style={styles.weekNumberColumn}>
-                    <Text
-                      style={[styles.weekNumberValue, { color: palette.subtitle }]}
-                    >
-                      {week.isoWeek}
+                    <Text style={[styles.weekNumberLabel, { color: palette.subtitle }]}>
+                      #
                     </Text>
                   </View>
-                  <View style={styles.daysStrip}>
-                    {week.days.map((day, dayIndex) => (
+                  <View style={styles.daysHeaderStrip}>
+                    {weekdayLabels.map((label, index) => (
                       <View
-                        key={`${summary.month}-${week.isoWeek}-${dayIndex}`}
-                        style={styles.dayColumn}
+                        key={`${summary.month}-${label}-${index}`}
+                        style={styles.dayColumnHeader}
                       >
-                        <MonthDayCell
-                          day={day}
-                          resolveDayTypeColors={type =>
-                            getDayTypeColors(type, palette)
-                          }
-                        />
+                        <Text
+                          style={[styles.weekdayLabel, { color: palette.subtitle }]}
+                        >
+                          {label}
+                        </Text>
                       </View>
                     ))}
                   </View>
                 </View>
-              ))}
-            </View>
 
-            <View style={[styles.summaryRow, { backgroundColor: palette.surfaceMuted }]}>
-              <View style={styles.summaryItem}>
-                <Text style={[styles.summaryLabel, { color: palette.subtitle }]}>
-                  {t('year.summary.work')}
-                </Text>
-                <Text style={[styles.summaryValue, { color: palette.title }]}>
-                  {summary.workingDays}
-                </Text>
-              </View>
-              <View style={styles.summaryItem}>
-                <Text style={[styles.summaryLabel, { color: palette.subtitle }]}>
-                  {t('year.summary.off')}
-                </Text>
-                <Text style={[styles.summaryValue, { color: palette.title }]}>
-                  {summary.nonWorkingDays}
-                </Text>
-              </View>
-              <View style={styles.summaryItem}>
-                <Text style={[styles.summaryLabel, { color: palette.subtitle }]}>
-                  {t('year.summary.days')}
-                </Text>
-                <Text style={[styles.summaryValue, { color: palette.title }]}>
-                  {summary.totalDays}
-                </Text>
-              </View>
-            </View>
-          </Pressable>
+                <View style={styles.weeksList}>
+                  {summary.weeks.map(week => (
+                    <View key={`${summary.month}-${week.isoWeek}`} style={styles.weekRow}>
+                      <View style={styles.weekNumberColumn}>
+                        <Text
+                          style={[styles.weekNumberValue, { color: palette.subtitle }]}
+                        >
+                          {week.isoWeek}
+                        </Text>
+                      </View>
+                      <View style={styles.daysStrip}>
+                        {week.days.map((day, dayIndex) => (
+                          <View
+                            key={`${summary.month}-${week.isoWeek}-${dayIndex}`}
+                            style={styles.dayColumn}
+                          >
+                            <MonthDayCell
+                              day={day}
+                              resolveDayTypeColors={type =>
+                                getDayTypeColors(type, palette)
+                              }
+                            />
+                          </View>
+                        ))}
+                      </View>
+                    </View>
+                  ))}
+                </View>
+
+                <View
+                  style={[styles.summaryRow, { backgroundColor: palette.surfaceMuted }]}
+                >
+                  <View style={styles.summaryItem}>
+                    <Text style={[styles.summaryLabel, { color: palette.subtitle }]}>
+                      {t('year.summary.work')}
+                    </Text>
+                    <Text style={[styles.summaryValue, { color: palette.title }]}>
+                      {summary.workingDays}
+                    </Text>
+                  </View>
+                  <View style={styles.summaryItem}>
+                    <Text style={[styles.summaryLabel, { color: palette.subtitle }]}>
+                      {t('year.summary.off')}
+                    </Text>
+                    <Text style={[styles.summaryValue, { color: palette.title }]}>
+                      {summary.nonWorkingDays}
+                    </Text>
+                  </View>
+                  <View style={styles.summaryItem}>
+                    <Text style={[styles.summaryLabel, { color: palette.subtitle }]}>
+                      {t('year.summary.days')}
+                    </Text>
+                    <Text style={[styles.summaryValue, { color: palette.title }]}>
+                      {summary.totalDays}
+                    </Text>
+                  </View>
+                </View>
+              </Pressable>
+            ))}
+            {row.length === 1 ? <View style={styles.monthCardSpacer} /> : null}
+          </View>
         ))}
       </View>
     </ScrollView>
@@ -322,17 +337,22 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   monthsGrid: {
+    gap: 12,
+  },
+  monthRow: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
     gap: 12,
   },
   monthCard: {
-    width: '47%',
-    minWidth: 168,
+    flex: 1,
+    minWidth: 0,
     borderWidth: 1,
     borderRadius: 20,
     padding: 12,
     gap: 8,
+  },
+  monthCardSpacer: {
+    flex: 1,
   },
   monthCardHeader: {
     flexDirection: 'row',
