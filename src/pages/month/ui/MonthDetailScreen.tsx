@@ -45,6 +45,9 @@ type MonthDetailScreenProps = {
   onMonthChange: (month: number) => void;
 };
 
+const APP_BAR_TITLE_MIN_SCALE = 0.7;
+const MONTH_TOTALS_GAP = 12;
+
 export function MonthDetailScreen({
   calendar,
   month,
@@ -62,6 +65,10 @@ export function MonthDetailScreen({
   const [pagerReady, setPagerReady] = useState(false);
 
   const pageWidth = windowWidth;
+  const totalCardWidth = Math.max(
+    (pageWidth - layout.screenPaddingH * 2 - MONTH_TOTALS_GAP) / 2,
+    0,
+  );
 
   const prevMonth = month > 1 ? month - 1 : null;
   const nextMonth = month < 12 ? month + 1 : null;
@@ -152,7 +159,13 @@ export function MonthDetailScreen({
             </IconCircleButton>
           </View>
           <View style={styles.appBarTitleWrap}>
-            <Text style={[styles.appBarTitle, { color: palette.title }]}>
+            <Text
+              adjustsFontSizeToFit
+              minimumFontScale={APP_BAR_TITLE_MIN_SCALE}
+              numberOfLines={1}
+              maxFontSizeMultiplier={1}
+              style={[styles.appBarTitle, { color: palette.title }]}
+            >
               {detail.shortLabel} {detail.year}
             </Text>
           </View>
@@ -212,6 +225,7 @@ export function MonthDetailScreen({
               t={t}
               weekdayLabels={weekdayLabels}
               bottomInset={safeAreaInsets.bottom + layout.yearMonthScrollBottom}
+              totalCardWidth={totalCardWidth}
             />
           </View>
           <View style={[styles.page, { width: pageWidth }]}>
@@ -235,6 +249,7 @@ export function MonthDetailScreen({
                 weekdayLabels={weekdayLabels}
                 selectedDay={selectedDay}
                 onSelectDay={setSelectedDate}
+                totalCardWidth={totalCardWidth}
               />
             </ScrollView>
           </View>
@@ -247,6 +262,7 @@ export function MonthDetailScreen({
               t={t}
               weekdayLabels={weekdayLabels}
               bottomInset={safeAreaInsets.bottom + layout.yearMonthScrollBottom}
+              totalCardWidth={totalCardWidth}
             />
           </View>
         </ScrollView>
@@ -265,6 +281,7 @@ type MonthPageScrollProps = {
   t: (key: TranslationKey, params?: LocalizationParams) => string;
   weekdayLabels: readonly string[];
   bottomInset: number;
+  totalCardWidth: number;
 };
 
 function MonthPageScroll({
@@ -275,6 +292,7 @@ function MonthPageScroll({
   t,
   weekdayLabels,
   bottomInset,
+  totalCardWidth,
 }: MonthPageScrollProps) {
   const days = month !== null ? getCalendarDaysForMonth(calendar, month) : [];
   const detail = useMemo(() => {
@@ -314,6 +332,7 @@ function MonthPageScroll({
         weekdayLabels={weekdayLabels}
         selectedDay={null}
         onSelectDay={() => {}}
+        totalCardWidth={totalCardWidth}
       />
     </ScrollView>
   );
@@ -327,6 +346,7 @@ type MonthDetailBodyProps = {
   weekdayLabels: readonly string[];
   selectedDay: CalendarDay | null;
   onSelectDay: (date: string) => void;
+  totalCardWidth: number;
 };
 
 function MonthDetailBody({
@@ -337,6 +357,7 @@ function MonthDetailBody({
   weekdayLabels,
   selectedDay,
   onSelectDay,
+  totalCardWidth,
 }: MonthDetailBodyProps) {
   const selectedHolidayLabel =
     selectedDay !== null
@@ -419,21 +440,25 @@ function MonthDetailBody({
           label={t('month.totals.totalDays')}
           value={String(detail.totalDays)}
           palette={palette}
+          width={totalCardWidth}
         />
         <TotalCard
           label={t('month.totals.workingDays')}
           value={String(detail.workingDays)}
           palette={palette}
+          width={totalCardWidth}
         />
         <TotalCard
           label={t('month.totals.nonWorkingDays')}
           value={String(detail.nonWorkingDays)}
           palette={palette}
+          width={totalCardWidth}
         />
         <TotalCard
           label={t('month.totals.workHours')}
           value={`${detail.workHours} ${t('common.hoursUnit')}`}
           palette={palette}
+          width={totalCardWidth}
         />
       </View>
     </>
@@ -491,14 +516,16 @@ type TotalCardProps = {
   label: string;
   value: string;
   palette: CalendarPalette;
+  width: number;
 };
 
-function TotalCard({ label, value, palette }: TotalCardProps) {
+function TotalCard({ label, value, palette, width }: TotalCardProps) {
   return (
     <View
       style={[
         styles.totalCard,
         {
+          width,
           backgroundColor: palette.surface,
           borderColor: palette.border,
         },
@@ -556,6 +583,7 @@ const styles = StyleSheet.create({
   appBarTitleWrap: {
     flex: 1,
     alignItems: 'center',
+    minWidth: 0,
   },
   appBarActions: {
     flexDirection: 'row',
@@ -565,6 +593,9 @@ const styles = StyleSheet.create({
   appBarTitle: {
     fontSize: 24,
     fontWeight: '600',
+    flexShrink: 1,
+    textAlign: 'center',
+    width: '100%',
   },
   calendarCard: {
     borderWidth: 1,
@@ -634,11 +665,10 @@ const styles = StyleSheet.create({
   totalsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
+    gap: MONTH_TOTALS_GAP,
+    justifyContent: 'space-between',
   },
   totalCard: {
-    width: '47%',
-    minWidth: 160,
     borderWidth: 1,
     borderRadius: 16,
     padding: 14,

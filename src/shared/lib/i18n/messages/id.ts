@@ -59,6 +59,7 @@ export const idTranslations = {
   'settings.sections.about.subtitle':
     'Informasi layanan untuk build lokal-utama ini.',
   'settings.about.app': 'Aplikasi',
+  'settings.about.version': 'Versi',
   'settings.about.storage': 'Penyimpanan',
   'settings.about.defaultDataset': 'Dataset default',
   'settings.about.theme': 'Tema',

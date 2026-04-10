@@ -12,7 +12,7 @@
 export const BUNDLED_CALENDAR_YEAR = 2026 as const;
 
 /** Порядок — ориентир для UI-списков; не менять без согласования с настройками/миграциями. */
-export const AGREED_APP_LANGUAGE_CODES = ['ru', 'en', 'tr', 'id', 'ja'] as const;
+export const AGREED_APP_LANGUAGE_CODES = ['en', 'ru', 'tr', 'id', 'ja'] as const;
 
 export type AgreedAppLanguageCode = (typeof AGREED_APP_LANGUAGE_CODES)[number];
 

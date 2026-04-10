@@ -59,6 +59,7 @@ export const trTranslations = {
   'settings.sections.about.subtitle':
     'Yerel öncelikli bu sürüm için servis bilgileri.',
   'settings.about.app': 'Uygulama',
+  'settings.about.version': 'Sürüm',
   'settings.about.storage': 'Depolama',
   'settings.about.defaultDataset': 'Varsayılan veri kümesi',
   'settings.about.theme': 'Tema',

@@ -59,6 +59,7 @@ export const jaTranslations = {
   'settings.sections.about.subtitle':
     'ローカル優先ビルドに関する情報です。',
   'settings.about.app': 'アプリ',
+  'settings.about.version': 'バージョン',
   'settings.about.storage': 'ストレージ',
   'settings.about.defaultDataset': '既定のデータセット',
   'settings.about.theme': 'テーマ',

@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { AGREED_APP_LANGUAGE_CODES } from '../config/agreedLanguagesAndBundledCalendars';
 import type { AppLanguage } from '../lib/i18n';
+import { CalendarIcon, GlobeIcon } from './icons/NavigationIcons';
 
 type LanguageSwitchPalette = {
   border: string;
@@ -38,6 +39,7 @@ export function LanguageSwitch({
     >
       {AGREED_APP_LANGUAGE_CODES.map(code => {
         const isSelected = code === selectedLanguage;
+        const iconColor = isSelected ? palette.title : palette.subtitle;
         const optionPaletteStyle = {
           backgroundColor: isSelected ? palette.selectedFill : 'transparent',
           borderColor: isSelected ? palette.selectedBorder : 'transparent',
@@ -58,7 +60,13 @@ export function LanguageSwitch({
               { opacity: pressed ? 0.88 : 1 },
             ]}
           >
-            <Text style={[styles.optionText, optionTextStyle]}>{labels[code]}</Text>
+            <View style={styles.optionContent}>
+              <Text style={[styles.optionText, optionTextStyle]}>{labels[code]}</Text>
+              <View style={styles.optionIcons}>
+                <GlobeIcon color={iconColor} size={16} />
+                {code === 'en' ? null : <CalendarIcon color={iconColor} size={16} />}
+              </View>
+            </View>
           </Pressable>
         );
       })}
@@ -80,7 +88,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 9,
   },
+  optionContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  optionIcons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
   optionText: {
+    flex: 1,
     fontSize: 14,
     fontWeight: '600',
   },

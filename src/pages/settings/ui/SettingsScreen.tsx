@@ -16,6 +16,7 @@ import {
   // BUNDLED_CALENDAR_REGION_CODES,
   // type BundledCalendarRegionCode,
 } from '../../../shared/config/agreedLanguagesAndBundledCalendars';
+import { APP_DISPLAY_VERSION } from '../../../shared/config/appDisplayVersion';
 import {
   // getBundledRegionLabel,
   getLanguageLabel,
@@ -208,6 +209,11 @@ export function SettingsScreen({
           <AboutLine
             label={t('settings.about.app')}
             value={t('settings.about.appValue')}
+            palette={palette}
+          />
+          <AboutLine
+            label={t('settings.about.version')}
+            value={APP_DISPLAY_VERSION}
             palette={palette}
           />
           <AboutLine

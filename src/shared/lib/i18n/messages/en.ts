@@ -57,6 +57,7 @@ export const enTranslations = {
     'settings.sections.about.subtitle':
       'Service information for the current local-first build.',
     'settings.about.app': 'App',
+    'settings.about.version': 'Version',
     'settings.about.storage': 'Storage',
     'settings.about.defaultDataset': 'Default dataset',
     'settings.about.theme': 'Theme',
