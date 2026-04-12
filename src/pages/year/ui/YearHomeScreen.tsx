@@ -1,5 +1,12 @@
 import { useMemo } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
@@ -23,6 +30,7 @@ import { getCompactWeekdayLabels } from '../../../shared/lib/i18n';
 import { layout } from '../../../shared/lib/ui/layout';
 import { AppLogo } from '../../../shared/ui/AppLogo';
 import { SettingsGearButton } from '../../../shared/ui/SettingsGearButton';
+import { getYearGridMetrics } from './yearGridMetrics';
 
 type YearHomeScreenProps = {
   calendar: CalendarYear;
@@ -36,6 +44,7 @@ export function YearHomeScreen({
   onOpenSettings,
 }: YearHomeScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
+  const { width: windowWidth, fontScale } = useWindowDimensions();
   const { isDarkMode, palette } = useAppTheme();
   const { language, t } = useAppLocalization();
   const monthSummaries = buildYearMonthSummaries(calendar, language);
@@ -48,6 +57,10 @@ export function YearHomeScreen({
   );
   const weekdayLabels = getCompactWeekdayLabels(language);
   const showYearEndReminder = shouldShowYearEndReminder(calendar.year);
+  const gridMetrics = useMemo(
+    () => getYearGridMetrics(windowWidth, fontScale),
+    [fontScale, windowWidth],
+  );
 
   return (
     <ScrollView
@@ -152,10 +165,34 @@ export function YearHomeScreen({
                 ]}
               >
                 <View style={styles.monthCardHeader}>
-                  <Text style={[styles.monthTitle, { color: palette.title }]}>
+                  <Text
+                    adjustsFontSizeToFit
+                    minimumFontScale={gridMetrics.minimumTextScale}
+                    numberOfLines={1}
+                    maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
+                    style={[
+                      styles.monthTitle,
+                      {
+                        color: palette.title,
+                        fontSize: gridMetrics.monthTitleFontSize,
+                      },
+                    ]}
+                  >
                     {summary.label}
                   </Text>
-                  <Text style={[styles.monthMeta, { color: palette.subtitle }]}>
+                  <Text
+                    adjustsFontSizeToFit
+                    minimumFontScale={gridMetrics.minimumTextScale}
+                    numberOfLines={1}
+                    maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
+                    style={[
+                      styles.monthMeta,
+                      {
+                        color: palette.subtitle,
+                        fontSize: gridMetrics.monthMetaFontSize,
+                      },
+                    ]}
+                  >
                     {summary.workHours} {t('common.hoursUnit')}
                   </Text>
                 </View>
@@ -173,7 +210,17 @@ export function YearHomeScreen({
                         style={styles.dayColumnHeader}
                       >
                         <Text
-                          style={[styles.weekdayLabel, { color: palette.subtitle }]}
+                          adjustsFontSizeToFit
+                          minimumFontScale={gridMetrics.minimumTextScale}
+                          numberOfLines={1}
+                          maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
+                          style={[
+                            styles.weekdayLabel,
+                            {
+                              color: palette.subtitle,
+                              fontSize: gridMetrics.weekdayFontSize,
+                            },
+                          ]}
                         >
                           {label}
                         </Text>
@@ -187,7 +234,17 @@ export function YearHomeScreen({
                     <View key={`${summary.month}-${week.isoWeek}`} style={styles.weekRow}>
                       <View style={styles.weekNumberColumn}>
                         <Text
-                          style={[styles.weekNumberValue, { color: palette.subtitle }]}
+                          adjustsFontSizeToFit
+                          minimumFontScale={gridMetrics.minimumTextScale}
+                          numberOfLines={1}
+                          maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
+                          style={[
+                            styles.weekNumberValue,
+                            {
+                              color: palette.subtitle,
+                              fontSize: gridMetrics.weekNumberFontSize,
+                            },
+                          ]}
                         >
                           {week.isoWeek}
                         </Text>
@@ -200,6 +257,7 @@ export function YearHomeScreen({
                           >
                             <MonthDayCell
                               day={day}
+                              gridMetrics={gridMetrics}
                               resolveDayTypeColors={type =>
                                 getDayTypeColors(type, palette)
                               }
@@ -215,26 +273,98 @@ export function YearHomeScreen({
                   style={[styles.summaryRow, { backgroundColor: palette.surfaceMuted }]}
                 >
                   <View style={styles.summaryItem}>
-                    <Text style={[styles.summaryLabel, { color: palette.subtitle }]}>
+                    <Text
+                      adjustsFontSizeToFit
+                      minimumFontScale={gridMetrics.minimumTextScale}
+                      numberOfLines={1}
+                      maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
+                      style={[
+                        styles.summaryLabel,
+                        {
+                          color: palette.subtitle,
+                          fontSize: gridMetrics.summaryLabelFontSize,
+                        },
+                      ]}
+                    >
                       {t('year.summary.work')}
                     </Text>
-                    <Text style={[styles.summaryValue, { color: palette.title }]}>
+                    <Text
+                      adjustsFontSizeToFit
+                      minimumFontScale={gridMetrics.minimumTextScale}
+                      numberOfLines={1}
+                      maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
+                      style={[
+                        styles.summaryValue,
+                        {
+                          color: palette.title,
+                          fontSize: gridMetrics.summaryValueFontSize,
+                        },
+                      ]}
+                    >
                       {summary.workingDays}
                     </Text>
                   </View>
                   <View style={styles.summaryItem}>
-                    <Text style={[styles.summaryLabel, { color: palette.subtitle }]}>
+                    <Text
+                      adjustsFontSizeToFit
+                      minimumFontScale={gridMetrics.minimumTextScale}
+                      numberOfLines={1}
+                      maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
+                      style={[
+                        styles.summaryLabel,
+                        {
+                          color: palette.subtitle,
+                          fontSize: gridMetrics.summaryLabelFontSize,
+                        },
+                      ]}
+                    >
                       {t('year.summary.off')}
                     </Text>
-                    <Text style={[styles.summaryValue, { color: palette.title }]}>
+                    <Text
+                      adjustsFontSizeToFit
+                      minimumFontScale={gridMetrics.minimumTextScale}
+                      numberOfLines={1}
+                      maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
+                      style={[
+                        styles.summaryValue,
+                        {
+                          color: palette.title,
+                          fontSize: gridMetrics.summaryValueFontSize,
+                        },
+                      ]}
+                    >
                       {summary.nonWorkingDays}
                     </Text>
                   </View>
                   <View style={styles.summaryItem}>
-                    <Text style={[styles.summaryLabel, { color: palette.subtitle }]}>
+                    <Text
+                      adjustsFontSizeToFit
+                      minimumFontScale={gridMetrics.minimumTextScale}
+                      numberOfLines={1}
+                      maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
+                      style={[
+                        styles.summaryLabel,
+                        {
+                          color: palette.subtitle,
+                          fontSize: gridMetrics.summaryLabelFontSize,
+                        },
+                      ]}
+                    >
                       {t('year.summary.days')}
                     </Text>
-                    <Text style={[styles.summaryValue, { color: palette.title }]}>
+                    <Text
+                      adjustsFontSizeToFit
+                      minimumFontScale={gridMetrics.minimumTextScale}
+                      numberOfLines={1}
+                      maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
+                      style={[
+                        styles.summaryValue,
+                        {
+                          color: palette.title,
+                          fontSize: gridMetrics.summaryValueFontSize,
+                        },
+                      ]}
+                    >
                       {summary.totalDays}
                     </Text>
                   </View>
@@ -251,10 +381,11 @@ export function YearHomeScreen({
 
 type MonthDayCellProps = {
   day: CalendarDay | null;
+  gridMetrics: ReturnType<typeof getYearGridMetrics>;
   resolveDayTypeColors: (type: DayType) => DayTypeColors;
 };
 
-function MonthDayCell({ day, resolveDayTypeColors }: MonthDayCellProps) {
+function MonthDayCell({ day, gridMetrics, resolveDayTypeColors }: MonthDayCellProps) {
   if (!day) {
     return <View style={styles.emptyDayCell} />;
   }
@@ -272,8 +403,17 @@ function MonthDayCell({ day, resolveDayTypeColors }: MonthDayCellProps) {
       ]}
     >
       <Text
-        style={[styles.dayCellText, { color: colors.color }]}
+        adjustsFontSizeToFit
+        minimumFontScale={gridMetrics.minimumTextScale}
         numberOfLines={1}
+        maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
+        style={[
+          styles.dayCellText,
+          {
+            color: colors.color,
+            fontSize: gridMetrics.dayFontSize,
+          },
+        ]}
       >
         {day.day}
       </Text>
@@ -358,12 +498,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    gap: 8,
   },
   monthTitle: {
+    flex: 1,
+    minWidth: 0,
     fontSize: 16,
     fontWeight: '700',
   },
   monthMeta: {
+    flexShrink: 1,
+    minWidth: 0,
     fontSize: 12,
     fontWeight: '600',
   },
@@ -451,11 +596,14 @@ const styles = StyleSheet.create({
     marginTop: 'auto',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    gap: 8,
     borderRadius: 12,
     paddingHorizontal: 10,
     paddingVertical: 8,
   },
   summaryItem: {
+    flex: 1,
+    minWidth: 0,
     alignItems: 'center',
     gap: 2,
   },
