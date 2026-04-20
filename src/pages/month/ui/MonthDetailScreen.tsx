@@ -758,6 +758,7 @@ const styles = StyleSheet.create({
   },
   monthContentColumn: {
     width: '100%',
+    gap: MONTH_TOTALS_GAP,
   },
   placeholderPage: {
     flex: 1,
