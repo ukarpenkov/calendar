@@ -26,12 +26,15 @@ function clamp(value: number, min: number, max: number): number {
 export function getYearGridMetrics(
   windowWidth: number,
   fontScale: number,
+  columnsPerRow: number = 2,
 ): YearGridMetrics {
   const safeWindowWidth = Math.max(windowWidth, 320);
   const safeFontScale = Math.max(fontScale, 1);
+  const columns = Math.min(Math.max(Math.round(columnsPerRow), 1), 6);
 
+  const contentWidth = safeWindowWidth - layout.screenPaddingH * 2;
   const monthCardWidth =
-    (safeWindowWidth - layout.screenPaddingH * 2 - MONTH_ROW_GAP) / 2;
+    (contentWidth - MONTH_ROW_GAP * Math.max(columns - 1, 0)) / columns;
   const daysStripWidth =
     monthCardWidth -
     MONTH_CARD_HORIZONTAL_PADDING -

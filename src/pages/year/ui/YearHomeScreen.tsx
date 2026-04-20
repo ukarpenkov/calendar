@@ -44,22 +44,34 @@ export function YearHomeScreen({
   onOpenSettings,
 }: YearHomeScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
-  const { width: windowWidth, fontScale } = useWindowDimensions();
+  const { width: windowWidth, height: windowHeight, fontScale } =
+    useWindowDimensions();
   const { isDarkMode, palette } = useAppTheme();
   const { language, t } = useAppLocalization();
   const monthSummaries = buildYearMonthSummaries(calendar, language);
+  const columnsPerRow = useMemo(() => {
+    const minDimension = Math.min(windowWidth, windowHeight);
+    const isTablet = minDimension >= 600;
+    const isLandscape = windowWidth > windowHeight;
+    return isTablet || isLandscape ? 4 : 2;
+  }, [windowHeight, windowWidth]);
   const monthSummaryRows = useMemo(
     () =>
-      Array.from({ length: Math.ceil(monthSummaries.length / 2) }, (_, index) =>
-        monthSummaries.slice(index * 2, index * 2 + 2),
+      Array.from(
+        { length: Math.ceil(monthSummaries.length / columnsPerRow) },
+        (_, index) =>
+          monthSummaries.slice(
+            index * columnsPerRow,
+            index * columnsPerRow + columnsPerRow,
+          ),
       ),
-    [monthSummaries],
+    [columnsPerRow, monthSummaries],
   );
   const weekdayLabels = getCompactWeekdayLabels(language);
   const showYearEndReminder = shouldShowYearEndReminder(calendar.year);
   const gridMetrics = useMemo(
-    () => getYearGridMetrics(windowWidth, fontScale),
-    [fontScale, windowWidth],
+    () => getYearGridMetrics(windowWidth, fontScale, columnsPerRow),
+    [columnsPerRow, fontScale, windowWidth],
   );
 
   return (
@@ -371,7 +383,14 @@ export function YearHomeScreen({
                 </View>
               </Pressable>
             ))}
-            {row.length === 1 ? <View style={styles.monthCardSpacer} /> : null}
+            {Array.from({ length: columnsPerRow - row.length }).map(
+              (_, spacerIndex) => (
+                <View
+                  key={`month-row-${rowIndex}-spacer-${spacerIndex}`}
+                  style={styles.monthCardSpacer}
+                />
+              ),
+            )}
           </View>
         ))}
       </View>

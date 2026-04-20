@@ -21,3 +21,11 @@ test('reduces fonts when width is tight or system font is enlarged', () => {
   expect(largeFontMetrics.minimumTextScale).toBeLessThan(0.78);
   expect(largeFontMetrics.maxFontSizeMultiplier).toBeLessThan(1.1);
 });
+
+test('uses narrower cards in four-column layout so fonts scale down vs two columns', () => {
+  const twoCol = getYearGridMetrics(800, 1, 2);
+  const fourCol = getYearGridMetrics(800, 1, 4);
+
+  expect(fourCol.dayFontSize).toBeLessThanOrEqual(twoCol.dayFontSize);
+  expect(fourCol.monthTitleFontSize).toBeLessThanOrEqual(twoCol.monthTitleFontSize);
+});
