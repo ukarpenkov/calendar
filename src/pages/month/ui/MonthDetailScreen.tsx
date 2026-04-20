@@ -37,6 +37,14 @@ import {
 } from '../../../shared/ui/icons/NavigationIcons';
 import { SettingsGearButton } from '../../../shared/ui/SettingsGearButton';
 
+import {
+  getMonthCalendarScale,
+  getMonthDetailLayoutMetrics,
+  getMonthSideScale,
+  MONTH_TOTALS_GAP,
+  type MonthDetailLayoutMetrics,
+} from './monthDetailLayout';
+
 type MonthDetailScreenProps = {
   calendar: CalendarYear;
   month: number;
@@ -46,7 +54,6 @@ type MonthDetailScreenProps = {
 };
 
 const APP_BAR_TITLE_MIN_SCALE = 0.7;
-const MONTH_TOTALS_GAP = 12;
 
 export function MonthDetailScreen({
   calendar,
@@ -56,7 +63,7 @@ export function MonthDetailScreen({
   onMonthChange,
 }: MonthDetailScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
-  const { width: windowWidth } = useWindowDimensions();
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const { palette } = useAppTheme();
   const { language, t } = useAppLocalization();
   const weekdayLabels = getShortWeekdayLabels(language);
@@ -65,9 +72,9 @@ export function MonthDetailScreen({
   const [pagerReady, setPagerReady] = useState(false);
 
   const pageWidth = windowWidth;
-  const totalCardWidth = Math.max(
-    (pageWidth - layout.screenPaddingH * 2 - MONTH_TOTALS_GAP) / 2,
-    0,
+  const monthLayoutMetrics = useMemo(
+    () => getMonthDetailLayoutMetrics(windowWidth, windowHeight),
+    [windowHeight, windowWidth],
   );
 
   const prevMonth = month > 1 ? month - 1 : null;
@@ -225,7 +232,7 @@ export function MonthDetailScreen({
               t={t}
               weekdayLabels={weekdayLabels}
               bottomInset={safeAreaInsets.bottom + layout.yearMonthScrollBottom}
-              totalCardWidth={totalCardWidth}
+              monthLayoutMetrics={monthLayoutMetrics}
             />
           </View>
           <View style={[styles.page, { width: pageWidth }]}>
@@ -234,6 +241,9 @@ export function MonthDetailScreen({
               style={styles.pageVertical}
               contentContainerStyle={[
                 styles.pageVerticalContent,
+                monthLayoutMetrics.layout === 'split'
+                  ? styles.pageVerticalContentSplit
+                  : null,
                 {
                   paddingBottom:
                     safeAreaInsets.bottom + layout.yearMonthScrollBottom,
@@ -249,7 +259,7 @@ export function MonthDetailScreen({
                 weekdayLabels={weekdayLabels}
                 selectedDay={selectedDay}
                 onSelectDay={setSelectedDate}
-                totalCardWidth={totalCardWidth}
+                monthLayoutMetrics={monthLayoutMetrics}
               />
             </ScrollView>
           </View>
@@ -262,7 +272,7 @@ export function MonthDetailScreen({
               t={t}
               weekdayLabels={weekdayLabels}
               bottomInset={safeAreaInsets.bottom + layout.yearMonthScrollBottom}
-              totalCardWidth={totalCardWidth}
+              monthLayoutMetrics={monthLayoutMetrics}
             />
           </View>
         </ScrollView>
@@ -281,7 +291,7 @@ type MonthPageScrollProps = {
   t: (key: TranslationKey, params?: LocalizationParams) => string;
   weekdayLabels: readonly string[];
   bottomInset: number;
-  totalCardWidth: number;
+  monthLayoutMetrics: MonthDetailLayoutMetrics;
 };
 
 function MonthPageScroll({
@@ -292,15 +302,18 @@ function MonthPageScroll({
   t,
   weekdayLabels,
   bottomInset,
-  totalCardWidth,
+  monthLayoutMetrics,
 }: MonthPageScrollProps) {
-  const days = month !== null ? getCalendarDaysForMonth(calendar, month) : [];
   const detail = useMemo(() => {
-    if (month === null || days.length === 0) {
+    if (month === null) {
+      return null;
+    }
+    const days = getCalendarDaysForMonth(calendar, month);
+    if (days.length === 0) {
       return null;
     }
     return buildMonthDetail(calendar.year, month, days, language);
-  }, [calendar.year, days, language, month]);
+  }, [calendar, month, language]);
 
   if (!detail) {
     return (
@@ -320,6 +333,9 @@ function MonthPageScroll({
       style={styles.pageVertical}
       contentContainerStyle={[
         styles.pageVerticalContent,
+        monthLayoutMetrics.layout === 'split'
+          ? styles.pageVerticalContentSplit
+          : null,
         { paddingBottom: bottomInset },
       ]}
       keyboardShouldPersistTaps="handled"
@@ -332,7 +348,7 @@ function MonthPageScroll({
         weekdayLabels={weekdayLabels}
         selectedDay={null}
         onSelectDay={() => {}}
-        totalCardWidth={totalCardWidth}
+        monthLayoutMetrics={monthLayoutMetrics}
       />
     </ScrollView>
   );
@@ -346,7 +362,7 @@ type MonthDetailBodyProps = {
   weekdayLabels: readonly string[];
   selectedDay: CalendarDay | null;
   onSelectDay: (date: string) => void;
-  totalCardWidth: number;
+  monthLayoutMetrics: MonthDetailLayoutMetrics;
 };
 
 function MonthDetailBody({
@@ -357,56 +373,82 @@ function MonthDetailBody({
   weekdayLabels,
   selectedDay,
   onSelectDay,
-  totalCardWidth,
+  monthLayoutMetrics,
 }: MonthDetailBodyProps) {
   const selectedHolidayLabel =
     selectedDay !== null
       ? getHolidayDisplayName(selectedDay, language)
       : null;
 
-  return (
-    <>
-      <View
-        style={[
-          styles.calendarCard,
-          {
-            backgroundColor: palette.surface,
-            borderColor: palette.border,
-          },
-        ]}
-      >
-        <View style={styles.weekHeaderRow}>
-          {weekdayLabels.map(label => (
-            <Text
-              key={`${detail.month}-${label}`}
-              style={[styles.weekdayLabel, { color: palette.subtitle }]}
-            >
-              {label}
-            </Text>
-          ))}
-        </View>
+  const calendarColumnWidth = monthLayoutMetrics.calendarColumnWidth;
+  const totalCardWidth = monthLayoutMetrics.totalCardWidth;
+  const calendarScale = useMemo(
+    () => getMonthCalendarScale(calendarColumnWidth),
+    [calendarColumnWidth],
+  );
+  const sideScale = useMemo(() => {
+    if (monthLayoutMetrics.layout !== 'split') {
+      return 1;
+    }
+    return getMonthSideScale(monthLayoutMetrics.sideColumnWidth);
+  }, [monthLayoutMetrics]);
 
-        <View style={styles.weeksList}>
-          {detail.weeks.map(week => (
-            <View key={`${detail.month}-${week.isoWeek}`} style={styles.weekRow}>
-              {week.days.map((day, dayIndex) => (
-                <MonthDetailDayCell
-                  key={`${detail.month}-${week.isoWeek}-${dayIndex}`}
-                  day={day}
-                  isSelected={day?.date === selectedDay?.date}
-                  palette={palette}
-                  onPress={() => {
-                    if (day) {
-                      onSelectDay(day.date);
-                    }
-                  }}
-                />
-              ))}
-            </View>
-          ))}
-        </View>
+  const calendarCard = (
+    <View
+      style={[
+        styles.calendarCard,
+        {
+          backgroundColor: palette.surface,
+          borderColor: palette.border,
+        },
+      ]}
+    >
+      <View style={styles.weekHeaderRow}>
+        {weekdayLabels.map(label => (
+          <Text
+            key={`${detail.month}-${label}`}
+            adjustsFontSizeToFit
+            minimumFontScale={0.65}
+            numberOfLines={1}
+            maxFontSizeMultiplier={1.15}
+            style={[
+              styles.weekdayLabel,
+              {
+                color: palette.subtitle,
+                fontSize: 12 * calendarScale,
+              },
+            ]}
+          >
+            {label}
+          </Text>
+        ))}
       </View>
 
+      <View style={styles.weeksList}>
+        {detail.weeks.map(week => (
+          <View key={`${detail.month}-${week.isoWeek}`} style={styles.weekRow}>
+            {week.days.map((day, dayIndex) => (
+              <MonthDetailDayCell
+                key={`${detail.month}-${week.isoWeek}-${dayIndex}`}
+                day={day}
+                isSelected={day?.date === selectedDay?.date}
+                palette={palette}
+                calendarScale={calendarScale}
+                onPress={() => {
+                  if (day) {
+                    onSelectDay(day.date);
+                  }
+                }}
+              />
+            ))}
+          </View>
+        ))}
+      </View>
+    </View>
+  );
+
+  const sideBlocks = (
+    <>
       {selectedDay ? (
         <View
           style={[
@@ -417,51 +459,142 @@ function MonthDetailBody({
             },
           ]}
         >
-          <Text style={[styles.selectedDayEyebrow, { color: palette.subtitle }]}>
+          <Text
+            adjustsFontSizeToFit
+            minimumFontScale={0.65}
+            numberOfLines={1}
+            maxFontSizeMultiplier={1.1}
+            style={[
+              styles.selectedDayEyebrow,
+              {
+                color: palette.subtitle,
+                fontSize: 12 * sideScale,
+              },
+            ]}
+          >
             {t('month.selectedDay.eyebrow')}
           </Text>
-          <Text style={[styles.selectedDayTitle, { color: palette.title }]}>
+          <Text
+            adjustsFontSizeToFit
+            minimumFontScale={0.65}
+            numberOfLines={2}
+            maxFontSizeMultiplier={1.1}
+            style={[
+              styles.selectedDayTitle,
+              {
+                color: palette.title,
+                fontSize: 20 * sideScale,
+              },
+            ]}
+          >
             {detail.label} {selectedDay.day}
           </Text>
-          <Text style={[styles.selectedDayMeta, { color: palette.subtitle }]}>
+          <Text
+            adjustsFontSizeToFit
+            minimumFontScale={0.65}
+            numberOfLines={2}
+            maxFontSizeMultiplier={1.1}
+            style={[
+              styles.selectedDayMeta,
+              {
+                color: palette.subtitle,
+                fontSize: 14 * sideScale,
+                lineHeight: Math.round(20 * sideScale),
+              },
+            ]}
+          >
             {getDayTypeLabel(selectedDay.type, language)} - {selectedDay.workHours}{' '}
             {t('common.hoursUnit')}
           </Text>
           {selectedHolidayLabel ? (
-            <Text style={[styles.selectedDayHoliday, { color: palette.title }]}>
+            <Text
+              adjustsFontSizeToFit
+              minimumFontScale={0.65}
+              numberOfLines={3}
+              maxFontSizeMultiplier={1.1}
+              style={[
+                styles.selectedDayHoliday,
+                {
+                  color: palette.title,
+                  fontSize: 14 * sideScale,
+                },
+              ]}
+            >
               {selectedHolidayLabel}
             </Text>
           ) : null}
         </View>
       ) : null}
 
-      <View style={styles.totalsGrid}>
+      <View
+        style={[
+          styles.totalsGrid,
+          monthLayoutMetrics.layout === 'split' ? styles.totalsGridSplit : null,
+        ]}
+      >
         <TotalCard
           label={t('month.totals.totalDays')}
           value={String(detail.totalDays)}
           palette={palette}
           width={totalCardWidth}
+          sideScale={sideScale}
         />
         <TotalCard
           label={t('month.totals.workingDays')}
           value={String(detail.workingDays)}
           palette={palette}
           width={totalCardWidth}
+          sideScale={sideScale}
         />
         <TotalCard
           label={t('month.totals.nonWorkingDays')}
           value={String(detail.nonWorkingDays)}
           palette={palette}
           width={totalCardWidth}
+          sideScale={sideScale}
         />
         <TotalCard
           label={t('month.totals.workHours')}
           value={`${detail.workHours} ${t('common.hoursUnit')}`}
           palette={palette}
           width={totalCardWidth}
+          sideScale={sideScale}
         />
       </View>
     </>
+  );
+
+  if (monthLayoutMetrics.layout === 'split') {
+    return (
+      <View style={styles.monthSplitRow}>
+        <View
+          style={[styles.monthCalendarColumn, { width: calendarColumnWidth }]}
+        >
+          {calendarCard}
+        </View>
+        <View
+          style={[
+            styles.monthSideColumn,
+            styles.monthSideColumnGrow,
+            { marginLeft: monthLayoutMetrics.columnGap },
+          ]}
+        >
+          {sideBlocks}
+        </View>
+      </View>
+    );
+  }
+
+  return (
+    <View
+      style={[
+        styles.monthContentColumn,
+        { maxWidth: calendarColumnWidth },
+      ]}
+    >
+      {calendarCard}
+      {sideBlocks}
+    </View>
   );
 }
 
@@ -469,6 +602,7 @@ type MonthDetailDayCellProps = {
   day: CalendarDay | null;
   isSelected: boolean;
   palette: CalendarPalette;
+  calendarScale: number;
   onPress: () => void;
 };
 
@@ -476,8 +610,11 @@ function MonthDetailDayCell({
   day,
   isSelected,
   palette,
+  calendarScale,
   onPress,
 }: MonthDetailDayCellProps) {
+  const cellSize = Math.max(36, 42 * calendarScale);
+
   if (!day) {
     return <View style={styles.emptyDayCell} />;
   }
@@ -490,6 +627,8 @@ function MonthDetailDayCell({
       style={({ pressed }) => [
         styles.dayCell,
         {
+          minHeight: cellSize,
+          borderRadius: Math.max(8, 12 * calendarScale),
           backgroundColor: isSelected
             ? palette.selectedFill
             : colors.backgroundColor,
@@ -499,10 +638,15 @@ function MonthDetailDayCell({
       ]}
     >
       <Text
+        adjustsFontSizeToFit
+        minimumFontScale={0.65}
+        numberOfLines={1}
+        maxFontSizeMultiplier={1.15}
         style={[
           styles.dayCellText,
           {
             color: isSelected ? palette.title : colors.color,
+            fontSize: 14 * calendarScale,
           },
         ]}
       >
@@ -517,9 +661,10 @@ type TotalCardProps = {
   value: string;
   palette: CalendarPalette;
   width: number;
+  sideScale: number;
 };
 
-function TotalCard({ label, value, palette, width }: TotalCardProps) {
+function TotalCard({ label, value, palette, width, sideScale }: TotalCardProps) {
   return (
     <View
       style={[
@@ -531,8 +676,36 @@ function TotalCard({ label, value, palette, width }: TotalCardProps) {
         },
       ]}
     >
-      <Text style={[styles.totalLabel, { color: palette.subtitle }]}>{label}</Text>
-      <Text style={[styles.totalValue, { color: palette.title }]}>{value}</Text>
+      <Text
+        adjustsFontSizeToFit
+        minimumFontScale={0.55}
+        numberOfLines={1}
+        maxFontSizeMultiplier={1.1}
+        style={[
+          styles.totalLabel,
+          {
+            color: palette.subtitle,
+            fontSize: 12 * sideScale,
+          },
+        ]}
+      >
+        {label}
+      </Text>
+      <Text
+        adjustsFontSizeToFit
+        minimumFontScale={0.55}
+        numberOfLines={1}
+        maxFontSizeMultiplier={1.1}
+        style={[
+          styles.totalValue,
+          {
+            color: palette.title,
+            fontSize: 22 * sideScale,
+          },
+        ]}
+      >
+        {value}
+      </Text>
     </View>
   );
 }
@@ -563,6 +736,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: layout.screenPaddingH,
     paddingTop: layout.monthScrollPaddingTop,
     gap: layout.contentStackGap,
+    alignItems: 'center',
+  },
+  pageVerticalContentSplit: {
+    alignItems: 'stretch',
+  },
+  monthSplitRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    width: '100%',
+  },
+  monthCalendarColumn: {
+    flexShrink: 0,
+  },
+  monthSideColumn: {
+    gap: layout.contentStackGap,
+  },
+  monthSideColumnGrow: {
+    flex: 1,
+    minWidth: 0,
+  },
+  monthContentColumn: {
+    width: '100%',
   },
   placeholderPage: {
     flex: 1,
@@ -610,6 +805,7 @@ const styles = StyleSheet.create({
   },
   weekdayLabel: {
     flex: 1,
+    minWidth: 0,
     fontSize: 12,
     fontWeight: '700',
     textAlign: 'center',
@@ -667,6 +863,9 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: MONTH_TOTALS_GAP,
     justifyContent: 'space-between',
+  },
+  totalsGridSplit: {
+    width: '100%',
   },
   totalCard: {
     borderWidth: 1,
