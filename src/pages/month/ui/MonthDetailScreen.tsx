@@ -41,7 +41,6 @@ import {
   getMonthCalendarScale,
   getMonthDetailLayoutMetrics,
   getMonthSideScale,
-  MONTH_TOTALS_GAP,
   type MonthDetailLayoutMetrics,
 } from './monthDetailLayout';
 
@@ -377,7 +376,6 @@ function MonthDetailBody({
       : null;
 
   const calendarColumnWidth = monthLayoutMetrics.calendarColumnWidth;
-  const totalCardWidth = monthLayoutMetrics.totalCardWidth;
   const calendarScale = useMemo(
     () => getMonthCalendarScale(calendarColumnWidth),
     [calendarColumnWidth],
@@ -524,38 +522,19 @@ function MonthDetailBody({
 
       <View
         style={[
-          styles.totalsGrid,
-          monthLayoutMetrics.layout === 'split' ? styles.totalsGridSplit : null,
+          styles.totalsCard,
+          {
+            backgroundColor: palette.surface,
+            borderColor: palette.border,
+          },
         ]}
       >
-        <TotalCard
-          label={t('month.totals.totalDays')}
-          value={String(detail.totalDays)}
-          palette={palette}
-          width={totalCardWidth}
-          sideScale={sideScale}
-        />
-        <TotalCard
-          label={t('month.totals.workingDays')}
-          value={String(detail.workingDays)}
-          palette={palette}
-          width={totalCardWidth}
-          sideScale={sideScale}
-        />
-        <TotalCard
-          label={t('month.totals.nonWorkingDays')}
-          value={String(detail.nonWorkingDays)}
-          palette={palette}
-          width={totalCardWidth}
-          sideScale={sideScale}
-        />
-        <TotalCard
-          label={t('month.totals.workHours')}
-          value={`${detail.workHours} ${t('common.hoursUnit')}`}
-          palette={palette}
-          width={totalCardWidth}
-          sideScale={sideScale}
-        />
+        <View style={styles.totalsRow}>
+          <TotalItem label={t('month.totals.totalDays')} value={String(detail.totalDays)} palette={palette} sideScale={sideScale} />
+          <TotalItem label={t('month.totals.workingDays')} value={String(detail.workingDays)} palette={palette} sideScale={sideScale} />
+          <TotalItem label={t('month.totals.nonWorkingDays')} value={String(detail.nonWorkingDays)} palette={palette} sideScale={sideScale} />
+          <TotalItem label={t('month.totals.workHours')} value={`${detail.workHours} ${t('common.hoursUnit')}`} palette={palette} sideScale={sideScale} />
+        </View>
       </View>
     </>
   );
@@ -652,36 +631,26 @@ function MonthDetailDayCell({
   );
 }
 
-type TotalCardProps = {
+type TotalItemProps = {
   label: string;
   value: string;
   palette: CalendarPalette;
-  width: number;
   sideScale: number;
 };
 
-function TotalCard({ label, value, palette, width, sideScale }: TotalCardProps) {
+function TotalItem({ label, value, palette, sideScale }: TotalItemProps) {
   return (
-    <View
-      style={[
-        styles.totalCard,
-        {
-          width,
-          backgroundColor: palette.surface,
-          borderColor: palette.border,
-        },
-      ]}
-    >
+    <View style={styles.totalItem}>
       <Text
         adjustsFontSizeToFit
-        minimumFontScale={0.55}
+        minimumFontScale={0.5}
         numberOfLines={1}
-        maxFontSizeMultiplier={1.1}
+        maxFontSizeMultiplier={1}
         style={[
           styles.totalLabel,
           {
             color: palette.subtitle,
-            fontSize: 12 * sideScale,
+            fontSize: 9 * sideScale,
           },
         ]}
       >
@@ -689,14 +658,14 @@ function TotalCard({ label, value, palette, width, sideScale }: TotalCardProps) 
       </Text>
       <Text
         adjustsFontSizeToFit
-        minimumFontScale={0.55}
+        minimumFontScale={0.5}
         numberOfLines={1}
-        maxFontSizeMultiplier={1.1}
+        maxFontSizeMultiplier={1}
         style={[
           styles.totalValue,
           {
             color: palette.title,
-            fontSize: 22 * sideScale,
+            fontSize: 16 * sideScale,
           },
         ]}
       >
@@ -754,7 +723,7 @@ const styles = StyleSheet.create({
   },
   monthContentColumn: {
     width: '100%',
-    gap: MONTH_TOTALS_GAP,
+    gap: 12,
   },
   placeholderPage: {
     flex: 1,
@@ -855,27 +824,26 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
-  totalsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: MONTH_TOTALS_GAP,
-    justifyContent: 'space-between',
-  },
-  totalsGridSplit: {
-    width: '100%',
-  },
-  totalCard: {
+  totalsCard: {
     borderWidth: 1,
     borderRadius: 16,
-    padding: 14,
-    gap: 6,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+  },
+  totalsRow: {
+    flexDirection: 'row',
+  },
+  totalItem: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 1,
   },
   totalLabel: {
-    fontSize: 12,
+    fontSize: 9,
     fontWeight: '600',
   },
   totalValue: {
-    fontSize: 22,
+    fontSize: 16,
     fontWeight: '700',
   },
 });

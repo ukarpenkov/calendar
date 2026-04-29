@@ -39,6 +39,5 @@ test('landscape month detail splits calendar and side column', () => {
   if (m.layout === 'split') {
     expect(m.calendarColumnWidth).toBe(390 - 32);
     expect(m.sideColumnWidth).toBeGreaterThan(160);
-    expect(m.totalCardWidth).toBeGreaterThan(0);
   }
 });

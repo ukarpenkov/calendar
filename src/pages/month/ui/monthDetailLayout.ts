@@ -3,9 +3,6 @@ import { layout } from '../../../shared/lib/ui/layout';
 const TABLET_MONTH_MAX_CONTENT_WIDTH = 440;
 const MONTH_CONTENT_MIN_WIDTH = 280;
 
-/** Gap between the two total cards in one row of the 2×2 grid. */
-export const MONTH_TOTALS_GAP = 12;
-
 /** Space between calendar column and side column in split layout. */
 export const MONTH_SPLIT_COLUMNS_GAP = 16;
 
@@ -17,13 +14,11 @@ export type MonthDetailLayoutMetrics =
   | {
       layout: 'stack';
       calendarColumnWidth: number;
-      totalCardWidth: number;
     }
   | {
       layout: 'split';
       calendarColumnWidth: number;
       sideColumnWidth: number;
-      totalCardWidth: number;
       columnGap: number;
     };
 
@@ -70,7 +65,6 @@ export function getMonthDetailLayoutMetrics(
     return {
       layout: 'stack',
       calendarColumnWidth: idealCalendarWidth,
-      totalCardWidth: Math.max((idealCalendarWidth - MONTH_TOTALS_GAP) / 2, 0),
     };
   }
 
@@ -89,7 +83,6 @@ export function getMonthDetailLayoutMetrics(
     return {
       layout: 'stack',
       calendarColumnWidth: idealCalendarWidth,
-      totalCardWidth: Math.max((idealCalendarWidth - MONTH_TOTALS_GAP) / 2, 0),
     };
   }
 
@@ -97,7 +90,6 @@ export function getMonthDetailLayoutMetrics(
     layout: 'split',
     calendarColumnWidth,
     sideColumnWidth: sideIfSplit,
-    totalCardWidth: Math.max((sideIfSplit - MONTH_TOTALS_GAP) / 2, 0),
     columnGap: MONTH_SPLIT_COLUMNS_GAP,
   };
 }
