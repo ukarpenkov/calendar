@@ -80,23 +80,24 @@ export function MonthDetailScreen({
   const prevMonth = month > 1 ? month - 1 : null;
   const nextMonth = month < 12 ? month + 1 : null;
 
-  const centerDays = useMemo(
-    () => getCalendarDaysForMonth(calendar, month),
-    [calendar, month],
-  );
-  const detail = useMemo(
-    () => buildMonthDetail(calendar.year, month, centerDays, language),
-    [calendar.year, centerDays, language, month],
-  );
+  const allMonthDetails = useMemo(() => {
+    const cache: Record<number, ReturnType<typeof buildMonthDetail>> = {};
+    for (let m = 1; m <= 12; m++) {
+      const days = getCalendarDaysForMonth(calendar, m);
+      if (days.length > 0) {
+        cache[m] = buildMonthDetail(calendar.year, m, days, language);
+      }
+    }
+    return cache;
+  }, [calendar, language]);
+
+  const detail = allMonthDetails[month];
 
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
-  useEffect(() => {
-    setSelectedDate(detail.days[0]?.date ?? null);
-  }, [detail.days]);
-
-  const selectedDay =
-    detail.days.find(day => day.date === selectedDate) ?? detail.days[0] ?? null;
+  const selectedDay = detail
+    ? detail.days.find(day => day.date === selectedDate) ?? detail.days[0] ?? null
+    : null;
 
   const scrollToCenter = useCallback(
     (animated: boolean) => {
@@ -227,6 +228,7 @@ export function MonthDetailScreen({
             <MonthPageScroll
               calendar={calendar}
               month={prevMonth}
+              allMonthDetails={allMonthDetails}
               palette={palette}
               language={language}
               t={t}
@@ -267,6 +269,7 @@ export function MonthDetailScreen({
             <MonthPageScroll
               calendar={calendar}
               month={nextMonth}
+              allMonthDetails={allMonthDetails}
               palette={palette}
               language={language}
               t={t}
@@ -286,6 +289,7 @@ type LocalizationParams = Record<string, number | string>;
 type MonthPageScrollProps = {
   calendar: CalendarYear;
   month: number | null;
+  allMonthDetails: Record<number, ReturnType<typeof buildMonthDetail>>;
   palette: CalendarPalette;
   language: AppLanguage;
   t: (key: TranslationKey, params?: LocalizationParams) => string;
@@ -297,6 +301,7 @@ type MonthPageScrollProps = {
 function MonthPageScroll({
   calendar,
   month,
+  allMonthDetails,
   palette,
   language,
   t,
@@ -304,16 +309,7 @@ function MonthPageScroll({
   bottomInset,
   monthLayoutMetrics,
 }: MonthPageScrollProps) {
-  const detail = useMemo(() => {
-    if (month === null) {
-      return null;
-    }
-    const days = getCalendarDaysForMonth(calendar, month);
-    if (days.length === 0) {
-      return null;
-    }
-    return buildMonthDetail(calendar.year, month, days, language);
-  }, [calendar, month, language]);
+  const detail = month !== null ? allMonthDetails[month] ?? null : null;
 
   if (!detail) {
     return (
