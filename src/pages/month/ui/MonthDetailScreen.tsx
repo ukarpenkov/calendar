@@ -533,7 +533,7 @@ function MonthDetailBody({
           <TotalItem label={t('month.totals.totalDays')} value={String(detail.totalDays)} palette={palette} sideScale={sideScale} />
           <TotalItem label={t('month.totals.workingDays')} value={String(detail.workingDays)} palette={palette} sideScale={sideScale} />
           <TotalItem label={t('month.totals.nonWorkingDays')} value={String(detail.nonWorkingDays)} palette={palette} sideScale={sideScale} />
-          <TotalItem label={t('month.totals.workHours')} value={`${detail.workHours} ${t('common.hoursUnit')}`} palette={palette} sideScale={sideScale} />
+          <TotalItem label={t('month.totals.workHours')} value={String(detail.workHours)} palette={palette} sideScale={sideScale} />
         </View>
       </View>
     </>
