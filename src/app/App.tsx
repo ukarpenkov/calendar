@@ -75,6 +75,12 @@ function AppContent() {
   setBundledCalendarRegionRef.current = setBundledCalendarRegion;
   const [status, setStatus] = useState<AppContentStatus>({ kind: 'loading' });
   const [bootstrapGeneration, setBootstrapGeneration] = useState(0);
+  const [monthOrigin, setMonthOrigin] = useState<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  } | null>(null);
   const statusRef = useRef(status);
   statusRef.current = status;
   const activeCalendar = status.kind === 'ready' ? status.calendar : null;
@@ -145,7 +151,6 @@ function AppContent() {
       }
 
       switch (status.screen.name) {
-        case 'month':
         case 'month-error':
         case 'settings':
         case 'import-entry':
@@ -154,7 +159,7 @@ function AppContent() {
               return current;
             }
             const screenName = current.screen.name;
-            if (screenName === 'month' || screenName === 'month-error') {
+            if (screenName === 'month-error') {
               return { ...current, screen: { name: 'year' } };
             }
             if (screenName === 'settings') {
@@ -276,10 +281,15 @@ function AppContent() {
     );
   }
 
-  const goToMonth = (month: number) => {
+  const goToMonth = (
+    month: number,
+    origin?: { x: number; y: number; width: number; height: number },
+  ) => {
     if (month < 1 || month > 12) {
       return;
     }
+
+    setMonthOrigin(origin ?? null);
 
     setStatus(currentStatus => {
       if (currentStatus.kind !== 'ready') {
@@ -458,6 +468,7 @@ function AppContent() {
           onBack={closeMonth}
           onOpenSettings={openSettings}
           onMonthChange={goToMonth}
+          originLayout={monthOrigin}
         />
       ) : null}
     </View>

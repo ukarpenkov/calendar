@@ -8,6 +8,8 @@ import {
 } from 'react';
 import {
   Animated,
+  BackHandler,
+  Easing,
   FlatList,
   Pressable,
   ScrollView,
@@ -58,6 +60,7 @@ type MonthDetailScreenProps = {
   onBack: () => void;
   onOpenSettings: () => void;
   onMonthChange: (month: number) => void;
+  originLayout?: { x: number; y: number; width: number; height: number } | null;
 };
 
 const APP_BAR_TITLE_MIN_SCALE = 0.7;
@@ -66,6 +69,9 @@ const NOOP_SELECT_DAY = (_date: string) => {};
 const PARALLAX_FACTOR = 0.15;
 const PAGE_OPACITY_MIN = 0.85;
 const PAGE_SCALE_MIN = 0.97;
+
+const OPEN_EASING = Easing.bezier(0.2, 0.85, 0.25, 1);
+const CLOSE_EASING = Easing.bezier(0.4, 0, 0.6, 1);
 
 function getLocalIsoDate(date = new Date()): string {
   const year = date.getFullYear();
@@ -81,6 +87,7 @@ export function MonthDetailScreen({
   onBack,
   onOpenSettings,
   onMonthChange,
+  originLayout,
 }: MonthDetailScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
@@ -109,6 +116,62 @@ export function MonthDetailScreen({
     () => getMonthDetailLayoutMetrics(windowWidth, windowHeight),
     [windowHeight, windowWidth],
   );
+
+  // --- Transition animation ---
+  const animProgress = useRef(new Animated.Value(0)).current;
+  const isClosingRef = useRef(false);
+  const onBackRef = useRef(onBack);
+  onBackRef.current = onBack;
+
+  const originTranslateY = originLayout
+    ? originLayout.y + originLayout.height / 2 - windowHeight / 2
+    : windowHeight * 0.12;
+  const sheetTranslateY = animProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [originTranslateY, 0],
+  });
+  const sheetScale = animProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.97, 1],
+  });
+  const sheetOpacity = animProgress.interpolate({
+    inputRange: [0, 0.4, 1],
+    outputRange: [0, 1, 1],
+  });
+  const backdropOpacity = animProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 0.35],
+  });
+
+  useEffect(() => {
+    Animated.timing(animProgress, {
+      toValue: 1,
+      duration: 380,
+      easing: OPEN_EASING,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
+  const handleBack = useCallback(() => {
+    if (isClosingRef.current) return;
+    isClosingRef.current = true;
+    Animated.timing(animProgress, {
+      toValue: 0,
+      duration: 280,
+      easing: CLOSE_EASING,
+      useNativeDriver: true,
+    }).start(() => {
+      onBackRef.current();
+    });
+  }, []);
+
+  useEffect(() => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      handleBack();
+      return true;
+    });
+    return () => sub.remove();
+  }, [handleBack]);
 
   // Internal tracking of the visible month -- source of truth for rendering
   const [activeMonth, setActiveMonth] = useState(month);
@@ -306,19 +369,25 @@ export function MonthDetailScreen({
 
   return (
     <View style={styles.overlayRoot} pointerEvents="box-none">
-      <View
+      <Animated.View
+        style={[styles.backdrop, { opacity: backdropOpacity }]}
+        pointerEvents="none"
+      />
+      <Animated.View
         style={[
           styles.sheet,
           {
             backgroundColor: palette.background,
             paddingTop: safeAreaInsets.top + layout.safeAreaTopExtra,
+            transform: [{ translateY: sheetTranslateY }, { scale: sheetScale }],
+            opacity: sheetOpacity,
           },
         ]}
       >
         <View style={styles.appBar}>
           <View style={[styles.appBarSide, styles.appBarSideStart]}>
             <IconCircleButton
-              onPress={onBack}
+              onPress={handleBack}
               palette={palette}
               accessibilityLabel={t('common.backToYear')}
             >
@@ -392,7 +461,7 @@ export function MonthDetailScreen({
           onScroll={onScrollEvent}
           scrollEventThrottle={16}
         />
-      </View>
+      </Animated.View>
     </View>
   );
 }
@@ -764,6 +833,10 @@ const MemoizedTotalItem = memo(TotalItem);
 const styles = StyleSheet.create({
   overlayRoot: {
     ...StyleSheet.absoluteFillObject,
+  },
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: '#000000',
   },
   sheet: {
     flex: 1,

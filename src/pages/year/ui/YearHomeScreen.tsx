@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import {
   Pressable,
   ScrollView,
@@ -35,7 +35,7 @@ import { getYearGridMetrics } from './yearGridMetrics';
 type YearHomeScreenProps = {
   calendar: CalendarYear;
   monthSummaries: CalendarMonthSummary[];
-  onOpenMonth: (month: number) => void;
+  onOpenMonth: (month: number, origin: { x: number; y: number; width: number; height: number }) => void;
   onOpenSettings: () => void;
 };
 
@@ -74,6 +74,7 @@ export function YearHomeScreen({
     () => getYearGridMetrics(windowWidth, fontScale, columnsPerRow),
     [columnsPerRow, fontScale, windowWidth],
   );
+  const monthCardRefs = useRef<Map<number, View>>(new Map());
 
   return (
     <ScrollView
@@ -167,7 +168,17 @@ export function YearHomeScreen({
             {row.map(summary => (
               <Pressable
                 key={summary.month}
-                onPress={() => onOpenMonth(summary.month)}
+                ref={ref => {
+                  if (ref) {
+                    monthCardRefs.current.set(summary.month, ref);
+                  }
+                }}
+                onPress={() => {
+                  const cardRef = monthCardRefs.current.get(summary.month);
+                  cardRef?.measureInWindow((x, y, width, height) => {
+                    onOpenMonth(summary.month, { x, y, width, height });
+                  });
+                }}
                 style={({ pressed }) => [
                   styles.monthCard,
                   {
