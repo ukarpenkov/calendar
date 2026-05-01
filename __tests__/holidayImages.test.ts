@@ -2,7 +2,11 @@
  * @format
  */
 
-import { getCalendarImagesForDays, getDayImage } from '../src/entities/calendar';
+import {
+  getCalendarImagesForDays,
+  getDayImage,
+  getHolidayImageForMonth,
+} from '../src/entities/calendar';
 import type { CalendarDay } from '../src/entities/calendar';
 
 function buildDay(overrides: Partial<CalendarDay>): CalendarDay {
@@ -25,6 +29,18 @@ function buildDay(overrides: Partial<CalendarDay>): CalendarDay {
 }
 
 describe('holidayImages', () => {
+  it('uses January default image for the month without a selected date', () => {
+    const januaryDefaultImage = getHolidayImageForMonth([
+      buildDay({ date: '2026-01-01', type: 'holiday', workHours: 0 }),
+    ]);
+    const selectedNewYearImage = getDayImage(
+      buildDay({ date: '2026-01-01', type: 'holiday', workHours: 0 }),
+    );
+
+    expect(januaryDefaultImage).not.toBeNull();
+    expect(januaryDefaultImage).not.toBe(selectedNewYearImage);
+  });
+
   it('resolves selected day images by calendar day type', () => {
     const workdayImage = getDayImage(buildDay({ type: 'workday' }));
     const shortenedImage = getDayImage(
@@ -70,6 +86,6 @@ describe('holidayImages', () => {
       }),
     ]);
 
-    expect(images.length).toBeGreaterThanOrEqual(4);
+    expect(images.length).toBeGreaterThanOrEqual(3);
   });
 });

@@ -2,8 +2,6 @@ import type { ImageSourcePropType } from 'react-native';
 import type { CalendarDay } from './types';
 
 const newYearImage = require('../../../../assets/days_img/new_year_default.webp');
-const holidayFallbackImage = require('../../../../assets/days_img/1777636821.png');
-const observedHolidayFallbackImage = holidayFallbackImage;
 const selectedWorkdayImage = require('../../../../assets/days_img/work_default.webp');
 const selectedWeekendImage = require('../../../../assets/days_img/holday_default.webp');
 
@@ -79,44 +77,28 @@ export function getCalendarImagesForDays(
     images.add(selectedWeekendImage);
   }
 
-  if (days.some(d => d.type === 'holiday')) {
-    images.add(holidayFallbackImage);
-  }
-
   return Array.from(images);
 }
 
-function isObservedHolidayDayOff(day: CalendarDay): boolean {
-  return [
-    day.holidayNameRu,
-    day.holidayNameEn,
-    day.holidayNameTr,
-    day.holidayNameId,
-    day.holidayNameJa,
-  ].some(name => {
-    const normalized = name?.toLowerCase() ?? '';
-
-    return (
-      normalized.includes('выходной за') ||
-      normalized.includes('day off for')
-    );
-  });
-}
-
-function getHolidayImageForDay(day: CalendarDay): ImageSourcePropType {
+function getHolidayImageForDay(day: CalendarDay): ImageSourcePropType | null {
   const image = calendarImageByDate[day.date];
   if (image) {
     return image;
   }
 
-  return isObservedHolidayDayOff(day)
-    ? observedHolidayFallbackImage
-    : holidayFallbackImage;
+  return defaultImageByMonth[day.month] ?? null;
 }
 
 export function getHolidayImageForMonth(
   days: readonly CalendarDay[],
 ): ImageSourcePropType | null {
+  if (days.length > 0) {
+    const fallback = defaultImageByMonth[days[0].month];
+    if (fallback) {
+      return fallback;
+    }
+  }
+
   for (const day of days) {
     if (day.type === 'holiday') {
       const image = calendarImageByDate[day.date];
@@ -124,10 +106,6 @@ export function getHolidayImageForMonth(
         return image;
       }
     }
-  }
-
-  if (days.length > 0) {
-    return defaultImageByMonth[days[0].month] ?? null;
   }
 
   return null;
