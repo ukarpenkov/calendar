@@ -16,8 +16,8 @@ import {
   YearEndReminderCard,
 } from '../../../features/year-end-reminder';
 import {
-  buildYearMonthSummaries,
   type CalendarDay,
+  type CalendarMonthSummary,
   type CalendarYear,
   type DayType,
   getDayTypeColors,
@@ -34,12 +34,14 @@ import { getYearGridMetrics } from './yearGridMetrics';
 
 type YearHomeScreenProps = {
   calendar: CalendarYear;
+  monthSummaries: CalendarMonthSummary[];
   onOpenMonth: (month: number) => void;
   onOpenSettings: () => void;
 };
 
 export function YearHomeScreen({
   calendar,
+  monthSummaries,
   onOpenMonth,
   onOpenSettings,
 }: YearHomeScreenProps) {
@@ -48,7 +50,6 @@ export function YearHomeScreen({
     useWindowDimensions();
   const { isDarkMode, palette } = useAppTheme();
   const { language, t } = useAppLocalization();
-  const monthSummaries = buildYearMonthSummaries(calendar, language);
   const columnsPerRow = useMemo(() => {
     const minDimension = Math.min(windowWidth, windowHeight);
     const isTablet = minDimension >= 600;

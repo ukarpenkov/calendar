@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   NativeSyntheticEvent,
   Pressable,
@@ -12,15 +19,13 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
-  buildMonthDetail,
-  getCalendarDaysForMonth,
   getDayTypeColors,
   getDayTypeLabel,
   getHolidayDisplayName,
   getHolidayImageForMonth,
   type CalendarPalette,
   type CalendarDay,
-  type CalendarYear,
+  type CalendarYearMonthDetails,
 } from '../../../entities/calendar';
 import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
@@ -47,7 +52,7 @@ import {
 } from './monthDetailLayout';
 
 type MonthDetailScreenProps = {
-  calendar: CalendarYear;
+  monthDetails: CalendarYearMonthDetails;
   month: number;
   onBack: () => void;
   onOpenSettings: () => void;
@@ -55,9 +60,29 @@ type MonthDetailScreenProps = {
 };
 
 const APP_BAR_TITLE_MIN_SCALE = 0.7;
+const NOOP_SELECT_DAY = () => {};
+
+function getLocalIsoDate(date = new Date()): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
+function getDefaultSelectedDay(
+  detail: CalendarYearMonthDetails[number],
+  todayDate: string,
+): CalendarDay | null {
+  if (!detail) {
+    return null;
+  }
+
+  return detail.days.find(day => day.date === todayDate) ?? detail.days[0] ?? null;
+}
 
 export function MonthDetailScreen({
-  calendar,
+  monthDetails,
   month,
   onBack,
   onOpenSettings,
@@ -67,10 +92,14 @@ export function MonthDetailScreen({
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const { palette } = useAppTheme();
   const { language, t } = useAppLocalization();
-  const weekdayLabels = getShortWeekdayLabels(language);
+  const weekdayLabels = useMemo(
+    () => getShortWeekdayLabels(language),
+    [language],
+  );
 
   const horizontalRef = useRef<ScrollView>(null);
   const [pagerReady, setPagerReady] = useState(false);
+  const todayDate = useMemo(() => getLocalIsoDate(), []);
 
   const pageWidth = windowWidth;
   const monthLayoutMetrics = useMemo(
@@ -81,24 +110,23 @@ export function MonthDetailScreen({
   const prevMonth = month > 1 ? month - 1 : null;
   const nextMonth = month < 12 ? month + 1 : null;
 
-  const allMonthDetails = useMemo(() => {
-    const cache: Record<number, ReturnType<typeof buildMonthDetail>> = {};
-    for (let m = 1; m <= 12; m++) {
-      const days = getCalendarDaysForMonth(calendar, m);
-      if (days.length > 0) {
-        cache[m] = buildMonthDetail(calendar.year, m, days, language);
-      }
-    }
-    return cache;
-  }, [calendar, language]);
-
-  const detail = allMonthDetails[month];
+  const detail = monthDetails[month];
 
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
-  const selectedDay = detail
-    ? detail.days.find(day => day.date === selectedDate) ?? detail.days[0] ?? null
-    : null;
+  const defaultSelectedDay = useMemo(
+    () => getDefaultSelectedDay(detail, todayDate),
+    [detail, todayDate],
+  );
+
+  const selectedDay = useMemo(
+    () =>
+      detail
+        ? detail.days.find(day => day.date === selectedDate) ??
+          defaultSelectedDay
+        : null,
+    [defaultSelectedDay, detail, selectedDate],
+  );
 
   const scrollToCenter = useCallback(
     (animated: boolean) => {
@@ -145,6 +173,10 @@ export function MonthDetailScreen({
     },
     [nextMonth, onMonthChange, pageWidth, prevMonth, scrollToCenter],
   );
+
+  if (!detail) {
+    return null;
+  }
 
   return (
     <View style={styles.overlayRoot} pointerEvents="box-none">
@@ -226,10 +258,9 @@ export function MonthDetailScreen({
           contentContainerStyle={styles.horizontalContent}
         >
           <View style={[styles.page, { width: pageWidth }]}>
-            <MonthPageScroll
-              calendar={calendar}
+            <MemoizedMonthPageScroll
               month={prevMonth}
-              allMonthDetails={allMonthDetails}
+              monthDetails={monthDetails}
               palette={palette}
               language={language}
               t={t}
@@ -254,7 +285,7 @@ export function MonthDetailScreen({
               ]}
               keyboardShouldPersistTaps="handled"
             >
-              <MonthDetailBody
+              <MemoizedMonthDetailBody
                 detail={detail}
                 palette={palette}
                 language={language}
@@ -267,10 +298,9 @@ export function MonthDetailScreen({
             </ScrollView>
           </View>
           <View style={[styles.page, { width: pageWidth }]}>
-            <MonthPageScroll
-              calendar={calendar}
+            <MemoizedMonthPageScroll
               month={nextMonth}
-              allMonthDetails={allMonthDetails}
+              monthDetails={monthDetails}
               palette={palette}
               language={language}
               t={t}
@@ -288,9 +318,8 @@ export function MonthDetailScreen({
 type LocalizationParams = Record<string, number | string>;
 
 type MonthPageScrollProps = {
-  calendar: CalendarYear;
   month: number | null;
-  allMonthDetails: Record<number, ReturnType<typeof buildMonthDetail>>;
+  monthDetails: CalendarYearMonthDetails;
   palette: CalendarPalette;
   language: AppLanguage;
   t: (key: TranslationKey, params?: LocalizationParams) => string;
@@ -300,9 +329,8 @@ type MonthPageScrollProps = {
 };
 
 function MonthPageScroll({
-  calendar,
   month,
-  allMonthDetails,
+  monthDetails,
   palette,
   language,
   t,
@@ -310,7 +338,7 @@ function MonthPageScroll({
   bottomInset,
   monthLayoutMetrics,
 }: MonthPageScrollProps) {
-  const detail = month !== null ? allMonthDetails[month] ?? null : null;
+  const detail = month !== null ? monthDetails[month] ?? null : null;
 
   if (!detail) {
     return (
@@ -337,14 +365,14 @@ function MonthPageScroll({
       ]}
       keyboardShouldPersistTaps="handled"
     >
-      <MonthDetailBody
+      <MemoizedMonthDetailBody
         detail={detail}
         palette={palette}
         language={language}
         t={t}
         weekdayLabels={weekdayLabels}
         selectedDay={null}
-        onSelectDay={() => {}}
+        onSelectDay={NOOP_SELECT_DAY}
         monthLayoutMetrics={monthLayoutMetrics}
       />
     </ScrollView>
@@ -352,7 +380,7 @@ function MonthPageScroll({
 }
 
 type MonthDetailBodyProps = {
-  detail: ReturnType<typeof buildMonthDetail>;
+  detail: NonNullable<CalendarYearMonthDetails[number]>;
   palette: CalendarPalette;
   language: AppLanguage;
   t: (key: TranslationKey, params?: LocalizationParams) => string;
@@ -429,17 +457,13 @@ function MonthDetailBody({
         {detail.weeks.map(week => (
           <View key={`${detail.month}-${week.isoWeek}`} style={styles.weekRow}>
             {week.days.map((day, dayIndex) => (
-              <MonthDetailDayCell
+              <MemoizedMonthDetailDayCell
                 key={`${detail.month}-${week.isoWeek}-${dayIndex}`}
                 day={day}
                 isSelected={day?.date === selectedDay?.date}
                 palette={palette}
                 calendarScale={calendarScale}
-                onPress={() => {
-                  if (day) {
-                    onSelectDay(day.date);
-                  }
-                }}
+                onSelectDay={onSelectDay}
               />
             ))}
           </View>
@@ -537,10 +561,30 @@ function MonthDetailBody({
         ]}
       >
         <View style={styles.totalsRow}>
-          <TotalItem label={t('month.totals.totalDays')} value={String(detail.totalDays)} palette={palette} sideScale={sideScale} />
-          <TotalItem label={t('month.totals.workingDays')} value={String(detail.workingDays)} palette={palette} sideScale={sideScale} />
-          <TotalItem label={t('month.totals.nonWorkingDays')} value={String(detail.nonWorkingDays)} palette={palette} sideScale={sideScale} />
-          <TotalItem label={t('month.totals.workHours')} value={String(detail.workHours)} palette={palette} sideScale={sideScale} />
+          <MemoizedTotalItem
+            label={t('month.totals.totalDays')}
+            value={String(detail.totalDays)}
+            palette={palette}
+            sideScale={sideScale}
+          />
+          <MemoizedTotalItem
+            label={t('month.totals.workingDays')}
+            value={String(detail.workingDays)}
+            palette={palette}
+            sideScale={sideScale}
+          />
+          <MemoizedTotalItem
+            label={t('month.totals.nonWorkingDays')}
+            value={String(detail.nonWorkingDays)}
+            palette={palette}
+            sideScale={sideScale}
+          />
+          <MemoizedTotalItem
+            label={t('month.totals.workHours')}
+            value={String(detail.workHours)}
+            palette={palette}
+            sideScale={sideScale}
+          />
         </View>
       </View>
     </>
@@ -589,7 +633,7 @@ type MonthDetailDayCellProps = {
   isSelected: boolean;
   palette: CalendarPalette;
   calendarScale: number;
-  onPress: () => void;
+  onSelectDay: (date: string) => void;
 };
 
 function MonthDetailDayCell({
@@ -597,9 +641,14 @@ function MonthDetailDayCell({
   isSelected,
   palette,
   calendarScale,
-  onPress,
+  onSelectDay,
 }: MonthDetailDayCellProps) {
   const cellSize = Math.max(36, 42 * calendarScale);
+  const onPress = useCallback(() => {
+    if (day) {
+      onSelectDay(day.date);
+    }
+  }, [day, onSelectDay]);
 
   if (!day) {
     return <View style={styles.emptyDayCell} />;
@@ -685,6 +734,11 @@ function TotalItem({ label, value, palette, sideScale }: TotalItemProps) {
     </View>
   );
 }
+
+const MemoizedMonthPageScroll = memo(MonthPageScroll);
+const MemoizedMonthDetailBody = memo(MonthDetailBody);
+const MemoizedMonthDetailDayCell = memo(MonthDetailDayCell);
+const MemoizedTotalItem = memo(TotalItem);
 
 const styles = StyleSheet.create({
   overlayRoot: {

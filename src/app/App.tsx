@@ -1,12 +1,20 @@
-import { useEffect, useRef, useState } from 'react';
-import { BackHandler, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  BackHandler,
+  Image,
+  Pressable,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 
 import {
-  getCalendarDaysForMonth,
+  buildCalendarYearViewCache,
   getYearCalendar,
   seedBundledYearIfNeeded,
   type CalendarYear,
@@ -61,7 +69,7 @@ function AppRoot() {
 function AppContent() {
   const safeAreaInsets = useSafeAreaInsets();
   const { palette } = useAppTheme();
-  const { t } = useAppLocalization();
+  const { language, t } = useAppLocalization();
   const { setBundledCalendarRegion } = useBundledCalendarRegion();
   const setBundledCalendarRegionRef = useRef(setBundledCalendarRegion);
   setBundledCalendarRegionRef.current = setBundledCalendarRegion;
@@ -69,6 +77,14 @@ function AppContent() {
   const [bootstrapGeneration, setBootstrapGeneration] = useState(0);
   const statusRef = useRef(status);
   statusRef.current = status;
+  const activeCalendar = status.kind === 'ready' ? status.calendar : null;
+  const calendarYearView = useMemo(
+    () =>
+      activeCalendar
+        ? buildCalendarYearViewCache(activeCalendar, language)
+        : null,
+    [activeCalendar, language],
+  );
 
   useEffect(() => {
     registerCalendarSyncOnAppLanguageChange((_previous, nextLanguage) => {
@@ -192,6 +208,22 @@ function AppContent() {
     };
   }, [bootstrapGeneration]);
 
+  useEffect(() => {
+    if (!calendarYearView) {
+      return;
+    }
+
+    const imageUris = calendarYearView.imageSources
+      .map(source => Image.resolveAssetSource(source)?.uri)
+      .filter((uri): uri is string => Boolean(uri));
+
+    if (imageUris.length === 0) {
+      return;
+    }
+
+    Promise.all(imageUris.map(uri => Image.prefetch(uri).catch(() => false)));
+  }, [calendarYearView]);
+
   const retryBootstrap = () => {
     setStatus({ kind: 'loading' });
     setBootstrapGeneration(generation => generation + 1);
@@ -254,9 +286,9 @@ function AppContent() {
         return currentStatus;
       }
 
-      const monthDays = getCalendarDaysForMonth(currentStatus.calendar, month);
+      const monthDetail = calendarYearView?.monthDetails[month];
 
-      if (monthDays.length === 0) {
+      if (!monthDetail) {
         return {
           ...currentStatus,
           screen: { name: 'month-error', month },
@@ -414,13 +446,14 @@ function AppContent() {
       <View style={styles.yearLayer}>
         <YearHomeScreen
           calendar={status.calendar}
+          monthSummaries={calendarYearView?.monthSummaries ?? []}
           onOpenMonth={goToMonth}
           onOpenSettings={openSettings}
         />
       </View>
       {status.screen.name === 'month' ? (
         <MonthDetailScreen
-          calendar={status.calendar}
+          monthDetails={calendarYearView?.monthDetails ?? {}}
           month={status.screen.month}
           onBack={closeMonth}
           onOpenSettings={openSettings}

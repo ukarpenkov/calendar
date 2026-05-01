@@ -19,11 +19,19 @@ export {
   getCalendarDaysForMonth,
   getUtcDaysInMonth,
 } from './model/month-from-year';
+export {
+  buildCalendarYearViewCache,
+  type CalendarYearMonthDetails,
+  type CalendarYearViewCache,
+} from './model/year-view-cache';
 export type { CalendarMonthWeek } from './model/month-helpers';
 export { buildYearMonthSummaries } from './model/year-summary';
 export type { CalendarDay, CalendarYear, DayType } from './model/types';
 export { getHolidayDisplayName } from './model/holiday-display-name';
-export { getHolidayImageForMonth } from './model/holidayImages';
+export {
+  getCalendarImagesForDays,
+  getHolidayImageForMonth,
+} from './model/holidayImages';
 export type { CalendarMonthSummary } from './model/year-summary';
 export {
   getCalendarPalette,
