@@ -17,6 +17,7 @@ import {
   getDayTypeColors,
   getDayTypeLabel,
   getHolidayDisplayName,
+  getHolidayImageForMonth,
   type CalendarPalette,
   type CalendarDay,
   type CalendarYear,
@@ -37,6 +38,7 @@ import {
 } from '../../../shared/ui/icons/NavigationIcons';
 import { SettingsGearButton } from '../../../shared/ui/SettingsGearButton';
 
+import { HolidayBanner } from './HolidayBanner';
 import {
   getMonthCalendarScale,
   getMonthDetailLayoutMetrics,
@@ -387,6 +389,11 @@ function MonthDetailBody({
     return getMonthSideScale(monthLayoutMetrics.sideColumnWidth);
   }, [monthLayoutMetrics]);
 
+  const holidayImage = useMemo(
+    () => getHolidayImageForMonth(detail.days),
+    [detail.days],
+  );
+
   const calendarCard = (
     <View
       style={[
@@ -541,20 +548,23 @@ function MonthDetailBody({
 
   if (monthLayoutMetrics.layout === 'split') {
     return (
-      <View style={styles.monthSplitRow}>
-        <View
-          style={[styles.monthCalendarColumn, { width: calendarColumnWidth }]}
-        >
-          {calendarCard}
-        </View>
-        <View
-          style={[
-            styles.monthSideColumn,
-            styles.monthSideColumnGrow,
-            { marginLeft: monthLayoutMetrics.columnGap },
-          ]}
-        >
-          {sideBlocks}
+      <View style={styles.monthSplitRowWrapper}>
+        {holidayImage ? <HolidayBanner source={holidayImage} /> : null}
+        <View style={styles.monthSplitRow}>
+          <View
+            style={[styles.monthCalendarColumn, { width: calendarColumnWidth }]}
+          >
+            {calendarCard}
+          </View>
+          <View
+            style={[
+              styles.monthSideColumn,
+              styles.monthSideColumnGrow,
+              { marginLeft: monthLayoutMetrics.columnGap },
+            ]}
+          >
+            {sideBlocks}
+          </View>
         </View>
       </View>
     );
@@ -567,6 +577,7 @@ function MonthDetailBody({
         { maxWidth: calendarColumnWidth },
       ]}
     >
+      {holidayImage ? <HolidayBanner source={holidayImage} /> : null}
       {calendarCard}
       {sideBlocks}
     </View>
@@ -705,6 +716,10 @@ const styles = StyleSheet.create({
   },
   pageVerticalContentSplit: {
     alignItems: 'stretch',
+  },
+  monthSplitRowWrapper: {
+    gap: layout.holidayBannerGap,
+    width: '100%',
   },
   monthSplitRow: {
     flexDirection: 'row',
