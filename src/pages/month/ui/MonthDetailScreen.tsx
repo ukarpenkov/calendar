@@ -24,6 +24,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   getDayTypeColors,
   getDayTypeLabel,
+  getDayImage,
   getHolidayDisplayName,
   getHolidayImageForMonth,
   type CalendarPalette,
@@ -509,8 +510,14 @@ function MonthDetailBody({
   }, [monthLayoutMetrics]);
 
   const holidayImage = useMemo(
-    () => getHolidayImageForMonth(detail.days),
-    [detail.days],
+    () => {
+      if (selectedDay) {
+        const dayImg = getDayImage(selectedDay);
+        if (dayImg) return dayImg;
+      }
+      return getHolidayImageForMonth(detail.days);
+    },
+    [selectedDay, detail.days],
   );
 
   const calendarCard = (

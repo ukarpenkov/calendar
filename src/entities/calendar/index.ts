@@ -30,6 +30,7 @@ export type { CalendarDay, CalendarYear, DayType } from './model/types';
 export { getHolidayDisplayName } from './model/holiday-display-name';
 export {
   getCalendarImagesForDays,
+  getDayImage,
   getHolidayImageForMonth,
 } from './model/holidayImages';
 export type { CalendarMonthSummary } from './model/year-summary';
