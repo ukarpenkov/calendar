@@ -7,6 +7,7 @@ import {
   useState,
 } from 'react';
 import {
+  Animated,
   FlatList,
   Pressable,
   ScrollView,
@@ -62,6 +63,10 @@ type MonthDetailScreenProps = {
 const APP_BAR_TITLE_MIN_SCALE = 0.7;
 const NOOP_SELECT_DAY = (_date: string) => {};
 
+const PARALLAX_FACTOR = 0.15;
+const PAGE_OPACITY_MIN = 0.85;
+const PAGE_SCALE_MIN = 0.97;
+
 function getLocalIsoDate(date = new Date()): string {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -88,6 +93,16 @@ export function MonthDetailScreen({
 
   const flatListRef = useRef<FlatList>(null);
   const todayDate = useMemo(() => getLocalIsoDate(), []);
+
+  const scrollX = useRef(new Animated.Value(0)).current;
+  const onScrollEvent = useMemo(
+    () =>
+      Animated.event(
+        [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+        { useNativeDriver: true },
+      ),
+    [scrollX],
+  );
 
   const pageWidth = windowWidth;
   const monthLayoutMetrics = useMemo(
@@ -192,6 +207,35 @@ export function MonthDetailScreen({
         );
       }
 
+      const pageIndex = m - 1;
+      const inputRange = [
+        (pageIndex - 1) * pageWidth,
+        pageIndex * pageWidth,
+        (pageIndex + 1) * pageWidth,
+      ];
+
+      const parallaxTranslateX = scrollX.interpolate({
+        inputRange,
+        outputRange: [
+          PARALLAX_FACTOR * pageWidth,
+          0,
+          -PARALLAX_FACTOR * pageWidth,
+        ],
+        extrapolate: 'clamp',
+      });
+
+      const pageOpacity = scrollX.interpolate({
+        inputRange,
+        outputRange: [PAGE_OPACITY_MIN, 1, PAGE_OPACITY_MIN],
+        extrapolate: 'clamp',
+      });
+
+      const pageScale = scrollX.interpolate({
+        inputRange,
+        outputRange: [PAGE_SCALE_MIN, 1, PAGE_SCALE_MIN],
+        extrapolate: 'clamp',
+      });
+
       const isActive = activeMonth === m;
 
       let resolvedSelectedDay: CalendarDay | null = null;
@@ -201,34 +245,42 @@ export function MonthDetailScreen({
       }
 
       return (
-        <View style={[styles.page, { width: pageWidth }]}>
-          <ScrollView
-            nestedScrollEnabled
-            style={styles.pageVertical}
-            contentContainerStyle={[
-              styles.pageVerticalContent,
-              monthLayoutMetrics.layout === 'split'
-                ? styles.pageVerticalContentSplit
-                : null,
-              {
-                paddingBottom:
-                  safeAreaInsets.bottom + layout.yearMonthScrollBottom,
-              },
-            ]}
-            keyboardShouldPersistTaps="handled"
+        <View style={[styles.page, { width: pageWidth, overflow: 'hidden' }]}>
+          <Animated.View
+            style={{
+              flex: 1,
+              transform: [{ translateX: parallaxTranslateX }, { scale: pageScale }],
+              opacity: pageOpacity,
+            }}
           >
-            <MemoizedMonthDetailBody
-              detail={detail}
-              palette={palette}
-              language={language}
-              t={t}
-              weekdayLabels={weekdayLabels}
-              selectedDay={resolvedSelectedDay}
-              selectedDayDate={isActive ? selectedDate ?? undefined : undefined}
-              onSelectDay={isActive ? handleSelectDay : NOOP_SELECT_DAY}
-              monthLayoutMetrics={monthLayoutMetrics}
-            />
-          </ScrollView>
+            <ScrollView
+              nestedScrollEnabled
+              style={styles.pageVertical}
+              contentContainerStyle={[
+                styles.pageVerticalContent,
+                monthLayoutMetrics.layout === 'split'
+                  ? styles.pageVerticalContentSplit
+                  : null,
+                {
+                  paddingBottom:
+                    safeAreaInsets.bottom + layout.yearMonthScrollBottom,
+                },
+              ]}
+              keyboardShouldPersistTaps="handled"
+            >
+              <MemoizedMonthDetailBody
+                detail={detail}
+                palette={palette}
+                language={language}
+                t={t}
+                weekdayLabels={weekdayLabels}
+                selectedDay={resolvedSelectedDay}
+                selectedDayDate={isActive ? selectedDate ?? undefined : undefined}
+                onSelectDay={isActive ? handleSelectDay : NOOP_SELECT_DAY}
+                monthLayoutMetrics={monthLayoutMetrics}
+              />
+            </ScrollView>
+          </Animated.View>
         </View>
       );
     },
@@ -236,6 +288,7 @@ export function MonthDetailScreen({
       monthDetails,
       activeMonth,
       pageWidth,
+      scrollX,
       palette,
       language,
       t,
@@ -316,7 +369,7 @@ export function MonthDetailScreen({
           </View>
         </View>
 
-        <FlatList
+        <Animated.FlatList
           ref={flatListRef}
           data={MONTHS_DATA}
           renderItem={renderPage}
@@ -336,6 +389,8 @@ export function MonthDetailScreen({
           onViewableItemsChanged={onViewableItemsChanged}
           viewabilityConfig={viewabilityConfig}
           style={styles.horizontalScroll}
+          onScroll={onScrollEvent}
+          scrollEventThrottle={16}
         />
       </View>
     </View>
