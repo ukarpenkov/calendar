@@ -7,13 +7,13 @@ import {
   useState,
 } from 'react';
 import {
-  NativeSyntheticEvent,
+  FlatList,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
   View,
-  type NativeScrollEvent,
+  type ViewToken,
   useWindowDimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -60,7 +60,7 @@ type MonthDetailScreenProps = {
 };
 
 const APP_BAR_TITLE_MIN_SCALE = 0.7;
-const NOOP_SELECT_DAY = () => {};
+const NOOP_SELECT_DAY = (_date: string) => {};
 
 function getLocalIsoDate(date = new Date()): string {
   const year = date.getFullYear();
@@ -68,17 +68,6 @@ function getLocalIsoDate(date = new Date()): string {
   const day = String(date.getDate()).padStart(2, '0');
 
   return `${year}-${month}-${day}`;
-}
-
-function getDefaultSelectedDay(
-  detail: CalendarYearMonthDetails[number],
-  todayDate: string,
-): CalendarDay | null {
-  if (!detail) {
-    return null;
-  }
-
-  return detail.days.find(day => day.date === todayDate) ?? detail.days[0] ?? null;
 }
 
 export function MonthDetailScreen({
@@ -97,8 +86,7 @@ export function MonthDetailScreen({
     [language],
   );
 
-  const horizontalRef = useRef<ScrollView>(null);
-  const [pagerReady, setPagerReady] = useState(false);
+  const flatListRef = useRef<FlatList>(null);
   const todayDate = useMemo(() => getLocalIsoDate(), []);
 
   const pageWidth = windowWidth;
@@ -107,74 +95,159 @@ export function MonthDetailScreen({
     [windowHeight, windowWidth],
   );
 
-  const prevMonth = month > 1 ? month - 1 : null;
-  const nextMonth = month < 12 ? month + 1 : null;
+  // Internal tracking of the visible month -- source of truth for rendering
+  const [activeMonth, setActiveMonth] = useState(month);
+  const activeMonthRef = useRef(month);
+  activeMonthRef.current = activeMonth;
 
-  const detail = monthDetails[month];
+  const activeDetail = monthDetails[activeMonth];
+  const prevMonth = activeMonth > 1 ? activeMonth - 1 : null;
+  const nextMonth = activeMonth < 12 ? activeMonth + 1 : null;
 
+  // selectedDate only changes on manual day press, not on swipe
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
-  const defaultSelectedDay = useMemo(
-    () => getDefaultSelectedDay(detail, todayDate),
-    [detail, todayDate],
-  );
+  // Flag to prevent onViewableItemsChanged from firing during programmatic scroll
+  const isScrollingToRef = useRef(false);
 
-  const selectedDay = useMemo(
-    () =>
-      detail
-        ? detail.days.find(day => day.date === selectedDate) ??
-          defaultSelectedDay
-        : null,
-    [defaultSelectedDay, detail, selectedDate],
-  );
-
-  const scrollToCenter = useCallback(
-    (animated: boolean) => {
-      horizontalRef.current?.scrollTo({
-        x: pageWidth,
-        animated,
-      });
+  // Stable callback for day selection -- does not depend on activeMonth state
+  const handleSelectDay = useCallback(
+    (date: string) => {
+      setSelectedDate(date);
+      onMonthChange(activeMonthRef.current);
     },
+    [onMonthChange],
+  );
+
+  // FlatList configuration
+  const MONTHS_DATA = useMemo(() => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], []);
+
+  const getItemLayout = useCallback(
+    (_data: ArrayLike<number> | null | undefined, index: number) => ({
+      length: pageWidth,
+      offset: pageWidth * index,
+      index,
+    }),
     [pageWidth],
   );
 
-  useEffect(() => {
-    if (pagerReady) {
-      scrollToCenter(false);
-    }
-  }, [month, pagerReady, scrollToCenter]);
+  const keyExtractor = useCallback((item: number) => String(item), []);
 
-  const onHorizontalLayout = useCallback(() => {
-    scrollToCenter(false);
-    setPagerReady(true);
-  }, [scrollToCenter]);
+  const viewabilityConfig = useMemo(
+    () => ({ viewAreaCoveragePercentThreshold: 50 }),
+    [],
+  );
 
-  const onMomentumScrollEnd = useCallback(
-    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      const x = event.nativeEvent.contentOffset.x;
-      const page = Math.round(x / pageWidth);
-
-      if (page === 0) {
-        if (prevMonth !== null) {
-          onMonthChange(prevMonth);
-        } else {
-          scrollToCenter(true);
-        }
+  const onViewableItemsChanged = useCallback(
+    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
+      if (isScrollingToRef.current) {
+        isScrollingToRef.current = false;
         return;
       }
-
-      if (page === 2) {
-        if (nextMonth !== null) {
-          onMonthChange(nextMonth);
-        } else {
-          scrollToCenter(true);
+      const firstVisible = viewableItems[0];
+      if (firstVisible && typeof firstVisible.item === 'number') {
+        const newMonth = firstVisible.item;
+        if (newMonth !== activeMonthRef.current) {
+          activeMonthRef.current = newMonth;
+          setActiveMonth(newMonth);
+          onMonthChange(newMonth);
         }
       }
     },
-    [nextMonth, onMonthChange, pageWidth, prevMonth, scrollToCenter],
+    [onMonthChange],
   );
 
-  if (!detail) {
+  // Sync: when parent changes month prop (e.g. chevron press), scroll FlatList
+  useEffect(() => {
+    if (month !== activeMonth) {
+      isScrollingToRef.current = true;
+      flatListRef.current?.scrollToIndex({ index: month - 1, animated: true });
+    }
+  }, [month, activeMonth]);
+
+  // Auto-select today on initial mount only
+  useEffect(() => {
+    const detail = monthDetails[month];
+    if (detail) {
+      const todayInMonth = detail.days.find(day => day.date === todayDate);
+      if (todayInMonth) {
+        setSelectedDate(todayDate);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // renderPage for FlatList
+  const renderPage = useCallback(
+    ({ item: m }: { item: number }) => {
+      const detail = monthDetails[m];
+      if (!detail) {
+        return (
+          <View
+            style={[
+              styles.page,
+              { width: pageWidth, backgroundColor: palette.background },
+            ]}
+          />
+        );
+      }
+
+      const isActive = activeMonth === m;
+
+      let resolvedSelectedDay: CalendarDay | null = null;
+      if (isActive && selectedDate) {
+        resolvedSelectedDay =
+          detail.days.find(day => day.date === selectedDate) ?? null;
+      }
+
+      return (
+        <View style={[styles.page, { width: pageWidth }]}>
+          <ScrollView
+            nestedScrollEnabled
+            style={styles.pageVertical}
+            contentContainerStyle={[
+              styles.pageVerticalContent,
+              monthLayoutMetrics.layout === 'split'
+                ? styles.pageVerticalContentSplit
+                : null,
+              {
+                paddingBottom:
+                  safeAreaInsets.bottom + layout.yearMonthScrollBottom,
+              },
+            ]}
+            keyboardShouldPersistTaps="handled"
+          >
+            <MemoizedMonthDetailBody
+              detail={detail}
+              palette={palette}
+              language={language}
+              t={t}
+              weekdayLabels={weekdayLabels}
+              selectedDay={resolvedSelectedDay}
+              selectedDayDate={isActive ? selectedDate ?? undefined : undefined}
+              onSelectDay={isActive ? handleSelectDay : NOOP_SELECT_DAY}
+              monthLayoutMetrics={monthLayoutMetrics}
+            />
+          </ScrollView>
+        </View>
+      );
+    },
+    [
+      monthDetails,
+      activeMonth,
+      pageWidth,
+      palette,
+      language,
+      t,
+      weekdayLabels,
+      selectedDate,
+      handleSelectDay,
+      monthLayoutMetrics,
+      safeAreaInsets.bottom,
+    ],
+  );
+
+  if (!activeDetail) {
     return null;
   }
 
@@ -207,7 +280,7 @@ export function MonthDetailScreen({
               maxFontSizeMultiplier={1}
               style={[styles.appBarTitle, { color: palette.title }]}
             >
-              {detail.shortLabel} {detail.year}
+              {activeDetail.shortLabel} {activeDetail.year}
             </Text>
           </View>
           <View style={[styles.appBarSide, styles.appBarActions]}>
@@ -243,141 +316,33 @@ export function MonthDetailScreen({
           </View>
         </View>
 
-        <ScrollView
-          ref={horizontalRef}
+        <FlatList
+          ref={flatListRef}
+          data={MONTHS_DATA}
+          renderItem={renderPage}
+          keyExtractor={keyExtractor}
+          getItemLayout={getItemLayout}
           horizontal
           pagingEnabled
+          initialScrollIndex={month - 1}
           nestedScrollEnabled
           showsHorizontalScrollIndicator={false}
           bounces={false}
           decelerationRate="fast"
           keyboardShouldPersistTaps="handled"
-          onLayout={onHorizontalLayout}
-          onMomentumScrollEnd={onMomentumScrollEnd}
+          windowSize={5}
+          maxToRenderPerBatch={3}
+          removeClippedSubviews={false}
+          onViewableItemsChanged={onViewableItemsChanged}
+          viewabilityConfig={viewabilityConfig}
           style={styles.horizontalScroll}
-          contentContainerStyle={styles.horizontalContent}
-        >
-          <View style={[styles.page, { width: pageWidth }]}>
-            <MemoizedMonthPageScroll
-              month={prevMonth}
-              monthDetails={monthDetails}
-              palette={palette}
-              language={language}
-              t={t}
-              weekdayLabels={weekdayLabels}
-              bottomInset={safeAreaInsets.bottom + layout.yearMonthScrollBottom}
-              monthLayoutMetrics={monthLayoutMetrics}
-            />
-          </View>
-          <View style={[styles.page, { width: pageWidth }]}>
-            <ScrollView
-              nestedScrollEnabled
-              style={styles.pageVertical}
-              contentContainerStyle={[
-                styles.pageVerticalContent,
-                monthLayoutMetrics.layout === 'split'
-                  ? styles.pageVerticalContentSplit
-                  : null,
-                {
-                  paddingBottom:
-                    safeAreaInsets.bottom + layout.yearMonthScrollBottom,
-                },
-              ]}
-              keyboardShouldPersistTaps="handled"
-            >
-              <MemoizedMonthDetailBody
-                detail={detail}
-                palette={palette}
-                language={language}
-                t={t}
-                weekdayLabels={weekdayLabels}
-                selectedDay={selectedDay}
-                onSelectDay={setSelectedDate}
-                monthLayoutMetrics={monthLayoutMetrics}
-              />
-            </ScrollView>
-          </View>
-          <View style={[styles.page, { width: pageWidth }]}>
-            <MemoizedMonthPageScroll
-              month={nextMonth}
-              monthDetails={monthDetails}
-              palette={palette}
-              language={language}
-              t={t}
-              weekdayLabels={weekdayLabels}
-              bottomInset={safeAreaInsets.bottom + layout.yearMonthScrollBottom}
-              monthLayoutMetrics={monthLayoutMetrics}
-            />
-          </View>
-        </ScrollView>
+        />
       </View>
     </View>
   );
 }
 
 type LocalizationParams = Record<string, number | string>;
-
-type MonthPageScrollProps = {
-  month: number | null;
-  monthDetails: CalendarYearMonthDetails;
-  palette: CalendarPalette;
-  language: AppLanguage;
-  t: (key: TranslationKey, params?: LocalizationParams) => string;
-  weekdayLabels: readonly string[];
-  bottomInset: number;
-  monthLayoutMetrics: MonthDetailLayoutMetrics;
-};
-
-function MonthPageScroll({
-  month,
-  monthDetails,
-  palette,
-  language,
-  t,
-  weekdayLabels,
-  bottomInset,
-  monthLayoutMetrics,
-}: MonthPageScrollProps) {
-  const detail = month !== null ? monthDetails[month] ?? null : null;
-
-  if (!detail) {
-    return (
-      <View
-        style={[
-          styles.pageVertical,
-          styles.placeholderPage,
-          { backgroundColor: palette.background },
-        ]}
-      />
-    );
-  }
-
-  return (
-    <ScrollView
-      nestedScrollEnabled
-      style={styles.pageVertical}
-      contentContainerStyle={[
-        styles.pageVerticalContent,
-        monthLayoutMetrics.layout === 'split'
-          ? styles.pageVerticalContentSplit
-          : null,
-        { paddingBottom: bottomInset },
-      ]}
-      keyboardShouldPersistTaps="handled"
-    >
-      <MemoizedMonthDetailBody
-        detail={detail}
-        palette={palette}
-        language={language}
-        t={t}
-        weekdayLabels={weekdayLabels}
-        selectedDay={null}
-        onSelectDay={NOOP_SELECT_DAY}
-        monthLayoutMetrics={monthLayoutMetrics}
-      />
-    </ScrollView>
-  );
-}
 
 type MonthDetailBodyProps = {
   detail: NonNullable<CalendarYearMonthDetails[number]>;
@@ -386,6 +351,7 @@ type MonthDetailBodyProps = {
   t: (key: TranslationKey, params?: LocalizationParams) => string;
   weekdayLabels: readonly string[];
   selectedDay: CalendarDay | null;
+  selectedDayDate?: string;
   onSelectDay: (date: string) => void;
   monthLayoutMetrics: MonthDetailLayoutMetrics;
 };
@@ -397,6 +363,7 @@ function MonthDetailBody({
   t,
   weekdayLabels,
   selectedDay,
+  selectedDayDate,
   onSelectDay,
   monthLayoutMetrics,
 }: MonthDetailBodyProps) {
@@ -460,7 +427,7 @@ function MonthDetailBody({
               <MemoizedMonthDetailDayCell
                 key={`${detail.month}-${week.isoWeek}-${dayIndex}`}
                 day={day}
-                isSelected={day?.date === selectedDay?.date}
+                isSelected={day?.date === selectedDayDate}
                 palette={palette}
                 calendarScale={calendarScale}
                 onSelectDay={onSelectDay}
@@ -735,7 +702,6 @@ function TotalItem({ label, value, palette, sideScale }: TotalItemProps) {
   );
 }
 
-const MemoizedMonthPageScroll = memo(MonthPageScroll);
 const MemoizedMonthDetailBody = memo(MonthDetailBody);
 const MemoizedMonthDetailDayCell = memo(MonthDetailDayCell);
 const MemoizedTotalItem = memo(TotalItem);
@@ -752,9 +718,6 @@ const styles = StyleSheet.create({
   },
   horizontalScroll: {
     flex: 1,
-  },
-  horizontalContent: {
-    flexGrow: 1,
   },
   page: {
     flexGrow: 1,
@@ -793,9 +756,6 @@ const styles = StyleSheet.create({
   monthContentColumn: {
     width: '100%',
     gap: 12,
-  },
-  placeholderPage: {
-    flex: 1,
   },
   appBar: {
     flexDirection: 'row',
