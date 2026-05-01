@@ -3,6 +3,7 @@ import type { CalendarDay } from './types';
 
 const calendarImageByDate: Record<string, ImageSourcePropType> = {
   '2026-05-01': require('../../../../assets/days_img/may1.webp'),
+  '2026-03-08': require('../../../../assets/days_img/mar8.webp'),
 };
 
 export function getCalendarImagesForDays(
