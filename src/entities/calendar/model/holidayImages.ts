@@ -6,12 +6,59 @@ const selectedWorkdayImage = require('../../../../assets/days_img/work_default.w
 const selectedWeekendImage = require('../../../../assets/days_img/holday_default.webp');
 const christmasImage = require('../../../../assets/days_img/7jan_сristmas.webp');
 const defenderDayImage = require('../../../../assets/days_img/feb23_defender_day.webp');
+const june12Image = require('../../../../assets/days_img/jun12_unity.webp');
+const trMarchImage = require('../../../../assets/days_img/Tr_20match.webp');
+const trApril23Image = require('../../../../assets/days_img/tr_23apr.webp');
+const trMay19Image = require('../../../../assets/days_img/tr_19may.webp');
+const trKbImage = require('../../../../assets/days_img/tr_KB.webp');
+const trJul15Image = require('../../../../assets/days_img/tr_15jul.webp');
+const trAug30Image = require('../../../../assets/days_img/tr_30aug.webp');
+const trOct29Image = require('../../../../assets/days_img/tr_29okt.webp');
+const ruMay9Image = require('../../../../assets/days_img/ru_9may.webp');
 
 const calendarImageByDate: Record<string, ImageSourcePropType> = {
   '2026-05-01': require('../../../../assets/days_img/may1.webp'),
   '2026-03-08': require('../../../../assets/days_img/mar8.webp'),
   '2025-02-23': defenderDayImage,
   '2026-02-23': defenderDayImage,
+  '2025-06-12': june12Image,
+  '2026-06-12': june12Image,
+  '2025-03-20': trMarchImage,
+  '2025-03-21': trMarchImage,
+  '2025-03-22': trMarchImage,
+  '2026-03-20': trMarchImage,
+  '2026-03-21': trMarchImage,
+  '2026-03-22': trMarchImage,
+  '2025-04-23': trApril23Image,
+  '2026-04-23': trApril23Image,
+  '2025-05-19': trMay19Image,
+  '2026-05-19': trMay19Image,
+  '2025-05-27': trKbImage,
+  '2025-05-28': trKbImage,
+  '2025-05-29': trKbImage,
+  '2025-05-30': trKbImage,
+  '2026-05-27': trKbImage,
+  '2026-05-28': trKbImage,
+  '2026-05-29': trKbImage,
+  '2026-05-30': trKbImage,
+  '2025-07-15': trJul15Image,
+  '2026-07-15': trJul15Image,
+  '2025-08-30': trAug30Image,
+  '2026-08-30': trAug30Image,
+  '2025-10-29': trOct29Image,
+  '2026-10-29': trOct29Image,
+  '2025-05-09': ruMay9Image,
+  '2026-05-09': ruMay9Image,
+  '2025-07-12': june12Image,
+  '2026-07-12': june12Image,
+  '2025-11-04': require('../../../../assets/days_img/ru_4nov.webp'),
+  '2026-11-04': require('../../../../assets/days_img/ru_4nov.webp'),
+  '2025-01-16': require('../../../../assets/days_img/id_16jan.webp'),
+  '2026-01-16': require('../../../../assets/days_img/id_16jan.webp'),
+  '2025-02-16': require('../../../../assets/days_img/id_17feb.webp'),
+  '2025-02-17': require('../../../../assets/days_img/id_17feb.webp'),
+  '2026-02-16': require('../../../../assets/days_img/id_17feb.webp'),
+  '2026-02-17': require('../../../../assets/days_img/id_17feb.webp'),
 
   // New Year holidays 2025 (Russia)
   '2025-01-01': newYearImage,
