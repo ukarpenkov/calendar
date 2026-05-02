@@ -63,6 +63,30 @@ describe('holidayImages', () => {
     expect(defaultHolidayImage).not.toBeNull();
   });
 
+  it('shows holiday image for weekend adjacent to a holiday', () => {
+    const march8 = buildDay({
+      date: '2026-03-08',
+      month: 3,
+      day: 8,
+      type: 'holiday',
+      holidayNameRu: 'Международный женский день',
+      workHours: 0,
+    });
+    const march9 = buildDay({
+      date: '2026-03-09',
+      month: 3,
+      day: 9,
+      type: 'weekend',
+      workHours: 0,
+    });
+    const days = [march8, march9];
+
+    const image = getDayImage(march9, days);
+    const holidayImage = getDayImage(march8, days);
+
+    expect(image).toBe(holidayImage);
+  });
+
   it('prepares images for month defaults and selectable day states', () => {
     const images = getCalendarImagesForDays([
       buildDay({ date: '2026-02-02', month: 2, type: 'workday' }),

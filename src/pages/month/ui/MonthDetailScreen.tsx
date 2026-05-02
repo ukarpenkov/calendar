@@ -512,7 +512,7 @@ function MonthDetailBody({
   const holidayImage = useMemo(
     () => {
       if (selectedDay) {
-        const dayImg = getDayImage(selectedDay);
+        const dayImg = getDayImage(selectedDay, detail.days);
         if (dayImg) return dayImg;
       }
       return getHolidayImageForMonth(detail.days);
