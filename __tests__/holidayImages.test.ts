@@ -11,10 +11,10 @@ import type { CalendarDay } from '../src/entities/calendar';
 
 function buildDay(overrides: Partial<CalendarDay>): CalendarDay {
   return {
-    date: '2026-01-01',
+    date: '2026-02-02',
     year: 2026,
-    month: 1,
-    day: 1,
+    month: 2,
+    day: 2,
     weekday: 4,
     type: 'workday',
     holidayNameRu: null,
@@ -142,6 +142,99 @@ describe('holidayImages', () => {
     expect(getDayImage(may2, days)).not.toBe(
       getDayImage(constitutionDay, days),
     );
+  });
+
+  it('maps bundled January 1 titles (RU/JP/TR/ID) to new_year_default via explicit keys', () => {
+    const jp = buildDay({
+      date: '2026-01-01',
+      month: 1,
+      day: 1,
+      type: 'holiday',
+      holidayNameEn: "New Year's Day",
+      holidayNameRu: '元日',
+      holidayNameJa: '元日',
+      workHours: 0,
+    });
+    const tr = buildDay({
+      date: '2026-01-01',
+      month: 1,
+      day: 1,
+      type: 'holiday',
+      holidayNameEn: "New Year's Day",
+      holidayNameRu: 'Yılbaşı Tatili',
+      holidayNameTr: 'Yılbaşı Tatili',
+      workHours: 0,
+    });
+    const id = buildDay({
+      date: '2026-01-01',
+      month: 1,
+      day: 1,
+      type: 'holiday',
+      holidayNameEn: "New Year's Day",
+      holidayNameRu: 'Tahun Baru Masehi',
+      holidayNameId: 'Tahun Baru Masehi',
+      workHours: 0,
+    });
+    const ru = buildDay({
+      date: '2026-01-01',
+      month: 1,
+      day: 1,
+      type: 'holiday',
+      holidayNameRu: 'Новый год',
+      holidayNameEn: "New Year's Day",
+      workHours: 0,
+    });
+
+    const expected = getDayImage(ru);
+    expect(getDayImage(jp)).toBe(expected);
+    expect(getDayImage(tr)).toBe(expected);
+    expect(getDayImage(id)).toBe(expected);
+  });
+
+  it('maps bundled May 1 labour holidays for RU/TR/ID to may1.webp; JP uses other May assets', () => {
+    const ruMay1 = buildDay({
+      date: '2026-05-01',
+      month: 5,
+      day: 1,
+      type: 'holiday',
+      holidayNameEn: 'Spring and Labor Day',
+      holidayNameRu: 'Праздник Весны и Труда',
+      workHours: 0,
+    });
+    const trMay1 = buildDay({
+      date: '2026-05-01',
+      month: 5,
+      day: 1,
+      type: 'holiday',
+      holidayNameEn: 'Labour and Solidarity Day',
+      holidayNameRu: 'Emek ve Dayanışma Günü',
+      holidayNameTr: 'Emek ve Dayanışma Günü',
+      workHours: 0,
+    });
+    const idMay1 = buildDay({
+      date: '2026-05-01',
+      month: 5,
+      day: 1,
+      type: 'holiday',
+      holidayNameEn: "International Workers' Day",
+      holidayNameRu: 'Hari Buruh Internasional',
+      holidayNameId: 'Hari Buruh Internasional',
+      workHours: 0,
+    });
+    const jpConstitution = buildDay({
+      date: '2026-05-03',
+      month: 5,
+      day: 3,
+      type: 'holiday',
+      holidayNameEn: 'Constitution Memorial Day',
+      holidayNameJa: '憲法記念日',
+      workHours: 0,
+    });
+
+    const may1 = getDayImage(ruMay1);
+    expect(getDayImage(trMay1)).toBe(may1);
+    expect(getDayImage(idMay1)).toBe(may1);
+    expect(getDayImage(jpConstitution)).not.toBe(may1);
   });
 
   it('prepares images for month defaults and selectable day states', () => {

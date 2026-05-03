@@ -289,7 +289,14 @@ function AppContent() {
       return;
     }
 
-    setMonthOrigin(origin ?? null);
+    if (origin) {
+      setMonthOrigin(origin);
+    } else if (
+      statusRef.current.kind !== 'ready' ||
+      statusRef.current.screen.name !== 'month'
+    ) {
+      setMonthOrigin(null);
+    }
 
     setStatus(currentStatus => {
       if (currentStatus.kind !== 'ready') {

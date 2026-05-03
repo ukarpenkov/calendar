@@ -73,6 +73,8 @@ const PAGE_SCALE_MIN = 0.97;
 
 const OPEN_EASING = Easing.bezier(0.2, 0.85, 0.25, 1);
 const CLOSE_EASING = Easing.bezier(0.4, 0, 0.6, 1);
+const FALLBACK_OPEN_SCALE = 0.96;
+const MIN_ORIGIN_SCALE = 0.18;
 
 function getLocalIsoDate(date = new Date()): string {
   const year = date.getFullYear();
@@ -124,20 +126,37 @@ export function MonthDetailScreen({
   const onBackRef = useRef(onBack);
   onBackRef.current = onBack;
 
+  const originTranslateX = originLayout
+    ? originLayout.x + originLayout.width / 2 - windowWidth / 2
+    : 0;
   const originTranslateY = originLayout
     ? originLayout.y + originLayout.height / 2 - windowHeight / 2
-    : windowHeight * 0.12;
+    : windowHeight * 0.08;
+  const originScaleX = originLayout
+    ? Math.max(originLayout.width / Math.max(windowWidth, 1), MIN_ORIGIN_SCALE)
+    : FALLBACK_OPEN_SCALE;
+  const originScaleY = originLayout
+    ? Math.max(originLayout.height / Math.max(windowHeight, 1), MIN_ORIGIN_SCALE)
+    : FALLBACK_OPEN_SCALE;
+  const sheetTranslateX = animProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [originTranslateX, 0],
+  });
   const sheetTranslateY = animProgress.interpolate({
     inputRange: [0, 1],
     outputRange: [originTranslateY, 0],
   });
-  const sheetScale = animProgress.interpolate({
+  const sheetScaleX = animProgress.interpolate({
     inputRange: [0, 1],
-    outputRange: [0.97, 1],
+    outputRange: [originScaleX, 1],
+  });
+  const sheetScaleY = animProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [originScaleY, 1],
   });
   const sheetOpacity = animProgress.interpolate({
-    inputRange: [0, 0.4, 1],
-    outputRange: [0, 1, 1],
+    inputRange: [0, 0.2, 1],
+    outputRange: [0.88, 1, 1],
   });
   const backdropOpacity = animProgress.interpolate({
     inputRange: [0, 1],
@@ -147,24 +166,24 @@ export function MonthDetailScreen({
   useEffect(() => {
     Animated.timing(animProgress, {
       toValue: 1,
-      duration: 380,
+      duration: 260,
       easing: OPEN_EASING,
       useNativeDriver: true,
     }).start();
-  }, []);
+  }, [animProgress]);
 
   const handleBack = useCallback(() => {
     if (isClosingRef.current) return;
     isClosingRef.current = true;
     Animated.timing(animProgress, {
       toValue: 0,
-      duration: 280,
+      duration: 220,
       easing: CLOSE_EASING,
       useNativeDriver: true,
     }).start(() => {
       onBackRef.current();
     });
-  }, []);
+  }, [animProgress]);
 
   useEffect(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -309,13 +328,18 @@ export function MonthDetailScreen({
       }
 
       return (
-        <View style={[styles.page, { width: pageWidth, overflow: 'hidden' }]}>
+        <View style={[styles.page, styles.pageClipped, { width: pageWidth }]}>
           <Animated.View
-            style={{
-              flex: 1,
-              transform: [{ translateX: parallaxTranslateX }, { scale: pageScale }],
-              opacity: pageOpacity,
-            }}
+            style={[
+              styles.pageAnimatedContent,
+              {
+                transform: [
+                  { translateX: parallaxTranslateX },
+                  { scale: pageScale },
+                ],
+                opacity: pageOpacity,
+              },
+            ]}
           >
             <ScrollView
               nestedScrollEnabled
@@ -380,7 +404,12 @@ export function MonthDetailScreen({
           {
             backgroundColor: palette.background,
             paddingTop: safeAreaInsets.top + layout.safeAreaTopExtra,
-            transform: [{ translateY: sheetTranslateY }, { scale: sheetScale }],
+            transform: [
+              { translateX: sheetTranslateX },
+              { translateY: sheetTranslateY },
+              { scaleX: sheetScaleX },
+              { scaleY: sheetScaleY },
+            ],
             opacity: sheetOpacity,
           },
         ]}
@@ -859,6 +888,12 @@ const styles = StyleSheet.create({
   },
   page: {
     flexGrow: 1,
+  },
+  pageClipped: {
+    overflow: 'hidden',
+  },
+  pageAnimatedContent: {
+    flex: 1,
   },
   pageVertical: {
     flex: 1,
