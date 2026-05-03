@@ -20,6 +20,12 @@ const ruMay9Image = require('../../../../assets/days_img/ru_9may.webp');
 const jpNationalFoundationImage = require('../../../../assets/days_img/jp11_feb.webp');
 const jpEmperorBirthdayImage = require('../../../../assets/days_img/jp_23feb.webp');
 const jpVernalEquinoxImage = require('../../../../assets/days_img/jp_20mar.webp');
+const jpComingOfAgeDayImage = require('../../../../assets/days_img/jp_12jan.webp');
+const jpMountainDayImage = require('../../../../assets/days_img/jp_11aug.webp');
+const jpLaborThanksgivingDayImage = require('../../../../assets/days_img/jp_23now.webp');
+const jpCultureDayImage = require('../../../../assets/days_img/jp_3now.webp');
+/** Bundled IDN 2026-03-18 … 2026-03-24 (Nyepi + Idul Fitri cluster). */
+const idNyepiEidFitrMarchClusterImage = require('../../../../assets/days_img/id_18-24march.webp');
 
 const countrySpecificHolidayImageByKey: Record<string, ImageSourcePropType> = {
   '2025-01-01|Новый год': newYearImage,
@@ -45,6 +51,8 @@ const countrySpecificHolidayImageByKey: Record<string, ImageSourcePropType> = {
   '2026-01-01|元日': newYearImage,
   '2026-01-01|Yılbaşı Tatili': newYearImage,
   '2026-01-01|Tahun Baru Masehi': newYearImage,
+  '2026-01-12|Coming of Age Day': jpComingOfAgeDayImage,
+  '2026-01-12|成人の日': jpComingOfAgeDayImage,
   '2026-01-02|Новогодние каникулы': newYearImage,
   '2026-01-03|Новогодние каникулы': newYearImage,
   '2026-01-04|Новогодние каникулы': newYearImage,
@@ -79,9 +87,15 @@ const countrySpecificHolidayImageByKey: Record<string, ImageSourcePropType> = {
   '2026-05-05|Children\'s Day': require('../../../../assets/days_img/jp_5may.webp'),
   '2025-07-20|Marine Day': require('../../../../assets/days_img/jp_20jul.webp'),
   '2026-07-20|Marine Day': require('../../../../assets/days_img/jp_20jul.webp'),
+  '2026-08-11|Mountain Day': jpMountainDayImage,
+  '2026-08-11|山の日': jpMountainDayImage,
   '2026-09-21|Respect for the Aged Day': require('../../../../assets/days_img/jp_21sep.webp'),
   '2026-09-23|Autumnal Equinox Day': require('../../../../assets/days_img/jp_23sep.webp'),
   '2026-10-12|Sports Day': require('../../../../assets/days_img/jp_12okt.webp'),
+  '2026-11-03|Culture Day': jpCultureDayImage,
+  '2026-11-03|文化の日': jpCultureDayImage,
+  '2026-11-23|Labor Thanksgiving Day': jpLaborThanksgivingDayImage,
+  '2026-11-23|勤労感謝の日': jpLaborThanksgivingDayImage,
   '2026-03-20|Eid al-Fitr (1st day)': trMarchImage,
   '2026-03-21|Eid al-Fitr (2nd day)': trMarchImage,
   '2026-03-22|Eid al-Fitr (3rd day)': trMarchImage,
@@ -97,13 +111,20 @@ const countrySpecificHolidayImageByKey: Record<string, ImageSourcePropType> = {
   '2026-01-16|Isra and Mi\'raj of Prophet Muhammad': require('../../../../assets/days_img/id_16jan.webp'),
   '2026-02-16|Collective Leave for Chinese New Year': require('../../../../assets/days_img/id_17feb.webp'),
   '2026-02-17|Chinese New Year 2577': require('../../../../assets/days_img/id_17feb.webp'),
-  '2026-03-18|Collective Leave for Nyepi': require('../../../../assets/days_img/id_18-24mar.webp'),
-  '2026-03-19|Day of Silence, Saka New Year': require('../../../../assets/days_img/id_18-24mar.webp'),
-  '2026-03-20|Collective Leave for Eid al-Fitr': require('../../../../assets/days_img/id_18-24mar.webp'),
-  '2026-03-21|Eid al-Fitr 1447 H (Day 1)': require('../../../../assets/days_img/id_18-24mar.webp'),
-  '2026-03-22|Eid al-Fitr 1447 H (Day 2)': require('../../../../assets/days_img/id_18-24mar.webp'),
-  '2026-03-23|Collective Leave for Eid al-Fitr': require('../../../../assets/days_img/id_18-24mar.webp'),
-  '2026-03-24|Collective Leave for Eid al-Fitr': require('../../../../assets/days_img/id_18-24mar.webp'),
+  '2026-03-18|Collective Leave for Nyepi': idNyepiEidFitrMarchClusterImage,
+  '2026-03-18|Cuti Bersama Hari Suci Nyepi': idNyepiEidFitrMarchClusterImage,
+  '2026-03-19|Day of Silence, Saka New Year': idNyepiEidFitrMarchClusterImage,
+  '2026-03-19|Hari Suci Nyepi Tahun Baru Saka 1948': idNyepiEidFitrMarchClusterImage,
+  '2026-03-20|Collective Leave for Eid al-Fitr': idNyepiEidFitrMarchClusterImage,
+  '2026-03-20|Cuti Bersama Hari Raya Idul Fitri': idNyepiEidFitrMarchClusterImage,
+  '2026-03-21|Eid al-Fitr 1447 H (Day 1)': idNyepiEidFitrMarchClusterImage,
+  '2026-03-21|Hari Raya Idul Fitri 1447 H (Hari 1)': idNyepiEidFitrMarchClusterImage,
+  '2026-03-22|Eid al-Fitr 1447 H (Day 2)': idNyepiEidFitrMarchClusterImage,
+  '2026-03-22|Hari Raya Idul Fitri 1447 H (Hari 2)': idNyepiEidFitrMarchClusterImage,
+  '2026-03-23|Collective Leave for Eid al-Fitr': idNyepiEidFitrMarchClusterImage,
+  '2026-03-23|Cuti Bersama Hari Raya Idul Fitri': idNyepiEidFitrMarchClusterImage,
+  '2026-03-24|Collective Leave for Eid al-Fitr': idNyepiEidFitrMarchClusterImage,
+  '2026-03-24|Cuti Bersama Hari Raya Idul Fitri': idNyepiEidFitrMarchClusterImage,
   '2026-04-03|Good Friday': require('../../../../assets/days_img/id_3apr.webp'),
   '2026-04-05|Easter Sunday': require('../../../../assets/days_img/id_5apr.webp'),
   '2026-05-14|Ascension of Jesus Christ': require('../../../../assets/days_img/id_14may.webp'),
