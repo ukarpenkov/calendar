@@ -592,6 +592,7 @@ function MonthDetailBody({
               {
                 color: palette.subtitle,
                 fontSize: 12 * sideScale,
+                lineHeight: Math.round(14 * sideScale),
               },
             ]}
           >
@@ -607,6 +608,7 @@ function MonthDetailBody({
               {
                 color: palette.title,
                 fontSize: 20 * sideScale,
+                lineHeight: Math.round(24 * sideScale),
               },
             ]}
           >
@@ -640,6 +642,7 @@ function MonthDetailBody({
                 {
                   color: palette.title,
                   fontSize: 14 * sideScale,
+                  lineHeight: Math.round(18 * sideScale),
                 },
               ]}
             >
@@ -967,8 +970,9 @@ const styles = StyleSheet.create({
   selectedDayCard: {
     borderWidth: 1,
     borderRadius: 20,
-    padding: 16,
-    gap: 6,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    gap: 4,
   },
   selectedDayEyebrow: {
     fontSize: 12,
@@ -991,16 +995,19 @@ const styles = StyleSheet.create({
   totalsCard: {
     borderWidth: 1,
     borderRadius: 16,
-    paddingVertical: 10,
+    paddingVertical: 14,
     paddingHorizontal: 12,
   },
   totalsRow: {
     flexDirection: 'row',
+    minHeight: 44,
+    alignItems: 'center',
   },
   totalItem: {
     flex: 1,
     alignItems: 'center',
-    gap: 1,
+    justifyContent: 'center',
+    gap: 3,
   },
   totalLabel: {
     fontSize: 9,
