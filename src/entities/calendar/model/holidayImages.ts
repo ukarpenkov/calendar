@@ -15,20 +15,29 @@ const trJul15Image = require('../../../../assets/days_img/tr_15jul.webp');
 const trAug30Image = require('../../../../assets/days_img/tr_30aug.webp');
 const trOct29Image = require('../../../../assets/days_img/tr_29okt.webp');
 const ruMay9Image = require('../../../../assets/days_img/ru_9may.webp');
+const jpEmperorBirthdayImage = require('../../../../assets/days_img/jp_23feb.webp');
+const jpVernalEquinoxImage = require('../../../../assets/days_img/jp_20mar.webp');
+
+const countrySpecificHolidayImageByKey: Record<string, ImageSourcePropType> = {
+  '2025-02-23|Defender of the Fatherland Day': defenderDayImage,
+  '2026-02-23|Defender of the Fatherland Day': defenderDayImage,
+  '2025-02-23|Emperor\'s Birthday': jpEmperorBirthdayImage,
+  '2026-02-23|Emperor\'s Birthday': jpEmperorBirthdayImage,
+  '2025-03-20|Vernal Equinox Day': jpVernalEquinoxImage,
+  '2026-03-20|Vernal Equinox Day': jpVernalEquinoxImage,
+  '2026-03-20|Eid al-Fitr (1st day)': trMarchImage,
+  '2026-03-21|Eid al-Fitr (2nd day)': trMarchImage,
+  '2026-03-22|Eid al-Fitr (3rd day)': trMarchImage,
+};
 
 const calendarImageByDate: Record<string, ImageSourcePropType> = {
   '2026-05-01': require('../../../../assets/days_img/may1.webp'),
   '2026-03-08': require('../../../../assets/days_img/mar8.webp'),
-  '2025-02-23': defenderDayImage,
-  '2026-02-23': defenderDayImage,
   '2025-06-12': june12Image,
   '2026-06-12': june12Image,
   '2025-03-20': trMarchImage,
   '2025-03-21': trMarchImage,
   '2025-03-22': trMarchImage,
-  '2026-03-20': trMarchImage,
-  '2026-03-21': trMarchImage,
-  '2026-03-22': trMarchImage,
   '2025-04-23': trApril23Image,
   '2026-04-23': trApril23Image,
   '2025-05-19': trMay19Image,
@@ -59,6 +68,22 @@ const calendarImageByDate: Record<string, ImageSourcePropType> = {
   '2025-02-17': require('../../../../assets/days_img/id_17feb.webp'),
   '2026-02-16': require('../../../../assets/days_img/id_17feb.webp'),
   '2026-02-17': require('../../../../assets/days_img/id_17feb.webp'),
+  '2025-06-01': require('../../../../assets/days_img/id_1jun.webp'),
+  '2026-06-01': require('../../../../assets/days_img/id_1jun.webp'),
+  '2025-06-16': require('../../../../assets/days_img/id_16jun.webp'),
+  '2026-06-16': require('../../../../assets/days_img/id_16jun.webp'),
+  '2025-08-17': require('../../../../assets/days_img/id_17aug.webp'),
+  '2026-08-17': require('../../../../assets/days_img/id_17aug.webp'),
+  '2025-01-13': require('../../../../assets/days_img/jp_12jan.webp'),
+  '2026-01-12': require('../../../../assets/days_img/jp_12jan.webp'),
+  '2025-10-13': require('../../../../assets/days_img/jp_12okt.webp'),
+  '2026-10-12': require('../../../../assets/days_img/jp_12okt.webp'),
+  '2025-09-15': require('../../../../assets/days_img/jp_21sep.webp'),
+  '2026-09-21': require('../../../../assets/days_img/jp_21sep.webp'),
+  '2025-09-23': require('../../../../assets/days_img/jp_23sep.webp'),
+  '2026-09-23': require('../../../../assets/days_img/jp_23sep.webp'),
+  '2025-04-29': require('../../../../assets/days_img/jp_29apr.webp'),
+  '2026-04-29': require('../../../../assets/days_img/jp_29apr.webp'),
 
   // New Year holidays 2025 (Russia)
   '2025-01-01': newYearImage,
@@ -99,6 +124,34 @@ const defaultImageByMonth: Record<number, ImageSourcePropType> = {
   12: require('../../../../assets/days_img/default_dec.webp'),
 };
 
+function getCountrySpecificHolidayImage(
+  day: CalendarDay,
+): ImageSourcePropType | null {
+  const holidayNames = [
+    day.holidayNameEn,
+    day.holidayNameRu,
+    day.holidayNameTr,
+    day.holidayNameId,
+    day.holidayNameJa,
+  ];
+
+  for (const holidayName of holidayNames) {
+    if (!holidayName) continue;
+
+    const image =
+      countrySpecificHolidayImageByKey[`${day.date}|${holidayName}`];
+    if (image) return image;
+  }
+
+  return null;
+}
+
+function getCalendarImageForDay(day: CalendarDay): ImageSourcePropType | null {
+  return (
+    getCountrySpecificHolidayImage(day) ?? calendarImageByDate[day.date] ?? null
+  );
+}
+
 export function getCalendarImagesForDays(
   days: readonly CalendarDay[],
 ): ImageSourcePropType[] {
@@ -106,7 +159,7 @@ export function getCalendarImagesForDays(
   const monthsWithHolidayImage = new Set<number>();
 
   for (const day of days) {
-    const image = calendarImageByDate[day.date];
+    const image = getCalendarImageForDay(day);
     if (image) {
       images.add(image);
       monthsWithHolidayImage.add(day.month);
@@ -135,7 +188,7 @@ export function getCalendarImagesForDays(
 }
 
 function getHolidayImageForDay(day: CalendarDay): ImageSourcePropType | null {
-  const image = calendarImageByDate[day.date];
+  const image = getCalendarImageForDay(day);
   if (image) {
     return image;
   }
@@ -155,7 +208,7 @@ export function getHolidayImageForMonth(
 
   for (const day of days) {
     if (day.type === 'holiday') {
-      const image = calendarImageByDate[day.date];
+      const image = getCalendarImageForDay(day);
       if (image) {
         return image;
       }
@@ -173,19 +226,19 @@ export function getDayImage(
     return selectedWorkdayImage;
   }
   if (day.type === 'weekend') {
-    const dayImage = calendarImageByDate[day.date];
+    const dayImage = getCalendarImageForDay(day);
     if (dayImage) return dayImage;
 
     if (allDays) {
       const idx = allDays.indexOf(day);
       if (idx > 0) {
         const prev = allDays[idx - 1];
-        const prevImage = calendarImageByDate[prev.date];
+        const prevImage = getCalendarImageForDay(prev);
         if (prevImage && prev.type === 'holiday') return prevImage;
       }
       if (idx < allDays.length - 1) {
         const next = allDays[idx + 1];
-        const nextImage = calendarImageByDate[next.date];
+        const nextImage = getCalendarImageForDay(next);
         if (nextImage && next.type === 'holiday') return nextImage;
       }
     }
