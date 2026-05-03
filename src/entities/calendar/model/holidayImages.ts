@@ -15,12 +15,14 @@ const trJul15Image = require('../../../../assets/days_img/tr_15jul.webp');
 const trAug30Image = require('../../../../assets/days_img/tr_30aug.webp');
 const trOct29Image = require('../../../../assets/days_img/tr_29okt.webp');
 const ruMay9Image = require('../../../../assets/days_img/ru_9may.webp');
+const jpNationalFoundationImage = require('../../../../assets/days_img/jp11_feb.webp');
 const jpEmperorBirthdayImage = require('../../../../assets/days_img/jp_23feb.webp');
 const jpVernalEquinoxImage = require('../../../../assets/days_img/jp_20mar.webp');
 
 const countrySpecificHolidayImageByKey: Record<string, ImageSourcePropType> = {
   '2025-02-23|Defender of the Fatherland Day': defenderDayImage,
   '2026-02-23|Defender of the Fatherland Day': defenderDayImage,
+  '2026-02-11|National Foundation Day': jpNationalFoundationImage,
   '2025-02-23|Emperor\'s Birthday': jpEmperorBirthdayImage,
   '2026-02-23|Emperor\'s Birthday': jpEmperorBirthdayImage,
   '2025-03-20|Vernal Equinox Day': jpVernalEquinoxImage,
