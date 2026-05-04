@@ -28,8 +28,8 @@ import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
 import { getCompactWeekdayLabels } from '../../../shared/lib/i18n';
 import { layout } from '../../../shared/lib/ui/layout';
-import { AppLogo } from '../../../shared/ui/AppLogo';
 import { SettingsGearButton } from '../../../shared/ui/SettingsGearButton';
+import { YearScreenCalendarMark } from '../../../shared/ui/icons/YearScreenCalendarMark';
 import { getYearGridMetrics } from './yearGridMetrics';
 
 type YearHomeScreenProps = {
@@ -94,10 +94,9 @@ export function YearHomeScreen({
     >
       <View style={styles.appBar}>
         <View style={styles.appBarLeading}>
-          <AppLogo
-            isDarkMode={isDarkMode}
-            size="toolbar"
+          <YearScreenCalendarMark
             accessibilityLabel={t('common.appName')}
+            backgroundColor={isDarkMode ? palette.background : undefined}
           />
         </View>
         <Text style={[styles.appBarTitle, { color: palette.title }]}>
@@ -467,21 +466,22 @@ const styles = StyleSheet.create({
   },
   /** Same width as trailing column so the year stays visually centered. */
   appBarLeading: {
-    width: 32 + 8 + 36,
+    width: 36,
     height: 36,
     justifyContent: 'center',
-    alignItems: 'flex-start',
+    alignItems: 'center',
   },
   appBarTrailing: {
-    width: 32 + 8 + 36,
+    width: 36,
     height: 36,
     justifyContent: 'center',
-    alignItems: 'flex-end',
+    alignItems: 'center',
   },
   appBarTitle: {
     flex: 1,
     textAlign: 'center',
     fontSize: 24,
+    lineHeight: 30,
     fontWeight: '600',
   },
   legendCard: {
