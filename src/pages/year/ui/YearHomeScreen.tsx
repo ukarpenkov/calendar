@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import {
   Pressable,
   ScrollView,
@@ -16,8 +16,8 @@ import {
   YearEndReminderCard,
 } from '../../../features/year-end-reminder';
 import {
-  buildYearMonthSummaries,
   type CalendarDay,
+  type CalendarMonthSummary,
   type CalendarYear,
   type DayType,
   getDayTypeColors,
@@ -34,12 +34,14 @@ import { getYearGridMetrics } from './yearGridMetrics';
 
 type YearHomeScreenProps = {
   calendar: CalendarYear;
-  onOpenMonth: (month: number) => void;
+  monthSummaries: CalendarMonthSummary[];
+  onOpenMonth: (month: number, origin: { x: number; y: number; width: number; height: number }) => void;
   onOpenSettings: () => void;
 };
 
 export function YearHomeScreen({
   calendar,
+  monthSummaries,
   onOpenMonth,
   onOpenSettings,
 }: YearHomeScreenProps) {
@@ -48,7 +50,6 @@ export function YearHomeScreen({
     useWindowDimensions();
   const { isDarkMode, palette } = useAppTheme();
   const { language, t } = useAppLocalization();
-  const monthSummaries = buildYearMonthSummaries(calendar, language);
   const columnsPerRow = useMemo(() => {
     const minDimension = Math.min(windowWidth, windowHeight);
     const isTablet = minDimension >= 600;
@@ -73,6 +74,7 @@ export function YearHomeScreen({
     () => getYearGridMetrics(windowWidth, fontScale, columnsPerRow),
     [columnsPerRow, fontScale, windowWidth],
   );
+  const monthCardRefs = useRef<Map<number, View>>(new Map());
 
   return (
     <ScrollView
@@ -166,7 +168,17 @@ export function YearHomeScreen({
             {row.map(summary => (
               <Pressable
                 key={summary.month}
-                onPress={() => onOpenMonth(summary.month)}
+                ref={ref => {
+                  if (ref) {
+                    monthCardRefs.current.set(summary.month, ref);
+                  }
+                }}
+                onPress={() => {
+                  const cardRef = monthCardRefs.current.get(summary.month);
+                  cardRef?.measureInWindow((x, y, width, height) => {
+                    onOpenMonth(summary.month, { x, y, width, height });
+                  });
+                }}
                 style={({ pressed }) => [
                   styles.monthCard,
                   {

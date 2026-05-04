@@ -1,25 +1,35 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  NativeSyntheticEvent,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import {
+  Animated,
+  BackHandler,
+  Easing,
+  FlatList,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
   View,
-  type NativeScrollEvent,
+  type ViewToken,
   useWindowDimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
-  buildMonthDetail,
-  getCalendarDaysForMonth,
   getDayTypeColors,
   getDayTypeLabel,
+  getDayImage,
   getHolidayDisplayName,
+  getHolidayImageForMonth,
   type CalendarPalette,
   type CalendarDay,
-  type CalendarYear,
+  type CalendarYearMonthDetails,
 } from '../../../entities/calendar';
 import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
@@ -37,6 +47,7 @@ import {
 } from '../../../shared/ui/icons/NavigationIcons';
 import { SettingsGearButton } from '../../../shared/ui/SettingsGearButton';
 
+import { HolidayBanner } from './HolidayBanner';
 import {
   getMonthCalendarScale,
   getMonthDetailLayoutMetrics,
@@ -45,30 +56,63 @@ import {
 } from './monthDetailLayout';
 
 type MonthDetailScreenProps = {
-  calendar: CalendarYear;
+  monthDetails: CalendarYearMonthDetails;
   month: number;
   onBack: () => void;
   onOpenSettings: () => void;
   onMonthChange: (month: number) => void;
+  originLayout?: { x: number; y: number; width: number; height: number } | null;
 };
 
 const APP_BAR_TITLE_MIN_SCALE = 0.7;
+const NOOP_SELECT_DAY = (_date: string) => {};
+
+const PARALLAX_FACTOR = 0.15;
+const PAGE_OPACITY_MIN = 0.85;
+const PAGE_SCALE_MIN = 0.97;
+
+const OPEN_EASING = Easing.bezier(0.2, 0.85, 0.25, 1);
+const CLOSE_EASING = Easing.bezier(0.4, 0, 0.6, 1);
+const FALLBACK_OPEN_SCALE = 0.96;
+const MIN_ORIGIN_SCALE = 0.18;
+
+function getLocalIsoDate(date = new Date()): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
 
 export function MonthDetailScreen({
-  calendar,
+  monthDetails,
   month,
   onBack,
   onOpenSettings,
   onMonthChange,
+  originLayout,
 }: MonthDetailScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const { palette } = useAppTheme();
   const { language, t } = useAppLocalization();
-  const weekdayLabels = getShortWeekdayLabels(language);
+  const weekdayLabels = useMemo(
+    () => getShortWeekdayLabels(language),
+    [language],
+  );
 
-  const horizontalRef = useRef<ScrollView>(null);
-  const [pagerReady, setPagerReady] = useState(false);
+  const flatListRef = useRef<FlatList>(null);
+  const todayDate = useMemo(() => getLocalIsoDate(), []);
+
+  const scrollX = useRef(new Animated.Value(0)).current;
+  const onScrollEvent = useMemo(
+    () =>
+      Animated.event(
+        [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+        { useNativeDriver: true },
+      ),
+    [scrollX],
+  );
 
   const pageWidth = windowWidth;
   const monthLayoutMetrics = useMemo(
@@ -76,89 +120,304 @@ export function MonthDetailScreen({
     [windowHeight, windowWidth],
   );
 
-  const prevMonth = month > 1 ? month - 1 : null;
-  const nextMonth = month < 12 ? month + 1 : null;
+  // --- Transition animation ---
+  const animProgress = useRef(new Animated.Value(0)).current;
+  const isClosingRef = useRef(false);
+  const onBackRef = useRef(onBack);
+  onBackRef.current = onBack;
 
-  const allMonthDetails = useMemo(() => {
-    const cache: Record<number, ReturnType<typeof buildMonthDetail>> = {};
-    for (let m = 1; m <= 12; m++) {
-      const days = getCalendarDaysForMonth(calendar, m);
-      if (days.length > 0) {
-        cache[m] = buildMonthDetail(calendar.year, m, days, language);
-      }
-    }
-    return cache;
-  }, [calendar, language]);
+  const originTranslateX = originLayout
+    ? originLayout.x + originLayout.width / 2 - windowWidth / 2
+    : 0;
+  const originTranslateY = originLayout
+    ? originLayout.y + originLayout.height / 2 - windowHeight / 2
+    : windowHeight * 0.08;
+  const originScaleX = originLayout
+    ? Math.max(originLayout.width / Math.max(windowWidth, 1), MIN_ORIGIN_SCALE)
+    : FALLBACK_OPEN_SCALE;
+  const originScaleY = originLayout
+    ? Math.max(originLayout.height / Math.max(windowHeight, 1), MIN_ORIGIN_SCALE)
+    : FALLBACK_OPEN_SCALE;
+  const sheetTranslateX = animProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [originTranslateX, 0],
+  });
+  const sheetTranslateY = animProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [originTranslateY, 0],
+  });
+  const sheetScaleX = animProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [originScaleX, 1],
+  });
+  const sheetScaleY = animProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [originScaleY, 1],
+  });
+  const sheetOpacity = animProgress.interpolate({
+    inputRange: [0, 0.2, 1],
+    outputRange: [0.88, 1, 1],
+  });
+  const backdropOpacity = animProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 0.35],
+  });
 
-  const detail = allMonthDetails[month];
+  useEffect(() => {
+    Animated.timing(animProgress, {
+      toValue: 1,
+      duration: 260,
+      easing: OPEN_EASING,
+      useNativeDriver: true,
+    }).start();
+  }, [animProgress]);
 
+  const handleBack = useCallback(() => {
+    if (isClosingRef.current) return;
+    isClosingRef.current = true;
+    Animated.timing(animProgress, {
+      toValue: 0,
+      duration: 220,
+      easing: CLOSE_EASING,
+      useNativeDriver: true,
+    }).start(() => {
+      onBackRef.current();
+    });
+  }, [animProgress]);
+
+  useEffect(() => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      handleBack();
+      return true;
+    });
+    return () => sub.remove();
+  }, [handleBack]);
+
+  // Internal tracking of the visible month -- source of truth for rendering
+  const [activeMonth, setActiveMonth] = useState(month);
+  const activeMonthRef = useRef(month);
+  activeMonthRef.current = activeMonth;
+
+  const activeDetail = monthDetails[activeMonth];
+  const prevMonth = activeMonth > 1 ? activeMonth - 1 : null;
+  const nextMonth = activeMonth < 12 ? activeMonth + 1 : null;
+
+  // selectedDate only changes on manual day press, not on swipe
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
-  const selectedDay = detail
-    ? detail.days.find(day => day.date === selectedDate) ?? detail.days[0] ?? null
-    : null;
+  // Flag to prevent onViewableItemsChanged from firing during programmatic scroll
+  const isScrollingToRef = useRef(false);
 
-  const scrollToCenter = useCallback(
-    (animated: boolean) => {
-      horizontalRef.current?.scrollTo({
-        x: pageWidth,
-        animated,
-      });
+  // Stable callback for day selection -- does not depend on activeMonth state
+  const handleSelectDay = useCallback(
+    (date: string) => {
+      setSelectedDate(date);
+      onMonthChange(activeMonthRef.current);
     },
+    [onMonthChange],
+  );
+
+  // FlatList configuration
+  const MONTHS_DATA = useMemo(() => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], []);
+
+  const getItemLayout = useCallback(
+    (_data: ArrayLike<number> | null | undefined, index: number) => ({
+      length: pageWidth,
+      offset: pageWidth * index,
+      index,
+    }),
     [pageWidth],
   );
 
-  useEffect(() => {
-    if (pagerReady) {
-      scrollToCenter(false);
-    }
-  }, [month, pagerReady, scrollToCenter]);
+  const keyExtractor = useCallback((item: number) => String(item), []);
 
-  const onHorizontalLayout = useCallback(() => {
-    scrollToCenter(false);
-    setPagerReady(true);
-  }, [scrollToCenter]);
+  const viewabilityConfig = useMemo(
+    () => ({ viewAreaCoveragePercentThreshold: 50 }),
+    [],
+  );
 
-  const onMomentumScrollEnd = useCallback(
-    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      const x = event.nativeEvent.contentOffset.x;
-      const page = Math.round(x / pageWidth);
-
-      if (page === 0) {
-        if (prevMonth !== null) {
-          onMonthChange(prevMonth);
-        } else {
-          scrollToCenter(true);
-        }
+  const onViewableItemsChanged = useCallback(
+    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
+      if (isScrollingToRef.current) {
+        isScrollingToRef.current = false;
         return;
       }
-
-      if (page === 2) {
-        if (nextMonth !== null) {
-          onMonthChange(nextMonth);
-        } else {
-          scrollToCenter(true);
+      const firstVisible = viewableItems[0];
+      if (firstVisible && typeof firstVisible.item === 'number') {
+        const newMonth = firstVisible.item;
+        if (newMonth !== activeMonthRef.current) {
+          activeMonthRef.current = newMonth;
+          setActiveMonth(newMonth);
+          onMonthChange(newMonth);
         }
       }
     },
-    [nextMonth, onMonthChange, pageWidth, prevMonth, scrollToCenter],
+    [onMonthChange],
   );
+
+  // Sync: when parent changes month prop (e.g. chevron press), scroll FlatList
+  useEffect(() => {
+    if (month !== activeMonth) {
+      isScrollingToRef.current = true;
+      flatListRef.current?.scrollToIndex({ index: month - 1, animated: true });
+    }
+  }, [month, activeMonth]);
+
+  // Auto-select today on initial mount only
+  useEffect(() => {
+    const detail = monthDetails[month];
+    if (detail) {
+      const todayInMonth = detail.days.find(day => day.date === todayDate);
+      if (todayInMonth) {
+        setSelectedDate(todayDate);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // renderPage for FlatList
+  const renderPage = useCallback(
+    ({ item: m }: { item: number }) => {
+      const detail = monthDetails[m];
+      if (!detail) {
+        return (
+          <View
+            style={[
+              styles.page,
+              { width: pageWidth, backgroundColor: palette.background },
+            ]}
+          />
+        );
+      }
+
+      const pageIndex = m - 1;
+      const inputRange = [
+        (pageIndex - 1) * pageWidth,
+        pageIndex * pageWidth,
+        (pageIndex + 1) * pageWidth,
+      ];
+
+      const parallaxTranslateX = scrollX.interpolate({
+        inputRange,
+        outputRange: [
+          PARALLAX_FACTOR * pageWidth,
+          0,
+          -PARALLAX_FACTOR * pageWidth,
+        ],
+        extrapolate: 'clamp',
+      });
+
+      const pageOpacity = scrollX.interpolate({
+        inputRange,
+        outputRange: [PAGE_OPACITY_MIN, 1, PAGE_OPACITY_MIN],
+        extrapolate: 'clamp',
+      });
+
+      const pageScale = scrollX.interpolate({
+        inputRange,
+        outputRange: [PAGE_SCALE_MIN, 1, PAGE_SCALE_MIN],
+        extrapolate: 'clamp',
+      });
+
+      const isActive = activeMonth === m;
+
+      let resolvedSelectedDay: CalendarDay | null = null;
+      if (isActive && selectedDate) {
+        resolvedSelectedDay =
+          detail.days.find(day => day.date === selectedDate) ?? null;
+      }
+
+      return (
+        <View style={[styles.page, styles.pageClipped, { width: pageWidth }]}>
+          <Animated.View
+            style={[
+              styles.pageAnimatedContent,
+              {
+                transform: [
+                  { translateX: parallaxTranslateX },
+                  { scale: pageScale },
+                ],
+                opacity: pageOpacity,
+              },
+            ]}
+          >
+            <ScrollView
+              nestedScrollEnabled
+              style={styles.pageVertical}
+              contentContainerStyle={[
+                styles.pageVerticalContent,
+                monthLayoutMetrics.layout === 'split'
+                  ? styles.pageVerticalContentSplit
+                  : null,
+                {
+                  paddingBottom:
+                    safeAreaInsets.bottom + layout.yearMonthScrollBottom,
+                },
+              ]}
+              keyboardShouldPersistTaps="handled"
+            >
+              <MemoizedMonthDetailBody
+                detail={detail}
+                palette={palette}
+                language={language}
+                t={t}
+                weekdayLabels={weekdayLabels}
+                selectedDay={resolvedSelectedDay}
+                selectedDayDate={isActive ? selectedDate ?? undefined : undefined}
+                onSelectDay={isActive ? handleSelectDay : NOOP_SELECT_DAY}
+                monthLayoutMetrics={monthLayoutMetrics}
+              />
+            </ScrollView>
+          </Animated.View>
+        </View>
+      );
+    },
+    [
+      monthDetails,
+      activeMonth,
+      pageWidth,
+      scrollX,
+      palette,
+      language,
+      t,
+      weekdayLabels,
+      selectedDate,
+      handleSelectDay,
+      monthLayoutMetrics,
+      safeAreaInsets.bottom,
+    ],
+  );
+
+  if (!activeDetail) {
+    return null;
+  }
 
   return (
     <View style={styles.overlayRoot} pointerEvents="box-none">
-      <View
+      <Animated.View
+        style={[styles.backdrop, { opacity: backdropOpacity }]}
+        pointerEvents="none"
+      />
+      <Animated.View
         style={[
           styles.sheet,
           {
             backgroundColor: palette.background,
             paddingTop: safeAreaInsets.top + layout.safeAreaTopExtra,
+            transform: [
+              { translateX: sheetTranslateX },
+              { translateY: sheetTranslateY },
+              { scaleX: sheetScaleX },
+              { scaleY: sheetScaleY },
+            ],
+            opacity: sheetOpacity,
           },
         ]}
       >
         <View style={styles.appBar}>
           <View style={[styles.appBarSide, styles.appBarSideStart]}>
             <IconCircleButton
-              onPress={onBack}
+              onPress={handleBack}
               palette={palette}
               accessibilityLabel={t('common.backToYear')}
             >
@@ -173,7 +432,7 @@ export function MonthDetailScreen({
               maxFontSizeMultiplier={1}
               style={[styles.appBarTitle, { color: palette.title }]}
             >
-              {detail.shortLabel} {detail.year}
+              {activeDetail.shortLabel} {activeDetail.year}
             </Text>
           </View>
           <View style={[styles.appBarSide, styles.appBarActions]}>
@@ -209,153 +468,44 @@ export function MonthDetailScreen({
           </View>
         </View>
 
-        <ScrollView
-          ref={horizontalRef}
+        <Animated.FlatList
+          ref={flatListRef}
+          data={MONTHS_DATA}
+          renderItem={renderPage}
+          keyExtractor={keyExtractor}
+          getItemLayout={getItemLayout}
           horizontal
           pagingEnabled
+          initialScrollIndex={month - 1}
           nestedScrollEnabled
           showsHorizontalScrollIndicator={false}
           bounces={false}
           decelerationRate="fast"
           keyboardShouldPersistTaps="handled"
-          onLayout={onHorizontalLayout}
-          onMomentumScrollEnd={onMomentumScrollEnd}
+          windowSize={5}
+          maxToRenderPerBatch={3}
+          removeClippedSubviews={false}
+          onViewableItemsChanged={onViewableItemsChanged}
+          viewabilityConfig={viewabilityConfig}
           style={styles.horizontalScroll}
-          contentContainerStyle={styles.horizontalContent}
-        >
-          <View style={[styles.page, { width: pageWidth }]}>
-            <MonthPageScroll
-              calendar={calendar}
-              month={prevMonth}
-              allMonthDetails={allMonthDetails}
-              palette={palette}
-              language={language}
-              t={t}
-              weekdayLabels={weekdayLabels}
-              bottomInset={safeAreaInsets.bottom + layout.yearMonthScrollBottom}
-              monthLayoutMetrics={monthLayoutMetrics}
-            />
-          </View>
-          <View style={[styles.page, { width: pageWidth }]}>
-            <ScrollView
-              nestedScrollEnabled
-              style={styles.pageVertical}
-              contentContainerStyle={[
-                styles.pageVerticalContent,
-                monthLayoutMetrics.layout === 'split'
-                  ? styles.pageVerticalContentSplit
-                  : null,
-                {
-                  paddingBottom:
-                    safeAreaInsets.bottom + layout.yearMonthScrollBottom,
-                },
-              ]}
-              keyboardShouldPersistTaps="handled"
-            >
-              <MonthDetailBody
-                detail={detail}
-                palette={palette}
-                language={language}
-                t={t}
-                weekdayLabels={weekdayLabels}
-                selectedDay={selectedDay}
-                onSelectDay={setSelectedDate}
-                monthLayoutMetrics={monthLayoutMetrics}
-              />
-            </ScrollView>
-          </View>
-          <View style={[styles.page, { width: pageWidth }]}>
-            <MonthPageScroll
-              calendar={calendar}
-              month={nextMonth}
-              allMonthDetails={allMonthDetails}
-              palette={palette}
-              language={language}
-              t={t}
-              weekdayLabels={weekdayLabels}
-              bottomInset={safeAreaInsets.bottom + layout.yearMonthScrollBottom}
-              monthLayoutMetrics={monthLayoutMetrics}
-            />
-          </View>
-        </ScrollView>
-      </View>
+          onScroll={onScrollEvent}
+          scrollEventThrottle={16}
+        />
+      </Animated.View>
     </View>
   );
 }
 
 type LocalizationParams = Record<string, number | string>;
 
-type MonthPageScrollProps = {
-  calendar: CalendarYear;
-  month: number | null;
-  allMonthDetails: Record<number, ReturnType<typeof buildMonthDetail>>;
-  palette: CalendarPalette;
-  language: AppLanguage;
-  t: (key: TranslationKey, params?: LocalizationParams) => string;
-  weekdayLabels: readonly string[];
-  bottomInset: number;
-  monthLayoutMetrics: MonthDetailLayoutMetrics;
-};
-
-function MonthPageScroll({
-  calendar,
-  month,
-  allMonthDetails,
-  palette,
-  language,
-  t,
-  weekdayLabels,
-  bottomInset,
-  monthLayoutMetrics,
-}: MonthPageScrollProps) {
-  const detail = month !== null ? allMonthDetails[month] ?? null : null;
-
-  if (!detail) {
-    return (
-      <View
-        style={[
-          styles.pageVertical,
-          styles.placeholderPage,
-          { backgroundColor: palette.background },
-        ]}
-      />
-    );
-  }
-
-  return (
-    <ScrollView
-      nestedScrollEnabled
-      style={styles.pageVertical}
-      contentContainerStyle={[
-        styles.pageVerticalContent,
-        monthLayoutMetrics.layout === 'split'
-          ? styles.pageVerticalContentSplit
-          : null,
-        { paddingBottom: bottomInset },
-      ]}
-      keyboardShouldPersistTaps="handled"
-    >
-      <MonthDetailBody
-        detail={detail}
-        palette={palette}
-        language={language}
-        t={t}
-        weekdayLabels={weekdayLabels}
-        selectedDay={null}
-        onSelectDay={() => {}}
-        monthLayoutMetrics={monthLayoutMetrics}
-      />
-    </ScrollView>
-  );
-}
-
 type MonthDetailBodyProps = {
-  detail: ReturnType<typeof buildMonthDetail>;
+  detail: NonNullable<CalendarYearMonthDetails[number]>;
   palette: CalendarPalette;
   language: AppLanguage;
   t: (key: TranslationKey, params?: LocalizationParams) => string;
   weekdayLabels: readonly string[];
   selectedDay: CalendarDay | null;
+  selectedDayDate?: string;
   onSelectDay: (date: string) => void;
   monthLayoutMetrics: MonthDetailLayoutMetrics;
 };
@@ -367,6 +517,7 @@ function MonthDetailBody({
   t,
   weekdayLabels,
   selectedDay,
+  selectedDayDate,
   onSelectDay,
   monthLayoutMetrics,
 }: MonthDetailBodyProps) {
@@ -386,6 +537,17 @@ function MonthDetailBody({
     }
     return getMonthSideScale(monthLayoutMetrics.sideColumnWidth);
   }, [monthLayoutMetrics]);
+
+  const holidayImage = useMemo(
+    () => {
+      if (selectedDay) {
+        const dayImg = getDayImage(selectedDay, detail.days);
+        if (dayImg) return dayImg;
+      }
+      return getHolidayImageForMonth(detail.days);
+    },
+    [selectedDay, detail.days],
+  );
 
   const calendarCard = (
     <View
@@ -422,17 +584,13 @@ function MonthDetailBody({
         {detail.weeks.map(week => (
           <View key={`${detail.month}-${week.isoWeek}`} style={styles.weekRow}>
             {week.days.map((day, dayIndex) => (
-              <MonthDetailDayCell
+              <MemoizedMonthDetailDayCell
                 key={`${detail.month}-${week.isoWeek}-${dayIndex}`}
                 day={day}
-                isSelected={day?.date === selectedDay?.date}
+                isSelected={day?.date === selectedDayDate}
                 palette={palette}
                 calendarScale={calendarScale}
-                onPress={() => {
-                  if (day) {
-                    onSelectDay(day.date);
-                  }
-                }}
+                onSelectDay={onSelectDay}
               />
             ))}
           </View>
@@ -463,6 +621,7 @@ function MonthDetailBody({
               {
                 color: palette.subtitle,
                 fontSize: 12 * sideScale,
+                lineHeight: Math.round(14 * sideScale),
               },
             ]}
           >
@@ -478,6 +637,7 @@ function MonthDetailBody({
               {
                 color: palette.title,
                 fontSize: 20 * sideScale,
+                lineHeight: Math.round(24 * sideScale),
               },
             ]}
           >
@@ -511,6 +671,7 @@ function MonthDetailBody({
                 {
                   color: palette.title,
                   fontSize: 14 * sideScale,
+                  lineHeight: Math.round(18 * sideScale),
                 },
               ]}
             >
@@ -530,10 +691,30 @@ function MonthDetailBody({
         ]}
       >
         <View style={styles.totalsRow}>
-          <TotalItem label={t('month.totals.totalDays')} value={String(detail.totalDays)} palette={palette} sideScale={sideScale} />
-          <TotalItem label={t('month.totals.workingDays')} value={String(detail.workingDays)} palette={palette} sideScale={sideScale} />
-          <TotalItem label={t('month.totals.nonWorkingDays')} value={String(detail.nonWorkingDays)} palette={palette} sideScale={sideScale} />
-          <TotalItem label={t('month.totals.workHours')} value={String(detail.workHours)} palette={palette} sideScale={sideScale} />
+          <MemoizedTotalItem
+            label={t('month.totals.totalDays')}
+            value={String(detail.totalDays)}
+            palette={palette}
+            sideScale={sideScale}
+          />
+          <MemoizedTotalItem
+            label={t('month.totals.workingDays')}
+            value={String(detail.workingDays)}
+            palette={palette}
+            sideScale={sideScale}
+          />
+          <MemoizedTotalItem
+            label={t('month.totals.nonWorkingDays')}
+            value={String(detail.nonWorkingDays)}
+            palette={palette}
+            sideScale={sideScale}
+          />
+          <MemoizedTotalItem
+            label={t('month.totals.workHours')}
+            value={String(detail.workHours)}
+            palette={palette}
+            sideScale={sideScale}
+          />
         </View>
       </View>
     </>
@@ -541,20 +722,23 @@ function MonthDetailBody({
 
   if (monthLayoutMetrics.layout === 'split') {
     return (
-      <View style={styles.monthSplitRow}>
-        <View
-          style={[styles.monthCalendarColumn, { width: calendarColumnWidth }]}
-        >
-          {calendarCard}
-        </View>
-        <View
-          style={[
-            styles.monthSideColumn,
-            styles.monthSideColumnGrow,
-            { marginLeft: monthLayoutMetrics.columnGap },
-          ]}
-        >
-          {sideBlocks}
+      <View style={styles.monthSplitRowWrapper}>
+        {holidayImage ? <HolidayBanner source={holidayImage} /> : null}
+        <View style={styles.monthSplitRow}>
+          <View
+            style={[styles.monthCalendarColumn, { width: calendarColumnWidth }]}
+          >
+            {calendarCard}
+          </View>
+          <View
+            style={[
+              styles.monthSideColumn,
+              styles.monthSideColumnGrow,
+              { marginLeft: monthLayoutMetrics.columnGap },
+            ]}
+          >
+            {sideBlocks}
+          </View>
         </View>
       </View>
     );
@@ -567,6 +751,7 @@ function MonthDetailBody({
         { maxWidth: calendarColumnWidth },
       ]}
     >
+      {holidayImage ? <HolidayBanner source={holidayImage} /> : null}
       {calendarCard}
       {sideBlocks}
     </View>
@@ -578,7 +763,7 @@ type MonthDetailDayCellProps = {
   isSelected: boolean;
   palette: CalendarPalette;
   calendarScale: number;
-  onPress: () => void;
+  onSelectDay: (date: string) => void;
 };
 
 function MonthDetailDayCell({
@@ -586,9 +771,14 @@ function MonthDetailDayCell({
   isSelected,
   palette,
   calendarScale,
-  onPress,
+  onSelectDay,
 }: MonthDetailDayCellProps) {
   const cellSize = Math.max(36, 42 * calendarScale);
+  const onPress = useCallback(() => {
+    if (day) {
+      onSelectDay(day.date);
+    }
+  }, [day, onSelectDay]);
 
   if (!day) {
     return <View style={styles.emptyDayCell} />;
@@ -675,9 +865,17 @@ function TotalItem({ label, value, palette, sideScale }: TotalItemProps) {
   );
 }
 
+const MemoizedMonthDetailBody = memo(MonthDetailBody);
+const MemoizedMonthDetailDayCell = memo(MonthDetailDayCell);
+const MemoizedTotalItem = memo(TotalItem);
+
 const styles = StyleSheet.create({
   overlayRoot: {
     ...StyleSheet.absoluteFillObject,
+  },
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: '#000000',
   },
   sheet: {
     flex: 1,
@@ -688,11 +886,14 @@ const styles = StyleSheet.create({
   horizontalScroll: {
     flex: 1,
   },
-  horizontalContent: {
-    flexGrow: 1,
-  },
   page: {
     flexGrow: 1,
+  },
+  pageClipped: {
+    overflow: 'hidden',
+  },
+  pageAnimatedContent: {
+    flex: 1,
   },
   pageVertical: {
     flex: 1,
@@ -705,6 +906,10 @@ const styles = StyleSheet.create({
   },
   pageVerticalContentSplit: {
     alignItems: 'stretch',
+  },
+  monthSplitRowWrapper: {
+    gap: layout.holidayBannerGap,
+    width: '100%',
   },
   monthSplitRow: {
     flexDirection: 'row',
@@ -724,9 +929,6 @@ const styles = StyleSheet.create({
   monthContentColumn: {
     width: '100%',
     gap: 12,
-  },
-  placeholderPage: {
-    flex: 1,
   },
   appBar: {
     flexDirection: 'row',
@@ -803,8 +1005,9 @@ const styles = StyleSheet.create({
   selectedDayCard: {
     borderWidth: 1,
     borderRadius: 20,
-    padding: 16,
-    gap: 6,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    gap: 4,
   },
   selectedDayEyebrow: {
     fontSize: 12,
@@ -827,16 +1030,19 @@ const styles = StyleSheet.create({
   totalsCard: {
     borderWidth: 1,
     borderRadius: 16,
-    paddingVertical: 10,
+    paddingVertical: 14,
     paddingHorizontal: 12,
   },
   totalsRow: {
     flexDirection: 'row',
+    minHeight: 44,
+    alignItems: 'center',
   },
   totalItem: {
     flex: 1,
     alignItems: 'center',
-    gap: 1,
+    justifyContent: 'center',
+    gap: 3,
   },
   totalLabel: {
     fontSize: 9,

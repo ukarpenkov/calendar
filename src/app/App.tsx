@@ -1,12 +1,20 @@
-import { useEffect, useRef, useState } from 'react';
-import { BackHandler, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  BackHandler,
+  Image,
+  Pressable,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 
 import {
-  getCalendarDaysForMonth,
+  buildCalendarYearViewCache,
   getYearCalendar,
   seedBundledYearIfNeeded,
   type CalendarYear,
@@ -61,14 +69,28 @@ function AppRoot() {
 function AppContent() {
   const safeAreaInsets = useSafeAreaInsets();
   const { palette } = useAppTheme();
-  const { t } = useAppLocalization();
+  const { language, t } = useAppLocalization();
   const { setBundledCalendarRegion } = useBundledCalendarRegion();
   const setBundledCalendarRegionRef = useRef(setBundledCalendarRegion);
   setBundledCalendarRegionRef.current = setBundledCalendarRegion;
   const [status, setStatus] = useState<AppContentStatus>({ kind: 'loading' });
   const [bootstrapGeneration, setBootstrapGeneration] = useState(0);
+  const [monthOrigin, setMonthOrigin] = useState<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  } | null>(null);
   const statusRef = useRef(status);
   statusRef.current = status;
+  const activeCalendar = status.kind === 'ready' ? status.calendar : null;
+  const calendarYearView = useMemo(
+    () =>
+      activeCalendar
+        ? buildCalendarYearViewCache(activeCalendar, language)
+        : null,
+    [activeCalendar, language],
+  );
 
   useEffect(() => {
     registerCalendarSyncOnAppLanguageChange((_previous, nextLanguage) => {
@@ -129,7 +151,6 @@ function AppContent() {
       }
 
       switch (status.screen.name) {
-        case 'month':
         case 'month-error':
         case 'settings':
         case 'import-entry':
@@ -138,7 +159,7 @@ function AppContent() {
               return current;
             }
             const screenName = current.screen.name;
-            if (screenName === 'month' || screenName === 'month-error') {
+            if (screenName === 'month-error') {
               return { ...current, screen: { name: 'year' } };
             }
             if (screenName === 'settings') {
@@ -192,6 +213,22 @@ function AppContent() {
     };
   }, [bootstrapGeneration]);
 
+  useEffect(() => {
+    if (!calendarYearView) {
+      return;
+    }
+
+    const imageUris = calendarYearView.imageSources
+      .map(source => Image.resolveAssetSource(source)?.uri)
+      .filter((uri): uri is string => Boolean(uri));
+
+    if (imageUris.length === 0) {
+      return;
+    }
+
+    Promise.all(imageUris.map(uri => Image.prefetch(uri).catch(() => false)));
+  }, [calendarYearView]);
+
   const retryBootstrap = () => {
     setStatus({ kind: 'loading' });
     setBootstrapGeneration(generation => generation + 1);
@@ -244,9 +281,21 @@ function AppContent() {
     );
   }
 
-  const goToMonth = (month: number) => {
+  const goToMonth = (
+    month: number,
+    origin?: { x: number; y: number; width: number; height: number },
+  ) => {
     if (month < 1 || month > 12) {
       return;
+    }
+
+    if (origin) {
+      setMonthOrigin(origin);
+    } else if (
+      statusRef.current.kind !== 'ready' ||
+      statusRef.current.screen.name !== 'month'
+    ) {
+      setMonthOrigin(null);
     }
 
     setStatus(currentStatus => {
@@ -254,9 +303,9 @@ function AppContent() {
         return currentStatus;
       }
 
-      const monthDays = getCalendarDaysForMonth(currentStatus.calendar, month);
+      const monthDetail = calendarYearView?.monthDetails[month];
 
-      if (monthDays.length === 0) {
+      if (!monthDetail) {
         return {
           ...currentStatus,
           screen: { name: 'month-error', month },
@@ -414,17 +463,19 @@ function AppContent() {
       <View style={styles.yearLayer}>
         <YearHomeScreen
           calendar={status.calendar}
+          monthSummaries={calendarYearView?.monthSummaries ?? []}
           onOpenMonth={goToMonth}
           onOpenSettings={openSettings}
         />
       </View>
       {status.screen.name === 'month' ? (
         <MonthDetailScreen
-          calendar={status.calendar}
+          monthDetails={calendarYearView?.monthDetails ?? {}}
           month={status.screen.month}
           onBack={closeMonth}
           onOpenSettings={openSettings}
           onMonthChange={goToMonth}
+          originLayout={monthOrigin}
         />
       ) : null}
     </View>

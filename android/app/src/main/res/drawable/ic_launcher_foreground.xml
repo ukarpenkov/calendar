@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
-    android:gravity="center"
-    android:src="@drawable/ic_launcher_full" />
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Keep the raster artwork inside the adaptive icon safe area. -->
+    <item
+        android:left="10dp"
+        android:top="10dp"
+        android:right="10dp"
+        android:bottom="10dp">
+        <bitmap
+            android:gravity="fill"
+            android:src="@drawable/ic_launcher_full" />
+    </item>
+</layer-list>
