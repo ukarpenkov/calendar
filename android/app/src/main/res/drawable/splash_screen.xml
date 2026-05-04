@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/ic_launcher_background" />
-    <item>
-        <bitmap
-            android:gravity="center"
-            android:src="@drawable/ic_launcher_full" />
-    </item>
+    <!-- Matches RN SPLASH_MARK_SIZE (112 dp). Vector: year_screen_calendar_mark. -->
+    <item
+        android:width="112dp"
+        android:height="112dp"
+        android:drawable="@drawable/year_screen_calendar_mark"
+        android:gravity="center" />
 </layer-list>
