@@ -199,14 +199,17 @@ export function MonthDetailScreen({
   activeMonthRef.current = activeMonth;
 
   const activeDetail = monthDetails[activeMonth];
-  const prevMonth = activeMonth > 1 ? activeMonth - 1 : null;
-  const nextMonth = activeMonth < 12 ? activeMonth + 1 : null;
+  // Chevron targets follow the parent `month`; `activeMonth` can lag after
+  // programmatic scroll because viewability callbacks are suppressed once.
+  const prevMonth = month > 1 ? month - 1 : null;
+  const nextMonth = month < 12 ? month + 1 : null;
 
   // selectedDate only changes on manual day press, not on swipe
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   // Flag to prevent onViewableItemsChanged from firing during programmatic scroll
   const isScrollingToRef = useRef(false);
+  const programmaticTargetMonthRef = useRef<number | null>(null);
 
   // Stable callback for day selection -- does not depend on activeMonth state
   const handleSelectDay = useCallback(
@@ -240,6 +243,12 @@ export function MonthDetailScreen({
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
       if (isScrollingToRef.current) {
         isScrollingToRef.current = false;
+        const target = programmaticTargetMonthRef.current;
+        programmaticTargetMonthRef.current = null;
+        if (target != null && target !== activeMonthRef.current) {
+          activeMonthRef.current = target;
+          setActiveMonth(target);
+        }
         return;
       }
       const firstVisible = viewableItems[0];
@@ -259,6 +268,7 @@ export function MonthDetailScreen({
   useEffect(() => {
     if (month !== activeMonth) {
       isScrollingToRef.current = true;
+      programmaticTargetMonthRef.current = month;
       flatListRef.current?.scrollToIndex({ index: month - 1, animated: true });
     }
   }, [month, activeMonth]);
