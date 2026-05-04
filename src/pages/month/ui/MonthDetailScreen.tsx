@@ -75,6 +75,29 @@ const OPEN_EASING = Easing.bezier(0.2, 0.85, 0.25, 1);
 const CLOSE_EASING = Easing.bezier(0.4, 0, 0.6, 1);
 const FALLBACK_OPEN_SCALE = 0.96;
 const MIN_ORIGIN_SCALE = 0.18;
+const CORNER_COLLAPSE_SIZE = 92;
+
+type TransitionTargetLayout = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
+function getBottomRightCollapseLayout(
+  windowWidth: number,
+  windowHeight: number,
+  bottomInset: number,
+): TransitionTargetLayout {
+  const margin = layout.screenPaddingH;
+
+  return {
+    x: Math.max(0, windowWidth - CORNER_COLLAPSE_SIZE - margin),
+    y: Math.max(0, windowHeight - CORNER_COLLAPSE_SIZE - bottomInset - margin),
+    width: CORNER_COLLAPSE_SIZE,
+    height: CORNER_COLLAPSE_SIZE,
+  };
+}
 
 function getLocalIsoDate(date = new Date()): string {
   const year = date.getFullYear();
@@ -123,36 +146,54 @@ export function MonthDetailScreen({
   // --- Transition animation ---
   const animProgress = useRef(new Animated.Value(0)).current;
   const isClosingRef = useRef(false);
+  const [isClosingToCorner, setIsClosingToCorner] = useState(false);
   const onBackRef = useRef(onBack);
   onBackRef.current = onBack;
 
-  const originTranslateX = originLayout
-    ? originLayout.x + originLayout.width / 2 - windowWidth / 2
+  const transitionTargetLayout = isClosingToCorner
+    ? getBottomRightCollapseLayout(
+        windowWidth,
+        windowHeight,
+        safeAreaInsets.bottom,
+      )
+    : originLayout;
+  const targetTranslateX = transitionTargetLayout
+    ? transitionTargetLayout.x +
+      transitionTargetLayout.width / 2 -
+      windowWidth / 2
     : 0;
-  const originTranslateY = originLayout
-    ? originLayout.y + originLayout.height / 2 - windowHeight / 2
+  const targetTranslateY = transitionTargetLayout
+    ? transitionTargetLayout.y +
+      transitionTargetLayout.height / 2 -
+      windowHeight / 2
     : windowHeight * 0.08;
-  const originScaleX = originLayout
-    ? Math.max(originLayout.width / Math.max(windowWidth, 1), MIN_ORIGIN_SCALE)
+  const targetScaleX = transitionTargetLayout
+    ? Math.max(
+        transitionTargetLayout.width / Math.max(windowWidth, 1),
+        MIN_ORIGIN_SCALE,
+      )
     : FALLBACK_OPEN_SCALE;
-  const originScaleY = originLayout
-    ? Math.max(originLayout.height / Math.max(windowHeight, 1), MIN_ORIGIN_SCALE)
+  const targetScaleY = transitionTargetLayout
+    ? Math.max(
+        transitionTargetLayout.height / Math.max(windowHeight, 1),
+        MIN_ORIGIN_SCALE,
+      )
     : FALLBACK_OPEN_SCALE;
   const sheetTranslateX = animProgress.interpolate({
     inputRange: [0, 1],
-    outputRange: [originTranslateX, 0],
+    outputRange: [targetTranslateX, 0],
   });
   const sheetTranslateY = animProgress.interpolate({
     inputRange: [0, 1],
-    outputRange: [originTranslateY, 0],
+    outputRange: [targetTranslateY, 0],
   });
   const sheetScaleX = animProgress.interpolate({
     inputRange: [0, 1],
-    outputRange: [originScaleX, 1],
+    outputRange: [targetScaleX, 1],
   });
   const sheetScaleY = animProgress.interpolate({
     inputRange: [0, 1],
-    outputRange: [originScaleY, 1],
+    outputRange: [targetScaleY, 1],
   });
   const sheetOpacity = animProgress.interpolate({
     inputRange: [0, 0.2, 1],
@@ -175,13 +216,17 @@ export function MonthDetailScreen({
   const handleBack = useCallback(() => {
     if (isClosingRef.current) return;
     isClosingRef.current = true;
-    Animated.timing(animProgress, {
-      toValue: 0,
-      duration: 220,
-      easing: CLOSE_EASING,
-      useNativeDriver: true,
-    }).start(() => {
-      onBackRef.current();
+    setIsClosingToCorner(true);
+
+    requestAnimationFrame(() => {
+      Animated.timing(animProgress, {
+        toValue: 0,
+        duration: 220,
+        easing: CLOSE_EASING,
+        useNativeDriver: true,
+      }).start(() => {
+        onBackRef.current();
+      });
     });
   }, [animProgress]);
 
