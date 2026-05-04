@@ -3,7 +3,9 @@ import type { CalendarDay } from './types';
 
 const newYearImage = require('../../../../assets/days_img/new_year_default.webp');
 const selectedWorkdayImage = require('../../../../assets/days_img/work_default.webp');
+const shortenedDayImage = require('../../../../assets/days_img/default_short_day.webp');
 const selectedWeekendImage = require('../../../../assets/days_img/holday_default.webp');
+const fallbackHolidayImage = require('../../../../assets/days_img/default_fiesta_fallback.webp');
 const christmasImage = require('../../../../assets/days_img/7jan_сristmas.webp');
 const defenderDayImage = require('../../../../assets/days_img/feb23_defender_day.webp');
 const march8Image = require('../../../../assets/days_img/mar8.webp');
@@ -26,6 +28,12 @@ const jpLaborThanksgivingDayImage = require('../../../../assets/days_img/jp_23no
 const jpCultureDayImage = require('../../../../assets/days_img/jp_3now.webp');
 /** Bundled IDN 2026-03-18 … 2026-03-24 (Nyepi + Idul Fitri cluster). */
 const idNyepiEidFitrMarchClusterImage = require('../../../../assets/days_img/id_18-24march.webp');
+/** IDN 2026-05-31 Vesak / Waisak only (`calendar2026IDN.json`). */
+const idMay31WaisakImage = require('../../../../assets/days_img/id_31may.webp');
+/** IDN 2026-05-27 Eid al-Adha (`calendar2026IDN.json`). */
+const idMay27IdulAdhaImage = require('../../../../assets/days_img/id_27may.webp');
+/** IDN 2026-05-28 collective leave for Eid al-Adha (`calendar2026IDN.json`). */
+const idMay28CollectiveLeaveAdhaImage = require('../../../../assets/days_img/id_28may.webp');
 
 const countrySpecificHolidayImageByKey: Record<string, ImageSourcePropType> = {
   '2025-01-01|Новый год': newYearImage,
@@ -128,6 +136,12 @@ const countrySpecificHolidayImageByKey: Record<string, ImageSourcePropType> = {
   '2026-04-03|Good Friday': require('../../../../assets/days_img/id_3apr.webp'),
   '2026-04-05|Easter Sunday': require('../../../../assets/days_img/id_5apr.webp'),
   '2026-05-14|Ascension of Jesus Christ': require('../../../../assets/days_img/id_14may.webp'),
+  '2026-05-27|Eid al-Adha 1447 H': idMay27IdulAdhaImage,
+  '2026-05-27|Hari Raya Idul Adha 1447 H': idMay27IdulAdhaImage,
+  '2026-05-28|Collective Leave for Eid al-Adha': idMay28CollectiveLeaveAdhaImage,
+  '2026-05-28|Cuti Bersama Hari Raya Idul Adha': idMay28CollectiveLeaveAdhaImage,
+  '2026-05-31|Vesak Day 2570 BE': idMay31WaisakImage,
+  '2026-05-31|Hari Raya Waisak 2570 BE': idMay31WaisakImage,
   '2026-06-01|Pancasila Day': require('../../../../assets/days_img/id_1jun.webp'),
   '2026-06-16|Islamic New Year 1448 H': require('../../../../assets/days_img/id_16jun.webp'),
   '2026-08-17|Independence Day of Indonesia': require('../../../../assets/days_img/id_17aug.webp'),
@@ -188,6 +202,8 @@ export function getCalendarImagesForDays(
     if (image) {
       images.add(image);
       monthsWithHolidayImage.add(day.month);
+    } else if (day.type === 'holiday') {
+      images.add(fallbackHolidayImage);
     }
   }
 
@@ -201,8 +217,12 @@ export function getCalendarImagesForDays(
     }
   }
 
-  if (days.some(d => d.type === 'workday' || d.type === 'shortened')) {
+  if (days.some(d => d.type === 'workday')) {
     images.add(selectedWorkdayImage);
+  }
+
+  if (days.some(d => d.type === 'shortened')) {
+    images.add(shortenedDayImage);
   }
 
   if (days.some(d => d.type === 'weekend')) {
@@ -218,7 +238,7 @@ function getHolidayImageForDay(day: CalendarDay): ImageSourcePropType | null {
     return image;
   }
 
-  return defaultImageByMonth[day.month] ?? null;
+  return fallbackHolidayImage;
 }
 
 export function getHolidayImageForMonth(
@@ -247,7 +267,10 @@ export function getDayImage(
   day: CalendarDay,
   _allDays?: readonly CalendarDay[],
 ): ImageSourcePropType | null {
-  if (day.type === 'workday' || day.type === 'shortened') {
+  if (day.type === 'shortened') {
+    return shortenedDayImage;
+  }
+  if (day.type === 'workday') {
     return selectedWorkdayImage;
   }
   if (day.type === 'weekend') {

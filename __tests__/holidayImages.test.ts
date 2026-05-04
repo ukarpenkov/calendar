@@ -63,10 +63,27 @@ describe('holidayImages', () => {
     );
 
     expect(workdayImage).not.toBeNull();
-    expect(shortenedImage).toBe(workdayImage);
+    expect(shortenedImage).not.toBeNull();
+    expect(shortenedImage).not.toBe(workdayImage);
     expect(weekendImage).not.toBe(workdayImage);
     expect(holidayImage).not.toBeNull();
     expect(defaultHolidayImage).not.toBeNull();
+  });
+
+  it('uses the fiesta fallback for holidays without a dedicated image', () => {
+    const februaryFallback = getDayImage(
+      buildDay({ date: '2026-02-24', month: 2, type: 'holiday', workHours: 0 }),
+    );
+    const aprilFallback = getDayImage(
+      buildDay({ date: '2026-04-06', month: 4, type: 'holiday', workHours: 0 }),
+    );
+    const monthDefault = getHolidayImageForMonth([
+      buildDay({ date: '2026-02-01', month: 2, type: 'workday' }),
+    ]);
+
+    expect(februaryFallback).not.toBeNull();
+    expect(februaryFallback).toBe(aprilFallback);
+    expect(februaryFallback).not.toBe(monthDefault);
   });
 
   it('keeps weekend images separate from adjacent holidays', () => {
@@ -333,6 +350,77 @@ describe('holidayImages', () => {
     });
 
     expect(getDayImage(cultureDayNov)).not.toBe(getDayImage(laborThanksgiving));
+  });
+
+  it('maps Indonesia Eid al-Adha 2026-05-27 to id_27may.webp, distinct from TR wording', () => {
+    const idnMay27 = buildDay({
+      date: '2026-05-27',
+      month: 5,
+      day: 27,
+      type: 'holiday',
+      holidayNameEn: 'Eid al-Adha 1447 H',
+      holidayNameRu: 'Hari Raya Idul Adha 1447 H',
+      holidayNameId: 'Hari Raya Idul Adha 1447 H',
+      workHours: 0,
+    });
+    const trMay27 = buildDay({
+      date: '2026-05-27',
+      month: 5,
+      day: 27,
+      type: 'holiday',
+      holidayNameEn: 'Eid al-Adha (1st day)',
+      workHours: 0,
+    });
+
+    expect(getDayImage(idnMay27)).not.toBe(getDayImage(trMay27));
+  });
+
+  it('maps Indonesia collective leave 2026-05-28 (Eid al-Adha) to id_28may.webp', () => {
+    const may28Leave = buildDay({
+      date: '2026-05-28',
+      month: 5,
+      day: 28,
+      type: 'holiday',
+      holidayNameEn: 'Collective Leave for Eid al-Adha',
+      holidayNameRu: 'Cuti Bersama Hari Raya Idul Adha',
+      holidayNameId: 'Cuti Bersama Hari Raya Idul Adha',
+      workHours: 0,
+    });
+    const may27Eid = buildDay({
+      date: '2026-05-27',
+      month: 5,
+      day: 27,
+      type: 'holiday',
+      holidayNameEn: 'Eid al-Adha 1447 H',
+      holidayNameRu: 'Hari Raya Idul Adha 1447 H',
+      holidayNameId: 'Hari Raya Idul Adha 1447 H',
+      workHours: 0,
+    });
+
+    expect(getDayImage(may28Leave)).not.toBe(getDayImage(may27Eid));
+  });
+
+  it('maps Indonesia Vesak Day (2026-05-31) to id_31may.webp', () => {
+    const vesak = buildDay({
+      date: '2026-05-31',
+      month: 5,
+      day: 31,
+      type: 'holiday',
+      holidayNameEn: 'Vesak Day 2570 BE',
+      holidayNameRu: 'Hari Raya Waisak 2570 BE',
+      holidayNameId: 'Hari Raya Waisak 2570 BE',
+      workHours: 0,
+    });
+    const pancasila = buildDay({
+      date: '2026-06-01',
+      month: 6,
+      day: 1,
+      type: 'holiday',
+      holidayNameEn: 'Pancasila Day',
+      workHours: 0,
+    });
+
+    expect(getDayImage(vesak)).not.toBe(getDayImage(pancasila));
   });
 
   it('maps Indonesia bundled 2026-03-18 … 03-24 cluster to id_18-24march.webp', () => {
