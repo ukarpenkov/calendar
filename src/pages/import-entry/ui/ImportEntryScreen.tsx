@@ -305,6 +305,7 @@ export function ImportEntryScreen({
           onPress={headerBackDisabled ? undefined : handleHeaderBack}
           palette={palette}
           accessibilityLabel={t('common.navigateBack')}
+          variant="back"
         >
           <ArrowBackIcon color={palette.icon} size={20} />
         </IconCircleButton>
@@ -899,8 +900,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   appBarTrailing: {
-    width: 36,
-    height: 36,
+    width: 56,
+    height: 56,
     alignItems: 'center',
     justifyContent: 'center',
   },

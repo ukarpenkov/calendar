@@ -430,6 +430,7 @@ export function MonthDetailScreen({
               onPress={handleBack}
               palette={palette}
               accessibilityLabel={t('common.backToYear')}
+              variant="back"
             >
               <ArrowBackIcon color={palette.icon} size={20} />
             </IconCircleButton>
