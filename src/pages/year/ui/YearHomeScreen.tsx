@@ -95,6 +95,7 @@ export function YearHomeScreen({
       <View style={styles.appBar}>
         <View style={styles.appBarLeading}>
           <YearScreenCalendarMark
+            size={36}
             accessibilityLabel={t('common.appName')}
           />
         </View>
