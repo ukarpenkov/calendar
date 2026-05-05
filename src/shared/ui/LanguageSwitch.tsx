@@ -1,8 +1,13 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { AGREED_APP_LANGUAGE_CODES } from '../config/agreedLanguagesAndBundledCalendars';
+import {
+  AGREED_APP_LANGUAGE_CODES,
+  type BundledCalendarRegionCode,
+} from '../config/agreedLanguagesAndBundledCalendars';
 import type { AppLanguage } from '../lib/i18n';
 import { CalendarIcon, GlobeIcon } from './icons/NavigationIcons';
+
+const ACTIVE_CALENDAR_FILL = 'rgba(148, 163, 184, 0.18)';
 
 type LanguageSwitchPalette = {
   border: string;
@@ -15,6 +20,7 @@ type LanguageSwitchPalette = {
 
 type LanguageSwitchProps = {
   selectedLanguage: AppLanguage;
+  activeCalendarRegion?: BundledCalendarRegionCode | null;
   onSelectLanguage: (language: AppLanguage) => void;
   palette: LanguageSwitchPalette;
   /** Подписи опций (обычно нативные автонимы: `getLanguageNativeLabel`). */
@@ -23,6 +29,7 @@ type LanguageSwitchProps = {
 
 export function LanguageSwitch({
   selectedLanguage,
+  activeCalendarRegion,
   onSelectLanguage,
   palette,
   labels,
@@ -39,13 +46,20 @@ export function LanguageSwitch({
     >
       {AGREED_APP_LANGUAGE_CODES.map(code => {
         const isSelected = code === selectedLanguage;
-        const iconColor = isSelected ? palette.title : palette.subtitle;
+        const isActiveCalendar =
+          !isSelected && code !== 'en' && code === activeCalendarRegion;
+        const iconColor =
+          isSelected || isActiveCalendar ? palette.title : palette.subtitle;
         const optionPaletteStyle = {
-          backgroundColor: isSelected ? palette.selectedFill : 'transparent',
-          borderColor: isSelected ? palette.selectedBorder : 'transparent',
+          backgroundColor: isSelected
+            ? palette.selectedFill
+            : isActiveCalendar
+              ? ACTIVE_CALENDAR_FILL
+              : 'transparent',
+          borderColor: isSelected ? palette.selectedBorder : palette.border,
         };
         const optionTextStyle = {
-          color: isSelected ? palette.title : palette.subtitle,
+          color: isSelected || isActiveCalendar ? palette.title : palette.subtitle,
         };
 
         return (

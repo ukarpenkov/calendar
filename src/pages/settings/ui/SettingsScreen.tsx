@@ -187,6 +187,9 @@ export function SettingsScreen({
           </View>
           <LanguageSwitch
             selectedLanguage={language}
+            activeCalendarRegion={
+              userJsonImportActive ? null : bundledCalendarRegion
+            }
             onSelectLanguage={setLanguage}
             palette={palette}
             labels={LANGUAGE_SWITCH_NATIVE_LABELS}

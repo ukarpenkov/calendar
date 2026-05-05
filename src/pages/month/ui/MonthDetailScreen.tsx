@@ -884,7 +884,12 @@ type TotalItemProps = {
   sideScale: number;
 };
 
-function TotalItem({ label, value, palette, sideScale }: TotalItemProps) {
+function TotalItem({
+  label,
+  value,
+  palette,
+  sideScale,
+}: TotalItemProps) {
   return (
     <View style={styles.totalItem}>
       <Text
@@ -896,7 +901,7 @@ function TotalItem({ label, value, palette, sideScale }: TotalItemProps) {
           styles.totalLabel,
           {
             color: palette.subtitle,
-            fontSize: 9 * sideScale,
+            fontSize: 11.25 * sideScale,
           },
         ]}
       >
@@ -908,6 +913,7 @@ function TotalItem({ label, value, palette, sideScale }: TotalItemProps) {
         numberOfLines={1}
         maxFontSizeMultiplier={1}
         style={[
+          styles.dayCellText,
           styles.totalValue,
           {
             color: palette.title,
@@ -1096,16 +1102,19 @@ const styles = StyleSheet.create({
   },
   totalItem: {
     flex: 1,
+    minWidth: 0,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 3,
   },
   totalLabel: {
-    fontSize: 9,
+    width: '100%',
+    fontSize: 11.25,
     fontWeight: '600',
+    textAlign: 'center',
   },
   totalValue: {
-    fontSize: 16,
-    fontWeight: '700',
+    width: '100%',
+    textAlign: 'center',
   },
 });

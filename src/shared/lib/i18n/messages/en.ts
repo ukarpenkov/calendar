@@ -20,7 +20,7 @@ export const enTranslations = {
     'month.selectedDay.eyebrow': 'Selected day',
     'month.totals.totalDays': 'Total days',
     'month.totals.workingDays': 'Working days',
-    'month.totals.nonWorkingDays': 'Non-working days',
+    'month.totals.nonWorkingDays': 'Off days',
     'month.totals.workHours': 'Work hours',
     'month.nav.previousMonth': 'Previous month',
     'month.nav.nextMonth': 'Next month',
