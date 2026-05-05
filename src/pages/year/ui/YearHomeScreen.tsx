@@ -48,7 +48,7 @@ export function YearHomeScreen({
   const safeAreaInsets = useSafeAreaInsets();
   const { width: windowWidth, height: windowHeight, fontScale } =
     useWindowDimensions();
-  const { isDarkMode, palette } = useAppTheme();
+  const { palette } = useAppTheme();
   const { language, t } = useAppLocalization();
   const columnsPerRow = useMemo(() => {
     const minDimension = Math.min(windowWidth, windowHeight);
@@ -96,7 +96,6 @@ export function YearHomeScreen({
         <View style={styles.appBarLeading}>
           <YearScreenCalendarMark
             accessibilityLabel={t('common.appName')}
-            backgroundColor={isDarkMode ? palette.background : undefined}
           />
         </View>
         <Text style={[styles.appBarTitle, { color: palette.title }]}>

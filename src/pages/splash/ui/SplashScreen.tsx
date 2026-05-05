@@ -30,7 +30,6 @@ export function SplashScreen() {
         <YearScreenCalendarMark
           accessibilityLabel={t('common.appName')}
           size={SPLASH_MARK_SIZE}
-          backgroundColor={isDarkMode ? splashBackground : undefined}
         />
         <Text style={[styles.title, { color: palette.title }]}>
           {t('common.appName')}
