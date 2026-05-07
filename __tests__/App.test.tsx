@@ -138,14 +138,8 @@ test('shows splash while bootstrap is pending', () => {
 });
 
 test('shows year home when bootstrap succeeds', async () => {
-  mockedSeedBundledYearIfNeeded.mockResolvedValue({
-    year: 2026,
-    days: [],
-  });
-  mockedGetYearCalendar.mockResolvedValue({
-    year: 2026,
-    days: [],
-  });
+  mockedSeedBundledYearIfNeeded.mockResolvedValue(bundledCalendar2026);
+  mockedGetYearCalendar.mockResolvedValue(bundledCalendar2026);
 
   let renderer: ReactTestRenderer.ReactTestRenderer;
 
@@ -158,22 +152,29 @@ test('shows year home when bootstrap succeeds', async () => {
 });
 
 test('opens month detail after the year screen requests a month', async () => {
+  jest.useFakeTimers();
+  jest.setSystemTime(new Date('2026-01-15T12:00:00.000Z'));
+
   mockedSeedBundledYearIfNeeded.mockResolvedValue(bundledCalendar2026);
   mockedGetYearCalendar.mockResolvedValue(bundledCalendar2026);
 
   let renderer: ReactTestRenderer.ReactTestRenderer;
 
-  await ReactTestRenderer.act(async () => {
-    renderer = ReactTestRenderer.create(<App />);
-  });
+  try {
+    await ReactTestRenderer.act(async () => {
+      renderer = ReactTestRenderer.create(<App />);
+    });
 
-  await ReactTestRenderer.act(async () => {
-    await renderer!.root.findByType(YearHomeScreen).props.onOpenMonth(1);
-  });
+    await ReactTestRenderer.act(async () => {
+      await renderer!.root.findByType(YearHomeScreen).props.onOpenMonth(1);
+    });
 
-  expect(JSON.stringify(renderer!.toJSON())).toContain('Selected day');
-  expect(JSON.stringify(renderer!.toJSON())).toContain('January');
-  expect(JSON.stringify(renderer!.toJSON())).toContain('Working days');
+    expect(JSON.stringify(renderer!.toJSON())).toContain('Selected day');
+    expect(JSON.stringify(renderer!.toJSON())).toContain('January');
+    expect(JSON.stringify(renderer!.toJSON())).toContain('Working days');
+  } finally {
+    jest.useRealTimers();
+  }
 });
 
 test('switches to the next month from month detail', async () => {
