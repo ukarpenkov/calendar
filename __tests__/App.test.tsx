@@ -10,6 +10,7 @@ import App from '../src/app/App';
 import {
   activateUserJsonImport,
   getActiveCalendarIsUserJsonImport,
+  getActiveCalendarSource,
   getYearCalendar,
   getUserJsonImportYear,
   saveUserJsonImport,
@@ -41,6 +42,7 @@ jest.mock('../src/entities/calendar', () => ({
   ...jest.requireActual('../src/entities/calendar'),
   activateUserJsonImport: jest.fn(),
   getActiveCalendarIsUserJsonImport: jest.fn().mockResolvedValue(false),
+  getActiveCalendarSource: jest.fn(),
   getUserJsonImportYear: jest.fn().mockResolvedValue(null),
   getYearCalendar: jest.fn(),
   saveUserJsonImport: jest.fn(),
@@ -89,6 +91,7 @@ const bundledCalendar2026 = parseValidateAndNormalizeCalendarImport(
   require('../calendar2026.json'),
 );
 
+const mockedGetActiveCalendarSource = jest.mocked(getActiveCalendarSource);
 const mockedActivateUserJsonImport = jest.mocked(activateUserJsonImport);
 const mockedGetActiveCalendarIsUserJsonImport = jest.mocked(
   getActiveCalendarIsUserJsonImport,
@@ -105,6 +108,8 @@ beforeEach(() => {
   mockedActivateUserJsonImport.mockResolvedValue(null);
   mockedGetActiveCalendarIsUserJsonImport.mockReset();
   mockedGetActiveCalendarIsUserJsonImport.mockResolvedValue(false);
+  mockedGetActiveCalendarSource.mockReset();
+  mockedGetActiveCalendarSource.mockResolvedValue('bundled');
   mockedGetUserJsonImportYear.mockReset();
   mockedGetUserJsonImportYear.mockResolvedValue(null);
   mockedSaveUserJsonImport.mockReset();

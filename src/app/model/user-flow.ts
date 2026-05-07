@@ -1,4 +1,7 @@
-import type { CalendarYear } from '../../entities/calendar';
+import type {
+  CalendarDataSource,
+  CalendarYear,
+} from '../../entities/calendar';
 
 /**
  * Discriminated union of screens shown after bootstrap (splash / DB ready).
@@ -13,5 +16,10 @@ export type ReadyScreen =
 
 export type AppContentStatus =
   | { kind: 'loading' }
-  | { kind: 'ready'; calendar: CalendarYear; screen: ReadyScreen }
+  | {
+      kind: 'ready';
+      calendar: CalendarYear;
+      activeCalendarSource: CalendarDataSource;
+      screen: ReadyScreen;
+    }
   | { kind: 'error' };

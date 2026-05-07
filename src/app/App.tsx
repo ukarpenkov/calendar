@@ -16,6 +16,7 @@ import {
 import {
   activateUserJsonImport,
   buildCalendarYearViewCache,
+  getActiveCalendarSource,
   getYearCalendar,
   seedBundledYearIfNeeded,
   type CalendarYear,
@@ -103,6 +104,7 @@ function AppContent() {
       }
       setBundledCalendarRegionRef.current(targetRegion, {
         changeCause: 'app_language',
+        force: true,
       });
     });
 
@@ -133,7 +135,11 @@ function AppContent() {
             if (latest.kind !== 'ready') {
               return latest;
             }
-            return { ...latest, calendar: updated };
+            return {
+              ...latest,
+              calendar: updated,
+              activeCalendarSource: 'bundled',
+            };
           });
         } catch {
           // Оставляем текущий календарь в UI; SQLite не меняется при ошибке до завершения replace.
@@ -194,10 +200,13 @@ function AppContent() {
           throw new Error('Active calendar was not found after bootstrap.');
         }
 
+        const activeCalendarSource = await getActiveCalendarSource();
+
         if (isMounted) {
           setStatus({
             kind: 'ready',
             calendar: storedCalendar,
+            activeCalendarSource,
             screen: { name: 'year' },
           });
         }
@@ -400,6 +409,7 @@ function AppContent() {
           return {
             ...currentStatus,
             calendar: activatedCalendar ?? calendar,
+            activeCalendarSource: 'user_json_import',
             screen: { name: 'settings' },
           };
         });
@@ -433,6 +443,7 @@ function AppContent() {
           return {
             ...currentStatus,
             calendar,
+            activeCalendarSource: 'user_json_import',
           };
         });
       })
@@ -485,6 +496,7 @@ function AppContent() {
     return (
       <SettingsScreen
         activeYear={status.calendar.year}
+        activeCalendarSource={status.activeCalendarSource}
         jsonImportSavedRevision={jsonImportSavedRevision}
         onBack={closeSettings}
         onOpenImportEntry={openImportEntry}

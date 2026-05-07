@@ -4,10 +4,8 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useBundledCalendarRegion } from '../../../app/providers/bundled-calendar-region';
-import {
-  getActiveCalendarIsUserJsonImport,
-  getUserJsonImportYear,
-} from '../../../entities/calendar';
+import type { CalendarDataSource } from '../../../entities/calendar';
+import { getUserJsonImportYear } from '../../../entities/calendar';
 import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
 import {
@@ -39,6 +37,7 @@ import { ThemeSwitch } from '../../../shared/ui/ThemeSwitch';
 
 type SettingsScreenProps = {
   activeYear: number;
+  activeCalendarSource: CalendarDataSource;
   /** Увеличивается после успешного сохранения JSON-слота; обновляет доступность пункта «JSON календарь». */
   jsonImportSavedRevision?: number;
   onBack: () => void;
@@ -48,6 +47,7 @@ type SettingsScreenProps = {
 
 export function SettingsScreen({
   activeYear,
+  activeCalendarSource,
   jsonImportSavedRevision = 0,
   onBack,
   onOpenImportEntry,
@@ -57,7 +57,7 @@ export function SettingsScreen({
   const { isDarkMode, palette, themeMode, toggleTheme } = useAppTheme();
   const { language, setLanguage, t } = useAppLocalization();
   const { bundledCalendarRegion } = useBundledCalendarRegion();
-  const [userJsonImportActive, setUserJsonImportActive] = useState(false);
+  const userJsonImportActive = activeCalendarSource === 'user_json_import';
   const [userJsonImportYear, setUserJsonImportYear] = useState<number | null>(
     null,
   );
@@ -65,19 +65,14 @@ export function SettingsScreen({
   useEffect(() => {
     let cancelled = false;
 
-    Promise.all([
-      getActiveCalendarIsUserJsonImport(),
-      getUserJsonImportYear(),
-    ])
-      .then(([flag, importedYear]) => {
+    getUserJsonImportYear()
+      .then(importedYear => {
         if (!cancelled) {
-          setUserJsonImportActive(flag);
           setUserJsonImportYear(importedYear);
         }
       })
       .catch(() => {
         if (!cancelled) {
-          setUserJsonImportActive(false);
           setUserJsonImportYear(null);
         }
       });
@@ -85,7 +80,7 @@ export function SettingsScreen({
     return () => {
       cancelled = true;
     };
-  }, [activeYear, bundledCalendarRegion, jsonImportSavedRevision]);
+  }, [jsonImportSavedRevision]);
 
   return (
     <ScrollView

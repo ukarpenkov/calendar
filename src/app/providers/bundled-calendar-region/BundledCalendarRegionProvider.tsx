@@ -23,6 +23,11 @@ import {
 
 export type SetBundledCalendarRegionOptions = {
   changeCause?: BundledRegionChangeCause;
+  /**
+   * Вызывает синхронизацию SQLite с bundled даже если регион в состоянии уже такой же
+   * (нужно при смене языка с активного JSON на встроенный календарь того же региона).
+   */
+  force?: boolean;
 };
 
 type BundledCalendarRegionContextValue = {
@@ -78,18 +83,23 @@ export function BundledCalendarRegionProvider({
       nextRegion: BundledCalendarRegionCode,
       options?: SetBundledCalendarRegionOptions,
     ) => {
-      if (nextRegion === bundledCalendarRegion) {
+      const cause = options?.changeCause ?? 'settings';
+      const force = options?.force ?? false;
+      const previousRegion = bundledCalendarRegion;
+
+      if (!force && nextRegion === bundledCalendarRegion) {
         return;
       }
 
-      const previousRegion = bundledCalendarRegion;
-      const cause = options?.changeCause ?? 'settings';
       hasManualSelectionRef.current = true;
-      setBundledCalendarRegionState(nextRegion);
 
-      setStoredBundledCalendarRegion(nextRegion).catch(() => {
-        // Ignore persistence failures to keep switching responsive.
-      });
+      if (nextRegion !== bundledCalendarRegion) {
+        setBundledCalendarRegionState(nextRegion);
+
+        setStoredBundledCalendarRegion(nextRegion).catch(() => {
+          // Ignore persistence failures to keep switching responsive.
+        });
+      }
 
       notifyCalendarSyncOnBundledRegionChange(previousRegion, nextRegion, cause);
     },
