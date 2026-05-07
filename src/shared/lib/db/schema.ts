@@ -1,8 +1,10 @@
 import type { SQLBatchTuple } from '@op-engineering/op-sqlite';
 
 export const DATABASE_NAME = 'calendar.sqlite';
-export const DATABASE_SCHEMA_VERSION = 2;
+export const DATABASE_SCHEMA_VERSION = 3;
 export const ACTIVE_YEAR_METADATA_KEY = 'activeYear';
+export const ACTIVE_CALENDAR_SOURCE_METADATA_KEY = 'active_calendar_source';
+export const USER_JSON_IMPORT_YEAR_METADATA_KEY = 'user_json_import_year';
 
 /** Значение `1`, если активный год последним был записан из локального JSON-импорта (не из bundled). */
 export const ACTIVE_CALENDAR_USER_JSON_IMPORT_KEY =
@@ -18,7 +20,8 @@ export const SCHEMA_COMMANDS: SQLBatchTuple[] = [
   ],
   [
     `CREATE TABLE IF NOT EXISTS calendar_days (
-      date TEXT PRIMARY KEY NOT NULL,
+      source TEXT NOT NULL DEFAULT 'bundled' CHECK (source IN ('bundled', 'user_json_import')),
+      date TEXT NOT NULL,
       year INTEGER NOT NULL,
       month INTEGER NOT NULL,
       day INTEGER NOT NULL,
@@ -30,11 +33,12 @@ export const SCHEMA_COMMANDS: SQLBatchTuple[] = [
       holiday_name_id TEXT,
       holiday_name_ja TEXT,
       is_shortened INTEGER NOT NULL CHECK (is_shortened IN (0, 1)),
-      work_hours INTEGER NOT NULL
+      work_hours INTEGER NOT NULL,
+      PRIMARY KEY (source, date)
     ) STRICT`,
   ],
-  ['CREATE INDEX IF NOT EXISTS idx_calendar_days_year ON calendar_days(year)'],
+  ['CREATE INDEX IF NOT EXISTS idx_calendar_days_source_year ON calendar_days(source, year)'],
   [
-    'CREATE INDEX IF NOT EXISTS idx_calendar_days_year_month ON calendar_days(year, month)',
+    'CREATE INDEX IF NOT EXISTS idx_calendar_days_source_year_month ON calendar_days(source, year, month)',
   ],
 ];

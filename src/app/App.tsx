@@ -14,6 +14,7 @@ import {
 } from 'react-native-safe-area-context';
 
 import {
+  activateUserJsonImport,
   buildCalendarYearViewCache,
   getYearCalendar,
   seedBundledYearIfNeeded,
@@ -69,7 +70,7 @@ function AppRoot() {
 function AppContent() {
   const safeAreaInsets = useSafeAreaInsets();
   const { palette } = useAppTheme();
-  const { language, t } = useAppLocalization();
+  const { language, setLanguage, t } = useAppLocalization();
   const { setBundledCalendarRegion } = useBundledCalendarRegion();
   const setBundledCalendarRegionRef = useRef(setBundledCalendarRegion);
   setBundledCalendarRegionRef.current = setBundledCalendarRegion;
@@ -81,6 +82,7 @@ function AppContent() {
     width: number;
     height: number;
   } | null>(null);
+  const [jsonImportSavedRevision, setJsonImportSavedRevision] = useState(0);
   const statusRef = useRef(status);
   statusRef.current = status;
   const activeCalendar = status.kind === 'ready' ? status.calendar : null;
@@ -385,17 +387,58 @@ function AppContent() {
   };
 
   const completeImportEntry = (calendar: CalendarYear) => {
-    setStatus(currentStatus => {
-      if (currentStatus.kind !== 'ready') {
-        return currentStatus;
-      }
+    setJsonImportSavedRevision(revision => revision + 1);
+    setLanguage('en');
 
-      return {
-        ...currentStatus,
-        calendar,
-        screen: { name: 'year' },
-      };
-    });
+    activateUserJsonImport()
+      .then(activatedCalendar => {
+        setStatus(currentStatus => {
+          if (currentStatus.kind !== 'ready') {
+            return currentStatus;
+          }
+
+          return {
+            ...currentStatus,
+            calendar: activatedCalendar ?? calendar,
+            screen: { name: 'settings' },
+          };
+        });
+      })
+      .catch(() => {
+        setStatus(currentStatus => {
+          if (currentStatus.kind !== 'ready') {
+            return currentStatus;
+          }
+
+          return {
+            ...currentStatus,
+            screen: { name: 'settings' },
+          };
+        });
+      });
+  };
+
+  const selectUserJsonImportCalendar = () => {
+    activateUserJsonImport()
+      .then(calendar => {
+        if (!calendar) {
+          return;
+        }
+
+        setStatus(currentStatus => {
+          if (currentStatus.kind !== 'ready') {
+            return currentStatus;
+          }
+
+          return {
+            ...currentStatus,
+            calendar,
+          };
+        });
+      })
+      .catch(() => {
+        // Keep the current calendar visible if the saved JSON slot cannot be activated.
+      });
   };
 
   if (status.screen.name === 'month-error') {
@@ -442,8 +485,10 @@ function AppContent() {
     return (
       <SettingsScreen
         activeYear={status.calendar.year}
+        jsonImportSavedRevision={jsonImportSavedRevision}
         onBack={closeSettings}
         onOpenImportEntry={openImportEntry}
+        onSelectUserJsonImport={selectUserJsonImportCalendar}
       />
     );
   }

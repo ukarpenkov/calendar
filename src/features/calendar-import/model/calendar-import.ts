@@ -253,7 +253,7 @@ function validateHolidays(
     ] as const;
 
     const entryRecord = entry;
-    for (const { jsonKey, prop } of optionalNameKeys) {
+    for (const { jsonKey } of optionalNameKeys) {
       if (!(jsonKey in entryRecord)) {
         continue;
       }
@@ -292,6 +292,24 @@ function validateHolidays(
   });
 
   return holidays;
+}
+
+/**
+ * LLM-generated calendars sometimes list the same ISO date as a preholiday and
+ * as a weekend/holiday. Preholidays are shortened workdays only; drop overlaps
+ * so holiday/weekend lists stay authoritative.
+ */
+function dropPreholidaysOverlappingHigherPriorityDays(
+  holidays: RawHolidayEntry[],
+  weekends: string[],
+  preholidays: string[],
+): string[] {
+  const holidayDates = new Set(holidays.map(holiday => holiday.date));
+  const weekendDates = new Set(weekends);
+
+  return preholidays.filter(
+    date => !holidayDates.has(date) && !weekendDates.has(date),
+  );
 }
 
 function validateDayTypeConsistency(
@@ -443,12 +461,17 @@ export function validateCalendarImportData(
     weekendsValue === undefined
       ? []
       : validateDateArray(weekendsValue, 'weekends', year, issues);
-  const preholidays =
+  let preholidays =
     preholidaysValue === undefined
       ? []
       : validateDateArray(preholidaysValue, 'preholidays', year, issues);
 
   assertIssues(issues);
+  preholidays = dropPreholidaysOverlappingHigherPriorityDays(
+    holidays,
+    weekends,
+    preholidays,
+  );
   validateDayTypeConsistency(year, holidays, weekends, preholidays, issues);
   assertIssues(issues);
 

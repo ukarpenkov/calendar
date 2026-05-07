@@ -50,8 +50,10 @@ test('syncActiveYearWithBundledRegion skips replace when active year is not bund
   expect(mockedReplaceActiveYear).not.toHaveBeenCalled();
 });
 
-test('syncActiveYearWithBundledRegion skips replace on app_language when user JSON import is active', async () => {
+test('syncActiveYearWithBundledRegion replaces on app_language when user JSON import is active', async () => {
   mockedGetActiveCalendarIsUserJsonImport.mockResolvedValue(true);
+  mockedReplaceActiveYear.mockResolvedValue(undefined);
+  mockedGetYearCalendar.mockResolvedValue(calendar2026);
 
   const result = await syncActiveYearWithBundledRegion({
     region: 'tr',
@@ -59,8 +61,9 @@ test('syncActiveYearWithBundledRegion skips replace on app_language when user JS
     changeCause: 'app_language',
   });
 
-  expect(result).toBeNull();
-  expect(mockedReplaceActiveYear).not.toHaveBeenCalled();
+  expect(mockedReplaceActiveYear).toHaveBeenCalledTimes(1);
+  expect(mockedReplaceActiveYear.mock.calls[0][1]).toBe('bundled');
+  expect(result).toBe(calendar2026);
 });
 
 test('syncActiveYearWithBundledRegion replaces on settings even when user JSON import is active', async () => {

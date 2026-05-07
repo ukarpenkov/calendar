@@ -1,5 +1,4 @@
 import {
-  getActiveCalendarIsUserJsonImport,
   getYearCalendar,
   replaceActiveYear,
   type CalendarYear,
@@ -27,16 +26,9 @@ export async function syncActiveYearWithBundledRegion(options: {
   activeCalendarYear: number;
   changeCause?: BundledRegionChangeCause;
 }): Promise<CalendarYear | null> {
-  const { region, activeCalendarYear, changeCause = 'settings' } = options;
+  const { region, activeCalendarYear } = options;
 
   if (!shouldApplyBundledCalendarOnRegionChange(activeCalendarYear)) {
-    return null;
-  }
-
-  if (
-    changeCause === 'app_language' &&
-    (await getActiveCalendarIsUserJsonImport())
-  ) {
     return null;
   }
 

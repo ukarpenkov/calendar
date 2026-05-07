@@ -4,7 +4,10 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useBundledCalendarRegion } from '../../../app/providers/bundled-calendar-region';
-import { getActiveCalendarIsUserJsonImport } from '../../../entities/calendar';
+import {
+  getActiveCalendarIsUserJsonImport,
+  getUserJsonImportYear,
+} from '../../../entities/calendar';
 import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
 import {
@@ -36,40 +39,53 @@ import { ThemeSwitch } from '../../../shared/ui/ThemeSwitch';
 
 type SettingsScreenProps = {
   activeYear: number;
+  /** Увеличивается после успешного сохранения JSON-слота; обновляет доступность пункта «JSON календарь». */
+  jsonImportSavedRevision?: number;
   onBack: () => void;
   onOpenImportEntry: () => void;
+  onSelectUserJsonImport: () => void;
 };
 
 export function SettingsScreen({
   activeYear,
+  jsonImportSavedRevision = 0,
   onBack,
   onOpenImportEntry,
+  onSelectUserJsonImport,
 }: SettingsScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
   const { isDarkMode, palette, themeMode, toggleTheme } = useAppTheme();
   const { language, setLanguage, t } = useAppLocalization();
   const { bundledCalendarRegion } = useBundledCalendarRegion();
   const [userJsonImportActive, setUserJsonImportActive] = useState(false);
+  const [userJsonImportYear, setUserJsonImportYear] = useState<number | null>(
+    null,
+  );
 
   useEffect(() => {
     let cancelled = false;
 
-    getActiveCalendarIsUserJsonImport()
-      .then(flag => {
+    Promise.all([
+      getActiveCalendarIsUserJsonImport(),
+      getUserJsonImportYear(),
+    ])
+      .then(([flag, importedYear]) => {
         if (!cancelled) {
           setUserJsonImportActive(flag);
+          setUserJsonImportYear(importedYear);
         }
       })
       .catch(() => {
         if (!cancelled) {
           setUserJsonImportActive(false);
+          setUserJsonImportYear(null);
         }
       });
 
     return () => {
       cancelled = true;
     };
-  }, [activeYear, bundledCalendarRegion]);
+  }, [activeYear, bundledCalendarRegion, jsonImportSavedRevision]);
 
   return (
     <ScrollView
@@ -191,8 +207,15 @@ export function SettingsScreen({
               userJsonImportActive ? null : bundledCalendarRegion
             }
             onSelectLanguage={setLanguage}
+            onSelectUserJsonImport={() => {
+              setLanguage('en');
+              onSelectUserJsonImport();
+            }}
             palette={palette}
             labels={LANGUAGE_SWITCH_NATIVE_LABELS}
+            userJsonImportAvailable={userJsonImportYear !== null}
+            userJsonImportActive={userJsonImportActive}
+            userJsonImportLabel={t('settings.languageSwitch.userJsonCalendar')}
           />
           {userJsonImportActive ? (
             <Text

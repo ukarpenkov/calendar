@@ -55,6 +55,7 @@ export const trTranslations = {
   'settings.rows.language.subtitle': 'Geçerli dil: {{language}}.',
   'settings.rows.language.userImportHint':
     'Takvim JSON içe aktarımından geliyor: arayüz dilini değiştirmek veriyi değiştirmez. Paketlenmiş takvim için aşağıdaki «Üretim takvimi (2026)» bölümünü kullanın.',
+  'settings.languageSwitch.userJsonCalendar': 'JSON takvimi',
   'settings.sections.about.title': 'Hakkında',
   'settings.sections.about.subtitle':
     'Yerel öncelikli bu sürüm için servis bilgileri.',

@@ -143,6 +143,29 @@ describe('calendar sqlite repository', () => {
     expect(cleared.rows[0]).toBeUndefined();
   });
 
+  it('saves a JSON import without changing the active bundled calendar', async () => {
+    const calendar2026 = parseValidateAndNormalizeCalendarImport(bundledCalendar);
+    const calendar2025 = parseValidateAndNormalizeCalendarImport(importedCalendar2025);
+
+    await repository.replaceActiveYear(calendar2026, 'bundled');
+    await repository.saveUserJsonImport(calendar2025);
+
+    expect(await repository.getActiveYear()).toBe(2026);
+    expect(await repository.getActiveCalendarSource()).toBe('bundled');
+    expect(await repository.getUserJsonImportYear()).toBe(2025);
+    expect(await repository.getYearCalendar(2026)).toMatchObject({
+      year: 2026,
+    });
+
+    const activated = await repository.activateUserJsonImport();
+
+    expect(activated).toMatchObject({
+      year: 2025,
+    });
+    expect(await repository.getActiveYear()).toBe(2025);
+    expect(await repository.getActiveCalendarSource()).toBe('user_json_import');
+  });
+
   it('persists optional regional holiday name columns from import JSON', async () => {
     const calendar = parseValidateAndNormalizeCalendarImport(bundledCalendarTr);
     await repository.replaceActiveYear(calendar, 'bundled');

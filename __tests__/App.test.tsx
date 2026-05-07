@@ -8,8 +8,11 @@ import React from 'react';
 import ReactTestRenderer from 'react-test-renderer';
 import App from '../src/app/App';
 import {
+  activateUserJsonImport,
+  getActiveCalendarIsUserJsonImport,
   getYearCalendar,
-  replaceActiveYear,
+  getUserJsonImportYear,
+  saveUserJsonImport,
   seedBundledYearIfNeeded,
 } from '../src/entities/calendar';
 import { parseValidateAndNormalizeCalendarImport } from '../src/features/calendar-import';
@@ -17,6 +20,10 @@ import { ImportEntryScreen } from '../src/pages/import-entry/ui/ImportEntryScree
 import { MonthDetailScreen } from '../src/pages/month/ui/MonthDetailScreen';
 import { SettingsScreen } from '../src/pages/settings/ui/SettingsScreen';
 import { YearHomeScreen } from '../src/pages/year/ui/YearHomeScreen';
+import {
+  getStoredLanguage,
+  setStoredLanguage,
+} from '../src/shared/lib/settings';
 
 jest.mock('react-native-safe-area-context', () => {
   return {
@@ -32,9 +39,17 @@ jest.mock('react-native-safe-area-context', () => {
 
 jest.mock('../src/entities/calendar', () => ({
   ...jest.requireActual('../src/entities/calendar'),
+  activateUserJsonImport: jest.fn(),
+  getActiveCalendarIsUserJsonImport: jest.fn().mockResolvedValue(false),
+  getUserJsonImportYear: jest.fn().mockResolvedValue(null),
   getYearCalendar: jest.fn(),
-  replaceActiveYear: jest.fn(),
+  saveUserJsonImport: jest.fn(),
   seedBundledYearIfNeeded: jest.fn(),
+}));
+
+jest.mock('@react-native-clipboard/clipboard', () => ({
+  getString: jest.fn().mockResolvedValue(''),
+  setString: jest.fn(),
 }));
 
 jest.mock('../src/shared/lib/i18n', () => ({
@@ -74,14 +89,31 @@ const bundledCalendar2026 = parseValidateAndNormalizeCalendarImport(
   require('../calendar2026.json'),
 );
 
-const mockedReplaceActiveYear = jest.mocked(replaceActiveYear);
+const mockedActivateUserJsonImport = jest.mocked(activateUserJsonImport);
+const mockedGetActiveCalendarIsUserJsonImport = jest.mocked(
+  getActiveCalendarIsUserJsonImport,
+);
+const mockedGetUserJsonImportYear = jest.mocked(getUserJsonImportYear);
+const mockedSaveUserJsonImport = jest.mocked(saveUserJsonImport);
 const mockedSeedBundledYearIfNeeded = jest.mocked(seedBundledYearIfNeeded);
 const mockedGetYearCalendar = jest.mocked(getYearCalendar);
+const mockedGetStoredLanguage = jest.mocked(getStoredLanguage);
+const mockedSetStoredLanguage = jest.mocked(setStoredLanguage);
 
 beforeEach(() => {
-  mockedReplaceActiveYear.mockReset();
+  mockedActivateUserJsonImport.mockReset();
+  mockedActivateUserJsonImport.mockResolvedValue(null);
+  mockedGetActiveCalendarIsUserJsonImport.mockReset();
+  mockedGetActiveCalendarIsUserJsonImport.mockResolvedValue(false);
+  mockedGetUserJsonImportYear.mockReset();
+  mockedGetUserJsonImportYear.mockResolvedValue(null);
+  mockedSaveUserJsonImport.mockReset();
   mockedSeedBundledYearIfNeeded.mockReset();
   mockedGetYearCalendar.mockReset();
+  mockedGetStoredLanguage.mockReset();
+  mockedGetStoredLanguage.mockResolvedValue(null);
+  mockedSetStoredLanguage.mockReset();
+  mockedSetStoredLanguage.mockResolvedValue(undefined);
 });
 
 test('shows splash while bootstrap is pending', () => {
@@ -317,7 +349,13 @@ test('shows year-end reminder with Telegram link late in the active year', async
   }
 });
 
-test('returns to year overview with the imported calendar after success', async () => {
+test('activates the JSON calendar and switches to English after JSON import', async () => {
+  const importedCalendar = {
+    year: 2025,
+    days: [],
+  };
+
+  mockedGetStoredLanguage.mockResolvedValue('ru');
   mockedSeedBundledYearIfNeeded.mockResolvedValue({
     year: 2026,
     days: [],
@@ -326,6 +364,9 @@ test('returns to year overview with the imported calendar after success', async 
     year: 2026,
     days: [],
   });
+  mockedActivateUserJsonImport.mockResolvedValue(importedCalendar);
+  mockedGetActiveCalendarIsUserJsonImport.mockResolvedValue(true);
+  mockedGetUserJsonImportYear.mockResolvedValue(2025);
 
   let renderer: ReactTestRenderer.ReactTestRenderer;
 
@@ -342,12 +383,15 @@ test('returns to year overview with the imported calendar after success', async 
   });
 
   await ReactTestRenderer.act(async () => {
-    renderer!.root.findByType(ImportEntryScreen).props.onImportCompleted({
-      year: 2025,
-      days: [],
-    });
+    renderer!.root.findByType(ImportEntryScreen).props.onImportCompleted(
+      importedCalendar,
+    );
   });
 
-  expect(mockedReplaceActiveYear).not.toHaveBeenCalled();
+  expect(mockedSaveUserJsonImport).not.toHaveBeenCalled();
+  expect(mockedActivateUserJsonImport).toHaveBeenCalledTimes(1);
+  expect(mockedSetStoredLanguage).toHaveBeenCalledWith('en');
+  expect(JSON.stringify(renderer!.toJSON())).toContain('Settings');
   expect(JSON.stringify(renderer!.toJSON())).toContain('2025');
+  expect(JSON.stringify(renderer!.toJSON())).toContain('JSON calendar');
 });

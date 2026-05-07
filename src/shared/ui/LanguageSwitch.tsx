@@ -22,17 +22,25 @@ type LanguageSwitchProps = {
   selectedLanguage: AppLanguage;
   activeCalendarRegion?: BundledCalendarRegionCode | null;
   onSelectLanguage: (language: AppLanguage) => void;
+  onSelectUserJsonImport?: () => void;
   palette: LanguageSwitchPalette;
   /** Подписи опций (обычно нативные автонимы: `getLanguageNativeLabel`). */
   labels: Record<AppLanguage, string>;
+  userJsonImportAvailable?: boolean;
+  userJsonImportActive?: boolean;
+  userJsonImportLabel?: string;
 };
 
 export function LanguageSwitch({
   selectedLanguage,
   activeCalendarRegion,
   onSelectLanguage,
+  onSelectUserJsonImport,
   palette,
   labels,
+  userJsonImportAvailable = false,
+  userJsonImportActive = false,
+  userJsonImportLabel = 'JSON calendar',
 }: LanguageSwitchProps) {
   return (
     <View
@@ -84,6 +92,42 @@ export function LanguageSwitch({
           </Pressable>
         );
       })}
+      {userJsonImportAvailable ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityState={{ selected: false }}
+          onPress={onSelectUserJsonImport}
+          style={({ pressed }) => [
+            styles.option,
+            {
+              backgroundColor: userJsonImportActive
+                ? ACTIVE_CALENDAR_FILL
+                : 'transparent',
+              borderColor: palette.border,
+              opacity: pressed ? 0.88 : 1,
+            },
+          ]}
+        >
+          <View style={styles.optionContent}>
+            <Text
+              style={[
+                styles.optionText,
+                {
+                  color: userJsonImportActive ? palette.title : palette.subtitle,
+                },
+              ]}
+            >
+              {userJsonImportLabel}
+            </Text>
+            <View style={styles.optionIcons}>
+              <CalendarIcon
+                color={userJsonImportActive ? palette.title : palette.subtitle}
+                size={16}
+              />
+            </View>
+          </View>
+        </Pressable>
+      ) : null}
     </View>
   );
 }

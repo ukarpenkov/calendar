@@ -13,7 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
-import { replaceActiveYear, type CalendarYear } from '../../../entities/calendar';
+import { saveUserJsonImport, type CalendarYear } from '../../../entities/calendar';
 import {
   CalendarImportSourceError,
   CalendarImportValidationError,
@@ -266,10 +266,11 @@ export function ImportEntryScreen({
     setReviewError(null);
     setPanel('importing');
 
-    replaceActiveYear(preparedImport.calendar, 'user_json_import')
+    saveUserJsonImport(preparedImport.calendar)
       .then(() => {
         setSuccessCalendar(preparedImport.calendar);
         setPanel('success');
+        onImportCompleted(preparedImport.calendar);
       })
       .catch(() => {
         setReviewError({

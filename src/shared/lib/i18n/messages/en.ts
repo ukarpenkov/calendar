@@ -52,7 +52,8 @@ export const enTranslations = {
     'settings.rows.language.title': 'Interface language',
     'settings.rows.language.subtitle': 'Current language: {{language}}.',
     'settings.rows.language.userImportHint':
-      'Your calendar came from a JSON import: changing the interface language will not replace it. Use Production calendar (2026) below to load a bundled dataset.',
+      'The active calendar is the saved JSON calendar. English stays selected as the interface language.',
+    'settings.languageSwitch.userJsonCalendar': 'JSON calendar',
     'settings.sections.about.title': 'About',
     'settings.sections.about.subtitle':
       'Service information for the current local-first build.',
@@ -74,21 +75,21 @@ export const enTranslations = {
     'importEntry.eyebrow': 'Import flow entry',
     'importEntry.heroTitle': 'Prepare a local JSON replacement',
     'importEntry.heroSubtitle':
-      'This screen is now the dedicated entry point for replacing the active year with a local JSON file.',
+      'This screen is the dedicated entry point for saving and activating a local JSON calendar.',
     'importEntry.currentYear.title': 'Current active year',
     'importEntry.currentYear.subtitle':
-      'If you confirm the next step, the SQLite dataset for {{year}} will be replaced, not merged.',
+      'Saving a JSON calendar will activate it automatically and switch the interface language to English.',
     'importEntry.fileCard.title': 'Selected JSON file',
     'importEntry.fileCard.idleSubtitle':
       'Choose a local JSON file to start validation. The active year stays unchanged until the replacement is confirmed.',
     'importEntry.fileCard.readySubtitle':
-      'The selected file was validated successfully and is ready to replace the active SQLite dataset.',
+      'The selected file was validated successfully and is ready to be saved as the JSON calendar.',
     'importEntry.fileCard.fileName': 'File',
     'importEntry.fileCard.detectedYear': 'Detected year',
     'importEntry.fileCard.fileSize': 'Size',
     'importEntry.preview.title': 'Validated import preview',
     'importEntry.preview.subtitle':
-      'Year {{year}} passed validation and can now replace the current local dataset.',
+      'Year {{year}} passed validation and can now be saved as the JSON calendar.',
     'importEntry.preview.totalDays': 'Total days',
     'importEntry.preview.workingDays': 'Working days',
     'importEntry.preview.nonWorkingDays': 'Non-working days',
@@ -96,12 +97,12 @@ export const enTranslations = {
     'importEntry.actions.chooseFile': 'Choose JSON file',
     'importEntry.actions.chooseAnotherFile': 'Choose another file',
     'importEntry.actions.validating': 'Validating file...',
-    'importEntry.actions.replaceYear': 'Replace active year',
-    'importEntry.actions.importing': 'Replacing local dataset...',
-    'importEntry.confirm.title': 'Replace active calendar year?',
+    'importEntry.actions.replaceYear': 'Save JSON calendar',
+    'importEntry.actions.importing': 'Saving JSON calendar...',
+    'importEntry.confirm.title': 'Save JSON calendar?',
     'importEntry.confirm.body':
-      'The current year {{currentYear}} will be fully replaced by year {{importedYear}} in local SQLite storage. This action does not merge data.',
-    'importEntry.confirm.action': 'Replace year',
+      'Year {{importedYear}} will be saved as the JSON calendar and selected automatically instead of the currently loaded year {{currentYear}}.',
+    'importEntry.confirm.action': 'Save calendar',
     'importEntry.error.validationTitle': 'Validation failed',
     'importEntry.error.validationBody':
       'The selected JSON file did not pass validation. The active calendar year was not changed.',
@@ -114,9 +115,9 @@ export const enTranslations = {
     'importEntry.error.pickerTitle': 'Failed to open file picker',
     'importEntry.error.pickerBody':
       'The system file picker did not return a readable JSON file.',
-    'importEntry.error.replaceTitle': 'Failed to replace active year',
+    'importEntry.error.replaceTitle': 'Failed to save JSON calendar',
     'importEntry.error.replaceBody':
-      'Validation succeeded, but the new year could not be written to SQLite. The current calendar remains active.',
+      'Validation succeeded, but the JSON calendar could not be written to SQLite. The current calendar remains active.',
     'importEntry.error.replaceDetail':
       'Check local storage availability and try the import again.',
     'importEntry.error.genericTitle': 'Import failed',
@@ -129,7 +130,7 @@ export const enTranslations = {
     'importEntry.flow.step2':
       '2. Validate and normalize the selected year before any write.',
     'importEntry.flow.step3':
-      '3. Ask for confirmation before replacing the active SQLite dataset.',
+      '3. Ask for confirmation before saving the JSON calendar slot.',
     'importEntry.step.file': 'File',
     'importEntry.step.preview': 'Check',
     'importEntry.step.confirm': 'Confirm',
@@ -141,28 +142,28 @@ export const enTranslations = {
       'Parsing JSON, validating structure, and building the day list. This usually takes a moment.',
     'importEntry.review.headline': 'File looks good',
     'importEntry.review.supporting':
-      'Review the summary below. When you continue, you will confirm replacing the active year.',
+      'Review the summary below. When you continue, you will confirm saving the JSON calendar.',
     'importEntry.confirm.screenTitle': 'Confirm replacement',
     'importEntry.confirm.compare': '{{currentYear}} → {{importedYear}}',
     'importEntry.confirm.bullet1':
-      'The SQLite calendar for the active year is fully replaced; there is no merge.',
+      'The saved JSON calendar slot is replaced and becomes the active calendar.',
     'importEntry.confirm.bullet2': 'Only this device is affected; there is no cloud upload.',
     'importEntry.confirm.bullet3':
-      'You can import another file later from settings if you need to correct a mistake.',
+      'The app language will switch to English after saving.',
     'importEntry.confirm.backToReview': 'Back to summary',
     'importEntry.importing.headline': 'Saving to local storage',
     'importEntry.importing.supporting':
-      'Writing the validated year into SQLite. Please keep the app open.',
+      'Writing the validated JSON calendar into SQLite. Please keep the app open.',
     'importEntry.success.headline': 'Import complete',
     'importEntry.success.supporting':
-      'Year {{year}} is now the active calendar on this device.',
-    'importEntry.success.toCalendar': 'Open year view',
+      'Year {{year}} was saved and selected as the JSON calendar.',
+    'importEntry.success.toCalendar': 'Open settings',
     'importEntry.error.tryAgain': 'Try again',
     'importEntry.error.pickAnotherFile': 'Pick another file',
     'importEntry.error.startOver': 'Start over',
     'importEntry.aiPrompt.title': 'Generate with AI',
     'importEntry.aiPrompt.description':
-      'Need a calendar for a different country or year? Tap the button below to copy a ready-made prompt. Then open any AI chat (Gemini, ChatGPT, DeepSeek), paste the prompt and write, for example:\n\n"Generate a production calendar for Armenia 2026"\n\nSave the resulting JSON file and import it here.',
+      'Need a calendar for a different country or year? Tap the button below to copy a ready-made prompt. Then open any AI chat (Gemini, ChatGPT, DeepSeek), paste the prompt, and in a separate message add your request, for example:\n\n"Generate Armenia 2026 calendar, return a JSON file."\n\nSave the reply as a .json file (or use the Paste JSON screen) and import it here.',
     'importEntry.aiPrompt.copyButton': 'Copy prompt to clipboard',
     'importEntry.aiPrompt.copied': 'Prompt copied!',
     'importEntry.textJson.title': 'Paste ready JSON',

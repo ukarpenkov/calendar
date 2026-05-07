@@ -55,7 +55,8 @@ export const ruTranslations: Record<TranslationKey, string> = {
     'settings.rows.language.title': 'Язык интерфейса',
     'settings.rows.language.subtitle': 'Текущий язык: {{language}}.',
     'settings.rows.language.userImportHint':
-      'Активный год загружен из JSON: смена языка интерфейса не перезапишет данные. Встроенный календарь можно выбрать в блоке «Производственный календарь (2026)» ниже.',
+      'Активен сохраненный JSON-календарь. Языком интерфейса выбран английский.',
+    'settings.languageSwitch.userJsonCalendar': 'JSON календарь',
     'settings.sections.about.title': 'О приложении',
     'settings.sections.about.subtitle':
       'Служебная информация о текущей локальной сборке.',
@@ -77,21 +78,21 @@ export const ruTranslations: Record<TranslationKey, string> = {
     'importEntry.eyebrow': 'Точка входа в импорт',
     'importEntry.heroTitle': 'Подготовка замены года локальным JSON',
     'importEntry.heroSubtitle':
-      'Этот экран теперь служит отдельной точкой входа для замены активного года файлом JSON с устройства.',
+      'Этот экран служит точкой входа для сохранения и автоматического выбора локального JSON-календаря.',
     'importEntry.currentYear.title': 'Текущий активный год',
     'importEntry.currentYear.subtitle':
-      'После подтверждения следующий шаг полностью заменит набор данных {{year}} в SQLite, без объединения.',
+      'После сохранения JSON-календарь станет активным автоматически, а язык приложения переключится на English.',
     'importEntry.fileCard.title': 'Выбранный JSON-файл',
     'importEntry.fileCard.idleSubtitle':
       'Выберите локальный JSON-файл, чтобы запустить валидацию. Активный год не изменится, пока замена не будет подтверждена.',
     'importEntry.fileCard.readySubtitle':
-      'Выбранный файл успешно прошел валидацию и готов заменить активный набор данных в SQLite.',
+      'Выбранный файл успешно прошел валидацию и готов сохраниться как JSON-календарь.',
     'importEntry.fileCard.fileName': 'Файл',
     'importEntry.fileCard.detectedYear': 'Определенный год',
     'importEntry.fileCard.fileSize': 'Размер',
     'importEntry.preview.title': 'Предпросмотр валидированного импорта',
     'importEntry.preview.subtitle':
-      'Год {{year}} прошел валидацию и теперь может заменить текущий локальный набор данных.',
+      'Год {{year}} прошел валидацию и теперь может быть сохранен как JSON-календарь.',
     'importEntry.preview.totalDays': 'Всего дней',
     'importEntry.preview.workingDays': 'Рабочих дней',
     'importEntry.preview.nonWorkingDays': 'Нерабочих дней',
@@ -99,12 +100,12 @@ export const ruTranslations: Record<TranslationKey, string> = {
     'importEntry.actions.chooseFile': 'Выбрать JSON-файл',
     'importEntry.actions.chooseAnotherFile': 'Выбрать другой файл',
     'importEntry.actions.validating': 'Проверяем файл...',
-    'importEntry.actions.replaceYear': 'Заменить активный год',
-    'importEntry.actions.importing': 'Обновляем локальный набор...',
-    'importEntry.confirm.title': 'Заменить активный календарный год?',
+    'importEntry.actions.replaceYear': 'Сохранить JSON-календарь',
+    'importEntry.actions.importing': 'Сохраняем JSON-календарь...',
+    'importEntry.confirm.title': 'Сохранить JSON-календарь?',
     'importEntry.confirm.body':
-      'Текущий год {{currentYear}} будет полностью заменен годом {{importedYear}} в локальном SQLite-хранилище. Объединения данных не будет.',
-    'importEntry.confirm.action': 'Заменить год',
+      'Год {{importedYear}} будет сохранен как JSON-календарь и выбран автоматически вместо текущего загруженного года {{currentYear}}.',
+    'importEntry.confirm.action': 'Сохранить календарь',
     'importEntry.error.validationTitle': 'Валидация не пройдена',
     'importEntry.error.validationBody':
       'Выбранный JSON-файл не прошел проверку. Активный календарный год не изменился.',
@@ -117,9 +118,9 @@ export const ruTranslations: Record<TranslationKey, string> = {
     'importEntry.error.pickerTitle': 'Не удалось открыть выбор файла',
     'importEntry.error.pickerBody':
       'Системный file picker не вернул читаемый JSON-файл.',
-    'importEntry.error.replaceTitle': 'Не удалось заменить активный год',
+    'importEntry.error.replaceTitle': 'Не удалось сохранить JSON-календарь',
     'importEntry.error.replaceBody':
-      'Валидация прошла успешно, но новый год не удалось записать в SQLite. Текущий календарь остался активным.',
+      'Валидация прошла успешно, но JSON-календарь не удалось записать в SQLite. Текущий календарь остался активным.',
     'importEntry.error.replaceDetail':
       'Проверьте доступность локального хранилища и попробуйте импорт еще раз.',
     'importEntry.error.genericTitle': 'Импорт не завершен',
@@ -132,7 +133,7 @@ export const ruTranslations: Record<TranslationKey, string> = {
     'importEntry.flow.step2':
       '2. Провалидирует и нормализует выбранный год до любой записи в БД.',
     'importEntry.flow.step3':
-      '3. Запросит явное подтверждение перед заменой активного набора в SQLite.',
+      '3. Запросит явное подтверждение перед сохранением JSON-календаря.',
     'importEntry.step.file': 'Файл',
     'importEntry.step.preview': 'Проверка',
     'importEntry.step.confirm': 'Подтверждение',
@@ -144,28 +145,29 @@ export const ruTranslations: Record<TranslationKey, string> = {
       'Разбор JSON, проверка структуры и сбор списка дней. Обычно это занимает несколько секунд.',
     'importEntry.review.headline': 'Файл прошел проверку',
     'importEntry.review.supporting':
-      'Ниже сводка по году. Далее откроется шаг подтверждения замены активного года.',
+      'Ниже сводка по году. Далее откроется шаг подтверждения сохранения JSON-календаря.',
     'importEntry.confirm.screenTitle': 'Подтвердите замену',
     'importEntry.confirm.compare': '{{currentYear}} → {{importedYear}}',
     'importEntry.confirm.bullet1':
-      'Календарь активного года в SQLite полностью заменяется; объединения данных нет.',
+      'Сохраненный слот JSON-календаря заменяется и становится активным календарем.',
     'importEntry.confirm.bullet2':
       'Изменения только на этом устройстве; облачной синхронизации нет.',
     'importEntry.confirm.bullet3':
-      'При ошибке вы сможете импортировать другой файл снова из настроек.',
+      'После сохранения язык приложения переключится на English.',
     'importEntry.confirm.backToReview': 'К сводке',
     'importEntry.importing.headline': 'Сохраняем в локальное хранилище',
     'importEntry.importing.supporting':
-      'Записываем проверенный год в SQLite. Не закрывайте приложение.',
+      'Записываем проверенный JSON-календарь в SQLite. Не закрывайте приложение.',
     'importEntry.success.headline': 'Импорт выполнен',
-    'importEntry.success.supporting': 'Год {{year}} теперь активный календарь на устройстве.',
-    'importEntry.success.toCalendar': 'Открыть обзор года',
+    'importEntry.success.supporting':
+      'Год {{year}} сохранен и выбран как JSON-календарь.',
+    'importEntry.success.toCalendar': 'Открыть настройки',
     'importEntry.error.tryAgain': 'Повторить',
     'importEntry.error.pickAnotherFile': 'Выбрать другой файл',
     'importEntry.error.startOver': 'С начала',
     'importEntry.aiPrompt.title': 'Сгенерировать через ИИ',
     'importEntry.aiPrompt.description':
-      'Нужен календарь другой страны или года? Нажмите кнопку ниже, чтобы скопировать готовый промт. Затем откройте любой ИИ-чат (Gemini, ChatGPT, DeepSeek), вставьте промт и напишите, например:\n\n«Сгенерируй производственный календарь для Армении 2026 года»\n\nСохраните полученный JSON-файл и импортируйте его здесь.',
+      'Нужен календарь другой страны или года? Нажмите кнопку ниже, чтобы скопировать готовый промт. Затем откройте любой ИИ-чат (Gemini, ChatGPT, DeepSeek), вставьте промт и отдельным сообщением добавьте задание, например:\n\n«Сгенерируй календарь Армении 2026, верни файл JSON».\n\nСохраните ответ как файл .json (или воспользуйтесь экраном вставки JSON) и импортируйте его здесь.',
     'importEntry.aiPrompt.copyButton': 'Скопировать промт в буфер обмена',
     'importEntry.aiPrompt.copied': 'Промт скопирован!',
     'importEntry.textJson.title': 'Вставьте готовый JSON',

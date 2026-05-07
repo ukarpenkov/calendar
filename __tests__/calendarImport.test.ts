@@ -218,12 +218,52 @@ describe('calendar import pipeline', () => {
           code: 'INCONSISTENT_DAY_TYPE',
           path: 'weekends[0]',
         }),
-        expect.objectContaining({
-          code: 'INCONSISTENT_DAY_TYPE',
-          path: 'preholidays[0]',
-        }),
       ]),
     );
+  });
+
+  it('drops preholidays that duplicate weekends or holidays (LLM-style overlaps)', () => {
+    const raw = validateCalendarImportData({
+      year: 2026,
+      holidays: [
+        {
+          date: '2026-09-21',
+          name_ru: 'День независимости',
+          name_en: 'Independence Day',
+        },
+      ],
+      weekends: [...isoWeekendDatesForYear(2026)],
+      preholidays: ['2026-09-20', '2026-09-18'],
+    });
+
+    expect(raw.preholidays).toEqual(['2026-09-18']);
+
+    const calendar = normalizeCalendarImport(raw);
+    expect(calendar.days.find(day => day.date === '2026-09-20')).toMatchObject({
+      type: 'weekend',
+      isShortened: false,
+    });
+    expect(calendar.days.find(day => day.date === '2026-09-18')).toMatchObject({
+      type: 'shortened',
+      isShortened: true,
+    });
+  });
+
+  it('drops preholidays that duplicate a holiday date', () => {
+    const raw = validateCalendarImportData({
+      year: 2026,
+      holidays: [
+        {
+          date: '2026-05-01',
+          name_ru: 'Праздник',
+          name_en: 'Holiday',
+        },
+      ],
+      weekends: isoWeekendDatesForYear(2026),
+      preholidays: ['2026-05-01', '2026-04-30'],
+    });
+
+    expect(raw.preholidays).toEqual(['2026-04-30']);
   });
 
   it('accepts optional localized holiday names name_tr, name_id, name_ja', () => {
