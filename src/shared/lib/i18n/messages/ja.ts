@@ -163,4 +163,15 @@ export const jaTranslations = {
   'importEntry.error.tryAgain': '再試行',
   'importEntry.error.pickAnotherFile': '別のファイルを選ぶ',
   'importEntry.error.startOver': '最初からやり直す',
+  'importEntry.aiPrompt.title': 'AIで生成する',
+  'importEntry.aiPrompt.description':
+    '別の国や年のカレンダーが必要ですか？下のボタンをタップしてプロンプトをコピーしてください。その後、任意のAIチャット（Gemini、ChatGPT、DeepSeek）を開き、プロンプトを貼り付けて、例えば次のように入力してください：\n\n「アルメニアの2026年の生産カレンダーを生成してください」\n\n結果のJSONファイルを保存し、ここでインポートしてください。',
+  'importEntry.aiPrompt.copyButton': 'プロンプトをクリップボードにコピー',
+  'importEntry.aiPrompt.copied': 'プロンプトをコピーしました！',
+  'importEntry.textJson.title': '完成した JSON を貼り付け',
+  'importEntry.textJson.description':
+    'JSON の全文をここに貼り付けてください。構造が有効な場合、アプリが自動で解析し、確認ステップを開きます。',
+  'importEntry.textJson.placeholder': 'カレンダー JSON をここに貼り付け...',
+  'importEntry.textJson.pasteButton': 'テキストを貼り付け',
+  'importEntry.textJson.sourceName': '貼り付けた JSON テキスト',
 } satisfies Record<TranslationKey, string>;

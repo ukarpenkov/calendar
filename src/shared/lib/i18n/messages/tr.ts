@@ -163,4 +163,15 @@ export const trTranslations = {
   'importEntry.error.tryAgain': 'Yeniden dene',
   'importEntry.error.pickAnotherFile': 'Başka dosya seç',
   'importEntry.error.startOver': 'Baştan başla',
+  'importEntry.aiPrompt.title': 'AI ile oluştur',
+  'importEntry.aiPrompt.description':
+    'Farklı bir ülke veya yıl için takvim mi gerekiyor? Aşağıdaki düğmeye dokunarak hazır istemi kopyalayın. Ardından herhangi bir AI sohbeti (Gemini, ChatGPT, DeepSeek) açın, istemi yapıştırın ve şöyle yazın:\n\n"Ermenistan 2026 üretim takvimi oluştur"\n\nSonucu .json olarak kaydedin ve buradan içe aktarın.',
+  'importEntry.aiPrompt.copyButton': 'İstemi panoya kopyala',
+  'importEntry.aiPrompt.copied': 'İstek kopyalandı!',
+  'importEntry.textJson.title': 'Hazır JSON metnini yapıştır',
+  'importEntry.textJson.description':
+    'Tam JSON metnini buraya yapıştırın. Yapı geçerliyse uygulama metni otomatik olarak ayrıştırır ve kontrol adımını açar.',
+  'importEntry.textJson.placeholder': 'Takvim JSON’unu buraya yapıştırın...',
+  'importEntry.textJson.pasteButton': 'Metni yapıştır',
+  'importEntry.textJson.sourceName': 'Yapıştırılan JSON metni',
 } satisfies Record<TranslationKey, string>;

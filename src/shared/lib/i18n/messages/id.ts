@@ -163,4 +163,15 @@ export const idTranslations = {
   'importEntry.error.tryAgain': 'Coba lagi',
   'importEntry.error.pickAnotherFile': 'Pilih berkas lain',
   'importEntry.error.startOver': 'Mulai dari awal',
+  'importEntry.aiPrompt.title': 'Buat dengan AI',
+  'importEntry.aiPrompt.description':
+    'Butuh kalender untuk negara atau tahun lain? Ketuk tombol di bawah untuk menyalin prompt. Lalu buka chat AI mana pun (Gemini, ChatGPT, DeepSeek), tempelkan prompt dan tulis, misalnya:\n\n"Buatkan kalender produksi Armenia tahun 2026"\n\nSimpan file JSON hasilnya dan impor di sini.',
+  'importEntry.aiPrompt.copyButton': 'Salin prompt ke papan klip',
+  'importEntry.aiPrompt.copied': 'Prompt disalin!',
+  'importEntry.textJson.title': 'Tempel JSON siap pakai',
+  'importEntry.textJson.description':
+    'Tempelkan teks JSON lengkap di sini. Jika strukturnya valid, aplikasi akan mengurainya otomatis dan membuka langkah pemeriksaan.',
+  'importEntry.textJson.placeholder': 'Tempel JSON kalender di sini...',
+  'importEntry.textJson.pasteButton': 'Tempel teks',
+  'importEntry.textJson.sourceName': 'Teks JSON yang ditempel',
 } satisfies Record<TranslationKey, string>;

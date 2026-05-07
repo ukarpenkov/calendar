@@ -163,4 +163,15 @@ export const ruTranslations: Record<TranslationKey, string> = {
     'importEntry.error.tryAgain': 'Повторить',
     'importEntry.error.pickAnotherFile': 'Выбрать другой файл',
     'importEntry.error.startOver': 'С начала',
+    'importEntry.aiPrompt.title': 'Сгенерировать через ИИ',
+    'importEntry.aiPrompt.description':
+      'Нужен календарь другой страны или года? Нажмите кнопку ниже, чтобы скопировать готовый промт. Затем откройте любой ИИ-чат (Gemini, ChatGPT, DeepSeek), вставьте промт и напишите, например:\n\n«Сгенерируй производственный календарь для Армении 2026 года»\n\nСохраните полученный JSON-файл и импортируйте его здесь.',
+    'importEntry.aiPrompt.copyButton': 'Скопировать промт в буфер обмена',
+    'importEntry.aiPrompt.copied': 'Промт скопирован!',
+    'importEntry.textJson.title': 'Вставьте готовый JSON',
+    'importEntry.textJson.description':
+      'Вставьте сюда полный текст JSON. Если структура валидна, приложение автоматически распарсит его и откроет шаг проверки.',
+    'importEntry.textJson.placeholder': 'Вставьте JSON календаря сюда...',
+    'importEntry.textJson.pasteButton': 'Вставить текст',
+    'importEntry.textJson.sourceName': 'Вставленный JSON-текст',
   };

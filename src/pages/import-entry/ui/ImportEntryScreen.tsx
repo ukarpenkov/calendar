@@ -5,8 +5,10 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from 'react-native';
+import Clipboard from '@react-native-clipboard/clipboard';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useAppLocalization } from '../../../app/providers/localization';
@@ -16,8 +18,10 @@ import {
   CalendarImportSourceError,
   CalendarImportValidationError,
   pickAndPrepareCalendarImport,
+  parseValidateAndNormalizeCalendarImport,
   type PreparedCalendarImport,
 } from '../../../features/calendar-import';
+import { LLM_CALENDAR_PROMPT } from '../../../features/calendar-import/model/llm-prompt';
 import { layout } from '../../../shared/lib/ui/layout';
 import { ArrowBackIcon } from '../../../shared/ui/icons/NavigationIcons';
 import { IconCircleButton } from '../../../shared/ui/IconCircleButton';
@@ -113,6 +117,11 @@ export function ImportEntryScreen({
     null,
   );
   const [reviewError, setReviewError] = useState<ImportEntryErrorState | null>(null);
+  const [pastedJsonText, setPastedJsonText] = useState('');
+  const [pastedJsonError, setPastedJsonError] = useState<ImportEntryErrorState | null>(
+    null,
+  );
+  const [promptCopied, setPromptCopied] = useState(false);
 
   const isBlockingAsync = panel === 'validating' || panel === 'importing';
 
@@ -169,6 +178,8 @@ export function ImportEntryScreen({
     setPreparedImport(null);
     setBlockingError(null);
     setReviewError(null);
+    setPastedJsonText('');
+    setPastedJsonError(null);
     setSuccessCalendar(null);
     setPanel('choose');
   };
@@ -203,6 +214,7 @@ export function ImportEntryScreen({
 
     setBlockingError(null);
     setReviewError(null);
+    setPastedJsonError(null);
     setPreparedImport(null);
     setPanel('validating');
 
@@ -287,8 +299,60 @@ export function ImportEntryScreen({
     applyPreparedImport();
   };
 
+  const prepareImportFromText = (jsonText: string): PreparedCalendarImport => {
+    const trimmedJson = jsonText.trim();
+    const calendar = parseValidateAndNormalizeCalendarImport(trimmedJson);
+
+    return {
+      file: {
+        uri: 'clipboard://calendar-import.json',
+        name: t('importEntry.textJson.sourceName'),
+        type: 'application/json',
+        size: trimmedJson.length,
+      },
+      calendar,
+    };
+  };
+
+  const tryPrepareImportFromText = (jsonText: string) => {
+    const trimmedJson = jsonText.trim();
+
+    setPastedJsonText(jsonText);
+    setPastedJsonError(null);
+
+    if (!trimmedJson) {
+      return;
+    }
+
+    if (!trimmedJson.startsWith('{') || !trimmedJson.endsWith('}')) {
+      return;
+    }
+
+    try {
+      const nextImport = prepareImportFromText(trimmedJson);
+      setBlockingError(null);
+      setReviewError(null);
+      setPreparedImport(nextImport);
+      setPanel('review');
+    } catch (error) {
+      setPastedJsonError(describeImportError(error));
+    }
+  };
+
+  const pasteJsonFromClipboard = () => {
+    Clipboard.getString().then(clipboardText => {
+      tryPrepareImportFromText(clipboardText);
+    });
+  };
+
   const headerBackDisabled = isBlockingAsync;
   const stepperIndex = getStepperIndex(panel);
+
+  const handleCopyPrompt = () => {
+    Clipboard.setString(LLM_CALENDAR_PROMPT);
+    setPromptCopied(true);
+    setTimeout(() => setPromptCopied(false), 3000);
+  };
 
   return (
     <View
@@ -372,6 +436,90 @@ export function ImportEntryScreen({
               <Text style={[styles.yearBadge, { color: palette.title }]}>
                 {activeYear}
               </Text>
+            </View>
+
+            <View
+              style={[
+                styles.aiPromptCard,
+                {
+                  backgroundColor: palette.surface,
+                  borderColor: palette.border,
+                },
+              ]}
+            >
+              <Text style={[styles.cardTitle, { color: palette.title }]}>
+                {t('importEntry.aiPrompt.title')}
+              </Text>
+              <Text style={[styles.cardBody, { color: palette.subtitle }]}>
+                {t('importEntry.aiPrompt.description')}
+              </Text>
+              <ActionButton
+                label={
+                  promptCopied
+                    ? t('importEntry.aiPrompt.copied')
+                    : t('importEntry.aiPrompt.copyButton')
+                }
+                onPress={handleCopyPrompt}
+                disabled={false}
+                palette={palette}
+                variant="default"
+              />
+            </View>
+
+            <View
+              style={[
+                styles.infoCard,
+                {
+                  backgroundColor: palette.surface,
+                  borderColor: pastedJsonError ? palette.holidayBorder : palette.border,
+                },
+              ]}
+            >
+              <Text style={[styles.cardTitle, { color: palette.title }]}>
+                {t('importEntry.textJson.title')}
+              </Text>
+              <Text style={[styles.cardBody, { color: palette.subtitle }]}>
+                {t('importEntry.textJson.description')}
+              </Text>
+              <TextInput
+                value={pastedJsonText}
+                onChangeText={tryPrepareImportFromText}
+                multiline
+                numberOfLines={4}
+                textAlignVertical="top"
+                autoCapitalize="none"
+                autoCorrect={false}
+                placeholder={t('importEntry.textJson.placeholder')}
+                placeholderTextColor={palette.subtitle}
+                style={[
+                  styles.jsonTextArea,
+                  {
+                    backgroundColor: palette.surfaceMuted,
+                    borderColor: palette.border,
+                    color: palette.title,
+                  },
+                ]}
+              />
+              {pastedJsonError ? (
+                <View style={styles.errorList}>
+                  <Text style={[styles.errorText, { color: palette.subtitle }]}>
+                    {pastedJsonError.body}
+                  </Text>
+                  {pastedJsonError.details.map(detail => (
+                    <Text
+                      key={detail}
+                      style={[styles.errorText, { color: palette.subtitle }]}
+                    >
+                      {`\u2022 ${detail}`}
+                    </Text>
+                  ))}
+                </View>
+              ) : null}
+              <GhostButton
+                label={t('importEntry.textJson.pasteButton')}
+                onPress={pasteJsonFromClipboard}
+                palette={palette}
+              />
             </View>
 
             <ActionButton
@@ -971,6 +1119,21 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 16,
     gap: 12,
+  },
+  aiPromptCard: {
+    borderWidth: 1,
+    borderRadius: 20,
+    padding: 16,
+    gap: 14,
+  },
+  jsonTextArea: {
+    height: 92,
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 13,
+    lineHeight: 18,
   },
   cardTitle: {
     fontSize: 18,

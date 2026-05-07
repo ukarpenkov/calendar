@@ -160,6 +160,17 @@ export const enTranslations = {
     'importEntry.error.tryAgain': 'Try again',
     'importEntry.error.pickAnotherFile': 'Pick another file',
     'importEntry.error.startOver': 'Start over',
+    'importEntry.aiPrompt.title': 'Generate with AI',
+    'importEntry.aiPrompt.description':
+      'Need a calendar for a different country or year? Tap the button below to copy a ready-made prompt. Then open any AI chat (Gemini, ChatGPT, DeepSeek), paste the prompt and write, for example:\n\n"Generate a production calendar for Armenia 2026"\n\nSave the resulting JSON file and import it here.',
+    'importEntry.aiPrompt.copyButton': 'Copy prompt to clipboard',
+    'importEntry.aiPrompt.copied': 'Prompt copied!',
+    'importEntry.textJson.title': 'Paste ready JSON',
+    'importEntry.textJson.description':
+      'Paste the full JSON text here. When the structure is valid, the app will parse it automatically and open the check step.',
+    'importEntry.textJson.placeholder': 'Paste calendar JSON here...',
+    'importEntry.textJson.pasteButton': 'Paste text',
+    'importEntry.textJson.sourceName': 'Pasted JSON text',
 } as const;
 
 export type TranslationKey = keyof typeof enTranslations;
