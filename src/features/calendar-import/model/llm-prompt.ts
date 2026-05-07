@@ -14,8 +14,8 @@ The root object contains 4 required fields:
 
 {
   "year": <number>,          // Year: integer from 1970 to 9999
-  "holidays": [<Holiday>],   // Public holiday days
-  "weekends": [<string>],    // Non-working days, normally Saturday/Sunday
+  "holidays": [<Holiday>],   // Non-working days with names (weekday or holiday date)
+  "weekends": [<string>],    // Calendar Saturdays and Sundays only (see below)
   "preholidays": [<string>]  // Shortened working days before holidays
 }
 
@@ -31,9 +31,15 @@ The root object contains 4 required fields:
 }
 
 --- weekends ---
-Array of strings in "YYYY-MM-DD" format. Each date MUST fall on
-Saturday or Sunday (ISO: Saturday=6, Sunday=7), unless it is an official
-substitute non-working day moved by the government.
+Array of strings in "YYYY-MM-DD" format. Each date MUST be a calendar Saturday
+or Sunday only; Monday–Friday in this array are rejected by the importer.
+Weekday numbering in this document: Monday=1 … Saturday=6, Sunday=7.
+List every Saturday and Sunday of the year that is a normal weekly rest day.
+If the country declares a specific Saturday or Sunday as a compensatory
+working day, omit that date from "weekends" (it becomes a workday unless it
+appears under "holidays" for another reason). Substitute non-working weekdays,
+bridge days, and other non-working weekdays MUST be under "holidays", never
+here.
 
 --- preholidays ---
 Array of strings in "YYYY-MM-DD" format. These are working days before
@@ -75,8 +81,9 @@ Duplicate dates inside the same array are forbidden.
   ]
 }
 
-(In a real file, weekends must contain ALL Saturdays and Sundays of the year -
-about 104 dates.)
+(In a real file, list every weekly rest Saturday and Sunday—typically about
+104 dates in a non-leap year—omitting any Sat/Sun that are official working
+days. Never list Monday–Friday under "weekends".)
 
 
 ================================================================================
@@ -120,7 +127,7 @@ The JSON must strictly match this schema:
 
 1. FIELD "year" - the calendar year, as an integer.
 
-2. FIELD "holidays" - official public holidays of the country:
+2. FIELD "holidays" - non-working days that carry a public name in the law:
    - Each item is an object with "date", "name_ru", and "name_en" fields.
    - "date" is a YYYY-MM-DD date belonging to the specified year.
    - "name_ru" is the holiday name in Russian (required, non-empty string).
@@ -129,18 +136,25 @@ The JSON must strictly match this schema:
      (for example "name_hy" for Armenia, "name_ka" for Georgia,
      "name_de" for Germany, etc.).
    - Dates must not be repeated.
-   - Include only OFFICIAL public holidays / non-working holidays, not
-     commemorative or professional observance dates.
+   - Include official public / non-working holidays. Also include any
+     non-working Monday–Friday that the country treats as a day off:
+     substitute rest days after a weekend holiday, transferred holidays,
+     bridge days, extended New Year periods, etc.—each with a clear name,
+     not listed under "weekends".
+   - Omit purely commemorative or professional observance dates that are
+     still normal workdays unless your source explicitly marks them as
+     non-working.
 
-3. FIELD "weekends" - all Saturdays and Sundays of the year:
+3. FIELD "weekends" - weekly rest days on the civil calendar:
    - Array of strings in "YYYY-MM-DD" format.
-   - Each date MUST fall on Saturday or Sunday.
-   - If an official holiday falls on Saturday/Sunday and the government
-     declares a substitute weekday as a non-working day, add that weekday
-     to weekends as the substitute.
+   - Each date MUST fall on Saturday or Sunday only. NEVER put Monday–Friday
+     in this array (the importer will reject it).
+   - List every Saturday and Sunday in the year that is a normal non-working
+     weekend day. If a particular Saturday or Sunday is legally a working
+     day (compensation / transfer rules), omit it from this array.
    - Dates must not be repeated.
-   - The array should contain about 104 dates (all Saturdays + all Sundays
-     of the year, minus swapped-out dates, plus substitute non-working days).
+   - Count is usually about 104 in a non-leap year, minus any working
+     weekend days the country declares.
 
 4. FIELD "preholidays" - shortened working days before holidays:
    - Array of strings in "YYYY-MM-DD" format.
@@ -153,10 +167,10 @@ The JSON must strictly match this schema:
 5. ADDITIONAL RULES:
    - All dates must belong to the specified year.
    - Do not duplicate dates inside the same array.
-   - Weekend transfers / swap days: if a holiday falls on Sunday, the
-     government may declare Monday as a non-working day and Saturday as a
-     working day. In this case, add Monday to weekends and remove Saturday
-     from weekends.
+   - Transfers and swaps: if a holiday falls on Sunday and Monday becomes a
+     non-working substitute, put Monday in "holidays" with an appropriate
+     name (e.g. observed / substitute), not in "weekends". If Saturday
+     becomes a working day instead, remove that Saturday from "weekends".
 
 === EXAMPLE (FRAGMENT, RUSSIA 2026) ===
 
@@ -182,4 +196,5 @@ The JSON must strictly match this schema:
 - Do not add comments inside JSON.
 - Check that the JSON is syntactically valid (correct braces, commas, quotes).
 - Make sure every day of the year is covered exactly once in one of four
-  contexts: holiday, weekend, preholiday, or workday.`;
+  contexts: holiday, weekend, preholiday, or workday.
+`;
