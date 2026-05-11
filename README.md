@@ -7,6 +7,8 @@ A **React Native** mobile app for **Android** that shows a full **production cal
 ## ✨ What it does
 
 - 🗓 **Year overview** — see the whole year on one screen; tap a month for detail and totals (working days, non-working days, hours for a 40-hour week).
+- ✨ **Motion** — subtle **animations** for transitions and interactions so the UI feels responsive without getting in the way.
+- 🖼 **Date imagery** — **custom images** for notable dates (holidays, themes), so days are easier to spot at a glance.
 - 🌙 **Comfortable viewing** — **light** and **dark** themes so you can read the calendar anywhere.
 - 🌍 **Bilingual UI** — interface oriented toward **Russian** and **English** usage.
 - 📥 **Bring your own year** — import a validated **local JSON** file to replace the active calendar; the app ships with a bundled **2026** dataset so the first launch always has real data.
