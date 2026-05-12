@@ -136,7 +136,7 @@ export const ruTranslations: Record<TranslationKey, string> = {
       '3. Запросит явное подтверждение перед сохранением JSON-календаря.',
     'importEntry.step.file': 'Файл',
     'importEntry.step.preview': 'Проверка',
-    'importEntry.step.confirm': 'Подтверждение',
+    'importEntry.step.confirm': 'Подтвердить',
     'importEntry.choose.headline': 'Загрузить год календаря из JSON-файла',
     'importEntry.choose.supporting':
       'Приложение читает только файл, который вы выберете на устройстве. Данные не меняются, пока вы не подтвердите замену.',
