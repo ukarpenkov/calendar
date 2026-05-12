@@ -1,6 +1,6 @@
 import { layout } from '../../../shared/lib/ui/layout';
 
-const TABLET_MONTH_MAX_CONTENT_WIDTH = 440;
+const TABLET_MONTH_MAX_CONTENT_WIDTH_LANDSCAPE = 440;
 const MONTH_CONTENT_MIN_WIDTH = 280;
 
 /** Space between calendar column and side column in split layout. */
@@ -41,15 +41,15 @@ export function getMonthContentMaxWidth(
   }
 
   let w = Math.min(fullContentWidth, minDimension - horizontalPadding);
-  if (isTablet) {
-    w = Math.min(w, TABLET_MONTH_MAX_CONTENT_WIDTH);
+  if (isTablet && isLandscape) {
+    w = Math.min(w, TABLET_MONTH_MAX_CONTENT_WIDTH_LANDSCAPE);
   }
   return Math.max(w, MONTH_CONTENT_MIN_WIDTH);
 }
 
 /**
- * Stack: портрет (телефон и планшет) — одна колонка, как раньше.
- * Split: только альбом — календарь слева, детали и итоги справа, если хватает ширины.
+ * Stack: портрет-телефон — одна колонка.
+ * Split: альбом (телефон/планшет) и портрет-планшет — календарь слева, детали и итоги справа.
  */
 export function getMonthDetailLayoutMetrics(
   windowWidth: number,
@@ -58,20 +58,24 @@ export function getMonthDetailLayoutMetrics(
   const horizontalPadding = layout.screenPaddingH * 2;
   const fullContentWidth = windowWidth - horizontalPadding;
   const isLandscape = windowWidth > windowHeight;
+  const minDimension = Math.min(windowWidth, windowHeight);
+  const isTablet = minDimension >= 600;
 
   const idealCalendarWidth = getMonthContentMaxWidth(windowWidth, windowHeight);
 
-  if (!isLandscape) {
+  if (!isLandscape && !isTablet) {
     return {
       layout: 'stack',
       calendarColumnWidth: idealCalendarWidth,
     };
   }
 
-  const maxCalendarForSplit =
-    fullContentWidth - MONTH_SPLIT_COLUMNS_GAP - SIDE_COLUMN_MIN_WIDTH;
-
-  const calendarColumnWidth = Math.min(idealCalendarWidth, maxCalendarForSplit);
+  // В сплите календарь занимает ~440px, остальное — side column.
+  const calendarColumnWidth = Math.min(
+    idealCalendarWidth,
+    TABLET_MONTH_MAX_CONTENT_WIDTH_LANDSCAPE,
+    fullContentWidth - MONTH_SPLIT_COLUMNS_GAP - SIDE_COLUMN_MIN_WIDTH,
+  );
   const sideIfSplit =
     fullContentWidth - MONTH_SPLIT_COLUMNS_GAP - calendarColumnWidth;
 

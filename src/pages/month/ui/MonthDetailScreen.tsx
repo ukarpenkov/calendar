@@ -142,6 +142,8 @@ export function MonthDetailScreen({
     () => getMonthDetailLayoutMetrics(windowWidth, windowHeight),
     [windowHeight, windowWidth],
   );
+  const isTabletPortrait =
+    monthLayoutMetrics.layout === 'split' && windowWidth <= windowHeight;
 
   // --- Transition animation ---
   const animProgress = useRef(new Animated.Value(0)).current;
@@ -421,6 +423,7 @@ export function MonthDetailScreen({
                 selectedDayDate={isActive ? selectedDate ?? undefined : undefined}
                 onSelectDay={isActive ? handleSelectDay : NOOP_SELECT_DAY}
                 monthLayoutMetrics={monthLayoutMetrics}
+                isTabletPortrait={isTabletPortrait}
               />
             </ScrollView>
           </Animated.View>
@@ -564,6 +567,7 @@ type MonthDetailBodyProps = {
   selectedDayDate?: string;
   onSelectDay: (date: string) => void;
   monthLayoutMetrics: MonthDetailLayoutMetrics;
+  isTabletPortrait: boolean;
 };
 
 function MonthDetailBody({
@@ -576,6 +580,7 @@ function MonthDetailBody({
   selectedDayDate,
   onSelectDay,
   monthLayoutMetrics,
+  isTabletPortrait,
 }: MonthDetailBodyProps) {
   const selectedHolidayLabel =
     selectedDay !== null
@@ -779,7 +784,9 @@ function MonthDetailBody({
   if (monthLayoutMetrics.layout === 'split') {
     return (
       <View style={styles.monthSplitRowWrapper}>
-        {holidayImage ? <HolidayBanner source={holidayImage} /> : null}
+        {isTabletPortrait && holidayImage ? (
+          <HolidayBanner source={holidayImage} />
+        ) : null}
         <View style={styles.monthSplitRow}>
           <View
             style={[styles.monthCalendarColumn, { width: calendarColumnWidth }]}

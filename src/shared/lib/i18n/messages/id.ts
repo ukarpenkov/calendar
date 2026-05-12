@@ -22,7 +22,7 @@ export const idTranslations = {
   'month.selectedDay.eyebrow': 'Hari terpilih',
   'month.totals.totalDays': 'Total hari',
   'month.totals.workingDays': 'Hari kerja',
-  'month.totals.nonWorkingDays': 'Hari non-kerja',
+  'month.totals.nonWorkingDays': 'Hari libur',
   'month.totals.workHours': 'Jam kerja',
   'month.nav.previousMonth': 'Bulan sebelumnya',
   'month.nav.nextMonth': 'Bulan berikutnya',
