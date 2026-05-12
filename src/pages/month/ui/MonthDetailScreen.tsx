@@ -257,6 +257,8 @@ export function MonthDetailScreen({
   // Flag to prevent onViewableItemsChanged from firing during programmatic scroll
   const isScrollingToRef = useRef(false);
   const programmaticTargetMonthRef = useRef<number | null>(null);
+  // Captures activeMonth at the moment width changes, before FlatList relayout corrupts it
+  const orientationCorrectMonthRef = useRef(activeMonth);
 
   // Stable callback for day selection -- does not depend on activeMonth state
   const handleSelectDay = useCallback(
@@ -319,6 +321,25 @@ export function MonthDetailScreen({
       flatListRef.current?.scrollToIndex({ index: month - 1, animated: true });
     }
   }, [month, activeMonth]);
+
+  // Correct scroll offset after orientation change
+  const prevWindowWidthRef = useRef(windowWidth);
+  useEffect(() => {
+    if (prevWindowWidthRef.current !== windowWidth) {
+      prevWindowWidthRef.current = windowWidth;
+      // Capture the correct month NOW, before FlatList relayout triggers
+      // onViewableItemsChanged with a wrong month (old offset / new width).
+      orientationCorrectMonthRef.current = activeMonth;
+      isScrollingToRef.current = true;
+      // Small delay lets FlatList re-layout with new pageWidth
+      setTimeout(() => {
+        flatListRef.current?.scrollToOffset({
+          offset: (orientationCorrectMonthRef.current - 1) * windowWidth,
+          animated: false,
+        });
+      }, 50);
+    }
+  }, [windowWidth, activeMonth]);
 
   // Auto-select today on initial mount only
   useEffect(() => {
