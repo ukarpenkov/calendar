@@ -22,7 +22,7 @@ export const trTranslations = {
   'month.selectedDay.eyebrow': 'Seçilen gün',
   'month.totals.totalDays': 'Toplam gün',
   'month.totals.workingDays': 'İş günleri',
-  'month.totals.nonWorkingDays': 'İş olmayan günler',
+  'month.totals.nonWorkingDays': 'Tatil günleri',
   'month.totals.workHours': 'Çalışma saatleri',
   'month.nav.previousMonth': 'Önceki ay',
   'month.nav.nextMonth': 'Sonraki ay',
