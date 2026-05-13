@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Production calendar</string>
+    <string name="calendar_widget_name">Calendar</string>
+    <string name="calendar_widget_description">Shows today\'s calendar day with image and work hours</string>
 </resources>

@@ -21,6 +21,7 @@ import {
   seedBundledYearIfNeeded,
   type CalendarYear,
 } from '../entities/calendar';
+import { updateCalendarWidget } from '../widgets/registerWidget';
 import {
   registerCalendarSyncOnAppLanguageChange,
   registerCalendarSyncOnBundledRegionChange,
@@ -209,6 +210,7 @@ function AppContent() {
             activeCalendarSource,
             screen: { name: 'year' },
           });
+          updateCalendarWidget();
         }
       } catch {
         if (isMounted) {
