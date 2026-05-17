@@ -12,7 +12,7 @@ import { getDayDrawableResourceName } from './imageMapping';
 export interface WidgetDayData {
   date: string;
   dayType: CalendarDay['type'];
-  workHours: number;
+  isShortened: boolean;
   holidayName: string | null;
   imageResourceName: string;
   language: AppLanguage;
@@ -89,7 +89,7 @@ export async function fetchTodayWidgetData(): Promise<WidgetDayData | null> {
     return {
       date: day.date,
       dayType: day.type,
-      workHours: day.workHours,
+      isShortened: day.isShortened,
       holidayName,
       imageResourceName,
       language,

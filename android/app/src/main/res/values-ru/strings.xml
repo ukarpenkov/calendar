@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Производственный календарь</string>
     <string name="calendar_widget_name">Календарь</string>
-    <string name="calendar_widget_description">Показывает сегодняшний день с изображением и рабочими часами</string>
+    <string name="calendar_widget_description">Дата и тип дня поверх изображения на всю ширину виджета</string>
 </resources>
