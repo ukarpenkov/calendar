@@ -1,10 +1,11 @@
 {
   "name": "calendar",
-  "version": "7.0.0",
+  "version": "8.0.0",
   "private": true,
   "scripts": {
     "android": "node scripts/run-android.cjs",
     "lint": "eslint .",
+    "postinstall": "patch-package",
     "start": "react-native start",
     "test": "jest"
   },
@@ -16,6 +17,7 @@
     "@react-native/new-app-screen": "0.84.1",
     "react": "19.2.3",
     "react-native": "0.84.1",
+    "react-native-android-widget": "^0.20.3",
     "react-native-safe-area-context": "^5.5.2",
     "react-native-svg": "^15.15.4"
   },
@@ -35,6 +37,7 @@
     "better-sqlite3": "^12.8.0",
     "eslint": "^8.19.0",
     "jest": "^29.6.3",
+    "patch-package": "^8.0.1",
     "prettier": "2.8.8",
     "react-test-renderer": "19.2.3",
     "typescript": "^5.8.3"
