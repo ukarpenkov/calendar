@@ -1,0 +1,15 @@
+diff --git a/node_modules/react-native-android-widget/android/src/main/java/com/reactnativeandroidwidget/builder/widget/ImageWidget.java b/node_modules/react-native-android-widget/android/src/main/java/com/reactnativeandroidwidget/builder/widget/ImageWidget.java
+index 4f5ca01..ab931ca 100644
+--- a/node_modules/react-native-android-widget/android/src/main/java/com/reactnativeandroidwidget/builder/widget/ImageWidget.java
++++ b/node_modules/react-native-android-widget/android/src/main/java/com/reactnativeandroidwidget/builder/widget/ImageWidget.java
+@@ -24,6 +24,10 @@ public class ImageWidget extends BaseWidget<ImageView> {
+ 
+     @Override
+     protected void applyProps() {
++        // Default ImageView scale is FIT_CENTER, which letterboxes when the widget aspect ratio
++        // differs from the bitmap (common on wide MIUI / multi-column widget sizes).
++        view.setScaleType(ImageView.ScaleType.CENTER_CROP);
++
+         Bitmap bitmapFromURL = getBitmapFromURL(props.getMap("image").getString("uri"),
+             dpToPx(props.getDouble("imageWidth")),
+             dpToPx(props.getDouble("imageHeight"))
