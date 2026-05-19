@@ -101,6 +101,7 @@ export function CalendarWidgetLayout({ data }: CalendarWidgetProps) {
     const placeholder = placeholderImageResourceName();
     return (
       <OverlapWidget
+        clickAction="OPEN_APP"
         style={{
           width: 'match_parent',
           height: 'match_parent',
@@ -147,6 +148,7 @@ export function CalendarWidgetLayout({ data }: CalendarWidgetProps) {
 
   return (
     <OverlapWidget
+      clickAction="OPEN_APP"
       style={{
         width: 'match_parent',
         height: 'match_parent',

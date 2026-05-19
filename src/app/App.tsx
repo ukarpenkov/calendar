@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
+  AppState,
   BackHandler,
   Image,
   Pressable,
@@ -188,6 +189,20 @@ function AppContent() {
     const sub = BackHandler.addEventListener('hardwareBackPress', onBackPress);
     return () => sub.remove();
   }, [status]);
+
+  useEffect(() => {
+    if (status.kind !== 'ready') {
+      return;
+    }
+
+    const sub = AppState.addEventListener('change', nextState => {
+      if (nextState === 'active') {
+        updateCalendarWidget();
+      }
+    });
+
+    return () => sub.remove();
+  }, [status.kind]);
 
   useEffect(() => {
     let isMounted = true;

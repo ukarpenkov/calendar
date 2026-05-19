@@ -26,7 +26,7 @@ export async function CalendarWidgetTaskHandler(props: WidgetTaskHandlerProps) {
       break;
     }
     case 'WIDGET_CLICK': {
-      // Click handled by the click action on the widget itself
+      // OPEN_APP / OPEN_URI handled natively; custom actions would arrive here.
       break;
     }
     case 'WIDGET_DELETED': {
