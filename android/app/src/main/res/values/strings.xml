@@ -2,4 +2,7 @@
     <string name="app_name">Production calendar</string>
     <string name="calendar_widget_name">Calendar</string>
     <string name="calendar_widget_description">Shows today\'s date and day type over a full-width image</string>
+    <string name="widget_pin_shortcut_short">Add calendar widget</string>
+    <string name="widget_pin_shortcut_long">Add home screen calendar widget</string>
+    <string name="widget_pin_shortcut_disabled">Widget pinning isn\'t available on this device</string>
 </resources>

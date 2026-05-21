@@ -13,3 +13,38 @@ index 4f5ca01..ab931ca 100644
          Bitmap bitmapFromURL = getBitmapFromURL(props.getMap("image").getString("uri"),
              dpToPx(props.getDouble("imageWidth")),
              dpToPx(props.getDouble("imageHeight"))
+diff --git a/node_modules/react-native-android-widget/android/src/main/java/com/reactnativeandroidwidget/RNWidgetJsCommunication.java b/node_modules/react-native-android-widget/android/src/main/java/com/reactnativeandroidwidget/RNWidgetJsCommunication.java
+index e79f8b9..c3a8d12 100644
+--- a/node_modules/react-native-android-widget/android/src/main/java/com/reactnativeandroidwidget/RNWidgetJsCommunication.java
++++ b/node_modules/react-native-android-widget/android/src/main/java/com/reactnativeandroidwidget/RNWidgetJsCommunication.java
+@@ -3,6 +3,8 @@ import android.content.Context;
+ import android.content.Context;
++import android.os.Build;
+ 
+ import androidx.work.Data;
+ import androidx.work.ExistingWorkPolicy;
+ import androidx.work.OneTimeWorkRequest;
++import androidx.work.OutOfQuotaPolicy;
+ import androidx.work.WorkManager;
+@@ -22,12 +24,17 @@     protected static void startBackgroundTask(Context context, Data data) {
+     protected static void startBackgroundTask(Context context, Data data) {
+         workManagerWorkaround(context);
+ 
+-        OneTimeWorkRequest headlessJsTaskWorkRequest =
+-            new OneTimeWorkRequest.Builder(RNWidgetBackgroundTaskWorker.class)
+-                .setInputData(data)
+-                .build();
++        OneTimeWorkRequest.Builder requestBuilder =
++            new OneTimeWorkRequest.Builder(RNWidgetBackgroundTaskWorker.class)
++                .setInputData(data);
++
++        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
++            requestBuilder.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST);
++        }
++
++        OneTimeWorkRequest headlessJsTaskWorkRequest = requestBuilder.build();
+ 
+         WorkManager
+             .getInstance(context)
+             .enqueue(headlessJsTaskWorkRequest);
+     }

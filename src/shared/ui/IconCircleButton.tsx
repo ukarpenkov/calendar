@@ -132,8 +132,8 @@ export function IconCircleButton({
             pointerEvents="none"
             style={[
               styles.backRing,
+              styles.backRingAccent,
               {
-                borderColor: '#96DAF0',
                 opacity: backAccentOpacity,
                 transform: [{ scale: backAccentScale }],
               },
@@ -184,6 +184,9 @@ const styles = StyleSheet.create({
     left: 7,
     borderWidth: 4,
     borderRadius: 21,
+  },
+  backRingAccent: {
+    borderColor: '#96DAF0',
   },
   backIconTrack: {
     position: 'absolute',

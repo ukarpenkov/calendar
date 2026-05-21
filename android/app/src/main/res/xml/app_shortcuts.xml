@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="pin_calendar_home_widget"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/widget_pin_shortcut_short"
+        android:shortcutLongLabel="@string/widget_pin_shortcut_long"
+        android:shortcutDisabledMessage="@string/widget_pin_shortcut_disabled">
+        <intent
+            android:action="com.prodyk.calendar.action.PIN_HOME_WIDGET"
+            android:targetPackage="com.prodyk.calendar"
+            android:targetClass="com.prodyk.calendar.WidgetPinLauncherActivity" />
+    </shortcut>
+</shortcuts>

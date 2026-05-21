@@ -7,7 +7,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import com.reactnativeandroidwidget.RNWidgetProvider
 import java.util.Calendar
 
 /**
@@ -18,6 +17,7 @@ import java.util.Calendar
 object CalendarWidgetAlarmScheduler {
 
   private const val REQUEST_CODE_MIDNIGHT_REFRESH = 0x6361_6c65 // "cale"
+  private const val REQUEST_CODE_ALARM_CLOCK_SHOW = 0x6361_6c66 // "calf" — distinct from refresh PI
 
   /** Not exported; only used from [PendingIntent] inside this package. */
   const val ACTION_WIDGET_MIDNIGHT_REFRESH: String =
@@ -32,25 +32,49 @@ object CalendarWidgetAlarmScheduler {
 
     val triggerAtMillis = nextLocalMidnightAfterNowMillis()
 
-    // Avoid SCHEDULE_EXACT_ALARM: small window after midnight is enough for the calendar day flip.
-    alarmManager.setWindow(
-      AlarmManager.RTC_WAKEUP,
-      triggerAtMillis,
-      60_000L,
-      pendingIntent,
-    )
+    try {
+      // Exact wake around midnight when the OS allows it (manifest: USE_EXACT_ALARM).
+      val immutableFlags =
+        PendingIntent.FLAG_UPDATE_CURRENT or
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.FLAG_IMMUTABLE
+          } else {
+            0
+          }
+      val showIntent =
+        PendingIntent.getActivity(
+          appContext,
+          REQUEST_CODE_ALARM_CLOCK_SHOW,
+          Intent(appContext, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+          },
+          immutableFlags,
+        )
+      alarmManager.setAlarmClock(
+        AlarmManager.AlarmClockInfo(triggerAtMillis, showIntent),
+        pendingIntent,
+      )
+    } catch (_: SecurityException) {
+      // Sideload / policy: fall back to inexact window (still better than crashing at startup).
+      alarmManager.setWindow(
+        AlarmManager.RTC_WAKEUP,
+        triggerAtMillis,
+        60_000L,
+        pendingIntent,
+      )
+    }
   }
 
   fun requestWidgetRefresh(context: Context) {
     val appContext = context.applicationContext
     val appWidgetManager = AppWidgetManager.getInstance(appContext)
-    val componentName = ComponentName(appContext, RNWidgetProvider::class.java)
+    val componentName = ComponentName(appContext, CalendarAppWidgetProvider::class.java)
     val ids = appWidgetManager.getAppWidgetIds(componentName)
     if (ids.isEmpty()) {
       return
     }
     val intent =
-      Intent(appContext, RNWidgetProvider::class.java).apply {
+      Intent(appContext, CalendarAppWidgetProvider::class.java).apply {
         action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
         putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
       }
@@ -64,7 +88,7 @@ object CalendarWidgetAlarmScheduler {
       }
     val flags =
       PendingIntent.FLAG_UPDATE_CURRENT or
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
           PendingIntent.FLAG_IMMUTABLE
         } else {
           0

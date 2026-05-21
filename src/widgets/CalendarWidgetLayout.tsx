@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles -- react-native-android-widget Flex/Image/Text DSL */
 import React from 'react';
 import { FlexWidget, TextWidget, OverlapWidget, ImageWidget } from 'react-native-android-widget';
 import type { WidgetDayData } from './widgetData';

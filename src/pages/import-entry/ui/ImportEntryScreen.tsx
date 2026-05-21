@@ -874,16 +874,16 @@ function ImportStepper({ currentIndex, labels, palette }: ImportStepperProps) {
 
         const textColor = isComplete || isCurrent ? palette.title : palette.subtitle;
 
+        const digitTextStyle = [
+          styles.stepperCircleText,
+          { color: isComplete ? '#FFFFFF' : textColor },
+        ];
+
         return (
           <View key={label} style={styles.stepperSegment}>
             <View style={styles.stepperNode}>
               <View style={[styles.stepperCircle, circleStyle]}>
-                <Text
-                  style={[
-                    styles.stepperCircleText,
-                    { color: isComplete ? '#FFFFFF' : textColor },
-                  ]}
-                >
+                <Text style={digitTextStyle}>
                   {isComplete ? '✓' : index + 1}
                 </Text>
               </View>

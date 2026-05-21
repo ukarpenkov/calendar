@@ -463,6 +463,7 @@ export function MonthDetailScreen({
       selectedDate,
       handleSelectDay,
       monthLayoutMetrics,
+      isTabletPortrait,
       safeAreaInsets.bottom,
     ],
   );
