@@ -2,4 +2,7 @@
     <string name="app_name">Производственный календарь</string>
     <string name="calendar_widget_name">Календарь</string>
     <string name="calendar_widget_description">Дата и тип дня поверх изображения на всю ширину виджета</string>
+    <string name="widget_pin_shortcut_short">Виджет календаря</string>
+    <string name="widget_pin_shortcut_long">Добавить виджет календаря на главный экран</string>
+    <string name="widget_pin_shortcut_disabled">Закрепление виджета на этом устройстве недоступно</string>
 </resources>
