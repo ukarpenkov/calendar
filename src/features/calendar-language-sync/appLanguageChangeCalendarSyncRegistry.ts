@@ -21,6 +21,8 @@ export function notifyCalendarSyncOnAppLanguageChange(
   if (!current) {
     return;
   }
+  // Deliberate floating promise: errors are swallowed; handler may be sync or async.
+  // eslint-disable-next-line no-void -- express fire-and-forget
   void Promise.resolve(
     current(previousLanguage, nextLanguage),
   ).catch(() => {});

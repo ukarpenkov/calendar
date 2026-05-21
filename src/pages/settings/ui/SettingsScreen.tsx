@@ -263,7 +263,7 @@ export function SettingsScreen({
             value={WORKING_CALENDAR_TELEGRAM_PATH}
             palette={palette}
             onPress={() => {
-              void openWorkingCalendarTelegram();
+              openWorkingCalendarTelegram().catch(() => {});
             }}
           />
         </View>

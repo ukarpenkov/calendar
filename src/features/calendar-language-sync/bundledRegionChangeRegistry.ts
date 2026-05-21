@@ -26,6 +26,7 @@ export function notifyCalendarSyncOnBundledRegionChange(
   if (!current) {
     return;
   }
+  // eslint-disable-next-line no-void -- express fire-and-forget; errors handled in .catch
   void Promise.resolve(current(previousRegion, nextRegion, cause)).catch(() => {
     // Ошибки обрабатывает зарегистрированный обработчик; страховка от unhandled rejection.
   });

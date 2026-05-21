@@ -1,5 +1,7 @@
 import { Image, StyleSheet, View } from 'react-native';
 
+/* eslint-disable react-native/no-inline-styles -- logo frame size is derived from preset width */
+
 type AppLogoProps = {
   isDarkMode: boolean;
   size?: 'large' | 'small' | 'toolbar';

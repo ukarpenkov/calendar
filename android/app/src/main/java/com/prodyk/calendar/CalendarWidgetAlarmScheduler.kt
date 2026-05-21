@@ -32,28 +32,37 @@ object CalendarWidgetAlarmScheduler {
 
     val triggerAtMillis = nextLocalMidnightAfterNowMillis()
 
-    // setAlarmClock is not deferred by Doze the way inexact alarms are; it does not require
-    // SCHEDULE_EXACT_ALARM. Optional status-bar clock icon opens the app (tap target only).
-    val immutableFlags =
-      PendingIntent.FLAG_UPDATE_CURRENT or
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-          PendingIntent.FLAG_IMMUTABLE
-        } else {
-          0
-        }
-    val showIntent =
-      PendingIntent.getActivity(
-        appContext,
-        REQUEST_CODE_ALARM_CLOCK_SHOW,
-        Intent(appContext, MainActivity::class.java).apply {
-          flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        },
-        immutableFlags,
+    try {
+      // Exact wake around midnight when the OS allows it (manifest: USE_EXACT_ALARM).
+      val immutableFlags =
+        PendingIntent.FLAG_UPDATE_CURRENT or
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.FLAG_IMMUTABLE
+          } else {
+            0
+          }
+      val showIntent =
+        PendingIntent.getActivity(
+          appContext,
+          REQUEST_CODE_ALARM_CLOCK_SHOW,
+          Intent(appContext, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+          },
+          immutableFlags,
+        )
+      alarmManager.setAlarmClock(
+        AlarmManager.AlarmClockInfo(triggerAtMillis, showIntent),
+        pendingIntent,
       )
-    alarmManager.setAlarmClock(
-      AlarmManager.AlarmClockInfo(triggerAtMillis, showIntent),
-      pendingIntent,
-    )
+    } catch (_: SecurityException) {
+      // Sideload / policy: fall back to inexact window (still better than crashing at startup).
+      alarmManager.setWindow(
+        AlarmManager.RTC_WAKEUP,
+        triggerAtMillis,
+        60_000L,
+        pendingIntent,
+      )
+    }
   }
 
   fun requestWidgetRefresh(context: Context) {
