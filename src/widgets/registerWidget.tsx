@@ -6,7 +6,7 @@ import { fetchTodayWidgetData } from './widgetData';
 export async function updateCalendarWidget(): Promise<void> {
   try {
     await requestWidgetUpdate({
-      widgetName: 'RNWidgetProvider',
+      widgetName: 'CalendarAppWidgetProvider',
       renderWidget: async () => {
         const data = await fetchTodayWidgetData();
         return <CalendarWidgetLayout data={data} />;

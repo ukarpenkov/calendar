@@ -4,7 +4,7 @@ import { CalendarWidgetLayout } from './CalendarWidgetLayout';
 import { fetchTodayWidgetData } from './widgetData';
 
 const nameToWidget: Record<string, React.FC<{ data: any }>> = {
-  RNWidgetProvider: CalendarWidgetLayout,
+  CalendarAppWidgetProvider: CalendarWidgetLayout,
 };
 
 export async function CalendarWidgetTaskHandler(props: WidgetTaskHandlerProps) {
