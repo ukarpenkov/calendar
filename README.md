@@ -122,6 +122,12 @@ See repository metadata for license (if present). For architecture and roadmap d
 
 ---
 
+## 📱 Google Play
+
+Install the app from [Google Play](https://play.google.com/store/apps/details?id=com.prodyk.calendar).
+
+---
+
 <p align="center">
   <sub>Built with ☕ and clarity — your calendar, your device, your rules.</sub>
 </p>
