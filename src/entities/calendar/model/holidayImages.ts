@@ -3,6 +3,11 @@ import type { CalendarDay } from './types';
 
 const newYearImage = require('../../../../assets/days_img/new_year_default.webp');
 const selectedWorkdayImage = require('../../../../assets/days_img/work_default.webp');
+const mondayWorkdayImage = require('../../../../assets/days_img/default_work_mon.webp');
+const tuesdayWorkdayImage = require('../../../../assets/days_img/default_work_tue.webp');
+const wednesdayWorkdayImage = require('../../../../assets/days_img/default_work_wed.webp');
+const thursdayWorkdayImage = require('../../../../assets/days_img/default_work_thu.webp');
+const fridayWorkdayImage = require('../../../../assets/days_img/default_work_fri.webp');
 const shortenedDayImage = require('../../../../assets/days_img/default_short_day.webp');
 const selectedWeekendImage = require('../../../../assets/days_img/holday_default.webp');
 const fallbackHolidayImage = require('../../../../assets/days_img/default_fiesta_fallback.webp');
@@ -219,6 +224,21 @@ export function getCalendarImagesForDays(
 
   if (days.some(d => d.type === 'workday')) {
     images.add(selectedWorkdayImage);
+    if (days.some(d => d.type === 'workday' && d.weekday === 1)) {
+      images.add(mondayWorkdayImage);
+    }
+    if (days.some(d => d.type === 'workday' && d.weekday === 2)) {
+      images.add(tuesdayWorkdayImage);
+    }
+    if (days.some(d => d.type === 'workday' && d.weekday === 3)) {
+      images.add(wednesdayWorkdayImage);
+    }
+    if (days.some(d => d.type === 'workday' && d.weekday === 4)) {
+      images.add(thursdayWorkdayImage);
+    }
+    if (days.some(d => d.type === 'workday' && d.weekday === 5)) {
+      images.add(fridayWorkdayImage);
+    }
   }
 
   if (days.some(d => d.type === 'shortened')) {
@@ -271,6 +291,11 @@ export function getDayImage(
     return shortenedDayImage;
   }
   if (day.type === 'workday') {
+    if (day.weekday === 1) return mondayWorkdayImage;
+    if (day.weekday === 2) return tuesdayWorkdayImage;
+    if (day.weekday === 3) return wednesdayWorkdayImage;
+    if (day.weekday === 4) return thursdayWorkdayImage;
+    if (day.weekday === 5) return fridayWorkdayImage;
     return selectedWorkdayImage;
   }
   if (day.type === 'weekend') {
