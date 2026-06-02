@@ -153,6 +153,11 @@ export function getDayDrawableResourceName(day: CalendarDay): string {
     return 'day_default_short_day';
   }
   if (day.type === 'workday') {
+    if (day.weekday === 1) return 'day_default_work_mon';
+    if (day.weekday === 2) return 'day_default_work_tue';
+    if (day.weekday === 3) return 'day_default_work_wed';
+    if (day.weekday === 4) return 'day_default_work_thu';
+    if (day.weekday === 5) return 'day_default_work_fri';
     return 'day_work_default';
   }
   if (day.type === 'weekend') {
