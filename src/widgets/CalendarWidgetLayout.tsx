@@ -111,16 +111,24 @@ export function CalendarWidgetLayout({ data }: CalendarWidgetProps) {
           backgroundColor: TRANSPARENT,
         }}
       >
-        <ImageWidget
-          image={placeholder as any}
-          imageWidth={420}
-          imageHeight={180}
-          radius={WIDGET_CORNER_RADIUS}
+        <FlexWidget
           style={{
             width: 'match_parent',
             height: 'match_parent',
+            justifyContent: 'flex-end',
           }}
-        />
+        >
+          <ImageWidget
+            image={placeholder as any}
+            imageWidth={420}
+            imageHeight={180}
+            radius={WIDGET_CORNER_RADIUS}
+            style={{
+              width: 'match_parent',
+              height: 'wrap_content',
+            }}
+          />
+        </FlexWidget>
         <FlexWidget
           style={{
             width: 'match_parent',
@@ -158,16 +166,24 @@ export function CalendarWidgetLayout({ data }: CalendarWidgetProps) {
         backgroundColor: TRANSPARENT,
       }}
     >
-      <ImageWidget
-        image={data.imageResourceName as any}
-        imageWidth={420}
-        imageHeight={180}
-        radius={WIDGET_CORNER_RADIUS}
+      <FlexWidget
         style={{
           width: 'match_parent',
           height: 'match_parent',
+          justifyContent: 'flex-end',
         }}
-      />
+      >
+        <ImageWidget
+          image={data.imageResourceName as any}
+          imageWidth={420}
+          imageHeight={180}
+          radius={WIDGET_CORNER_RADIUS}
+          style={{
+            width: 'match_parent',
+            height: 'wrap_content',
+          }}
+        />
+      </FlexWidget>
       <FlexWidget
         style={{
           width: 'match_parent',
@@ -175,7 +191,7 @@ export function CalendarWidgetLayout({ data }: CalendarWidgetProps) {
           justifyContent: 'flex-end',
           paddingLeft: 12,
           paddingRight: 12,
-          paddingBottom: 14,
+          paddingBottom: 21,
           paddingTop: 12,
         }}
       >
