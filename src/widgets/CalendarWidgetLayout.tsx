@@ -113,8 +113,8 @@ export function CalendarWidgetLayout({ data }: CalendarWidgetProps) {
       >
         <ImageWidget
           image={placeholder as any}
-          imageWidth={500}
-          imageHeight={300}
+          imageWidth={420}
+          imageHeight={180}
           radius={WIDGET_CORNER_RADIUS}
           style={{
             width: 'match_parent',
@@ -160,8 +160,8 @@ export function CalendarWidgetLayout({ data }: CalendarWidgetProps) {
     >
       <ImageWidget
         image={data.imageResourceName as any}
-        imageWidth={500}
-        imageHeight={300}
+        imageWidth={420}
+        imageHeight={180}
         radius={WIDGET_CORNER_RADIUS}
         style={{
           width: 'match_parent',
