@@ -164,6 +164,7 @@ function AppContent() {
         case 'month-error':
         case 'settings':
         case 'import-entry':
+        case 'vacation':
           setStatus(current => {
             if (current.kind !== 'ready') {
               return current;
@@ -177,6 +178,9 @@ function AppContent() {
             }
             if (screenName === 'import-entry') {
               return { ...current, screen: { name: 'settings' } };
+            }
+            if (screenName === 'vacation') {
+              return { ...current, screen: { name: 'year' } };
             }
             return current;
           });
@@ -373,6 +377,19 @@ function AppContent() {
     });
   };
 
+  const openVacation = () => {
+    setStatus(currentStatus => {
+      if (currentStatus.kind !== 'ready') {
+        return currentStatus;
+      }
+
+      return {
+        ...currentStatus,
+        screen: { name: 'vacation' },
+      };
+    });
+  };
+
   const closeSettings = () => {
     setStatus(currentStatus => {
       if (currentStatus.kind !== 'ready') {
@@ -532,6 +549,14 @@ function AppContent() {
     );
   }
 
+  if (status.screen.name === 'vacation') {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Vacation (TODO)</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.layerStack}>
       <View style={styles.yearLayer}>
@@ -540,6 +565,7 @@ function AppContent() {
           monthSummaries={calendarYearView?.monthSummaries ?? []}
           onOpenMonth={goToMonth}
           onOpenSettings={openSettings}
+          onOpenVacation={openVacation}
         />
       </View>
       {status.screen.name === 'month' ? (

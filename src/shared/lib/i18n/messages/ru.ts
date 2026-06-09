@@ -16,6 +16,7 @@ export const ruTranslations: Record<TranslationKey, string> = {
     'splash.loadingTitle': 'Загружаем локальный календарь',
     'splash.loadingSubtitle': 'Инициализируем локальные данные календаря...',
     'year.menu.settings': 'Настройки',
+    'year.menu.vacation': 'Отпуск',
     'year.home.title': 'Год {{year}}',
     'year.summary.work': 'Раб.',
     'year.summary.off': 'Вых.',

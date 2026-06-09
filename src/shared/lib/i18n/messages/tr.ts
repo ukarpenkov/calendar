@@ -15,6 +15,7 @@ export const trTranslations = {
   'splash.loadingTitle': 'Çevrimdışı yıl görünümü yükleniyor',
   'splash.loadingSubtitle': 'Yerel takvim verileri başlatılıyor...',
   'year.menu.settings': 'Ayarlar',
+  'year.menu.vacation': 'Tatil',
   'year.home.title': '{{year}} yılı',
   'year.summary.work': 'İş',
   'year.summary.off': 'Din',

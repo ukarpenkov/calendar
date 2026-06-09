@@ -15,6 +15,7 @@ export const jaTranslations = {
   'splash.loadingTitle': 'オフラインの年表示を読み込み中',
   'splash.loadingSubtitle': 'ローカルのカレンダーデータを初期化しています...',
   'year.menu.settings': '設定',
+  'year.menu.vacation': '休暇',
   'year.home.title': '{{year}}年',
   'year.summary.work': '勤',
   'year.summary.off': '休',

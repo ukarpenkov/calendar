@@ -13,6 +13,7 @@ export const enTranslations = {
     'splash.loadingTitle': 'Loading your offline year view',
     'splash.loadingSubtitle': 'Initializing local calendar data...',
     'year.menu.settings': 'Settings',
+    'year.menu.vacation': 'Vacation',
     'year.home.title': 'Year {{year}}',
     'year.summary.work': 'Work',
     'year.summary.off': 'Off',

@@ -29,6 +29,7 @@ import { useAppTheme } from '../../../app/providers/theme';
 import { getCompactWeekdayLabels } from '../../../shared/lib/i18n';
 import { layout } from '../../../shared/lib/ui/layout';
 import { SettingsGearButton } from '../../../shared/ui/SettingsGearButton';
+import { VacationButton } from '../../../shared/ui/VacationButton';
 import { YearScreenCalendarMark } from '../../../shared/ui/icons/YearScreenCalendarMark';
 import { getYearGridMetrics } from './yearGridMetrics';
 
@@ -37,6 +38,7 @@ type YearHomeScreenProps = {
   monthSummaries: CalendarMonthSummary[];
   onOpenMonth: (month: number, origin: { x: number; y: number; width: number; height: number }) => void;
   onOpenSettings: () => void;
+  onOpenVacation: () => void;
 };
 
 export function YearHomeScreen({
@@ -44,6 +46,7 @@ export function YearHomeScreen({
   monthSummaries,
   onOpenMonth,
   onOpenSettings,
+  onOpenVacation,
 }: YearHomeScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
   const { width: windowWidth, height: windowHeight, fontScale } =
@@ -103,6 +106,11 @@ export function YearHomeScreen({
           {t('year.home.title', { year: calendar.year })}
         </Text>
         <View style={styles.appBarTrailing}>
+          <VacationButton
+            palette={palette}
+            accessibilityLabel={t('year.menu.vacation')}
+            onPress={onOpenVacation}
+          />
           <SettingsGearButton
             palette={palette}
             accessibilityLabel={t('year.menu.settings')}
@@ -472,9 +480,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   appBarTrailing: {
-    width: 36,
-    height: 36,
-    justifyContent: 'center',
+    flexDirection: 'row',
+    gap: 8,
     alignItems: 'center',
   },
   appBarTitle: {

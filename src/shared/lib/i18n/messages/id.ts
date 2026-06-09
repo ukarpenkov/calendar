@@ -15,6 +15,7 @@ export const idTranslations = {
   'splash.loadingTitle': 'Memuat tampilan tahun luring',
   'splash.loadingSubtitle': 'Menginisialisasi data kalender lokal...',
   'year.menu.settings': 'Pengaturan',
+  'year.menu.vacation': 'Liburan',
   'year.home.title': 'Tahun {{year}}',
   'year.summary.work': 'Kerja',
   'year.summary.off': 'Libur',
