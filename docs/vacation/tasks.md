@@ -146,8 +146,53 @@
 - НЕ меняй `DayType`, НЕ трогай таблицу `calendar_days`.
 
 ---
-  
-** Общие правила:**
+
+## Шаг 5. Добавить i18n-ключи для экрана отпуска (все 5 языков)
+
+**Статус:** выполнено ✅
+
+**Промт:**
+
+Добавь все i18n-ключи для фичи «Отпуск» во все 5 файлов локализации.
+
+**Что сделать:**
+1. В `src/shared/lib/i18n/messages/en.ts` добавь ключи (перед закрывающей `} as const`):
+   ```typescript
+   'vacation.title': 'Vacation',
+   'vacation.addTitle': 'New vacation',
+   'vacation.editTitle': 'Edit vacation',
+   'vacation.startDate': 'Start date',
+   'vacation.endDate': 'End date',
+   'vacation.color': 'Color',
+   'vacation.save': 'Save',
+   'vacation.delete': 'Delete',
+   'vacation.deleteConfirm': 'Delete this vacation?',
+   'vacation.empty': 'No vacations yet. Tap + to add one.',
+   'vacation.calendar': 'Calendar',
+   'vacation.list': 'List',
+   'vacation.workDays': 'Work days',
+   'vacation.totalDays': 'Total days',
+   'vacation.preHolidayWarning': 'Pre-holiday: workday shortened to 7h',
+   'vacation.balance.title': 'Vacation balance',
+   'vacation.balance.remaining': 'remaining',
+   'vacation.balance.defaultTotal': '28',
+   'vacation.legend.title': 'Legend',
+   'vacation.legend.workday': 'Workday',
+   'vacation.legend.weekend': 'Weekend',
+   'vacation.legend.holiday': 'Holiday',
+   'vacation.legend.shortened': 'Shortened',
+   'vacation.legend.vacation': 'Vacation',
+   ```
+2. В `ru.ts`, `tr.ts`, `id.ts`, `ja.ts` добавь те же ключи с переводами.
+3. Убедись, что TypeScript компилируется без ошибок (ключи в `en.ts` и тип `TranslationKey` обновляются автоматически).
+
+**Переводы:**
+- **ru**: Отпуск, Новый отпуск, Редактировать отпуск, Дата начала, Дата окончания, Цвет, Сохранить, Удалить, Удалить этот отпуск?, Отпусков пока нет. Нажмите + чтобы добавить., Календарь, Список, Рабочих дней, Всего дней, Предпраздничный: сокращён до 7ч, Баланс отпуска, осталось, Легенда, Рабочий день, Выходной, Праздник, Сокращённый, Отпуск
+- **tr**: Tatil, Yeni tatil, Tatili düzenle, Başlangıç tarihi, Bitiş tarihi, Renk, Kaydet, Sil, Bu tatil silinsin mi?, Henüz tatil yok. Eklemek için + düğmesine dokunun., Takvim, Liste, İş günü, Toplam gün, Tatil öncesi: 7 saate kısaltıldı, Tatil bakiyesi, kalan, 28, Gösterge, İş günü, Hafta sonu, Resmi tatil, Kısa gün, Tatil
+- **id**: Liburan, Liburan baru, Edit liburan, Tanggal mulai, Tanggal akhir, Warna, Simpan, Hapus, Hapus liburan ini?, Belum ada liburan. Ketuk + untuk menambah., Kalender, Daftar, Hari kerja, Total hari, Sebelum libur: hari kerja dipotong 7 jam, Saldo liburan, sisa, Legenda, Hari kerja, Akhir pekan, Hari libur, Hari pendek, Liburan
+- **ja**: 休暇, 新しい休暇, 休暇を編集, 開始日, 終了日, 色, 保存, 削除, この休暇を削除しますか？, 休暇はまだありません。+をタップして追加してください。, カレンダー, リスト, 勤務日数, 合計日数, 祝日前: 勤務時間7時間に短縮, 休暇残日数, 残り, 凡例, 平日, 週末, 祝日, 短縮勤務日, 休暇
+
+**Общие правила:**
 - Язык кода: TypeScript, React Native.
 - i18n: ключи в `en.ts` (тип `TranslationKey`), переводы в `ru.ts`, `tr.ts`, `id.ts`, `ja.ts`. Интерполяция — `{{var}}`.
 - Тесты: Jest + `better-sqlite3` in-memory (`:memory:`). После шага запусти `npx jest --passWithNoTests` и убедись, что все тесты зелёные.
@@ -156,7 +201,7 @@
 
 ## Шаг 6. Написать тест на консистентность i18n-ключей отпуска
 
-**Статус:** не выполнено
+**Статус:** выполнено ✅
 
 **Промт:**
 
@@ -176,7 +221,7 @@
 
 ## Шаг 7. Добавить цвета отпуска в `CalendarPalette` и `getDayTypeColors`
 
-**Статус:** не выполнено
+**Статус:** выполнено ✅
 
 **Промт:**
 
