@@ -268,6 +268,24 @@ export function VacationForm({
           </View>
         ) : null}
 
+        {/* Pre-holiday warning */}
+        {preview && preview.preHolidayDates.length > 0 ? (
+          <View
+            style={[
+              styles.card,
+              {
+                backgroundColor: palette.shortenedFill,
+                borderColor: palette.shortenedBorder,
+              },
+            ]}
+          >
+            <Text style={styles.preHolidayIcon}>⚠️</Text>
+            <Text style={[styles.preHolidayText, { color: palette.title }]}>
+              {t('vacation.preHolidayWarning')} ({preview.preHolidayDates.length})
+            </Text>
+          </View>
+        ) : null}
+
         {/* Save / Cancel buttons */}
         <ActionButton
           label={t('vacation.save')}
@@ -487,5 +505,13 @@ const styles = StyleSheet.create({
   },
   confirmRow: {
     gap: 12,
+  },
+  preHolidayIcon: {
+    fontSize: 20,
+  },
+  preHolidayText: {
+    fontSize: 14,
+    fontWeight: '500',
+    flex: 1,
   },
 });
