@@ -11,6 +11,7 @@ import { layout } from '../../../shared/lib/ui/layout';
 import { IconCircleButton } from '../../../shared/ui/IconCircleButton';
 import { ArrowBackIcon } from '../../../shared/ui/icons/NavigationIcons';
 import { VacationBalance } from './VacationBalance';
+import { VacationLegend } from './VacationLegend';
 import { VacationPeriodCard } from './VacationPeriodCard';
 import { VacationYearCalendar } from './VacationYearCalendar';
 
@@ -122,6 +123,7 @@ export function VacationScreen({
               palette={palette}
               language={language}
             />
+            <VacationLegend palette={palette} language={language} />
           </ScrollView>
         ) : vacationPeriods.length === 0 ? (
           <View style={styles.placeholder}>
@@ -139,6 +141,9 @@ export function VacationScreen({
               },
             ]}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
+            ListFooterComponent={
+              <VacationLegend palette={palette} language={language} />
+            }
             renderItem={({ item }) => {
               const { totalDays, workDays } = getVacationDaysInRange(
                 item.startDate,

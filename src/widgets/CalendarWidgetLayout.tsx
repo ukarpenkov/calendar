@@ -55,6 +55,14 @@ const HOLIDAY_FALLBACK_LABELS: Record<AppLanguage, string> = {
   ja: '祝日',
 };
 
+const VACATION_LABELS: Record<AppLanguage, string> = {
+  ru: 'Отпуск',
+  en: 'Vacation',
+  tr: 'Tatil',
+  id: 'Liburan',
+  ja: '休暇',
+};
+
 const TEXT_SHADOW = {
   textShadowColor: '#000000',
   textShadowRadius: 4,
@@ -223,6 +231,19 @@ export function CalendarWidgetLayout({ data }: CalendarWidgetProps) {
             maxLines={2}
             truncate="END"
           />
+          {data.isOnVacation && (
+            <TextWidget
+              text={`🏖 ${VACATION_LABELS[data.language] ?? VACATION_LABELS.en}`}
+              style={{
+                fontSize: 14,
+                color: data.vacationColor ?? '#2DD4BF',
+                fontWeight: 'bold',
+                marginTop: 4,
+                ...TEXT_SHADOW,
+              }}
+              maxLines={1}
+            />
+          )}
         </FlexWidget>
       </FlexWidget>
     </OverlapWidget>
