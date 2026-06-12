@@ -31,6 +31,7 @@ import {
   type CalendarDay,
   type CalendarYearMonthDetails,
 } from '../../../entities/calendar';
+import type { VacationPeriod } from '../../../features/vacation/model';
 import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
 import {
@@ -62,6 +63,7 @@ type MonthDetailScreenProps = {
   onOpenSettings: () => void;
   onMonthChange: (month: number) => void;
   originLayout?: { x: number; y: number; width: number; height: number } | null;
+  vacationPeriods?: VacationPeriod[];
 };
 
 const APP_BAR_TITLE_MIN_SCALE = 0.7;
@@ -114,6 +116,7 @@ export function MonthDetailScreen({
   onOpenSettings,
   onMonthChange,
   originLayout,
+  vacationPeriods = [],
 }: MonthDetailScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
@@ -445,6 +448,7 @@ export function MonthDetailScreen({
                 onSelectDay={isActive ? handleSelectDay : NOOP_SELECT_DAY}
                 monthLayoutMetrics={monthLayoutMetrics}
                 isTabletPortrait={isTabletPortrait}
+                vacationPeriods={vacationPeriods}
               />
             </ScrollView>
           </Animated.View>
@@ -465,6 +469,7 @@ export function MonthDetailScreen({
       monthLayoutMetrics,
       isTabletPortrait,
       safeAreaInsets.bottom,
+      vacationPeriods,
     ],
   );
 
@@ -590,6 +595,7 @@ type MonthDetailBodyProps = {
   onSelectDay: (date: string) => void;
   monthLayoutMetrics: MonthDetailLayoutMetrics;
   isTabletPortrait: boolean;
+  vacationPeriods: VacationPeriod[];
 };
 
 function MonthDetailBody({
@@ -603,6 +609,7 @@ function MonthDetailBody({
   onSelectDay,
   monthLayoutMetrics,
   isTabletPortrait,
+  vacationPeriods,
 }: MonthDetailBodyProps) {
   const selectedHolidayLabel =
     selectedDay !== null
@@ -630,6 +637,18 @@ function MonthDetailBody({
       return getHolidayImageForMonth(detail.days);
     },
     [selectedDay, detail.days],
+  );
+
+  const getVacationColorForDate = useCallback(
+    (date: string): string | undefined => {
+      for (const period of vacationPeriods) {
+        if (date >= period.startDate && date <= period.endDate) {
+          return period.color;
+        }
+      }
+      return undefined;
+    },
+    [vacationPeriods],
   );
 
   const calendarCard = (
@@ -674,6 +693,7 @@ function MonthDetailBody({
                 palette={palette}
                 calendarScale={calendarScale}
                 onSelectDay={onSelectDay}
+                vacationColor={day?.date ? getVacationColorForDate(day.date) : undefined}
               />
             ))}
           </View>
@@ -849,6 +869,7 @@ type MonthDetailDayCellProps = {
   palette: CalendarPalette;
   calendarScale: number;
   onSelectDay: (date: string) => void;
+  vacationColor?: string;
 };
 
 function MonthDetailDayCell({
@@ -857,6 +878,7 @@ function MonthDetailDayCell({
   palette,
   calendarScale,
   onSelectDay,
+  vacationColor,
 }: MonthDetailDayCellProps) {
   const cellSize = Math.max(36, 42 * calendarScale);
   const onPress = useCallback(() => {
@@ -870,6 +892,7 @@ function MonthDetailDayCell({
   }
 
   const colors = getDayTypeColors(day.type, palette);
+  const showVacationStrip = vacationColor && day.type === 'workday';
 
   return (
     <Pressable
@@ -902,6 +925,19 @@ function MonthDetailDayCell({
       >
         {day.day}
       </Text>
+      {showVacationStrip ? (
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 2,
+            right: 2,
+            height: 3,
+            borderRadius: 1.5,
+            backgroundColor: vacationColor,
+          }}
+        />
+      ) : null}
     </Pressable>
   );
 }
@@ -957,7 +993,7 @@ function TotalItem({
 }
 
 const MemoizedMonthDetailBody = memo(MonthDetailBody);
-const MemoizedMonthDetailDayCell = memo(MonthDetailDayCell);
+export const MemoizedMonthDetailDayCell = memo(MonthDetailDayCell);
 const MemoizedTotalItem = memo(TotalItem);
 
 const styles = StyleSheet.create({
@@ -1088,6 +1124,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
   },
   dayCellText: {
     fontSize: 14,

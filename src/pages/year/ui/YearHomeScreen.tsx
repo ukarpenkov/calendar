@@ -24,6 +24,7 @@ import {
   getDayTypeLabel,
   type DayTypeColors,
 } from '../../../entities/calendar';
+import type { VacationPeriod } from '../../../features/vacation/model';
 import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
 import { getCompactWeekdayLabels } from '../../../shared/lib/i18n';
@@ -39,6 +40,7 @@ type YearHomeScreenProps = {
   onOpenMonth: (month: number, origin: { x: number; y: number; width: number; height: number }) => void;
   onOpenSettings: () => void;
   onOpenVacation: () => void;
+  vacationPeriods?: VacationPeriod[];
 };
 
 export function YearHomeScreen({
@@ -47,6 +49,7 @@ export function YearHomeScreen({
   onOpenMonth,
   onOpenSettings,
   onOpenVacation,
+  vacationPeriods = [],
 }: YearHomeScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
   const { width: windowWidth, height: windowHeight, fontScale } =
@@ -77,6 +80,21 @@ export function YearHomeScreen({
     () => getYearGridMetrics(windowWidth, fontScale, columnsPerRow),
     [columnsPerRow, fontScale, windowWidth],
   );
+  const vacationDaysByMonth = useMemo(() => {
+    const counts: Record<number, number> = {};
+    for (const period of vacationPeriods) {
+      const start = new Date(period.startDate);
+      const end = new Date(period.endDate);
+      for (const day of calendar.days) {
+        if (day.type !== 'workday') continue;
+        const d = new Date(day.date);
+        if (d >= start && d <= end) {
+          counts[day.month] = (counts[day.month] ?? 0) + 1;
+        }
+      }
+    }
+    return counts;
+  }, [vacationPeriods, calendar.days]);
   const monthCardRefs = useRef<Map<number, View>>(new Map());
 
   return (
@@ -211,6 +229,15 @@ export function YearHomeScreen({
                   >
                     {summary.label}
                   </Text>
+                  {(vacationDaysByMonth[summary.month] ?? 0) > 0 ? (
+                    <View style={styles.vacationBadge}>
+                      <Text
+                        style={[styles.vacationBadgeText, { fontSize: gridMetrics.minimumTextScale * 10 }]}
+                      >
+                        {vacationDaysByMonth[summary.month]}
+                      </Text>
+                    </View>
+                  ) : null}
                   <Text
                     adjustsFontSizeToFit
                     minimumFontScale={gridMetrics.minimumTextScale}
@@ -549,6 +576,17 @@ const styles = StyleSheet.create({
     minWidth: 0,
     fontSize: 12,
     fontWeight: '600',
+  },
+  vacationBadge: {
+    backgroundColor: '#2DD4BF',
+    borderRadius: 8,
+    paddingHorizontal: 5,
+    paddingVertical: 1,
+    marginLeft: 4,
+  },
+  vacationBadgeText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
   },
   weekHeaderRow: {
     flexDirection: 'row',

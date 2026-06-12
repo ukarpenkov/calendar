@@ -681,6 +681,7 @@ function AppContent() {
           onOpenMonth={goToMonth}
           onOpenSettings={openSettings}
           onOpenVacation={openVacation}
+          vacationPeriods={vacationPeriods}
         />
       </View>
       {status.screen.name === 'month' ? (
@@ -691,6 +692,7 @@ function AppContent() {
           onOpenSettings={openSettings}
           onMonthChange={goToMonth}
           originLayout={monthOrigin}
+          vacationPeriods={vacationPeriods}
         />
       ) : null}
     </View>
