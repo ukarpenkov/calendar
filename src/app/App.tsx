@@ -43,7 +43,13 @@ import { ImportEntryScreen } from '../pages/import-entry/ui/ImportEntryScreen';
 import { MonthDetailScreen } from '../pages/month/ui/MonthDetailScreen';
 import { SettingsScreen } from '../pages/settings/ui/SettingsScreen';
 import { SplashScreen } from '../pages/splash/ui/SplashScreen';
+import { VacationScreen } from '../pages/vacation/ui';
 import { YearHomeScreen } from '../pages/year/ui/YearHomeScreen';
+import {
+  createVacationRepository,
+  type VacationPeriod,
+} from '../features/vacation/model';
+import { getDatabase } from '../shared/lib/db';
 
 function App() {
   return (
@@ -86,6 +92,7 @@ function AppContent() {
     height: number;
   } | null>(null);
   const [jsonImportSavedRevision, setJsonImportSavedRevision] = useState(0);
+  const [vacationPeriods, setVacationPeriods] = useState<VacationPeriod[]>([]);
   const statusRef = useRef(status);
   statusRef.current = status;
   const activeCalendar = status.kind === 'ready' ? status.calendar : null;
@@ -230,6 +237,16 @@ function AppContent() {
             screen: { name: 'year' },
           });
           updateCalendarWidget();
+
+          try {
+            const repo = createVacationRepository(getDatabase());
+            const periods = await repo.getAll();
+            if (isMounted) {
+              setVacationPeriods(periods);
+            }
+          } catch {
+            // Vacation periods are optional; keep the empty array.
+          }
         }
       } catch {
         if (isMounted) {
@@ -551,9 +568,25 @@ function AppContent() {
 
   if (status.screen.name === 'vacation') {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Vacation (TODO)</Text>
-      </View>
+      <VacationScreen
+        year={status.calendar.year}
+        calendarDays={status.calendar.days}
+        vacationPeriods={vacationPeriods}
+        palette={palette}
+        language={language}
+        onBack={() => {
+          setStatus(current => {
+            if (current.kind !== 'ready') return current;
+            return { ...current, screen: { name: 'year' } };
+          });
+        }}
+        onAdd={() => {
+          // TODO: show create vacation form
+        }}
+        onEdit={() => {
+          // TODO: show edit vacation form
+        }}
+      />
     );
   }
 
