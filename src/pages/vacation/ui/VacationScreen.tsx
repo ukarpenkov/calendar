@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { CalendarDay, CalendarPalette } from '../../../entities/calendar';
@@ -10,7 +10,9 @@ import { getTranslation } from '../../../shared/lib/i18n';
 import { layout } from '../../../shared/lib/ui/layout';
 import { IconCircleButton } from '../../../shared/ui/IconCircleButton';
 import { ArrowBackIcon } from '../../../shared/ui/icons/NavigationIcons';
+import { VacationBalance } from './VacationBalance';
 import { VacationPeriodCard } from './VacationPeriodCard';
+import { VacationYearCalendar } from './VacationYearCalendar';
 
 type VacationScreenProps = {
   year: number;
@@ -40,6 +42,11 @@ export function VacationScreen({
 
   const t = (key: Parameters<typeof getTranslation>[1]) =>
     getTranslation(language, key);
+
+  const usedWorkDays = vacationPeriods.reduce((sum, p) => {
+    const { workDays } = getVacationDaysInRange(p.startDate, p.endDate, calendarDays);
+    return sum + workDays;
+  }, 0);
 
   return (
     <View
@@ -92,13 +99,30 @@ export function VacationScreen({
         />
       </View>
 
+      <View style={styles.balanceWrapper}>
+        <VacationBalance
+          usedWorkDays={usedWorkDays}
+          totalAllowed={28}
+          palette={palette}
+          language={language}
+        />
+      </View>
+
       <View style={styles.content}>
         {activeTab === 'calendar' ? (
-          <View style={styles.placeholder}>
-            <Text style={{ color: palette.subtitle }}>
-              Calendar view (TODO)
-            </Text>
-          </View>
+          <ScrollView
+            contentContainerStyle={{
+              paddingBottom: safeAreaInsets.bottom + 20,
+            }}
+          >
+            <VacationYearCalendar
+              year={year}
+              calendarDays={calendarDays}
+              vacationPeriods={vacationPeriods}
+              palette={palette}
+              language={language}
+            />
+          </ScrollView>
         ) : vacationPeriods.length === 0 ? (
           <View style={styles.placeholder}>
             <Text style={{ color: palette.subtitle }}>{t('vacation.empty')}</Text>
@@ -206,6 +230,9 @@ const styles = StyleSheet.create({
     gap: 8,
     marginTop: 12,
     marginBottom: 16,
+  },
+  balanceWrapper: {
+    paddingHorizontal: 0,
   },
   tab: {
     flex: 1,
