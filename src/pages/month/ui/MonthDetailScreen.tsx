@@ -63,7 +63,7 @@ type MonthDetailScreenProps = {
   onOpenSettings: () => void;
   onMonthChange: (month: number) => void;
   originLayout?: { x: number; y: number; width: number; height: number } | null;
-  vacationPeriods?: VacationPeriod[];
+  vacationPeriods: VacationPeriod[];
 };
 
 const APP_BAR_TITLE_MIN_SCALE = 0.7;
@@ -116,7 +116,7 @@ export function MonthDetailScreen({
   onOpenSettings,
   onMonthChange,
   originLayout,
-  vacationPeriods = [],
+  vacationPeriods,
 }: MonthDetailScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
@@ -582,6 +582,18 @@ export function MonthDetailScreen({
   );
 }
 
+function getVacationColorForDate(
+  date: string,
+  vacationPeriods: VacationPeriod[],
+): string | undefined {
+  for (const period of vacationPeriods) {
+    if (date >= period.startDate && date <= period.endDate) {
+      return period.color;
+    }
+  }
+  return undefined;
+}
+
 type LocalizationParams = Record<string, number | string>;
 
 type MonthDetailBodyProps = {
@@ -615,6 +627,22 @@ function MonthDetailBody({
     selectedDay !== null
       ? getHolidayDisplayName(selectedDay, language)
       : null;
+
+  const vacationColorByDate = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const period of vacationPeriods) {
+      for (const day of detail.days) {
+        if (
+          day.type === 'workday' &&
+          day.date >= period.startDate &&
+          day.date <= period.endDate
+        ) {
+          map.set(day.date, period.color);
+        }
+      }
+    }
+    return map;
+  }, [detail.days, vacationPeriods]);
 
   const calendarColumnWidth = monthLayoutMetrics.calendarColumnWidth;
   const calendarScale = useMemo(
@@ -693,7 +721,7 @@ function MonthDetailBody({
                 palette={palette}
                 calendarScale={calendarScale}
                 onSelectDay={onSelectDay}
-                vacationColor={day?.date ? getVacationColorForDate(day.date) : undefined}
+                vacationColor={day?.date ? vacationColorByDate.get(day.date) : undefined}
               />
             ))}
           </View>
@@ -894,6 +922,8 @@ function MonthDetailDayCell({
   const colors = getDayTypeColors(day.type, palette);
   const showVacationStrip = vacationColor && day.type === 'workday';
 
+  const showVacation = vacationColor && day.type === 'workday';
+
   return (
     <Pressable
       onPress={onPress}
@@ -925,17 +955,17 @@ function MonthDetailDayCell({
       >
         {day.day}
       </Text>
-      {showVacationStrip ? (
+      {vacationColor && day.type === 'workday' ? (
         <View
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 2,
-            right: 2,
-            height: 3,
-            borderRadius: 1.5,
-            backgroundColor: vacationColor,
-          }}
+          style={[
+            styles.vacationBar,
+            {
+              backgroundColor: vacationColor,
+              height: Math.max(2, 3 * calendarScale),
+              borderBottomLeftRadius: Math.max(6, 8 * calendarScale),
+              borderBottomRightRadius: Math.max(6, 8 * calendarScale),
+            },
+          ]}
         />
       ) : null}
     </Pressable>
@@ -1126,9 +1156,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     overflow: 'hidden',
   },
+  vacationBar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
   dayCellText: {
     fontSize: 14,
     fontWeight: '700',
+  },
+  vacationBar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   selectedDayCard: {
     borderWidth: 1,

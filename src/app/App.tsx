@@ -678,10 +678,10 @@ function AppContent() {
         <YearHomeScreen
           calendar={status.calendar}
           monthSummaries={calendarYearView?.monthSummaries ?? []}
+          vacationPeriods={vacationPeriods}
           onOpenMonth={goToMonth}
           onOpenSettings={openSettings}
           onOpenVacation={openVacation}
-          vacationPeriods={vacationPeriods}
         />
       </View>
       {status.screen.name === 'month' ? (

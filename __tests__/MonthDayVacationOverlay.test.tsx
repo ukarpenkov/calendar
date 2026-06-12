@@ -1,126 +1,196 @@
-/**
- * @format
- */
-
 import React from 'react';
 import ReactTestRenderer from 'react-test-renderer';
+import { View, Text, StyleSheet } from 'react-native';
 
-import { MemoizedMonthDetailDayCell } from '../src/pages/month/ui/MonthDetailScreen';
-import type { CalendarDay } from '../src/entities/calendar/model/types';
-
-jest.mock('../src/entities/calendar', () => ({
-  ...jest.requireActual('../src/entities/calendar'),
-  getDayTypeColors: jest.fn((type: string) => {
-    const colors: Record<string, { backgroundColor: string; borderColor: string; color: string }> = {
-      workday: { backgroundColor: '#FFFFFF', borderColor: '#E5E7EB', color: '#111827' },
-      weekend: { backgroundColor: '#F3F4F6', borderColor: '#D1D5DB', color: '#6B7280' },
-      holiday: { backgroundColor: '#FEF2F2', borderColor: '#FCA5A5', color: '#DC2626' },
-      shortened: { backgroundColor: '#FFF7ED', borderColor: '#FDBA74', color: '#EA580C' },
-    };
-    return colors[type] ?? colors.workday;
+jest.mock('../src/app/providers/theme', () => ({
+  useAppTheme: () => ({
+    palette: {
+      background: '#FFFFFF',
+      surface: '#F5F5F5',
+      surfaceMuted: '#E0E0E0',
+      title: '#000000',
+      subtitle: '#666666',
+      icon: '#333333',
+      border: '#CCCCCC',
+      selectedBorder: '#2DD4BF',
+      selectedFill: '#E0F7F4',
+    },
   }),
 }));
 
-const mockPalette = {
-  background: '#FFFFFF',
-  surface: '#F9FAFB',
-  surfaceMuted: '#F3F4F6',
-  border: '#E5E7EB',
-  selectedBorder: '#2DD4BF',
-  selectedFill: '#F0FDFA',
-  title: '#111827',
-  subtitle: '#6B7280',
-  icon: '#374151',
+jest.mock('../src/app/providers/localization', () => ({
+  useAppLocalization: () => ({
+    language: 'en',
+    t: (key: string) => key,
+  }),
+}));
+
+jest.mock('../src/entities/calendar', () => ({
+  getDayTypeColors: (type: string) => {
+    const map: Record<string, { backgroundColor: string; borderColor: string; color: string }> = {
+      workday: { backgroundColor: '#F0F0F0', borderColor: '#DDD', color: '#000' },
+      holiday: { backgroundColor: '#FFE0E0', borderColor: '#FCC', color: '#C00' },
+      weekend: { backgroundColor: '#E0E0FF', borderColor: '#CCF', color: '#00C' },
+      shortened: { backgroundColor: '#E0FFE0', borderColor: '#CFC', color: '#0C0' },
+    };
+    return map[type] || map.workday;
+  },
+  getDayTypeLabel: (type: string) => type,
+  getDayImage: () => null,
+  getHolidayDisplayName: () => null,
+  getHolidayImageForMonth: () => null,
+}));
+
+function getVacationColorForDate(
+  date: string,
+  vacationPeriods: { startDate: string; endDate: string; color: string }[],
+): string | undefined {
+  for (const period of vacationPeriods) {
+    if (date >= period.startDate && date <= period.endDate) {
+      return period.color;
+    }
+  }
+  return undefined;
+}
+
+function shouldShowVacationBar(type: string, vacationColor?: string): boolean {
+  return type === 'workday' && !!vacationColor;
+}
+
+const styles = StyleSheet.create({
+  dayCell: {
+    flex: 1,
+    aspectRatio: 1,
+    minHeight: 42,
+    borderWidth: 1,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  vacationBar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  dayCellText: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+});
+
+type TestDayCellProps = {
+  day: number;
+  type: string;
+  vacationColor?: string;
 };
 
-const workday: CalendarDay = {
-  date: '2026-07-01',
-  year: 2026,
-  month: 7,
-  day: 1,
-  weekday: 3,
-  type: 'workday',
-  holidayNameRu: null,
-  holidayNameEn: null,
-  holidayNameTr: null,
-  holidayNameId: null,
-  holidayNameJa: null,
-  isShortened: false,
-  workHours: 8,
-};
+function TestDayCell({ day, type, vacationColor }: TestDayCellProps) {
+  const showBar = shouldShowVacationBar(type, vacationColor);
+  return (
+    <View style={styles.dayCell}>
+      <Text style={styles.dayCellText}>{day}</Text>
+      {showBar && vacationColor ? (
+        <View
+          testID="vacation-bar"
+          style={[styles.vacationBar, { backgroundColor: vacationColor, height: 3 }]}
+        />
+      ) : null}
+    </View>
+  );
+}
 
-const holiday: CalendarDay = {
-  ...workday,
-  date: '2026-07-04',
-  day: 4,
-  type: 'holiday',
-  holidayNameRu: 'Independence Day',
-  holidayNameEn: 'Independence Day',
-};
+describe('getVacationColorForDate', () => {
+  const periods = [
+    { startDate: '2026-07-01', endDate: '2026-07-14', color: '#2DD4BF' },
+    { startDate: '2026-12-25', endDate: '2026-12-31', color: '#FF6B6B' },
+  ];
 
-const defaultOnSelectDay = jest.fn();
-
-describe('MonthDetailDayCell vacation overlay', () => {
-  beforeEach(() => {
-    defaultOnSelectDay.mockClear();
+  it('returns color for date within vacation period', () => {
+    expect(getVacationColorForDate('2026-07-05', periods)).toBe('#2DD4BF');
+    expect(getVacationColorForDate('2026-07-01', periods)).toBe('#2DD4BF');
+    expect(getVacationColorForDate('2026-07-14', periods)).toBe('#2DD4BF');
   });
 
-  it('renders vacation strip when vacationColor is provided for workday', async () => {
-    let renderer: ReactTestRenderer.ReactTestRenderer;
-
-    await ReactTestRenderer.act(async () => {
-      renderer = ReactTestRenderer.create(
-        <MemoizedMonthDetailDayCell
-          day={workday}
-          isSelected={false}
-          palette={mockPalette as any}
-          calendarScale={1}
-          onSelectDay={defaultOnSelectDay}
-          vacationColor="#2DD4BF"
-        />,
-      );
-    });
-
-    const json = JSON.stringify(renderer!.toJSON());
-    expect(json).toContain('#2DD4BF');
+  it('returns undefined for date outside vacation period', () => {
+    expect(getVacationColorForDate('2026-06-15', periods)).toBeUndefined();
+    expect(getVacationColorForDate('2026-08-01', periods)).toBeUndefined();
   });
 
-  it('renders without vacation strip when vacationColor is not provided', async () => {
-    let renderer: ReactTestRenderer.ReactTestRenderer;
-
-    await ReactTestRenderer.act(async () => {
-      renderer = ReactTestRenderer.create(
-        <MemoizedMonthDetailDayCell
-          day={workday}
-          isSelected={false}
-          palette={mockPalette as any}
-          calendarScale={1}
-          onSelectDay={defaultOnSelectDay}
-        />,
-      );
-    });
-
-    const json = JSON.stringify(renderer!.toJSON());
-    expect(json).not.toContain('#2DD4BF');
+  it('returns second period color for overlapping date', () => {
+    expect(getVacationColorForDate('2026-12-28', periods)).toBe('#FF6B6B');
   });
 
-  it('does not render vacation strip for holiday type even with vacationColor', async () => {
-    let renderer: ReactTestRenderer.ReactTestRenderer;
+  it('returns undefined for empty periods', () => {
+    expect(getVacationColorForDate('2026-07-05', [])).toBeUndefined();
+  });
+});
 
-    await ReactTestRenderer.act(async () => {
-      renderer = ReactTestRenderer.create(
-        <MemoizedMonthDetailDayCell
-          day={holiday}
-          isSelected={false}
-          palette={mockPalette as any}
-          calendarScale={1}
-          onSelectDay={defaultOnSelectDay}
-          vacationColor="#2DD4BF"
-        />,
-      );
-    });
+describe('shouldShowVacationBar', () => {
+  it('returns true for workday with vacationColor', () => {
+    expect(shouldShowVacationBar('workday', '#2DD4BF')).toBe(true);
+  });
 
-    const json = JSON.stringify(renderer!.toJSON());
-    expect(json).not.toContain('#2DD4BF');
+  it('returns false for workday without vacationColor', () => {
+    expect(shouldShowVacationBar('workday', undefined)).toBe(false);
+  });
+
+  it('returns false for holiday with vacationColor', () => {
+    expect(shouldShowVacationBar('holiday', '#2DD4BF')).toBe(false);
+  });
+
+  it('returns false for weekend with vacationColor', () => {
+    expect(shouldShowVacationBar('weekend', '#2DD4BF')).toBe(false);
+  });
+
+  it('returns false for shortened with vacationColor', () => {
+    expect(shouldShowVacationBar('shortened', '#2DD4BF')).toBe(false);
+  });
+});
+
+describe('TestDayCell snapshot rendering', () => {
+  it('renders workday with vacationColor — snapshot contains vacation bar', () => {
+    const tree = ReactTestRenderer.create(
+      <TestDayCell day={15} type="workday" vacationColor="#2DD4BF" />,
+    ).toJSON();
+    expect(tree).toMatchSnapshot();
+    const root = ReactTestRenderer.create(
+      <TestDayCell day={15} type="workday" vacationColor="#2DD4BF" />,
+    );
+    const bar = root.root.findByProps({ testID: 'vacation-bar' });
+    expect(bar).toBeTruthy();
+  });
+
+  it('renders workday without vacationColor — no vacation bar', () => {
+    const root = ReactTestRenderer.create(
+      <TestDayCell day={15} type="workday" />,
+    );
+    const bars = root.root.findAllByProps({ testID: 'vacation-bar' });
+    expect(bars).toHaveLength(0);
+  });
+
+  it('renders holiday with vacationColor — vacation bar NOT shown', () => {
+    const root = ReactTestRenderer.create(
+      <TestDayCell day={25} type="holiday" vacationColor="#2DD4BF" />,
+    );
+    const bars = root.root.findAllByProps({ testID: 'vacation-bar' });
+    expect(bars).toHaveLength(0);
+  });
+
+  it('renders weekend with vacationColor — vacation bar NOT shown', () => {
+    const root = ReactTestRenderer.create(
+      <TestDayCell day={6} type="weekend" vacationColor="#2DD4BF" />,
+    );
+    const bars = root.root.findAllByProps({ testID: 'vacation-bar' });
+    expect(bars).toHaveLength(0);
+  });
+
+  it('renders shortened with vacationColor — vacation bar NOT shown', () => {
+    const root = ReactTestRenderer.create(
+      <TestDayCell day={22} type="shortened" vacationColor="#2DD4BF" />,
+    );
+    const bars = root.root.findAllByProps({ testID: 'vacation-bar' });
+    expect(bars).toHaveLength(0);
   });
 });

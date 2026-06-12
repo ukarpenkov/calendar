@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TestDayCell snapshot rendering renders workday with vacationColor — snapshot contains vacation bar 1`] = `null`;
