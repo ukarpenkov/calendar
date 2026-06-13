@@ -25,8 +25,6 @@ import {
   type DayTypeColors,
 } from '../../../entities/calendar';
 import type { VacationPeriod } from '../../../features/vacation/model';
-import type { VacationPeriod } from '../../../features/vacation/model';
-import type { VacationPeriod } from '../../../features/vacation/model';
 import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
 import { getCompactWeekdayLabels } from '../../../shared/lib/i18n';
@@ -292,23 +290,6 @@ export function YearHomeScreen({
                         {vacationDaysCountByMonth.get(summary.month)}
                       </Text>
                     </View>
-                  ) : null}
-                  <Text
-                    adjustsFontSizeToFit
-                    minimumFontScale={gridMetrics.minimumTextScale}
-                    numberOfLines={1}
-                    maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
-                    style={[
-                      styles.monthMeta,
-                      {
-                        color: palette.subtitle,
-                        fontSize: gridMetrics.monthMetaFontSize,
-                      },
-                    ]}
-                  >
-                    {summary.workHours} {t('common.hoursUnit')}
-                  </Text>
-                </View>
                   ) : null}
                   <Text
                     adjustsFontSizeToFit

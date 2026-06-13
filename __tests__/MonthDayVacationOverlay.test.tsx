@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactTestRenderer from 'react-test-renderer';
+import ReactTestRenderer, { act } from 'react-test-renderer';
 import { View, Text, StyleSheet } from 'react-native';
 
 jest.mock('../src/app/providers/theme', () => ({
@@ -151,46 +151,60 @@ describe('shouldShowVacationBar', () => {
 
 describe('TestDayCell snapshot rendering', () => {
   it('renders workday with vacationColor — snapshot contains vacation bar', () => {
-    const tree = ReactTestRenderer.create(
-      <TestDayCell day={15} type="workday" vacationColor="#2DD4BF" />,
-    ).toJSON();
+    let tree: ReactTestRenderer.ReactTestRendererJSON | null = null;
+    let root: ReactTestRenderer.ReactTestRenderer;
+    act(() => {
+      root = ReactTestRenderer.create(
+        <TestDayCell day={15} type="workday" vacationColor="#2DD4BF" />,
+      );
+      tree = root.toJSON();
+    });
     expect(tree).toMatchSnapshot();
-    const root = ReactTestRenderer.create(
-      <TestDayCell day={15} type="workday" vacationColor="#2DD4BF" />,
-    );
-    const bar = root.root.findByProps({ testID: 'vacation-bar' });
+    const bar = root!.root.findByProps({ testID: 'vacation-bar' });
     expect(bar).toBeTruthy();
   });
 
   it('renders workday without vacationColor — no vacation bar', () => {
-    const root = ReactTestRenderer.create(
-      <TestDayCell day={15} type="workday" />,
-    );
-    const bars = root.root.findAllByProps({ testID: 'vacation-bar' });
+    let root: ReactTestRenderer.ReactTestRenderer;
+    act(() => {
+      root = ReactTestRenderer.create(
+        <TestDayCell day={15} type="workday" />,
+      );
+    });
+    const bars = root!.root.findAllByProps({ testID: 'vacation-bar' });
     expect(bars).toHaveLength(0);
   });
 
   it('renders holiday with vacationColor — vacation bar NOT shown', () => {
-    const root = ReactTestRenderer.create(
-      <TestDayCell day={25} type="holiday" vacationColor="#2DD4BF" />,
-    );
-    const bars = root.root.findAllByProps({ testID: 'vacation-bar' });
+    let root: ReactTestRenderer.ReactTestRenderer;
+    act(() => {
+      root = ReactTestRenderer.create(
+        <TestDayCell day={25} type="holiday" vacationColor="#2DD4BF" />,
+      );
+    });
+    const bars = root!.root.findAllByProps({ testID: 'vacation-bar' });
     expect(bars).toHaveLength(0);
   });
 
   it('renders weekend with vacationColor — vacation bar NOT shown', () => {
-    const root = ReactTestRenderer.create(
-      <TestDayCell day={6} type="weekend" vacationColor="#2DD4BF" />,
-    );
-    const bars = root.root.findAllByProps({ testID: 'vacation-bar' });
+    let root: ReactTestRenderer.ReactTestRenderer;
+    act(() => {
+      root = ReactTestRenderer.create(
+        <TestDayCell day={6} type="weekend" vacationColor="#2DD4BF" />,
+      );
+    });
+    const bars = root!.root.findAllByProps({ testID: 'vacation-bar' });
     expect(bars).toHaveLength(0);
   });
 
   it('renders shortened with vacationColor — vacation bar NOT shown', () => {
-    const root = ReactTestRenderer.create(
-      <TestDayCell day={22} type="shortened" vacationColor="#2DD4BF" />,
-    );
-    const bars = root.root.findAllByProps({ testID: 'vacation-bar' });
+    let root: ReactTestRenderer.ReactTestRenderer;
+    act(() => {
+      root = ReactTestRenderer.create(
+        <TestDayCell day={22} type="shortened" vacationColor="#2DD4BF" />,
+      );
+    });
+    const bars = root!.root.findAllByProps({ testID: 'vacation-bar' });
     expect(bars).toHaveLength(0);
   });
 });

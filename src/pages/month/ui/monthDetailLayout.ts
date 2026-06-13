@@ -36,14 +36,14 @@ export function getMonthContentMaxWidth(
   const isLandscape = windowWidth > windowHeight;
   const isTablet = minDimension >= 600;
 
-  if (!isLandscape && !isTablet) {
+  if (!isLandscape) {
+    if (isTablet) {
+      return Math.max(Math.min(fullContentWidth, TABLET_MONTH_MAX_CONTENT_WIDTH_LANDSCAPE), MONTH_CONTENT_MIN_WIDTH);
+    }
     return fullContentWidth;
   }
 
   let w = Math.min(fullContentWidth, minDimension - horizontalPadding);
-  if (isTablet && isLandscape) {
-    w = Math.min(w, TABLET_MONTH_MAX_CONTENT_WIDTH_LANDSCAPE);
-  }
   return Math.max(w, MONTH_CONTENT_MIN_WIDTH);
 }
 
@@ -63,7 +63,7 @@ export function getMonthDetailLayoutMetrics(
 
   const idealCalendarWidth = getMonthContentMaxWidth(windowWidth, windowHeight);
 
-  if (!isLandscape && !isTablet) {
+  if (!isLandscape) {
     return {
       layout: 'stack',
       calendarColumnWidth: idealCalendarWidth,
