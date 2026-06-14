@@ -43,6 +43,24 @@
 - `VacationLegend` удалён из вкладки "List" (FlatList)
 - На вкладке "Calendar" остался
 
+### 5. Чип отпуска на годовом экране считает выходные
+
+**Файл:** `src/pages/year/ui/YearHomeScreen.tsx`
+
+- `vacationDaysCountByMonth` теперь считает все дни кроме праздников (а не только workday)
+- Чип показывает полное количество дней отпуска, включая выходные
+
+### 6. Полоска отпуска на ячейках дней для выходных
+
+**Файлы:**
+- `src/pages/year/ui/YearHomeScreen.tsx`
+- `src/pages/month/ui/MonthDetailScreen.tsx`
+- `__tests__/MonthDayVacationOverlay.test.tsx`
+
+- Полоска отпуска (vacation bar) теперь отображается на выходных и сокращённых днях
+- Раньше отображалась только на рабочих днях (`day.type === 'workday'`)
+- Теперь отображается на всех днях кроме праздников (`day.type !== 'holiday'`)
+
 ## Тесты
 
 Все 177 тестов проходят. Обновлены:

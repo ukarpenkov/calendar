@@ -54,7 +54,7 @@ function getVacationColorForDate(
 }
 
 function shouldShowVacationBar(type: string, vacationColor?: string): boolean {
-  return type === 'workday' && !!vacationColor;
+  return type !== 'holiday' && !!vacationColor;
 }
 
 const styles = StyleSheet.create({
@@ -140,12 +140,12 @@ describe('shouldShowVacationBar', () => {
     expect(shouldShowVacationBar('holiday', '#2DD4BF')).toBe(false);
   });
 
-  it('returns false for weekend with vacationColor', () => {
-    expect(shouldShowVacationBar('weekend', '#2DD4BF')).toBe(false);
+  it('returns true for weekend with vacationColor', () => {
+    expect(shouldShowVacationBar('weekend', '#2DD4BF')).toBe(true);
   });
 
-  it('returns false for shortened with vacationColor', () => {
-    expect(shouldShowVacationBar('shortened', '#2DD4BF')).toBe(false);
+  it('returns true for shortened with vacationColor', () => {
+    expect(shouldShowVacationBar('shortened', '#2DD4BF')).toBe(true);
   });
 });
 
@@ -186,25 +186,31 @@ describe('TestDayCell snapshot rendering', () => {
     expect(bars).toHaveLength(0);
   });
 
-  it('renders weekend with vacationColor — vacation bar NOT shown', () => {
+  it('renders weekend with vacationColor — vacation bar shown', () => {
+    let tree: ReactTestRenderer.ReactTestRendererJSON | null = null;
     let root: ReactTestRenderer.ReactTestRenderer;
     act(() => {
       root = ReactTestRenderer.create(
         <TestDayCell day={6} type="weekend" vacationColor="#2DD4BF" />,
       );
+      tree = root.toJSON();
     });
-    const bars = root!.root.findAllByProps({ testID: 'vacation-bar' });
-    expect(bars).toHaveLength(0);
+    expect(tree).toMatchSnapshot();
+    const bar = root!.root.findByProps({ testID: 'vacation-bar' });
+    expect(bar).toBeTruthy();
   });
 
-  it('renders shortened with vacationColor — vacation bar NOT shown', () => {
+  it('renders shortened with vacationColor — vacation bar shown', () => {
+    let tree: ReactTestRenderer.ReactTestRendererJSON | null = null;
     let root: ReactTestRenderer.ReactTestRenderer;
     act(() => {
       root = ReactTestRenderer.create(
         <TestDayCell day={22} type="shortened" vacationColor="#2DD4BF" />,
       );
+      tree = root.toJSON();
     });
-    const bars = root!.root.findAllByProps({ testID: 'vacation-bar' });
-    expect(bars).toHaveLength(0);
+    expect(tree).toMatchSnapshot();
+    const bar = root!.root.findByProps({ testID: 'vacation-bar' });
+    expect(bar).toBeTruthy();
   });
 });

@@ -97,7 +97,7 @@ export function YearHomeScreen({
     for (const period of vacationPeriods) {
       for (const day of calendar.days) {
         if (
-          day.type === 'workday' &&
+          day.type !== 'holiday' &&
           day.date >= period.startDate &&
           day.date <= period.endDate
         ) {
@@ -511,7 +511,7 @@ function MonthDayCell({ day, vacationColor, gridMetrics, resolveDayTypeColors }:
   }
 
   const colors = resolveDayTypeColors(day.type);
-  const showVacation = vacationColor && day.type === 'workday';
+  const showVacation = vacationColor && day.type !== 'holiday';
 
   return (
     <View

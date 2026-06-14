@@ -920,9 +920,9 @@ function MonthDetailDayCell({
   }
 
   const colors = getDayTypeColors(day.type, palette);
-  const showVacationStrip = vacationColor && day.type === 'workday';
+  const showVacationStrip = vacationColor && day.type !== 'holiday';
 
-  const showVacation = vacationColor && day.type === 'workday';
+  const showVacation = vacationColor && day.type !== 'holiday';
 
   return (
     <Pressable
