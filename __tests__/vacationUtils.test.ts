@@ -43,18 +43,20 @@ const januaryDays: CalendarDay[] = [
 ];
 
 describe('getVacationDaysInRange', () => {
-  it('counts 5 workday-only range', () => {
-    // Jan 2 (Fri), 5 (Mon), 6 (Tue), 9 (Fri) = 4 workdays in range Jan 2-9
-    // but we want exactly 5 workdays — use wider range
-    // Jan 2, 5, 6, 9 = 4 workdays between Jan 2 and Jan 9
+  it('counts all non-holiday days as vacation days', () => {
+    // Jan 2-9: workdays(2,5,6,9) + weekends(3,4) + shortened(8) = 7 vacation days
+    // holidays: 7 = not counted
     const result = getVacationDaysInRange('2026-01-02', '2026-01-09', januaryDays);
-    expect(result.workDays).toBe(4);
+    expect(result.totalDays).toBe(8);
+    expect(result.workDays).toBe(5); // 2,5,6,8,9
+    expect(result.vacationDays).toBe(7);
   });
 
-  it('does not count weekends', () => {
+  it('counts weekends as vacation days but not work days', () => {
     const result = getVacationDaysInRange('2026-01-03', '2026-01-04', januaryDays);
     expect(result.totalDays).toBe(2);
     expect(result.workDays).toBe(0);
+    expect(result.vacationDays).toBe(2);
   });
 
   it('does not count holidays', () => {
@@ -66,12 +68,13 @@ describe('getVacationDaysInRange', () => {
   it('does not count shortened days', () => {
     const result = getVacationDaysInRange('2026-01-08', '2026-01-08', januaryDays);
     expect(result.totalDays).toBe(1);
-    expect(result.workDays).toBe(0);
+    expect(result.workDays).toBe(1); // shortened counts as workday
+    expect(result.vacationDays).toBe(1);
   });
 
   it('returns zeros when endDate < startDate', () => {
     const result = getVacationDaysInRange('2026-01-10', '2026-01-01', januaryDays);
-    expect(result).toEqual({ totalDays: 0, workDays: 0, preHolidayDates: [] });
+    expect(result).toEqual({ totalDays: 0, workDays: 0, vacationDays: 0, preHolidayDates: [] });
   });
 
   it('includes day before holiday in preHolidayDates', () => {

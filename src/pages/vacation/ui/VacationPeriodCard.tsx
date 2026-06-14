@@ -5,6 +5,7 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import type { CalendarPalette } from '../../../entities/calendar';
 import type { VacationPeriod } from '../../../features/vacation/model';
 import type { AppLanguage } from '../../../shared/lib/i18n';
 
@@ -14,6 +15,7 @@ export type VacationPeriodCardProps = {
   totalDays: number;
   onPress: (period: VacationPeriod) => void;
   language: AppLanguage;
+  palette: CalendarPalette;
 };
 
 function formatDate(date: string, language: AppLanguage): string {
@@ -30,6 +32,7 @@ export function VacationPeriodCard({
   totalDays,
   onPress,
   language,
+  palette,
 }: VacationPeriodCardProps) {
   const start = formatDate(period.startDate, language);
   const end = formatDate(period.endDate, language);
@@ -38,14 +41,18 @@ export function VacationPeriodCard({
     <Pressable
       style={[
         styles.card,
-        { borderLeftColor: period.color },
+        {
+          borderLeftColor: period.color,
+          backgroundColor: palette.surface,
+          borderColor: palette.border,
+        },
       ]}
       onPress={() => onPress(period)}
     >
-      <Text style={styles.dates}>
+      <Text style={[styles.dates, { color: palette.title }]}>
         {start} — {end}
       </Text>
-      <Text style={styles.summary}>
+      <Text style={[styles.summary, { color: palette.subtitle }]}>
         {workDays} / {totalDays}
       </Text>
     </Pressable>

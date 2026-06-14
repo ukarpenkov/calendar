@@ -42,6 +42,8 @@ exports[`VacationPeriodCard renders with default props 1`] = `
         "paddingVertical": 12,
       },
       {
+        "backgroundColor": "#1B1F27",
+        "borderColor": "#2C3442",
         "borderLeftColor": "#2DD4BF",
       },
     ]
@@ -49,10 +51,15 @@ exports[`VacationPeriodCard renders with default props 1`] = `
 >
   <Text
     style={
-      {
-        "fontSize": 15,
-        "fontWeight": "600",
-      }
+      [
+        {
+          "fontSize": 15,
+          "fontWeight": "600",
+        },
+        {
+          "color": "#E8EAEF",
+        },
+      ]
     }
   >
     01.07.2026
@@ -61,9 +68,14 @@ exports[`VacationPeriodCard renders with default props 1`] = `
   </Text>
   <Text
     style={
-      {
-        "fontSize": 13,
-      }
+      [
+        {
+          "fontSize": 13,
+        },
+        {
+          "color": "#9AA3B2",
+        },
+      ]
     }
   >
     10

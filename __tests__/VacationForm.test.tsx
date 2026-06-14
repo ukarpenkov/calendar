@@ -256,8 +256,8 @@ describe('VacationForm', () => {
     });
 
     const json = JSON.stringify(renderer!.toJSON());
-    expect(json).toContain('01.07.2026');
-    expect(json).toContain('07.07.2026');
+    expect(json).toContain('01.07');
+    expect(json).toContain('07.07');
   });
 
   it('renders with default color when no initialPeriod', async () => {

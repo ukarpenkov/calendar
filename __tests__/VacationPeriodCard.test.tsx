@@ -7,6 +7,31 @@ import ReactTestRenderer from 'react-test-renderer';
 
 import { VacationPeriodCard } from '../src/pages/vacation/ui/VacationPeriodCard';
 import type { VacationPeriod } from '../src/features/vacation/model';
+import type { CalendarPalette } from '../src/entities/calendar';
+
+const palette: CalendarPalette = {
+  background: '#12141A',
+  surface: '#1B1F27',
+  surfaceMuted: '#232834',
+  border: '#2C3442',
+  title: '#E8EAEF',
+  subtitle: '#9AA3B2',
+  icon: '#D6DAE3',
+  selectedFill: '#0F172A',
+  selectedBorder: '#60A5FA',
+  workdayFill: '#1B1F27',
+  workdayBorder: '#3A4252',
+  weekendFill: '#1E3A5F',
+  weekendBorder: '#3B82F6',
+  holidayFill: '#472326',
+  holidayBorder: '#F87171',
+  shortenedFill: '#4A371A',
+  shortenedBorder: '#F59E0B',
+  vacationFill: '#134E4A',
+  vacationBorder: '#2DD4BF',
+  workdayText: '#E8EAEF',
+  accentText: '#F8FAFC',
+};
 
 const defaultPeriod: VacationPeriod = {
   id: 1,
@@ -33,6 +58,7 @@ describe('VacationPeriodCard', () => {
           totalDays={14}
           onPress={defaultOnPress}
           language="en"
+          palette={palette}
         />,
       );
     });
@@ -51,6 +77,7 @@ describe('VacationPeriodCard', () => {
           totalDays={14}
           onPress={defaultOnPress}
           language="ru"
+          palette={palette}
         />,
       );
     });
@@ -71,6 +98,7 @@ describe('VacationPeriodCard', () => {
           totalDays={14}
           onPress={defaultOnPress}
           language="ja"
+          palette={palette}
         />,
       );
     });
@@ -91,6 +119,7 @@ describe('VacationPeriodCard', () => {
           totalDays={14}
           onPress={defaultOnPress}
           language="en"
+          palette={palette}
         />,
       );
     });
@@ -112,6 +141,7 @@ describe('VacationPeriodCard', () => {
           totalDays={14}
           onPress={defaultOnPress}
           language="en"
+          palette={palette}
         />,
       );
     });

@@ -141,9 +141,6 @@ export function VacationScreen({
               },
             ]}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
-            ListFooterComponent={
-              <VacationLegend palette={palette} language={language} />
-            }
             renderItem={({ item }) => {
               const { totalDays, workDays } = getVacationDaysInRange(
                 item.startDate,
@@ -157,6 +154,7 @@ export function VacationScreen({
                   totalDays={totalDays}
                   onPress={onEdit}
                   language={language}
+                  palette={palette}
                 />
               );
             }}

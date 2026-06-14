@@ -34,12 +34,17 @@ const COLOR_PRESETS = [
   { hex: '#22C55E', name: 'Green' },
 ];
 
+function getCurrentYear(): number {
+  return new Date().getFullYear();
+}
+
 function parseDisplayDate(text: string): string | null {
-  const match = text.trim().match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+  const match = text.trim().match(/^(\d{2})\.(\d{2})$/);
   if (!match) {
     return null;
   }
-  const [, d, m, y] = match;
+  const [, d, m] = match;
+  const y = getCurrentYear();
   const iso = `${y}-${m}-${d}`;
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) {
@@ -52,8 +57,16 @@ function isoToDisplayDate(iso: string): string {
   if (!iso) {
     return '';
   }
-  const [y, m, d] = iso.split('-');
-  return `${d}.${m}.${y}`;
+  const [_y, m, d] = iso.split('-');
+  return `${d}.${m}`;
+}
+
+function formatDayMonthInput(text: string): string {
+  const digits = text.replace(/\D/g, '').slice(0, 4);
+  if (digits.length > 2) {
+    return digits.slice(0, 2) + '.' + digits.slice(2);
+  }
+  return digits;
 }
 
 function isValidIsoDate(value: string): boolean {
@@ -81,6 +94,14 @@ export function VacationForm({
   const [endDisplay, setEndDisplay] = useState(
     initialPeriod ? isoToDisplayDate(initialPeriod.endDate) : '',
   );
+
+  const handleStartChange = (text: string) => {
+    setStartDisplay(formatDayMonthInput(text));
+  };
+
+  const handleEndChange = (text: string) => {
+    setEndDisplay(formatDayMonthInput(text));
+  };
   const [selectedColor, setSelectedColor] = useState(
     initialPeriod?.color ?? '#2DD4BF',
   );
@@ -165,11 +186,11 @@ export function VacationForm({
           </Text>
           <TextInput
             value={startDisplay}
-            onChangeText={setStartDisplay}
-            placeholder="DD.MM.YYYY"
+            onChangeText={handleStartChange}
+            placeholder="DD.MM"
             placeholderTextColor={palette.subtitle}
             keyboardType="number-pad"
-            maxLength={10}
+            maxLength={5}
             style={[
               styles.input,
               {
@@ -184,11 +205,11 @@ export function VacationForm({
           </Text>
           <TextInput
             value={endDisplay}
-            onChangeText={setEndDisplay}
-            placeholder="DD.MM.YYYY"
+            onChangeText={handleEndChange}
+            placeholder="DD.MM"
             placeholderTextColor={palette.subtitle}
             keyboardType="number-pad"
-            maxLength={10}
+            maxLength={5}
             style={[
               styles.input,
               {

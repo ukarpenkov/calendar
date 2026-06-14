@@ -4,9 +4,9 @@ export function getVacationDaysInRange(
   startDate: string,
   endDate: string,
   calendarDays: CalendarDay[],
-): { totalDays: number; workDays: number; preHolidayDates: string[] } {
+): { totalDays: number; workDays: number; vacationDays: number; preHolidayDates: string[] } {
   if (endDate < startDate) {
-    return { totalDays: 0, workDays: 0, preHolidayDates: [] };
+    return { totalDays: 0, workDays: 0, vacationDays: 0, preHolidayDates: [] };
   }
 
   const daysInRange = calendarDays.filter(
@@ -14,7 +14,8 @@ export function getVacationDaysInRange(
   );
 
   const totalDays = daysInRange.length;
-  const workDays = daysInRange.filter(d => d.type === 'workday').length;
+  const workDays = daysInRange.filter(d => d.type === 'workday' || d.type === 'shortened').length;
+  const vacationDays = daysInRange.filter(d => d.type !== 'holiday').length;
 
   const holidayDatesInRange = new Set(
     daysInRange.filter(d => d.type === 'holiday').map(d => d.date),
@@ -27,7 +28,7 @@ export function getVacationDaysInRange(
     })
     .map(d => d.date);
 
-  return { totalDays, workDays, preHolidayDates };
+  return { totalDays, workDays, vacationDays, preHolidayDates };
 }
 
 function getNextDate(date: string): string {
