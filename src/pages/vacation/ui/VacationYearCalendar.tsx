@@ -233,6 +233,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   dayText: {
-    fontSize: 0,
+    fontSize: 6,
   },
 });
