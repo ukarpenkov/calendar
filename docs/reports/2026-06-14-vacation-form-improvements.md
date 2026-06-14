@@ -61,6 +61,13 @@
 - Раньше отображалась только на рабочих днях (`day.type === 'workday'`)
 - Теперь отображается на всех днях кроме праздников (`day.type !== 'holiday'`)
 
+### 7. Версия приложения 11.0
+
+**Файлы:**
+- `src/shared/config/appDisplayVersion.ts` — `10.0` → `11.0`
+- `android/app/build.gradle` — уже `versionCode 11`, `versionName "11.0"`
+- `package.json` — уже `11.0.0`
+
 ## Тесты
 
 Все 177 тестов проходят. Обновлены:
