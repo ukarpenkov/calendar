@@ -50,7 +50,7 @@ function buildMonthGrid(
     const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
     let vacationColor: string | null = null;
-    if (cal?.type === 'workday' || cal?.type === 'holiday') {
+    if (cal?.type) {
       for (const p of vacationPeriods) {
         if (dateStr >= p.startDate && dateStr <= p.endDate) {
           vacationColor = p.color;

@@ -632,11 +632,7 @@ function MonthDetailBody({
     const map = new Map<string, string>();
     for (const period of vacationPeriods) {
       for (const day of detail.days) {
-        if (
-          (day.type === 'workday' || day.type === 'holiday') &&
-          day.date >= period.startDate &&
-          day.date <= period.endDate
-        ) {
+        if (day.date >= period.startDate && day.date <= period.endDate) {
           map.set(day.date, period.color);
         }
       }
@@ -920,7 +916,7 @@ function MonthDetailDayCell({
   }
 
   const colors = getDayTypeColors(day.type, palette);
-  const showVacation = vacationColor && (day.type === 'workday' || day.type === 'holiday');
+  const showVacation = !!vacationColor;
 
   const bgColor = vacationColor && showVacation
     ? vacationColor + '4D'

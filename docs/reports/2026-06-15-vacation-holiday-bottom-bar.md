@@ -4,15 +4,15 @@
 **Session:** Vacation UI — holiday color + bottom bar
 
 ## What was done
-- Праздники, попадающие в период отпуска, теперь окрашиваются фоном отпуска и имеют линию снизу (vacationBar), как и будни в отпуске
+- Праздники и выходные, попадающие в период отпуска, теперь окрашиваются фоном отпуска и имеют линию снизу (vacationBar), как и будни в отпуске
 - Обновлена логика на обоих экранах: годовой календарь отпусков и детальный вид месяца
 
 ## Files changed
-- `src/pages/vacation/ui/VacationYearCalendar.tsx` — добавлено `cal?.type === 'holiday'` в условие назначения `vacationColor`
-- `src/pages/month/ui/MonthDetailScreen.tsx` — `vacationColorByDate` включает праздники; `showVacation` расширен на `workday || holiday`; фон ячейки окрашивается в `vacationColor + '4D'` для будней и праздников в отпуске
+- `src/pages/vacation/ui/VacationYearCalendar.tsx` — `vacationColor` назначается для всех типов дней (workday, weekend, holiday) в периоде отпуска
+- `src/pages/month/ui/MonthDetailScreen.tsx` — `vacationColorByDate` включает все типы дней; `showVacation = !!vacationColor`; фон и линия снизу отображаются для будней, выходных и праздников в отпуске
 
 ## Tests
 - Не запускались (визуальное изменение)
 
 ## Notes
-- Выходные в отпуске пока не окрашиваются — только будни и праздники
+- Все типы дней в отпуске теперь имеют единообразное отображение: полупрозрачный фон отпуска + линия снизу
