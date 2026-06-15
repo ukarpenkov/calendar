@@ -654,17 +654,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
   },
-  vacationBadge: {
-    backgroundColor: '#2DD4BF',
-    borderRadius: 8,
-    paddingHorizontal: 5,
-    paddingVertical: 1,
-    marginLeft: 4,
-  },
-  vacationBadgeText: {
-    color: '#FFFFFF',
-    fontWeight: '700',
-  },
   weekHeaderRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -744,17 +733,6 @@ const styles = StyleSheet.create({
   dayCellText: {
     fontSize: 9,
     fontWeight: '600',
-  },
-  vacationBadge: {
-    backgroundColor: '#2DD4BF',
-    borderRadius: 8,
-    paddingHorizontal: 4,
-    paddingVertical: 1,
-    marginLeft: 4,
-  },
-  vacationBadgeText: {
-    color: '#FFFFFF',
-    fontWeight: '700',
   },
   vacationBarSmall: {
     position: 'absolute',

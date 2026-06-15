@@ -151,7 +151,7 @@ describe('shouldShowVacationBar', () => {
 
 describe('TestDayCell snapshot rendering', () => {
   it('renders workday with vacationColor — snapshot contains vacation bar', () => {
-    let tree: ReactTestRenderer.ReactTestRendererJSON | null = null;
+    let tree: ReactTestRenderer.ReactTestRendererJSON | ReactTestRenderer.ReactTestRendererJSON[] | null = null;
     let root: ReactTestRenderer.ReactTestRenderer;
     act(() => {
       root = ReactTestRenderer.create(
@@ -187,7 +187,7 @@ describe('TestDayCell snapshot rendering', () => {
   });
 
   it('renders weekend with vacationColor — vacation bar shown', () => {
-    let tree: ReactTestRenderer.ReactTestRendererJSON | null = null;
+    let tree: ReactTestRenderer.ReactTestRendererJSON | ReactTestRenderer.ReactTestRendererJSON[] | null = null;
     let root: ReactTestRenderer.ReactTestRenderer;
     act(() => {
       root = ReactTestRenderer.create(
@@ -201,7 +201,7 @@ describe('TestDayCell snapshot rendering', () => {
   });
 
   it('renders shortened with vacationColor — vacation bar shown', () => {
-    let tree: ReactTestRenderer.ReactTestRendererJSON | null = null;
+    let tree: ReactTestRenderer.ReactTestRendererJSON | ReactTestRenderer.ReactTestRendererJSON[] | null = null;
     let root: ReactTestRenderer.ReactTestRenderer;
     act(() => {
       root = ReactTestRenderer.create(

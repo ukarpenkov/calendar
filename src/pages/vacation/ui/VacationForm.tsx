@@ -63,6 +63,40 @@ function isoToDisplayDate(iso: string): string {
 
 function formatDayMonthInput(text: string): string {
   const digits = text.replace(/\D/g, '').slice(0, 4);
+  if (digits.length === 0) {
+    return '';
+  }
+
+  const dayPart = digits.slice(0, 2);
+  const monthPart = digits.slice(2, 4);
+
+  if (dayPart.length === 2) {
+    const day = parseInt(dayPart, 10);
+    if (day < 1 || day > 31) {
+      return dayPart.slice(0, 1);
+    }
+  }
+
+  if (monthPart.length === 2) {
+    const month = parseInt(monthPart, 10);
+    if (month < 1 || month > 12) {
+      return dayPart + '.' + monthPart.slice(0, 1);
+    }
+
+    const day = parseInt(dayPart, 10);
+    if (day > 0) {
+      const y = getCurrentYear();
+      const date = new Date(y, month - 1, day);
+      if (
+        date.getFullYear() !== y ||
+        date.getMonth() !== month - 1 ||
+        date.getDate() !== day
+      ) {
+        return dayPart;
+      }
+    }
+  }
+
   if (digits.length > 2) {
     return digits.slice(0, 2) + '.' + digits.slice(2);
   }

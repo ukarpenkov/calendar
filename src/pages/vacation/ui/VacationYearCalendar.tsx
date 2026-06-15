@@ -36,7 +36,7 @@ function buildMonthGrid(
   const dayMap = new Map<string, CalendarDay>();
   for (const d of calendarDays) {
     if (d.year === year && d.month === month) {
-      dayMap.set(d.day, d);
+      dayMap.set(String(d.day), d);
     }
   }
 
@@ -46,7 +46,7 @@ function buildMonthGrid(
   }
 
   for (let day = 1; day <= daysInMonth; day++) {
-    const cal = dayMap.get(day);
+    const cal = dayMap.get(String(day));
     const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
     let vacationColor: string | null = null;

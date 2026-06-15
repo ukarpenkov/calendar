@@ -236,7 +236,7 @@ export function CalendarWidgetLayout({ data }: CalendarWidgetProps) {
               text={`🏖 ${VACATION_LABELS[data.language] ?? VACATION_LABELS.en}`}
               style={{
                 fontSize: 14,
-                color: data.vacationColor ?? '#2DD4BF',
+                color: (data.vacationColor ?? '#2DD4BF') as `#${string}`,
                 fontWeight: 'bold',
                 marginTop: 4,
                 ...TEXT_SHADOW,

@@ -1166,12 +1166,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
   },
-  vacationBar: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
   selectedDayCard: {
     borderWidth: 1,
     borderRadius: 20,
