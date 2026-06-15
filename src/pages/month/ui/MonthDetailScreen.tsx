@@ -633,7 +633,7 @@ function MonthDetailBody({
     for (const period of vacationPeriods) {
       for (const day of detail.days) {
         if (
-          day.type === 'workday' &&
+          (day.type === 'workday' || day.type === 'holiday') &&
           day.date >= period.startDate &&
           day.date <= period.endDate
         ) {
@@ -920,9 +920,13 @@ function MonthDetailDayCell({
   }
 
   const colors = getDayTypeColors(day.type, palette);
-  const showVacationStrip = vacationColor && day.type !== 'holiday';
+  const showVacation = vacationColor && (day.type === 'workday' || day.type === 'holiday');
 
-  const showVacation = vacationColor && day.type !== 'holiday';
+  const bgColor = vacationColor && showVacation
+    ? vacationColor + '4D'
+    : isSelected
+      ? palette.selectedFill
+      : colors.backgroundColor;
 
   return (
     <Pressable
@@ -932,9 +936,7 @@ function MonthDetailDayCell({
         {
           minHeight: cellSize,
           borderRadius: Math.max(8, 12 * calendarScale),
-          backgroundColor: isSelected
-            ? palette.selectedFill
-            : colors.backgroundColor,
+          backgroundColor: bgColor,
           borderColor: isSelected ? palette.selectedBorder : colors.borderColor,
           opacity: pressed ? 0.9 : 1,
         },
@@ -955,7 +957,7 @@ function MonthDetailDayCell({
       >
         {day.day}
       </Text>
-      {vacationColor && day.type === 'workday' ? (
+      {showVacation ? (
         <View
           style={[
             styles.vacationBar,
