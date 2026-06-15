@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { CalendarDay, CalendarPalette } from '../../../entities/calendar';
@@ -11,9 +10,7 @@ import { layout } from '../../../shared/lib/ui/layout';
 import { IconCircleButton } from '../../../shared/ui/IconCircleButton';
 import { ArrowBackIcon } from '../../../shared/ui/icons/NavigationIcons';
 import { VacationBalance } from './VacationBalance';
-import { VacationLegend } from './VacationLegend';
 import { VacationPeriodCard } from './VacationPeriodCard';
-import { VacationYearCalendar } from './VacationYearCalendar';
 
 type VacationScreenProps = {
   year: number;
@@ -26,8 +23,6 @@ type VacationScreenProps = {
   onEdit: (period: VacationPeriod) => void;
 };
 
-type Tab = 'calendar' | 'list';
-
 export function VacationScreen({
   year,
   calendarDays,
@@ -39,7 +34,6 @@ export function VacationScreen({
   onEdit,
 }: VacationScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
-  const [activeTab, setActiveTab] = useState<Tab>('calendar');
 
   const t = (key: Parameters<typeof getTranslation>[1]) =>
     getTranslation(language, key);
@@ -85,21 +79,6 @@ export function VacationScreen({
         </Pressable>
       </View>
 
-      <View style={[styles.tabs, { paddingHorizontal: layout.screenPaddingH }]}>
-        <TabButton
-          label={t('vacation.calendar')}
-          isActive={activeTab === 'calendar'}
-          palette={palette}
-          onPress={() => setActiveTab('calendar')}
-        />
-        <TabButton
-          label={t('vacation.list')}
-          isActive={activeTab === 'list'}
-          palette={palette}
-          onPress={() => setActiveTab('list')}
-        />
-      </View>
-
       <View style={styles.balanceWrapper}>
         <VacationBalance
           usedWorkDays={usedWorkDays}
@@ -110,22 +89,7 @@ export function VacationScreen({
       </View>
 
       <View style={styles.content}>
-        {activeTab === 'calendar' ? (
-          <ScrollView
-            contentContainerStyle={{
-              paddingBottom: safeAreaInsets.bottom + 20,
-            }}
-          >
-            <VacationYearCalendar
-              year={year}
-              calendarDays={calendarDays}
-              vacationPeriods={vacationPeriods}
-              palette={palette}
-              language={language}
-            />
-            <VacationLegend palette={palette} language={language} />
-          </ScrollView>
-        ) : vacationPeriods.length === 0 ? (
+        {vacationPeriods.length === 0 ? (
           <View style={styles.placeholder}>
             <Text style={{ color: palette.subtitle }}>{t('vacation.empty')}</Text>
           </View>
@@ -165,41 +129,6 @@ export function VacationScreen({
   );
 }
 
-function TabButton({
-  label,
-  isActive,
-  palette,
-  onPress,
-}: {
-  label: string;
-  isActive: boolean;
-  palette: CalendarPalette;
-  onPress: () => void;
-}) {
-  return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.tab,
-        {
-          backgroundColor: isActive ? palette.surface : 'transparent',
-          borderColor: isActive ? palette.border : 'transparent',
-          opacity: pressed ? 0.8 : 1,
-        },
-      ]}
-    >
-      <Text
-        style={[
-          styles.tabLabel,
-          { color: isActive ? palette.title : palette.subtitle },
-        ]}
-      >
-        {label}
-      </Text>
-    </Pressable>
-  );
-}
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -228,25 +157,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     lineHeight: 24,
   },
-  tabs: {
-    flexDirection: 'row',
-    gap: 8,
-    marginTop: 12,
-    marginBottom: 16,
-  },
   balanceWrapper: {
     paddingHorizontal: 0,
-  },
-  tab: {
-    flex: 1,
-    borderWidth: 1,
-    borderRadius: 14,
-    paddingVertical: 10,
-    alignItems: 'center',
-  },
-  tabLabel: {
-    fontSize: 15,
-    fontWeight: '600',
   },
   content: {
     flex: 1,
