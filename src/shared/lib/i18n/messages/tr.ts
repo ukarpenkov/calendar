@@ -6,6 +6,8 @@ export const trTranslations = {
   'common.backToYear': 'Yıla dön',
   'common.navigateBack': 'Geri',
   'common.cancel': 'İptal',
+  'common.yes': 'Evet',
+  'common.no': 'Hayır',
   'app.error.bootstrapTitle': 'Yerel takvim verileri başlatılamadı.',
   'app.error.bootstrapSubtitle':
     'Cihaz depolamasını kontrol edin ve yeniden deneyin. Uygulamayı yeniden başlatmayı da deneyebilirsiniz.',

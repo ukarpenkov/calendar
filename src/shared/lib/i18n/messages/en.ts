@@ -4,6 +4,8 @@ export const enTranslations = {
     'common.backToYear': 'Back to year',
     'common.navigateBack': 'Go back',
     'common.cancel': 'Cancel',
+    'common.yes': 'Yes',
+    'common.no': 'No',
     'app.error.bootstrapTitle': 'Failed to initialize local calendar data.',
     'app.error.bootstrapSubtitle':
       'Check device storage, then try again. You can also relaunch the app.',

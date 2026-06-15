@@ -6,6 +6,8 @@ export const idTranslations = {
   'common.backToYear': 'Kembali ke tahun',
   'common.navigateBack': 'Kembali',
   'common.cancel': 'Batal',
+  'common.yes': 'Ya',
+  'common.no': 'Tidak',
   'app.error.bootstrapTitle': 'Gagal menginisialisasi data kalender lokal.',
   'app.error.bootstrapSubtitle':
     'Periksa penyimpanan perangkat, lalu coba lagi. Anda juga dapat membuka ulang aplikasi.',

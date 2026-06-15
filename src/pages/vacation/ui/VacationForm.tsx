@@ -373,14 +373,14 @@ export function VacationForm({
                 </Text>
                 <View style={styles.confirmRow}>
                   <ActionButton
-                    label={t('vacation.delete')}
+                    label={t('common.yes')}
                     onPress={handleConfirmDelete}
                     disabled={false}
                     palette={palette}
                     variant="danger"
                   />
                   <GhostButton
-                    label={t('common.cancel')}
+                    label={t('common.no')}
                     onPress={() => setShowDeleteConfirm(false)}
                     palette={palette}
                   />

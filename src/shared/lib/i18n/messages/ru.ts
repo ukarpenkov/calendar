@@ -6,6 +6,8 @@ export const ruTranslations: Record<TranslationKey, string> = {
     'common.backToYear': 'Назад к году',
     'common.navigateBack': 'Назад',
     'common.cancel': 'Отмена',
+    'common.yes': 'Да',
+    'common.no': 'Нет',
     'app.error.bootstrapTitle': 'Не удалось инициализировать локальные данные календаря.',
     'app.error.bootstrapSubtitle':
       'Проверьте память устройства и нажмите «Повторить». При необходимости перезапустите приложение.',

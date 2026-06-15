@@ -65,18 +65,6 @@ export function VacationScreen({
         <Text style={[styles.appBarTitle, { color: palette.title }]}>
           {t('vacation.title')}
         </Text>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t('vacation.addTitle')}
-          testID="vacation-add"
-          onPress={onAdd}
-          style={({ pressed }) => [
-            styles.addButton,
-            { borderColor: palette.border, opacity: pressed ? 0.8 : 1 },
-          ]}
-        >
-          <Text style={[styles.addButtonText, { color: palette.title }]}>+</Text>
-        </Pressable>
       </View>
 
       <View style={styles.balanceWrapper}>
@@ -125,6 +113,25 @@ export function VacationScreen({
           />
         )}
       </View>
+
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t('vacation.addTitle')}
+        testID="vacation-add"
+        onPress={onAdd}
+        style={({ pressed }) => [
+          styles.fab,
+          {
+            backgroundColor: palette.vacationFill,
+            borderColor: palette.vacationBorder,
+            bottom: safeAreaInsets.bottom + 24,
+            opacity: pressed ? 0.85 : 1,
+            transform: [{ scale: pressed ? 0.92 : 1 }],
+          },
+        ]}
+      >
+        <Text style={[styles.fabText, { color: palette.vacationBorder }]}>+</Text>
+      </Pressable>
     </View>
   );
 }
@@ -140,22 +147,28 @@ const styles = StyleSheet.create({
   },
   appBarTitle: {
     flex: 1,
-    textAlign: 'center',
     fontSize: 24,
     fontWeight: '600',
   },
-  addButton: {
-    width: 36,
-    height: 36,
-    borderWidth: 1,
-    borderRadius: 18,
+  fab: {
+    position: 'absolute',
+    right: 24,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
   },
-  addButtonText: {
-    fontSize: 22,
-    fontWeight: '600',
-    lineHeight: 24,
+  fabText: {
+    fontSize: 28,
+    fontWeight: '400',
+    lineHeight: 30,
   },
   balanceWrapper: {
     paddingHorizontal: 0,

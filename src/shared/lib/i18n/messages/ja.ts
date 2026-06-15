@@ -6,6 +6,8 @@ export const jaTranslations = {
   'common.backToYear': '年表示に戻る',
   'common.navigateBack': '戻る',
   'common.cancel': 'キャンセル',
+  'common.yes': 'はい',
+  'common.no': 'いいえ',
   'app.error.bootstrapTitle': 'ローカルのカレンダーデータを初期化できませんでした。',
   'app.error.bootstrapSubtitle':
     '端末のストレージを確認して再試行するか、アプリを再起動してください。',
