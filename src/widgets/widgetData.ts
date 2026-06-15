@@ -7,7 +7,7 @@ import { initializeDatabase } from '../shared/lib/db/database';
 import { DATABASE_NAME, ACTIVE_CALENDAR_SOURCE_METADATA_KEY } from '../shared/lib/db/schema';
 import { detectDeviceLanguage, getMonthLabel, getShortWeekdayLabels } from '../shared/lib/i18n';
 import type { AppLanguage } from '../shared/lib/i18n';
-import { getDayDrawableResourceName } from './imageMapping';
+import { getDayDrawableResourceName, getVacationDrawableResourceName } from './imageMapping';
 
 export interface WidgetDayData {
   date: string;
@@ -105,12 +105,17 @@ export async function fetchTodayWidgetData(): Promise<WidgetDayData | null> {
       // Vacation table may not exist yet
     }
 
+    const finalImageResourceName =
+      isOnVacation && day.type !== 'holiday'
+        ? getVacationDrawableResourceName()
+        : imageResourceName;
+
     return {
       date: day.date,
       dayType: day.type,
       isShortened: day.isShortened,
       holidayName,
-      imageResourceName,
+      imageResourceName: finalImageResourceName,
       language,
       monthLabel,
       dayNumber: day.day,

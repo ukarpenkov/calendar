@@ -27,6 +27,7 @@ import {
   getDayImage,
   getHolidayDisplayName,
   getHolidayImageForMonth,
+  isDateOnVacation,
   type CalendarPalette,
   type CalendarDay,
   type CalendarYearMonthDetails,
@@ -628,6 +629,9 @@ function MonthDetailBody({
       ? getHolidayDisplayName(selectedDay, language)
       : null;
 
+  const isSelectedDayOnVacation =
+    selectedDay !== null && isDateOnVacation(selectedDay.date, vacationPeriods);
+
   const vacationColorByDate = useMemo(() => {
     const map = new Map<string, string>();
     for (const period of vacationPeriods) {
@@ -655,12 +659,12 @@ function MonthDetailBody({
   const holidayImage = useMemo(
     () => {
       if (selectedDay) {
-        const dayImg = getDayImage(selectedDay, detail.days);
+        const dayImg = getDayImage(selectedDay, detail.days, vacationPeriods);
         if (dayImg) return dayImg;
       }
       return getHolidayImageForMonth(detail.days);
     },
-    [selectedDay, detail.days],
+    [selectedDay, detail.days, vacationPeriods],
   );
 
   const getVacationColorForDate = useCallback(
@@ -784,8 +788,9 @@ function MonthDetailBody({
               },
             ]}
           >
-            {getDayTypeLabel(selectedDay.type, language)} - {selectedDay.workHours}{' '}
-            {t('common.hoursUnit')}
+            {isSelectedDayOnVacation
+              ? `${t('vacation.legend.vacation')} - 0 ${t('common.hoursUnit')}`
+              : `${getDayTypeLabel(selectedDay.type, language)} - ${selectedDay.workHours} ${t('common.hoursUnit')}`}
           </Text>
           {selectedHolidayLabel ? (
             <Text

@@ -23,6 +23,7 @@ jest.mock('../src/shared/lib/i18n', () => {
 
 jest.mock('../src/widgets/imageMapping', () => ({
   getDayDrawableResourceName: () => 'day_work_default',
+  getVacationDrawableResourceName: () => 'day_default_vacancy_chill',
   WIDGET_DEFAULT_IMAGE_BY_MONTH: {},
 }));
 

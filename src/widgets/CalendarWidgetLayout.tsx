@@ -69,6 +69,14 @@ const TEXT_SHADOW = {
   textShadowOffset: { height: 1, width: 1 },
 } as const;
 
+const HOURS_UNIT: Record<AppLanguage, string> = {
+  ru: 'ч',
+  en: 'h',
+  tr: 'sa',
+  id: 'jam',
+  ja: '時間',
+};
+
 function formatDate(data: WidgetDayData): string {
   const { language, dayNumber, monthLabel, year, weekdayLabel } = data;
 
@@ -81,6 +89,11 @@ function formatDate(data: WidgetDayData): string {
 
 function getDayCaption(data: WidgetDayData): string {
   const lang = data.language;
+
+  if (data.isOnVacation) {
+    const hoursUnit = HOURS_UNIT[lang] ?? HOURS_UNIT.en;
+    return `${VACATION_LABELS[lang] ?? VACATION_LABELS.en} - 0 ${hoursUnit}`;
+  }
 
   if (data.holidayName) {
     return data.holidayName;
@@ -231,19 +244,6 @@ export function CalendarWidgetLayout({ data }: CalendarWidgetProps) {
             maxLines={2}
             truncate="END"
           />
-          {data.isOnVacation && (
-            <TextWidget
-              text={`🏖 ${VACATION_LABELS[data.language] ?? VACATION_LABELS.en}`}
-              style={{
-                fontSize: 14,
-                color: (data.vacationColor ?? '#2DD4BF') as `#${string}`,
-                fontWeight: 'bold',
-                marginTop: 4,
-                ...TEXT_SHADOW,
-              }}
-              maxLines={1}
-            />
-          )}
         </FlexWidget>
       </FlexWidget>
     </OverlapWidget>

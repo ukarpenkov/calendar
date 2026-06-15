@@ -174,4 +174,8 @@ export function getDayDrawableResourceName(day: CalendarDay): string {
   return 'day_work_default';
 }
 
+export function getVacationDrawableResourceName(): string {
+  return 'day_default_vacancy_chill';
+}
+
 export { WIDGET_IMAGE_BY_KEY, WIDGET_DEFAULT_IMAGE_BY_MONTH };

@@ -39,6 +39,7 @@ const idMay31WaisakImage = require('../../../../assets/days_img/id_31may.webp');
 const idMay27IdulAdhaImage = require('../../../../assets/days_img/id_27may.webp');
 /** IDN 2026-05-28 collective leave for Eid al-Adha (`calendar2026IDN.json`). */
 const idMay28CollectiveLeaveAdhaImage = require('../../../../assets/days_img/id_28may.webp');
+const vacationImage = require('../../../../assets/days_img/default_vacancy_chill.webp');
 
 const countrySpecificHolidayImageByKey: Record<string, ImageSourcePropType> = {
   '2025-01-01|Новый год': newYearImage,
@@ -283,10 +284,34 @@ export function getHolidayImageForMonth(
   return null;
 }
 
+export function isDateOnVacation(
+  date: string,
+  vacationPeriods: readonly { startDate: string; endDate: string }[],
+): boolean {
+  for (const period of vacationPeriods) {
+    if (date >= period.startDate && date <= period.endDate) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function getVacationImage(): ImageSourcePropType {
+  return vacationImage;
+}
+
 export function getDayImage(
   day: CalendarDay,
   _allDays?: readonly CalendarDay[],
+  vacationPeriods?: readonly { startDate: string; endDate: string }[],
 ): ImageSourcePropType | null {
+  const onVacation =
+    vacationPeriods != null && isDateOnVacation(day.date, vacationPeriods);
+
+  if (onVacation && day.type !== 'holiday') {
+    return vacationImage;
+  }
+
   if (day.type === 'shortened') {
     return shortenedDayImage;
   }
