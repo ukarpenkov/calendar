@@ -323,24 +323,6 @@ export function VacationForm({
           </View>
         ) : null}
 
-        {/* Pre-holiday warning */}
-        {preview && preview.preHolidayDates.length > 0 ? (
-          <View
-            style={[
-              styles.card,
-              {
-                backgroundColor: palette.shortenedFill,
-                borderColor: palette.shortenedBorder,
-              },
-            ]}
-          >
-            <Text style={styles.preHolidayIcon}>⚠️</Text>
-            <Text style={[styles.preHolidayText, { color: palette.title }]}>
-              {t('vacation.preHolidayWarning')} ({preview.preHolidayDates.length})
-            </Text>
-          </View>
-        ) : null}
-
         {/* Save / Cancel buttons */}
         <ActionButton
           label={t('vacation.save')}
