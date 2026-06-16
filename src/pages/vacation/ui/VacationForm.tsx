@@ -225,6 +225,8 @@ export function VacationForm({
     endIso !== null &&
     endIso >= startIso;
 
+  const daysEnabled = startIso !== null;
+
   const bothFilled = startIso !== null && endIso !== null;
   const canSave = bothFilled && rangeValid;
 
@@ -337,12 +339,14 @@ export function VacationForm({
               placeholderTextColor={palette.subtitle}
               keyboardType="number-pad"
               maxLength={3}
+              editable={daysEnabled}
               style={[
                 styles.daysInput,
                 {
-                  backgroundColor: palette.surfaceMuted,
+                  backgroundColor: daysEnabled ? palette.surfaceMuted : palette.surface,
                   borderColor: palette.border,
-                  color: palette.title,
+                  color: daysEnabled ? palette.title : palette.subtitle,
+                  opacity: daysEnabled ? 1 : 0.5,
                 },
               ]}
             />
@@ -351,11 +355,12 @@ export function VacationForm({
               accessibilityLabel="Add day"
               testID="increment-day-button"
               onPress={handleIncrementDay}
+              disabled={!daysEnabled}
               style={({ pressed }) => [
                 styles.addButton,
                 {
-                  backgroundColor: palette.selectedBorder,
-                  opacity: pressed ? 0.8 : 1,
+                  backgroundColor: daysEnabled ? palette.selectedBorder : palette.border,
+                  opacity: daysEnabled ? (pressed ? 0.8 : 1) : 0.5,
                 },
               ]}
             >
@@ -603,6 +608,7 @@ const styles = StyleSheet.create({
   colorRow: {
     flexDirection: 'row',
     gap: 12,
+    justifyContent: 'center',
   },
   colorCircle: {
     width: 40,
