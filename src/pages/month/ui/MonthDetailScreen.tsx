@@ -925,11 +925,9 @@ function MonthDetailDayCell({
   const colors = getDayTypeColors(day.type, palette);
   const showVacation = !!vacationColor;
 
-  const bgColor = vacationColor && showVacation
-    ? vacationColor + '4D'
-    : isSelected
-      ? palette.selectedFill
-      : colors.backgroundColor;
+  const bgColor = isSelected
+    ? palette.selectedFill
+    : colors.backgroundColor;
 
   return (
     <Pressable
