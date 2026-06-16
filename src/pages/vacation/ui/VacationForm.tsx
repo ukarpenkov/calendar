@@ -38,6 +38,28 @@ function getCurrentYear(): number {
   return new Date().getFullYear();
 }
 
+function daysBetweenDates(startIso: string, endIso: string): number {
+  const start = new Date(startIso);
+  const end = new Date(endIso);
+  const diffMs = end.getTime() - start.getTime();
+  return Math.round(diffMs / (1000 * 60 * 60 * 24));
+}
+
+function addDaysToDate(startIso: string, days: number): string {
+  const date = new Date(startIso);
+  date.setDate(date.getDate() + days);
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+function getMaxDaysFromStart(startIso: string): number {
+  const year = getCurrentYear();
+  const endOfYear = `${year}-12-31`;
+  return daysBetweenDates(startIso, endOfYear);
+}
+
 function parseDisplayDate(text: string): string | null {
   const match = text.trim().match(/^(\d{2})\.(\d{2})$/);
   if (!match) {
@@ -128,21 +150,72 @@ export function VacationForm({
   const [endDisplay, setEndDisplay] = useState(
     initialPeriod ? isoToDisplayDate(initialPeriod.endDate) : '',
   );
+  const [daysText, setDaysText] = useState(
+    initialPeriod ? String(daysBetweenDates(initialPeriod.startDate, initialPeriod.endDate)) : '',
+  );
+
+  const startIso = useMemo(() => parseDisplayDate(startDisplay), [startDisplay]);
+  const endIso = useMemo(() => parseDisplayDate(endDisplay), [endDisplay]);
 
   const handleStartChange = (text: string) => {
-    setStartDisplay(formatDayMonthInput(text));
+    const formatted = formatDayMonthInput(text);
+    setStartDisplay(formatted);
+    const newStartIso = parseDisplayDate(formatted);
+    if (newStartIso) {
+      const parsedDays = parseInt(daysText, 10);
+      if (!isNaN(parsedDays) && parsedDays > 0) {
+        const maxDays = getMaxDaysFromStart(newStartIso);
+        const clampedDays = Math.min(parsedDays, maxDays);
+        setEndDisplay(isoToDisplayDate(addDaysToDate(newStartIso, clampedDays)));
+        setDaysText(String(clampedDays));
+      } else if (endIso) {
+        const days = daysBetweenDates(newStartIso, endIso);
+        if (days >= 0) {
+          setDaysText(String(days));
+        }
+      }
+    }
   };
 
   const handleEndChange = (text: string) => {
     setEndDisplay(formatDayMonthInput(text));
+    const newEndIso = parseDisplayDate(formatDayMonthInput(text));
+    if (startIso && newEndIso) {
+      const days = daysBetweenDates(startIso, newEndIso);
+      if (days >= 0) {
+        setDaysText(String(days));
+      }
+    }
+  };
+
+  const handleDaysChange = (text: string) => {
+    const cleaned = text.replace(/\D/g, '');
+    setDaysText(cleaned);
+    const parsedDays = parseInt(cleaned, 10);
+    if (!isNaN(parsedDays) && parsedDays > 0 && startIso) {
+      const maxDays = getMaxDaysFromStart(startIso);
+      const clampedDays = Math.min(parsedDays, maxDays);
+      setEndDisplay(isoToDisplayDate(addDaysToDate(startIso, clampedDays)));
+      if (parsedDays > maxDays) {
+        setDaysText(String(clampedDays));
+      }
+    }
+  };
+
+  const handleIncrementDay = () => {
+    if (!startIso) return;
+    const currentDays = parseInt(daysText, 10) || 0;
+    const maxDays = getMaxDaysFromStart(startIso);
+    if (currentDays < maxDays) {
+      const newDays = currentDays + 1;
+      setDaysText(String(newDays));
+      setEndDisplay(isoToDisplayDate(addDaysToDate(startIso, newDays)));
+    }
   };
   const [selectedColor, setSelectedColor] = useState(
     initialPeriod?.color ?? '#2DD4BF',
   );
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-
-  const startIso = useMemo(() => parseDisplayDate(startDisplay), [startDisplay]);
-  const endIso = useMemo(() => parseDisplayDate(endDisplay), [endDisplay]);
 
   const startValid = startDisplay.trim() === '' || startIso !== null;
   const endValid = endDisplay.trim() === '' || endIso !== null;
@@ -253,6 +326,42 @@ export function VacationForm({
               },
             ]}
           />
+          <Text style={[styles.cardTitle, { color: palette.title }]}>
+            + дней
+          </Text>
+          <View style={styles.daysRow}>
+            <TextInput
+              value={daysText}
+              onChangeText={handleDaysChange}
+              placeholder="0"
+              placeholderTextColor={palette.subtitle}
+              keyboardType="number-pad"
+              maxLength={3}
+              style={[
+                styles.daysInput,
+                {
+                  backgroundColor: palette.surfaceMuted,
+                  borderColor: palette.border,
+                  color: palette.title,
+                },
+              ]}
+            />
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Add day"
+              testID="increment-day-button"
+              onPress={handleIncrementDay}
+              style={({ pressed }) => [
+                styles.addButton,
+                {
+                  backgroundColor: palette.selectedBorder,
+                  opacity: pressed ? 0.8 : 1,
+                },
+              ]}
+            >
+              <Text style={styles.addButtonText}>+</Text>
+            </Pressable>
+          </View>
           {bothFilled && !rangeValid ? (
             <Text style={[styles.errorText, { color: palette.holidayBorder }]}>
               End date must be after or equal to start date
@@ -542,6 +651,32 @@ const styles = StyleSheet.create({
   },
   confirmRow: {
     gap: 12,
+  },
+  daysRow: {
+    flexDirection: 'row',
+    gap: 12,
+    alignItems: 'center',
+  },
+  daysInput: {
+    height: 46,
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    fontSize: 16,
+    fontWeight: '500',
+    flex: 1,
+  },
+  addButton: {
+    width: 46,
+    height: 46,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  addButtonText: {
+    color: '#FFFFFF',
+    fontSize: 24,
+    fontWeight: '700',
   },
   preHolidayIcon: {
     fontSize: 20,
