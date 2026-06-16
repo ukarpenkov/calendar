@@ -91,8 +91,7 @@ function getDayCaption(data: WidgetDayData): string {
   const lang = data.language;
 
   if (data.isOnVacation) {
-    const hoursUnit = HOURS_UNIT[lang] ?? HOURS_UNIT.en;
-    return `${VACATION_LABELS[lang] ?? VACATION_LABELS.en} - 0 ${hoursUnit}`;
+    return VACATION_LABELS[lang] ?? VACATION_LABELS.en;
   }
 
   if (data.holidayName) {

@@ -789,8 +789,10 @@ function MonthDetailBody({
             ]}
           >
             {isSelectedDayOnVacation
-              ? `${t('vacation.legend.vacation')} - 0 ${t('common.hoursUnit')}`
-              : `${getDayTypeLabel(selectedDay.type, language)} - ${selectedDay.workHours} ${t('common.hoursUnit')}`}
+              ? t('vacation.legend.vacation')
+              : selectedDay.workHours === 0
+                ? getDayTypeLabel(selectedDay.type, language)
+                : `${getDayTypeLabel(selectedDay.type, language)} - ${selectedDay.workHours} ${t('common.hoursUnit')}`}
           </Text>
           {selectedHolidayLabel ? (
             <Text
