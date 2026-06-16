@@ -1,4 +1,3 @@
-export { VacationBalance } from './VacationBalance';
 export { VacationForm } from './VacationForm';
 export { VacationLegend } from './VacationLegend';
 export { VacationPeriodCard } from './VacationPeriodCard';

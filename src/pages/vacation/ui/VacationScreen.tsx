@@ -9,7 +9,6 @@ import { getTranslation } from '../../../shared/lib/i18n';
 import { layout } from '../../../shared/lib/ui/layout';
 import { IconCircleButton } from '../../../shared/ui/IconCircleButton';
 import { ArrowBackIcon } from '../../../shared/ui/icons/NavigationIcons';
-import { VacationBalance } from './VacationBalance';
 import { VacationPeriodCard } from './VacationPeriodCard';
 
 type VacationScreenProps = {
@@ -38,11 +37,6 @@ export function VacationScreen({
   const t = (key: Parameters<typeof getTranslation>[1]) =>
     getTranslation(language, key);
 
-  const usedWorkDays = vacationPeriods.reduce((sum, p) => {
-    const { workDays } = getVacationDaysInRange(p.startDate, p.endDate, calendarDays);
-    return sum + workDays;
-  }, 0);
-
   return (
     <View
       style={[
@@ -65,15 +59,6 @@ export function VacationScreen({
         <Text style={[styles.appBarTitle, { color: palette.title }]}>
           {t('vacation.title')}
         </Text>
-      </View>
-
-      <View style={styles.balanceWrapper}>
-        <VacationBalance
-          usedWorkDays={usedWorkDays}
-          totalAllowed={28}
-          palette={palette}
-          language={language}
-        />
       </View>
 
       <View style={styles.content}>
@@ -169,9 +154,6 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: '400',
     lineHeight: 30,
-  },
-  balanceWrapper: {
-    paddingHorizontal: 0,
   },
   content: {
     flex: 1,
