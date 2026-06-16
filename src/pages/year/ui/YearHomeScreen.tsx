@@ -24,19 +24,35 @@ import {
   getDayTypeLabel,
   type DayTypeColors,
 } from '../../../entities/calendar';
+import type { VacationPeriod } from '../../../features/vacation/model';
 import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
 import { getCompactWeekdayLabels } from '../../../shared/lib/i18n';
 import { layout } from '../../../shared/lib/ui/layout';
 import { SettingsGearButton } from '../../../shared/ui/SettingsGearButton';
+import { VacationButton } from '../../../shared/ui/VacationButton';
 import { YearScreenCalendarMark } from '../../../shared/ui/icons/YearScreenCalendarMark';
 import { getYearGridMetrics } from './yearGridMetrics';
+
+function getVacationColorForDate(
+  date: string,
+  vacationPeriods: VacationPeriod[],
+): string | undefined {
+  for (const period of vacationPeriods) {
+    if (date >= period.startDate && date <= period.endDate) {
+      return period.color;
+    }
+  }
+  return undefined;
+}
 
 type YearHomeScreenProps = {
   calendar: CalendarYear;
   monthSummaries: CalendarMonthSummary[];
   onOpenMonth: (month: number, origin: { x: number; y: number; width: number; height: number }) => void;
   onOpenSettings: () => void;
+  onOpenVacation: () => void;
+  vacationPeriods: VacationPeriod[];
 };
 
 export function YearHomeScreen({
@@ -44,6 +60,8 @@ export function YearHomeScreen({
   monthSummaries,
   onOpenMonth,
   onOpenSettings,
+  onOpenVacation,
+  vacationPeriods,
 }: YearHomeScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
   const { width: windowWidth, height: windowHeight, fontScale } =
@@ -74,7 +92,54 @@ export function YearHomeScreen({
     () => getYearGridMetrics(windowWidth, fontScale, columnsPerRow),
     [columnsPerRow, fontScale, windowWidth],
   );
+  const vacationDaysCountByMonth = useMemo(() => {
+    const counts = new Map<number, number>();
+    for (const period of vacationPeriods) {
+      for (const day of calendar.days) {
+        if (
+          day.type !== 'holiday' &&
+          day.date >= period.startDate &&
+          day.date <= period.endDate
+        ) {
+          counts.set(day.month, (counts.get(day.month) ?? 0) + 1);
+        }
+      }
+    }
+    return counts;
+  }, [calendar.days, vacationPeriods]);
   const monthCardRefs = useRef<Map<number, View>>(new Map());
+
+  const vacationDaysByMonth = useMemo(() => {
+    const counts: Record<number, number> = {};
+    const yearStr = String(calendar.year);
+
+    for (const period of vacationPeriods) {
+      const start = period.startDate > `${yearStr}-01-01` ? period.startDate : `${yearStr}-01-01`;
+      const end = period.endDate < `${yearStr}-12-31` ? period.endDate : `${yearStr}-12-31`;
+
+      if (start > end) continue;
+
+      const startMonth = parseInt(start.split('-')[1], 10);
+      const endMonth = parseInt(end.split('-')[1], 10);
+
+      for (let m = startMonth; m <= endMonth; m++) {
+        const monthStart = `${yearStr}-${String(m).padStart(2, '0')}-01`;
+        const monthEnd = new Date(calendar.year, m, 0);
+        const monthEndStr = `${yearStr}-${String(m).padStart(2, '0')}-${String(monthEnd.getDate()).padStart(2, '0')}`;
+
+        const rangeStart = start > monthStart ? start : monthStart;
+        const rangeEnd = end < monthEndStr ? end : monthEndStr;
+
+        if (rangeStart <= rangeEnd) {
+          const s = new Date(rangeStart);
+          const e = new Date(rangeEnd);
+          const days = Math.floor((e.getTime() - s.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+          counts[m] = (counts[m] || 0) + days;
+        }
+      }
+    }
+    return counts;
+  }, [vacationPeriods, calendar.year]);
 
   return (
     <ScrollView
@@ -103,6 +168,11 @@ export function YearHomeScreen({
           {t('year.home.title', { year: calendar.year })}
         </Text>
         <View style={styles.appBarTrailing}>
+          <VacationButton
+            palette={palette}
+            accessibilityLabel={t('year.menu.vacation')}
+            onPress={onOpenVacation}
+          />
           <SettingsGearButton
             palette={palette}
             accessibilityLabel={t('year.menu.settings')}
@@ -203,6 +273,24 @@ export function YearHomeScreen({
                   >
                     {summary.label}
                   </Text>
+                  {(vacationDaysCountByMonth.get(summary.month) ?? 0) > 0 ? (
+                    <View
+                      style={[
+                        styles.vacationBadge,
+                        { backgroundColor: '#2DD4BF' },
+                      ]}
+                    >
+                      <Text
+                        adjustsFontSizeToFit
+                        minimumFontScale={0.6}
+                        numberOfLines={1}
+                        maxFontSizeMultiplier={1.1}
+                        style={styles.vacationBadgeText}
+                      >
+                        {vacationDaysCountByMonth.get(summary.month)}
+                      </Text>
+                    </View>
+                  ) : null}
                   <Text
                     adjustsFontSizeToFit
                     minimumFontScale={gridMetrics.minimumTextScale}
@@ -280,6 +368,7 @@ export function YearHomeScreen({
                           >
                             <MonthDayCell
                               day={day}
+                              vacationColor={day?.date ? getVacationColorForDate(day.date, vacationPeriods) : undefined}
                               gridMetrics={gridMetrics}
                               resolveDayTypeColors={type =>
                                 getDayTypeColors(type, palette)
@@ -411,16 +500,18 @@ export function YearHomeScreen({
 
 type MonthDayCellProps = {
   day: CalendarDay | null;
+  vacationColor?: string;
   gridMetrics: ReturnType<typeof getYearGridMetrics>;
   resolveDayTypeColors: (type: DayType) => DayTypeColors;
 };
 
-function MonthDayCell({ day, gridMetrics, resolveDayTypeColors }: MonthDayCellProps) {
+function MonthDayCell({ day, vacationColor, gridMetrics, resolveDayTypeColors }: MonthDayCellProps) {
   if (!day) {
     return <View style={styles.emptyDayCell} />;
   }
 
   const colors = resolveDayTypeColors(day.type);
+  const showVacation = vacationColor && day.type !== 'holiday';
 
   return (
     <View
@@ -447,6 +538,14 @@ function MonthDayCell({ day, gridMetrics, resolveDayTypeColors }: MonthDayCellPr
       >
         {day.day}
       </Text>
+      {showVacation ? (
+        <View
+          style={[
+            styles.vacationBarSmall,
+            { backgroundColor: vacationColor },
+          ]}
+        />
+      ) : null}
     </View>
   );
 }
@@ -472,9 +571,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   appBarTrailing: {
-    width: 36,
-    height: 36,
-    justifyContent: 'center',
+    flexDirection: 'row',
+    gap: 8,
     alignItems: 'center',
   },
   appBarTitle: {
@@ -530,6 +628,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: 8,
+  },
+  vacationBadge: {
+    minWidth: 20,
+    height: 18,
+    borderRadius: 9,
+    paddingHorizontal: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  vacationBadgeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
   monthTitle: {
     flex: 1,
@@ -622,6 +733,15 @@ const styles = StyleSheet.create({
   dayCellText: {
     fontSize: 9,
     fontWeight: '600',
+  },
+  vacationBarSmall: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 2,
+    borderBottomLeftRadius: 3,
+    borderBottomRightRadius: 3,
   },
   summaryRow: {
     marginTop: 'auto',

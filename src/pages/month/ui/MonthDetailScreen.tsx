@@ -27,10 +27,12 @@ import {
   getDayImage,
   getHolidayDisplayName,
   getHolidayImageForMonth,
+  isDateOnVacation,
   type CalendarPalette,
   type CalendarDay,
   type CalendarYearMonthDetails,
 } from '../../../entities/calendar';
+import type { VacationPeriod } from '../../../features/vacation/model';
 import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
 import {
@@ -62,6 +64,7 @@ type MonthDetailScreenProps = {
   onOpenSettings: () => void;
   onMonthChange: (month: number) => void;
   originLayout?: { x: number; y: number; width: number; height: number } | null;
+  vacationPeriods: VacationPeriod[];
 };
 
 const APP_BAR_TITLE_MIN_SCALE = 0.7;
@@ -114,6 +117,7 @@ export function MonthDetailScreen({
   onOpenSettings,
   onMonthChange,
   originLayout,
+  vacationPeriods,
 }: MonthDetailScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
@@ -445,6 +449,7 @@ export function MonthDetailScreen({
                 onSelectDay={isActive ? handleSelectDay : NOOP_SELECT_DAY}
                 monthLayoutMetrics={monthLayoutMetrics}
                 isTabletPortrait={isTabletPortrait}
+                vacationPeriods={vacationPeriods}
               />
             </ScrollView>
           </Animated.View>
@@ -465,6 +470,7 @@ export function MonthDetailScreen({
       monthLayoutMetrics,
       isTabletPortrait,
       safeAreaInsets.bottom,
+      vacationPeriods,
     ],
   );
 
@@ -577,6 +583,18 @@ export function MonthDetailScreen({
   );
 }
 
+function getVacationColorForDate(
+  date: string,
+  vacationPeriods: VacationPeriod[],
+): string | undefined {
+  for (const period of vacationPeriods) {
+    if (date >= period.startDate && date <= period.endDate) {
+      return period.color;
+    }
+  }
+  return undefined;
+}
+
 type LocalizationParams = Record<string, number | string>;
 
 type MonthDetailBodyProps = {
@@ -590,6 +608,7 @@ type MonthDetailBodyProps = {
   onSelectDay: (date: string) => void;
   monthLayoutMetrics: MonthDetailLayoutMetrics;
   isTabletPortrait: boolean;
+  vacationPeriods: VacationPeriod[];
 };
 
 function MonthDetailBody({
@@ -603,11 +622,27 @@ function MonthDetailBody({
   onSelectDay,
   monthLayoutMetrics,
   isTabletPortrait,
+  vacationPeriods,
 }: MonthDetailBodyProps) {
   const selectedHolidayLabel =
     selectedDay !== null
       ? getHolidayDisplayName(selectedDay, language)
       : null;
+
+  const isSelectedDayOnVacation =
+    selectedDay !== null && isDateOnVacation(selectedDay.date, vacationPeriods);
+
+  const vacationColorByDate = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const period of vacationPeriods) {
+      for (const day of detail.days) {
+        if (day.date >= period.startDate && day.date <= period.endDate) {
+          map.set(day.date, period.color);
+        }
+      }
+    }
+    return map;
+  }, [detail.days, vacationPeriods]);
 
   const calendarColumnWidth = monthLayoutMetrics.calendarColumnWidth;
   const calendarScale = useMemo(
@@ -624,12 +659,24 @@ function MonthDetailBody({
   const holidayImage = useMemo(
     () => {
       if (selectedDay) {
-        const dayImg = getDayImage(selectedDay, detail.days);
+        const dayImg = getDayImage(selectedDay, detail.days, vacationPeriods);
         if (dayImg) return dayImg;
       }
       return getHolidayImageForMonth(detail.days);
     },
-    [selectedDay, detail.days],
+    [selectedDay, detail.days, vacationPeriods],
+  );
+
+  const getVacationColorForDate = useCallback(
+    (date: string): string | undefined => {
+      for (const period of vacationPeriods) {
+        if (date >= period.startDate && date <= period.endDate) {
+          return period.color;
+        }
+      }
+      return undefined;
+    },
+    [vacationPeriods],
   );
 
   const calendarCard = (
@@ -674,6 +721,7 @@ function MonthDetailBody({
                 palette={palette}
                 calendarScale={calendarScale}
                 onSelectDay={onSelectDay}
+                vacationColor={day?.date ? vacationColorByDate.get(day.date) : undefined}
               />
             ))}
           </View>
@@ -740,8 +788,11 @@ function MonthDetailBody({
               },
             ]}
           >
-            {getDayTypeLabel(selectedDay.type, language)} - {selectedDay.workHours}{' '}
-            {t('common.hoursUnit')}
+            {isSelectedDayOnVacation
+              ? t('vacation.legend.vacation')
+              : selectedDay.workHours === 0
+                ? getDayTypeLabel(selectedDay.type, language)
+                : `${getDayTypeLabel(selectedDay.type, language)} - ${selectedDay.workHours} ${t('common.hoursUnit')}`}
           </Text>
           {selectedHolidayLabel ? (
             <Text
@@ -849,6 +900,7 @@ type MonthDetailDayCellProps = {
   palette: CalendarPalette;
   calendarScale: number;
   onSelectDay: (date: string) => void;
+  vacationColor?: string;
 };
 
 function MonthDetailDayCell({
@@ -857,6 +909,7 @@ function MonthDetailDayCell({
   palette,
   calendarScale,
   onSelectDay,
+  vacationColor,
 }: MonthDetailDayCellProps) {
   const cellSize = Math.max(36, 42 * calendarScale);
   const onPress = useCallback(() => {
@@ -870,6 +923,11 @@ function MonthDetailDayCell({
   }
 
   const colors = getDayTypeColors(day.type, palette);
+  const showVacation = !!vacationColor;
+
+  const bgColor = isSelected
+    ? palette.selectedFill
+    : colors.backgroundColor;
 
   return (
     <Pressable
@@ -879,9 +937,7 @@ function MonthDetailDayCell({
         {
           minHeight: cellSize,
           borderRadius: Math.max(8, 12 * calendarScale),
-          backgroundColor: isSelected
-            ? palette.selectedFill
-            : colors.backgroundColor,
+          backgroundColor: bgColor,
           borderColor: isSelected ? palette.selectedBorder : colors.borderColor,
           opacity: pressed ? 0.9 : 1,
         },
@@ -902,6 +958,19 @@ function MonthDetailDayCell({
       >
         {day.day}
       </Text>
+      {showVacation ? (
+        <View
+          style={[
+            styles.vacationBar,
+            {
+              backgroundColor: vacationColor,
+              height: Math.max(2, 3 * calendarScale),
+              borderBottomLeftRadius: Math.max(6, 8 * calendarScale),
+              borderBottomRightRadius: Math.max(6, 8 * calendarScale),
+            },
+          ]}
+        />
+      ) : null}
     </Pressable>
   );
 }
@@ -957,7 +1026,7 @@ function TotalItem({
 }
 
 const MemoizedMonthDetailBody = memo(MonthDetailBody);
-const MemoizedMonthDetailDayCell = memo(MonthDetailDayCell);
+export const MemoizedMonthDetailDayCell = memo(MonthDetailDayCell);
 const MemoizedTotalItem = memo(TotalItem);
 
 const styles = StyleSheet.create({
@@ -1088,6 +1157,13 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  vacationBar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   dayCellText: {
     fontSize: 14,

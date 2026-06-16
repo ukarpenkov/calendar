@@ -7,7 +7,7 @@ import { initializeDatabase } from '../shared/lib/db/database';
 import { DATABASE_NAME, ACTIVE_CALENDAR_SOURCE_METADATA_KEY } from '../shared/lib/db/schema';
 import { detectDeviceLanguage, getMonthLabel, getShortWeekdayLabels } from '../shared/lib/i18n';
 import type { AppLanguage } from '../shared/lib/i18n';
-import { getDayDrawableResourceName } from './imageMapping';
+import { getDayDrawableResourceName, getVacationDrawableResourceName } from './imageMapping';
 
 export interface WidgetDayData {
   date: string;
@@ -20,6 +20,8 @@ export interface WidgetDayData {
   dayNumber: number;
   year: number;
   weekdayLabel: string;
+  isOnVacation: boolean;
+  vacationColor: string | null;
 }
 
 function getLocalIsoDate(): string {
@@ -86,17 +88,41 @@ export async function fetchTodayWidgetData(): Promise<WidgetDayData | null> {
     const holidayName = getHolidayDisplayName(day, language);
     const imageResourceName = getDayDrawableResourceName(day);
 
+    let isOnVacation = false;
+    let vacationColor: string | null = null;
+
+    try {
+      const vacationResult = await db.execute(
+        'SELECT color FROM vacation_periods WHERE start_date <= ? AND end_date >= ? LIMIT 1',
+        [todayDate, todayDate],
+      );
+      if (vacationResult.rows.length > 0) {
+        isOnVacation = true;
+        const colorVal = vacationResult.rows[0].color;
+        vacationColor = typeof colorVal === 'string' ? colorVal : '#2DD4BF';
+      }
+    } catch {
+      // Vacation table may not exist yet
+    }
+
+    const finalImageResourceName =
+      isOnVacation && day.type !== 'holiday'
+        ? getVacationDrawableResourceName()
+        : imageResourceName;
+
     return {
       date: day.date,
       dayType: day.type,
       isShortened: day.isShortened,
       holidayName,
-      imageResourceName,
+      imageResourceName: finalImageResourceName,
       language,
       monthLabel,
       dayNumber: day.day,
       year: day.year,
       weekdayLabel,
+      isOnVacation,
+      vacationColor,
     };
   } catch {
     return null;

@@ -55,11 +55,27 @@ const HOLIDAY_FALLBACK_LABELS: Record<AppLanguage, string> = {
   ja: '祝日',
 };
 
+const VACATION_LABELS: Record<AppLanguage, string> = {
+  ru: 'Отпуск',
+  en: 'Vacation',
+  tr: 'Tatil',
+  id: 'Liburan',
+  ja: '休暇',
+};
+
 const TEXT_SHADOW = {
   textShadowColor: '#000000',
   textShadowRadius: 4,
   textShadowOffset: { height: 1, width: 1 },
 } as const;
+
+const HOURS_UNIT: Record<AppLanguage, string> = {
+  ru: 'ч',
+  en: 'h',
+  tr: 'sa',
+  id: 'jam',
+  ja: '時間',
+};
 
 function formatDate(data: WidgetDayData): string {
   const { language, dayNumber, monthLabel, year, weekdayLabel } = data;
@@ -73,6 +89,10 @@ function formatDate(data: WidgetDayData): string {
 
 function getDayCaption(data: WidgetDayData): string {
   const lang = data.language;
+
+  if (data.isOnVacation) {
+    return VACATION_LABELS[lang] ?? VACATION_LABELS.en;
+  }
 
   if (data.holidayName) {
     return data.holidayName;

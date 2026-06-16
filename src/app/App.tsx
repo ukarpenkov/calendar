@@ -43,7 +43,13 @@ import { ImportEntryScreen } from '../pages/import-entry/ui/ImportEntryScreen';
 import { MonthDetailScreen } from '../pages/month/ui/MonthDetailScreen';
 import { SettingsScreen } from '../pages/settings/ui/SettingsScreen';
 import { SplashScreen } from '../pages/splash/ui/SplashScreen';
+import { VacationForm, VacationScreen } from '../pages/vacation/ui';
 import { YearHomeScreen } from '../pages/year/ui/YearHomeScreen';
+import {
+  createVacationRepository,
+  type VacationPeriod,
+} from '../features/vacation/model';
+import { getDatabase } from '../shared/lib/db';
 
 function App() {
   return (
@@ -86,6 +92,12 @@ function AppContent() {
     height: number;
   } | null>(null);
   const [jsonImportSavedRevision, setJsonImportSavedRevision] = useState(0);
+  const [vacationPeriods, setVacationPeriods] = useState<VacationPeriod[]>([]);
+  const [editingPeriod, setEditingPeriod] = useState<VacationPeriod | null>(
+    null,
+  );
+  const [showVacationForm, setShowVacationForm] = useState(false);
+  const vacationRepositoryRef = useRef(createVacationRepository(getDatabase()));
   const statusRef = useRef(status);
   statusRef.current = status;
   const activeCalendar = status.kind === 'ready' ? status.calendar : null;
@@ -164,6 +176,12 @@ function AppContent() {
         case 'month-error':
         case 'settings':
         case 'import-entry':
+        case 'vacation':
+          if (status.screen.name === 'vacation' && showVacationForm) {
+            setShowVacationForm(false);
+            setEditingPeriod(null);
+            return true;
+          }
           setStatus(current => {
             if (current.kind !== 'ready') {
               return current;
@@ -177,6 +195,9 @@ function AppContent() {
             }
             if (screenName === 'import-entry') {
               return { ...current, screen: { name: 'settings' } };
+            }
+            if (screenName === 'vacation') {
+              return { ...current, screen: { name: 'year' } };
             }
             return current;
           });
@@ -226,6 +247,16 @@ function AppContent() {
             screen: { name: 'year' },
           });
           updateCalendarWidget();
+
+          try {
+            const repo = vacationRepositoryRef.current;
+            const periods = await repo.getAll();
+            if (isMounted) {
+              setVacationPeriods(periods);
+            }
+          } catch {
+            // Vacation periods are optional; keep the empty array.
+          }
         }
       } catch {
         if (isMounted) {
@@ -373,6 +404,19 @@ function AppContent() {
     });
   };
 
+  const openVacation = () => {
+    setStatus(currentStatus => {
+      if (currentStatus.kind !== 'ready') {
+        return currentStatus;
+      }
+
+      return {
+        ...currentStatus,
+        screen: { name: 'vacation' },
+      };
+    });
+  };
+
   const closeSettings = () => {
     setStatus(currentStatus => {
       if (currentStatus.kind !== 'ready') {
@@ -410,6 +454,68 @@ function AppContent() {
         screen: { name: 'settings' },
       };
     });
+  };
+
+  const refreshVacationPeriods = async () => {
+    try {
+      const periods = await vacationRepositoryRef.current.getAll();
+      setVacationPeriods(periods);
+    } catch {
+      // Vacation periods are optional; keep the current array.
+    }
+  };
+
+  const onVacationAdd = () => {
+    setEditingPeriod(null);
+    setShowVacationForm(true);
+  };
+
+  const onVacationEdit = (period: VacationPeriod) => {
+    setEditingPeriod(period);
+    setShowVacationForm(true);
+  };
+
+  const onVacationSave = async (
+    startDate: string,
+    endDate: string,
+    color: string,
+  ) => {
+    try {
+      if (editingPeriod === null) {
+        await vacationRepositoryRef.current.create(startDate, endDate, color);
+      } else {
+        await vacationRepositoryRef.current.update(
+          editingPeriod.id,
+          startDate,
+          endDate,
+          color,
+        );
+      }
+      await refreshVacationPeriods();
+      setShowVacationForm(false);
+      setEditingPeriod(null);
+    } catch {
+      // Keep the current state on error.
+    }
+  };
+
+  const onVacationDelete = async () => {
+    if (editingPeriod === null) {
+      return;
+    }
+    try {
+      await vacationRepositoryRef.current.remove(editingPeriod.id);
+      await refreshVacationPeriods();
+      setShowVacationForm(false);
+      setEditingPeriod(null);
+    } catch {
+      // Keep the current state on error.
+    }
+  };
+
+  const onVacationFormCancel = () => {
+    setShowVacationForm(false);
+    setEditingPeriod(null);
   };
 
   const completeImportEntry = (calendar: CalendarYear) => {
@@ -532,14 +638,50 @@ function AppContent() {
     );
   }
 
+  if (status.screen.name === 'vacation') {
+    if (showVacationForm) {
+      return (
+        <VacationForm
+          initialPeriod={editingPeriod ?? undefined}
+          calendarDays={status.calendar.days}
+          palette={palette}
+          language={language}
+          onSave={onVacationSave}
+          onDelete={editingPeriod ? onVacationDelete : undefined}
+          onCancel={onVacationFormCancel}
+        />
+      );
+    }
+
+    return (
+      <VacationScreen
+        year={status.calendar.year}
+        calendarDays={status.calendar.days}
+        vacationPeriods={vacationPeriods}
+        palette={palette}
+        language={language}
+        onBack={() => {
+          setStatus(current => {
+            if (current.kind !== 'ready') return current;
+            return { ...current, screen: { name: 'year' } };
+          });
+        }}
+        onAdd={onVacationAdd}
+        onEdit={onVacationEdit}
+      />
+    );
+  }
+
   return (
     <View style={styles.layerStack}>
       <View style={styles.yearLayer}>
         <YearHomeScreen
           calendar={status.calendar}
           monthSummaries={calendarYearView?.monthSummaries ?? []}
+          vacationPeriods={vacationPeriods}
           onOpenMonth={goToMonth}
           onOpenSettings={openSettings}
+          onOpenVacation={openVacation}
         />
       </View>
       {status.screen.name === 'month' ? (
@@ -550,6 +692,7 @@ function AppContent() {
           onOpenSettings={openSettings}
           onMonthChange={goToMonth}
           originLayout={monthOrigin}
+          vacationPeriods={vacationPeriods}
         />
       ) : null}
     </View>

@@ -11,6 +11,7 @@ export type ReadyScreen =
   | { name: 'year' }
   | { name: 'settings' }
   | { name: 'import-entry' }
+  | { name: 'vacation' }
   | { name: 'month-error'; month: number }
   | { name: 'month'; month: number };
 

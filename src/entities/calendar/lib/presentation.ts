@@ -19,6 +19,8 @@ export type CalendarPalette = {
   holidayBorder: string;
   shortenedFill: string;
   shortenedBorder: string;
+  vacationFill: string;
+  vacationBorder: string;
   workdayText: string;
   accentText: string;
 };
@@ -49,6 +51,8 @@ export function getCalendarPalette(isDarkMode: boolean): CalendarPalette {
       holidayBorder: '#F87171',
       shortenedFill: '#4A371A',
       shortenedBorder: '#F59E0B',
+      vacationFill: '#134E4A',
+      vacationBorder: '#2DD4BF',
       workdayText: '#E8EAEF',
       accentText: '#F8FAFC',
     };
@@ -72,6 +76,8 @@ export function getCalendarPalette(isDarkMode: boolean): CalendarPalette {
     holidayBorder: '#EF4444',
     shortenedFill: '#FEF3C7',
     shortenedBorder: '#F59E0B',
+    vacationFill: '#CCFBF1',
+    vacationBorder: '#14B8A6',
     workdayText: '#1A1D26',
     accentText: '#0F172A',
   };

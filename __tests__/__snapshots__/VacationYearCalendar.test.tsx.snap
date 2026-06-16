@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`VacationYearCalendar renders with vacation period — snapshot 1`] = `null`;
+
+exports[`VacationYearCalendar renders without vacation periods — snapshot 1`] = `null`;

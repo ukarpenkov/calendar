@@ -1,0 +1,86 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`VacationPeriodCard renders with default props 1`] = `
+<View
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  onBlur={[Function]}
+  onClick={[Function]}
+  onFocus={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    [
+      {
+        "borderLeftWidth": 4,
+        "borderRadius": 16,
+        "borderWidth": 1,
+        "gap": 4,
+        "paddingHorizontal": 16,
+        "paddingVertical": 12,
+      },
+      {
+        "backgroundColor": "#1B1F27",
+        "borderColor": "#2C3442",
+        "borderLeftColor": "#2DD4BF",
+      },
+    ]
+  }
+>
+  <Text
+    style={
+      [
+        {
+          "fontSize": 15,
+          "fontWeight": "600",
+        },
+        {
+          "color": "#E8EAEF",
+        },
+      ]
+    }
+  >
+    01.07.2026
+     — 
+    14.07.2026
+  </Text>
+  <Text
+    style={
+      [
+        {
+          "fontSize": 13,
+        },
+        {
+          "color": "#9AA3B2",
+        },
+      ]
+    }
+  >
+    10
+     / 
+    14
+  </Text>
+</View>
+`;

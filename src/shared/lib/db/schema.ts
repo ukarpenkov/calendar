@@ -1,7 +1,7 @@
 import type { SQLBatchTuple } from '@op-engineering/op-sqlite';
 
 export const DATABASE_NAME = 'calendar.sqlite';
-export const DATABASE_SCHEMA_VERSION = 3;
+export const DATABASE_SCHEMA_VERSION = 4;
 export const ACTIVE_YEAR_METADATA_KEY = 'activeYear';
 export const ACTIVE_CALENDAR_SOURCE_METADATA_KEY = 'active_calendar_source';
 export const USER_JSON_IMPORT_YEAR_METADATA_KEY = 'user_json_import_year';
@@ -40,5 +40,13 @@ export const SCHEMA_COMMANDS: SQLBatchTuple[] = [
   ['CREATE INDEX IF NOT EXISTS idx_calendar_days_source_year ON calendar_days(source, year)'],
   [
     'CREATE INDEX IF NOT EXISTS idx_calendar_days_source_year_month ON calendar_days(source, year, month)',
+  ],
+  [
+    `CREATE TABLE IF NOT EXISTS vacation_periods (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      start_date TEXT NOT NULL,
+      end_date TEXT NOT NULL,
+      color TEXT NOT NULL DEFAULT '#2DD4BF'
+    ) STRICT`,
   ],
 ];

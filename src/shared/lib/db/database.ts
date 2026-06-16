@@ -158,6 +158,17 @@ async function migrateFromV2ToV3(db: DB): Promise<void> {
   }
 }
 
+async function migrateFromV3ToV4(db: DB): Promise<void> {
+  await db.execute(
+    `CREATE TABLE IF NOT EXISTS vacation_periods (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      start_date TEXT NOT NULL,
+      end_date TEXT NOT NULL,
+      color TEXT NOT NULL DEFAULT '#2DD4BF'
+    ) STRICT`,
+  );
+}
+
 async function applyMigrations(db: DB, currentVersion: number): Promise<void> {
   if (currentVersion > DATABASE_SCHEMA_VERSION) {
     throw new Error(
@@ -173,6 +184,9 @@ async function applyMigrations(db: DB, currentVersion: number): Promise<void> {
     }
     if (currentVersion < 3) {
       await migrateFromV2ToV3(db);
+    }
+    if (currentVersion < 4) {
+      await migrateFromV3ToV4(db);
     }
   }
 

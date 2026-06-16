@@ -37,6 +37,8 @@ export {
   getCalendarImagesForDays,
   getDayImage,
   getHolidayImageForMonth,
+  isDateOnVacation,
+  getVacationImage,
 } from './model/holidayImages';
 export type { CalendarMonthSummary } from './model/year-summary';
 export {
