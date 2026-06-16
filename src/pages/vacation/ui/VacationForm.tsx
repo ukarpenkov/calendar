@@ -42,12 +42,12 @@ function daysBetweenDates(startIso: string, endIso: string): number {
   const start = new Date(startIso);
   const end = new Date(endIso);
   const diffMs = end.getTime() - start.getTime();
-  return Math.round(diffMs / (1000 * 60 * 60 * 24));
+  return Math.round(diffMs / (1000 * 60 * 60 * 24)) + 1;
 }
 
 function addDaysToDate(startIso: string, days: number): string {
   const date = new Date(startIso);
-  date.setDate(date.getDate() + days);
+  date.setDate(date.getDate() + days - 1);
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, '0');
   const d = String(date.getDate()).padStart(2, '0');
@@ -329,7 +329,7 @@ export function VacationForm({
             ]}
           />
           <Text style={[styles.cardTitle, { color: palette.title }]}>
-            + дней
+            Дней
           </Text>
           <View style={styles.daysRow}>
             <TextInput

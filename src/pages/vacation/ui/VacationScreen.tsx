@@ -59,6 +59,7 @@ export function VacationScreen({
         <Text style={[styles.appBarTitle, { color: palette.title }]}>
           {t('vacation.title')}
         </Text>
+        <View style={styles.appBarTrailing} />
       </View>
 
       <View style={styles.content}>
@@ -132,8 +133,15 @@ const styles = StyleSheet.create({
   },
   appBarTitle: {
     flex: 1,
+    textAlign: 'center',
     fontSize: 24,
     fontWeight: '600',
+  },
+  appBarTrailing: {
+    width: 56,
+    height: 56,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   fab: {
     position: 'absolute',
