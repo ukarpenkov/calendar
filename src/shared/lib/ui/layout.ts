@@ -6,7 +6,7 @@ export const layout = {
   holidayBannerGap: 12,
   /** Вертикальный зазор под app bar на экране месяца. */
   monthScrollPaddingTop: 22,
-  safeAreaTopExtra: 12,
+  safeAreaTopExtra: 6,
   yearMonthScrollBottom: 72,
   settingsScrollBottom: 80,
 } as const;
