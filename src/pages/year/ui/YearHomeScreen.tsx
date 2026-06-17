@@ -229,6 +229,20 @@ export function YearHomeScreen({
             </View>
           );
         })}
+        <View style={styles.legendItem}>
+          <View
+            style={[
+              styles.legendSwatch,
+              {
+                backgroundColor: palette.vacationFill,
+                borderColor: palette.vacationBorder,
+              },
+            ]}
+          />
+          <Text style={[styles.legendLabel, { color: palette.subtitle }]}>
+            {t('vacation.legend.vacation')}
+          </Text>
+        </View>
       </View>
 
       <View style={styles.monthsGrid}>
