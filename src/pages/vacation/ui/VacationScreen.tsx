@@ -172,6 +172,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   listContent: {
+    paddingTop: 16,
     gap: 0,
   },
   separator: {
