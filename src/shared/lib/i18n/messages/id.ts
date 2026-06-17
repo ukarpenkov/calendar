@@ -180,7 +180,7 @@ export const idTranslations = {
   'importEntry.textJson.sourceName': 'Teks JSON yang ditempel',
   'vacation.title': 'Liburan',
   'vacation.addTitle': 'Liburan baru',
-  'vacation.editTitle': 'Edit liburan',
+  'vacation.editTitle': 'Edit',
   'vacation.startDate': 'Tanggal mulai',
   'vacation.endDate': 'Tanggal akhir',
   'vacation.color': 'Warna',

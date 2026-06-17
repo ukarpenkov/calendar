@@ -180,7 +180,7 @@ export const jaTranslations = {
   'importEntry.textJson.sourceName': '貼り付けた JSON テキスト',
   'vacation.title': '休暇',
   'vacation.addTitle': '新しい休暇',
-  'vacation.editTitle': '休暇を編集',
+  'vacation.editTitle': '編集',
   'vacation.startDate': '開始日',
   'vacation.endDate': '終了日',
   'vacation.color': '色',

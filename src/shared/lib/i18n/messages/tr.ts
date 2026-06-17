@@ -180,7 +180,7 @@ export const trTranslations = {
   'importEntry.textJson.sourceName': 'Yapıştırılan JSON metni',
   'vacation.title': 'Tatil',
   'vacation.addTitle': 'Yeni tatil',
-  'vacation.editTitle': 'Tatili düzenle',
+  'vacation.editTitle': 'Düzenle',
   'vacation.startDate': 'Başlangıç tarihi',
   'vacation.endDate': 'Bitiş tarihi',
   'vacation.color': 'Renk',

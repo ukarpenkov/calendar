@@ -181,7 +181,7 @@ export const ruTranslations: Record<TranslationKey, string> = {
     'importEntry.textJson.sourceName': 'Вставленный JSON-текст',
     'vacation.title': 'Отпуск',
     'vacation.addTitle': 'Новый отпуск',
-    'vacation.editTitle': 'Редактировать отпуск',
+    'vacation.editTitle': 'Редактировать',
     'vacation.startDate': 'Дата начала',
     'vacation.endDate': 'Дата окончания',
     'vacation.color': 'Цвет',
