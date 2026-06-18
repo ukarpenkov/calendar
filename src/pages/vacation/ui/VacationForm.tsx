@@ -445,11 +445,6 @@ export function VacationForm({
           palette={palette}
           variant="default"
         />
-        <GhostButton
-          label={t('common.cancel')}
-          onPress={onCancel}
-          palette={palette}
-        />
 
         {/* Delete (edit mode) */}
         {isEditing && onDelete ? (

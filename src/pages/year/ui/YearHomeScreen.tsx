@@ -525,7 +525,7 @@ function MonthDayCell({ day, vacationColor, gridMetrics, resolveDayTypeColors }:
   }
 
   const colors = resolveDayTypeColors(day.type);
-  const showVacation = vacationColor && day.type !== 'holiday';
+  const showVacation = !!vacationColor;
 
   return (
     <View
