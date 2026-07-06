@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Pressable,
   ScrollView,
@@ -33,6 +33,14 @@ import { SettingsGearButton } from '../../../shared/ui/SettingsGearButton';
 import { VacationButton } from '../../../shared/ui/VacationButton';
 import { YearScreenCalendarMark } from '../../../shared/ui/icons/YearScreenCalendarMark';
 import { getYearGridMetrics } from './yearGridMetrics';
+
+function getLocalIsoDate(): string {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
 
 function getVacationColorForDate(
   date: string,
@@ -108,6 +116,22 @@ export function YearHomeScreen({
     return counts;
   }, [calendar.days, vacationPeriods]);
   const monthCardRefs = useRef<Map<number, View>>(new Map());
+  const scrollViewRef = useRef<ScrollView>(null);
+  const [containerHeight, setContainerHeight] = useState(0);
+  const [cardHeight, setCardHeight] = useState(0);
+  const todayDate = getLocalIsoDate();
+  const currentMonth = new Date().getMonth() + 1;
+
+  useEffect(() => {
+    if (containerHeight <= 0 || cardHeight <= 0) return;
+    const rowIndex = Math.floor((currentMonth - 1) / columnsPerRow);
+    const gapHeight = 12;
+    let targetY = rowIndex * (cardHeight + gapHeight) - containerHeight / 2 + cardHeight / 2;
+    targetY = Math.max(0, targetY);
+    requestAnimationFrame(() => {
+      scrollViewRef.current?.scrollTo({ y: targetY, animated: false });
+    });
+  }, [containerHeight, cardHeight, currentMonth, columnsPerRow]);
 
   const vacationDaysByMonth = useMemo(() => {
     const counts: Record<number, number> = {};
@@ -143,6 +167,7 @@ export function YearHomeScreen({
 
   return (
     <ScrollView
+      ref={scrollViewRef}
       style={[
         styles.container,
         {
@@ -156,6 +181,7 @@ export function YearHomeScreen({
           paddingBottom: safeAreaInsets.bottom + layout.yearMonthScrollBottom,
         },
       ]}
+      onLayout={e => setContainerHeight(e.nativeEvent.layout.height)}
     >
       <View style={styles.appBar}>
         <View style={styles.appBarLeading}>
@@ -254,6 +280,11 @@ export function YearHomeScreen({
                 ref={ref => {
                   if (ref) {
                     monthCardRefs.current.set(summary.month, ref);
+                  }
+                }}
+                onLayout={e => {
+                  if (summary.month === 1 && cardHeight === 0) {
+                    setCardHeight(e.nativeEvent.layout.height);
                   }
                 }}
                 onPress={() => {
@@ -383,6 +414,7 @@ export function YearHomeScreen({
                             <MonthDayCell
                               day={day}
                               vacationColor={day?.date ? getVacationColorForDate(day.date, vacationPeriods) : undefined}
+                              isToday={day?.date === todayDate}
                               gridMetrics={gridMetrics}
                               resolveDayTypeColors={type =>
                                 getDayTypeColors(type, palette)
@@ -515,15 +547,17 @@ export function YearHomeScreen({
 type MonthDayCellProps = {
   day: CalendarDay | null;
   vacationColor?: string;
+  isToday?: boolean;
   gridMetrics: ReturnType<typeof getYearGridMetrics>;
   resolveDayTypeColors: (type: DayType) => DayTypeColors;
 };
 
-function MonthDayCell({ day, vacationColor, gridMetrics, resolveDayTypeColors }: MonthDayCellProps) {
+function MonthDayCell({ day, vacationColor, isToday, gridMetrics, resolveDayTypeColors }: MonthDayCellProps) {
   if (!day) {
     return <View style={styles.emptyDayCell} />;
   }
 
+  const { palette } = useAppTheme();
   const colors = resolveDayTypeColors(day.type);
   const showVacation = !!vacationColor;
 
@@ -533,7 +567,8 @@ function MonthDayCell({ day, vacationColor, gridMetrics, resolveDayTypeColors }:
         styles.dayCell,
         {
           backgroundColor: colors.backgroundColor,
-          borderColor: colors.borderColor,
+          borderColor: isToday ? palette.selectedBorder : colors.borderColor,
+          borderWidth: isToday ? 2 : 1,
         },
       ]}
     >
