@@ -345,6 +345,7 @@ export function MonthDetailScreen({
           >
             <ScrollView
               nestedScrollEnabled
+              showsVerticalScrollIndicator={false}
               style={styles.pageVertical}
               contentContainerStyle={[
                 styles.pageVerticalContent,
