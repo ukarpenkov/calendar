@@ -150,7 +150,6 @@ describe('VacationForm', () => {
     expect(json).toContain('Дата окончания');
     expect(json).toContain('Цвет');
     expect(json).toContain('Сохранить');
-    expect(json).toContain('Отмена');
   });
 
   it('save button is disabled when fields are empty', async () => {

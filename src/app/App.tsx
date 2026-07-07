@@ -203,7 +203,7 @@ function AppContent() {
 
     const sub = BackHandler.addEventListener('hardwareBackPress', onBackPress);
     return () => sub.remove();
-  }, [status]);
+  }, [status, showVacationForm]);
 
   useEffect(() => {
     if (status.kind !== 'ready') {

@@ -509,18 +509,6 @@ export function MonthDetailScreen({
   );
 }
 
-function getVacationColorForDate(
-  date: string,
-  vacationPeriods: VacationPeriod[],
-): string | undefined {
-  for (const period of vacationPeriods) {
-    if (date >= period.startDate && date <= period.endDate) {
-      return period.color;
-    }
-  }
-  return undefined;
-}
-
 type LocalizationParams = Record<string, number | string>;
 
 type MonthDetailBodyProps = {
@@ -591,18 +579,6 @@ function MonthDetailBody({
       return getHolidayImageForMonth(detail.days);
     },
     [selectedDay, detail.days, vacationPeriods],
-  );
-
-  const getVacationColorForDate = useCallback(
-    (date: string): string | undefined => {
-      for (const period of vacationPeriods) {
-        if (date >= period.startDate && date <= period.endDate) {
-          return period.color;
-        }
-      }
-      return undefined;
-    },
-    [vacationPeriods],
   );
 
   const calendarCard = (

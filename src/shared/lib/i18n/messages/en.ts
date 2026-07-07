@@ -177,7 +177,7 @@ export const enTranslations = {
     'importEntry.textJson.sourceName': 'Pasted JSON text',
     'vacation.title': 'Vacation',
     'vacation.addTitle': 'New vacation',
-    'vacation.editTitle': 'Edit',
+    'vacation.editTitle': 'Edit vacation',
     'vacation.startDate': 'Start date',
     'vacation.endDate': 'End date',
     'vacation.color': 'Color',

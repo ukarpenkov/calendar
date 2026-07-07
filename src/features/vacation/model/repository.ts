@@ -19,13 +19,6 @@ export interface VacationRepository {
   remove(id: number): Promise<void>;
 }
 
-interface VacationPeriodRow {
-  id: number;
-  start_date: string;
-  end_date: string;
-  color: string;
-}
-
 function mapVacationPeriodRow(row: Record<string, Scalar>): VacationPeriod {
   const id = row.id;
   const startDate = row.start_date;
