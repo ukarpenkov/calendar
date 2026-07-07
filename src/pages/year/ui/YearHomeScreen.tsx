@@ -133,38 +133,6 @@ export function YearHomeScreen({
     });
   }, [containerHeight, cardHeight, currentMonth, columnsPerRow]);
 
-  const vacationDaysByMonth = useMemo(() => {
-    const counts: Record<number, number> = {};
-    const yearStr = String(calendar.year);
-
-    for (const period of vacationPeriods) {
-      const start = period.startDate > `${yearStr}-01-01` ? period.startDate : `${yearStr}-01-01`;
-      const end = period.endDate < `${yearStr}-12-31` ? period.endDate : `${yearStr}-12-31`;
-
-      if (start > end) continue;
-
-      const startMonth = parseInt(start.split('-')[1], 10);
-      const endMonth = parseInt(end.split('-')[1], 10);
-
-      for (let m = startMonth; m <= endMonth; m++) {
-        const monthStart = `${yearStr}-${String(m).padStart(2, '0')}-01`;
-        const monthEnd = new Date(calendar.year, m, 0);
-        const monthEndStr = `${yearStr}-${String(m).padStart(2, '0')}-${String(monthEnd.getDate()).padStart(2, '0')}`;
-
-        const rangeStart = start > monthStart ? start : monthStart;
-        const rangeEnd = end < monthEndStr ? end : monthEndStr;
-
-        if (rangeStart <= rangeEnd) {
-          const s = new Date(rangeStart);
-          const e = new Date(rangeEnd);
-          const days = Math.floor((e.getTime() - s.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-          counts[m] = (counts[m] || 0) + days;
-        }
-      }
-    }
-    return counts;
-  }, [vacationPeriods, calendar.year]);
-
   return (
     <ScrollView
       ref={scrollViewRef}
@@ -553,11 +521,12 @@ type MonthDayCellProps = {
 };
 
 function MonthDayCell({ day, vacationColor, isToday, gridMetrics, resolveDayTypeColors }: MonthDayCellProps) {
+  const { palette } = useAppTheme();
+
   if (!day) {
     return <View style={styles.emptyDayCell} />;
   }
 
-  const { palette } = useAppTheme();
   const colors = resolveDayTypeColors(day.type);
   const showVacation = !!vacationColor;
 

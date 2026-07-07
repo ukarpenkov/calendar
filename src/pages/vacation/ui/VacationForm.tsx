@@ -125,10 +125,6 @@ function formatDayMonthInput(text: string): string {
   return digits;
 }
 
-function isValidIsoDate(value: string): boolean {
-  return /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(new Date(value).getTime());
-}
-
 export function VacationForm({
   initialPeriod,
   calendarDays,

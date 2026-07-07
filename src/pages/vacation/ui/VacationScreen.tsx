@@ -23,7 +23,6 @@ type VacationScreenProps = {
 };
 
 export function VacationScreen({
-  year,
   calendarDays,
   vacationPeriods,
   palette,

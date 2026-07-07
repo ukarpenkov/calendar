@@ -58,8 +58,6 @@ export function getMonthDetailLayoutMetrics(
   const horizontalPadding = layout.screenPaddingH * 2;
   const fullContentWidth = windowWidth - horizontalPadding;
   const isLandscape = windowWidth > windowHeight;
-  const minDimension = Math.min(windowWidth, windowHeight);
-  const isTablet = minDimension >= 600;
 
   const idealCalendarWidth = getMonthContentMaxWidth(windowWidth, windowHeight);
 

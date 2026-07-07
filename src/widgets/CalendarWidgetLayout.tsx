@@ -69,14 +69,6 @@ const TEXT_SHADOW = {
   textShadowOffset: { height: 1, width: 1 },
 } as const;
 
-const HOURS_UNIT: Record<AppLanguage, string> = {
-  ru: 'ч',
-  en: 'h',
-  tr: 'sa',
-  id: 'jam',
-  ja: '時間',
-};
-
 function formatDate(data: WidgetDayData): string {
   const { language, dayNumber, monthLabel, year, weekdayLabel } = data;
 
