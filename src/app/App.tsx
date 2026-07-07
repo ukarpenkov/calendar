@@ -85,12 +85,6 @@ function AppContent() {
   setBundledCalendarRegionRef.current = setBundledCalendarRegion;
   const [status, setStatus] = useState<AppContentStatus>({ kind: 'loading' });
   const [bootstrapGeneration, setBootstrapGeneration] = useState(0);
-  const [monthOrigin, setMonthOrigin] = useState<{
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  } | null>(null);
   const [jsonImportSavedRevision, setJsonImportSavedRevision] = useState(0);
   const [vacationPeriods, setVacationPeriods] = useState<VacationPeriod[]>([]);
   const [editingPeriod, setEditingPeriod] = useState<VacationPeriod | null>(
@@ -340,21 +334,9 @@ function AppContent() {
     );
   }
 
-  const goToMonth = (
-    month: number,
-    origin?: { x: number; y: number; width: number; height: number },
-  ) => {
+  const goToMonth = (month: number) => {
     if (month < 1 || month > 12) {
       return;
-    }
-
-    if (origin) {
-      setMonthOrigin(origin);
-    } else if (
-      statusRef.current.kind !== 'ready' ||
-      statusRef.current.screen.name !== 'month'
-    ) {
-      setMonthOrigin(null);
     }
 
     setStatus(currentStatus => {
@@ -691,7 +673,6 @@ function AppContent() {
           onBack={closeMonth}
           onOpenSettings={openSettings}
           onMonthChange={goToMonth}
-          originLayout={monthOrigin}
           vacationPeriods={vacationPeriods}
         />
       ) : null}

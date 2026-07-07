@@ -9,7 +9,6 @@ import {
 import {
   Animated,
   BackHandler,
-  Easing,
   FlatList,
   Pressable,
   ScrollView,
@@ -20,6 +19,11 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Reanimated, {
+  FadeIn,
+  FadeOut,
+  SharedTransition,
+} from 'react-native-reanimated';
 
 import {
   getDayTypeColors,
@@ -63,7 +67,6 @@ type MonthDetailScreenProps = {
   onBack: () => void;
   onOpenSettings: () => void;
   onMonthChange: (month: number) => void;
-  originLayout?: { x: number; y: number; width: number; height: number } | null;
   vacationPeriods: VacationPeriod[];
 };
 
@@ -74,33 +77,11 @@ const PARALLAX_FACTOR = 0.15;
 const PAGE_OPACITY_MIN = 0.85;
 const PAGE_SCALE_MIN = 0.97;
 
-const OPEN_EASING = Easing.bezier(0.2, 0.85, 0.25, 1);
-const CLOSE_EASING = Easing.bezier(0.4, 0, 0.6, 1);
-const FALLBACK_OPEN_SCALE = 0.96;
-const MIN_ORIGIN_SCALE = 0.18;
-const CORNER_COLLAPSE_SIZE = 92;
-
-type TransitionTargetLayout = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-};
-
-function getBottomRightCollapseLayout(
-  windowWidth: number,
-  windowHeight: number,
-  bottomInset: number,
-): TransitionTargetLayout {
-  const margin = layout.screenPaddingH;
-
-  return {
-    x: Math.max(0, windowWidth - CORNER_COLLAPSE_SIZE - margin),
-    y: Math.max(0, windowHeight - CORNER_COLLAPSE_SIZE - bottomInset - margin),
-    width: CORNER_COLLAPSE_SIZE,
-    height: CORNER_COLLAPSE_SIZE,
-  };
-}
+const SHEET_ENTER_DURATION_MS = 420;
+const CONTENT_ENTER_DELAY_MS = 90;
+const CONTENT_ENTER_DURATION_MS = 280;
+const CONTENT_EXIT_DURATION_MS = 220;
+const BACKDROP_DURATION_MS = 260;
 
 function getLocalIsoDate(date = new Date()): string {
   const year = date.getFullYear();
@@ -116,7 +97,6 @@ export function MonthDetailScreen({
   onBack,
   onOpenSettings,
   onMonthChange,
-  originLayout,
   vacationPeriods,
 }: MonthDetailScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
@@ -149,92 +129,21 @@ export function MonthDetailScreen({
   const isTabletPortrait =
     monthLayoutMetrics.layout === 'split' && windowWidth <= windowHeight;
 
-  // --- Transition animation ---
-  const animProgress = useRef(new Animated.Value(0)).current;
+  // --- Shared-element transition (Reanimated) ---
+  // The sheet carries a `sharedTransitionTag` matching the month card on the
+  // year screen. Reanimated automatically morphs the sheet from the card's
+  // position/size on mount and back to the (currently visible) card on
+  // unmount. All transform math used previously is no longer needed.
   const isClosingRef = useRef(false);
-  const [isClosingToCorner, setIsClosingToCorner] = useState(false);
   const onBackRef = useRef(onBack);
   onBackRef.current = onBack;
-
-  const transitionTargetLayout = isClosingToCorner
-    ? getBottomRightCollapseLayout(
-        windowWidth,
-        windowHeight,
-        safeAreaInsets.bottom,
-      )
-    : originLayout;
-  const targetTranslateX = transitionTargetLayout
-    ? transitionTargetLayout.x +
-      transitionTargetLayout.width / 2 -
-      windowWidth / 2
-    : 0;
-  const targetTranslateY = transitionTargetLayout
-    ? transitionTargetLayout.y +
-      transitionTargetLayout.height / 2 -
-      windowHeight / 2
-    : windowHeight * 0.08;
-  const targetScaleX = transitionTargetLayout
-    ? Math.max(
-        transitionTargetLayout.width / Math.max(windowWidth, 1),
-        MIN_ORIGIN_SCALE,
-      )
-    : FALLBACK_OPEN_SCALE;
-  const targetScaleY = transitionTargetLayout
-    ? Math.max(
-        transitionTargetLayout.height / Math.max(windowHeight, 1),
-        MIN_ORIGIN_SCALE,
-      )
-    : FALLBACK_OPEN_SCALE;
-  const sheetTranslateX = animProgress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [targetTranslateX, 0],
-  });
-  const sheetTranslateY = animProgress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [targetTranslateY, 0],
-  });
-  const sheetScaleX = animProgress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [targetScaleX, 1],
-  });
-  const sheetScaleY = animProgress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [targetScaleY, 1],
-  });
-  const sheetOpacity = animProgress.interpolate({
-    inputRange: [0, 0.2, 1],
-    outputRange: [0.88, 1, 1],
-  });
-  const backdropOpacity = animProgress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 0.35],
-  });
-
-  useEffect(() => {
-    Animated.timing(animProgress, {
-      toValue: 1,
-      duration: 260,
-      easing: OPEN_EASING,
-      useNativeDriver: true,
-    }).start();
-  }, [animProgress]);
 
   const handleBack = useCallback(() => {
     if (isClosingRef.current) return;
     isClosingRef.current = true;
-    setIsClosingToCorner(true);
-
-    requestAnimationFrame(() => {
-      Animated.timing(animProgress, {
-        toValue: 0,
-        duration: 220,
-        easing: CLOSE_EASING,
-        useNativeDriver: true,
-      }).start(() => {
-        onBackRef.current();
-      });
-    });
-  }, [animProgress]);
+    // Reanimated plays the exit shared transition as this screen unmounts.
+    onBackRef.current();
+  }, []);
 
   useEffect(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -248,6 +157,17 @@ export function MonthDetailScreen({
   const [activeMonth, setActiveMonth] = useState(month);
   const activeMonthRef = useRef(month);
   activeMonthRef.current = activeMonth;
+
+  // Tag follows the visible month so closing the sheet returns the morph to
+  // the card the user is currently looking at (not just the opened one).
+  const sheetSharedTag = `month-card-${activeMonth}`;
+
+  // Tuned shared-transition preset. The default SharedTransition duration is
+  // 500ms which feels heavy here; this feels snappy yet smooth. Reanimated
+  // plays the reverse morph automatically when the sheet unmounts.
+  const sheetSharedTransition = SharedTransition.duration(
+    SHEET_ENTER_DURATION_MS,
+  );
 
   const activeDetail = monthDetails[activeMonth];
   // Chevron targets follow the parent `month`; `activeMonth` can lag after
@@ -480,25 +400,22 @@ export function MonthDetailScreen({
 
   return (
     <View style={styles.overlayRoot} pointerEvents="box-none">
-      <Animated.View
-        style={[styles.backdrop, { opacity: backdropOpacity }]}
+      <Reanimated.View
+        style={styles.backdrop}
         pointerEvents="none"
+        entering={FadeIn.duration(BACKDROP_DURATION_MS)}
+        exiting={FadeOut.duration(BACKDROP_DURATION_MS)}
       />
-      <Animated.View
+      <Reanimated.View
         style={[
           styles.sheet,
           {
             backgroundColor: palette.background,
             paddingTop: safeAreaInsets.top + layout.safeAreaTopExtra,
-            transform: [
-              { translateX: sheetTranslateX },
-              { translateY: sheetTranslateY },
-              { scaleX: sheetScaleX },
-              { scaleY: sheetScaleY },
-            ],
-            opacity: sheetOpacity,
           },
         ]}
+        sharedTransitionTag={sheetSharedTag}
+        sharedTransitionStyle={sheetSharedTransition}
       >
         <View style={styles.appBar}>
           <View style={[styles.appBarSide, styles.appBarSideStart]}>
@@ -555,30 +472,39 @@ export function MonthDetailScreen({
           </View>
         </View>
 
-        <Animated.FlatList
-          ref={flatListRef}
-          data={MONTHS_DATA}
-          renderItem={renderPage}
-          keyExtractor={keyExtractor}
-          getItemLayout={getItemLayout}
-          horizontal
-          pagingEnabled
-          initialScrollIndex={month - 1}
-          nestedScrollEnabled
-          showsHorizontalScrollIndicator={false}
-          bounces={false}
-          decelerationRate="fast"
-          keyboardShouldPersistTaps="handled"
-          windowSize={5}
-          maxToRenderPerBatch={3}
-          removeClippedSubviews={false}
-          onViewableItemsChanged={onViewableItemsChanged}
-          viewabilityConfig={viewabilityConfig}
-          style={styles.horizontalScroll}
-          onScroll={onScrollEvent}
-          scrollEventThrottle={16}
-        />
-      </Animated.View>
+        <Reanimated.View
+          style={styles.contentFader}
+          entering={FadeIn.delay(CONTENT_ENTER_DELAY_MS).duration(
+            CONTENT_ENTER_DURATION_MS,
+          )}
+          exiting={FadeOut.duration(CONTENT_EXIT_DURATION_MS)}
+        >
+          <Animated.FlatList
+            ref={flatListRef}
+            data={MONTHS_DATA}
+            renderItem={renderPage}
+            keyExtractor={keyExtractor}
+            getItemLayout={getItemLayout}
+            horizontal
+            pagingEnabled
+            initialScrollIndex={month - 1}
+            nestedScrollEnabled
+            showsHorizontalScrollIndicator={false}
+            bounces={false}
+            decelerationRate="fast"
+            keyboardShouldPersistTaps="handled"
+            initialNumToRender={1}
+            windowSize={5}
+            maxToRenderPerBatch={1}
+            removeClippedSubviews={false}
+            onViewableItemsChanged={onViewableItemsChanged}
+            viewabilityConfig={viewabilityConfig}
+            style={styles.horizontalScroll}
+            onScroll={onScrollEvent}
+            scrollEventThrottle={16}
+          />
+        </Reanimated.View>
+      </Reanimated.View>
     </View>
   );
 }
@@ -1044,6 +970,9 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   horizontalScroll: {
+    flex: 1,
+  },
+  contentFader: {
     flex: 1,
   },
   page: {

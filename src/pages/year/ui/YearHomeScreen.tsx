@@ -8,6 +8,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Reanimated from 'react-native-reanimated';
 
 import {
   openWorkingCalendarTelegram,
@@ -57,7 +58,7 @@ function getVacationColorForDate(
 type YearHomeScreenProps = {
   calendar: CalendarYear;
   monthSummaries: CalendarMonthSummary[];
-  onOpenMonth: (month: number, origin: { x: number; y: number; width: number; height: number }) => void;
+  onOpenMonth: (month: number) => void;
   onOpenSettings: () => void;
   onOpenVacation: () => void;
   vacationPeriods: VacationPeriod[];
@@ -115,7 +116,6 @@ export function YearHomeScreen({
     }
     return counts;
   }, [calendar.days, vacationPeriods]);
-  const monthCardRefs = useRef<Map<number, View>>(new Map());
   const scrollViewRef = useRef<ScrollView>(null);
   const [containerHeight, setContainerHeight] = useState(0);
   const [cardHeight, setCardHeight] = useState(0);
@@ -275,33 +275,29 @@ export function YearHomeScreen({
         {monthSummaryRows.map((row, rowIndex) => (
           <View key={`month-row-${rowIndex}`} style={styles.monthRow}>
             {row.map(summary => (
-              <Pressable
+              <Reanimated.View
                 key={summary.month}
-                ref={ref => {
-                  if (ref) {
-                    monthCardRefs.current.set(summary.month, ref);
-                  }
-                }}
-                onLayout={e => {
-                  if (summary.month === 1 && cardHeight === 0) {
-                    setCardHeight(e.nativeEvent.layout.height);
-                  }
-                }}
-                onPress={() => {
-                  const cardRef = monthCardRefs.current.get(summary.month);
-                  cardRef?.measureInWindow((x, y, width, height) => {
-                    onOpenMonth(summary.month, { x, y, width, height });
-                  });
-                }}
-                style={({ pressed }) => [
-                  styles.monthCard,
-                  {
-                    backgroundColor: palette.surface,
-                    borderColor: palette.border,
-                    opacity: pressed ? 0.92 : 1,
-                  },
-                ]}
+                sharedTransitionTag={`month-card-${summary.month}`}
+                style={styles.monthCardShell}
               >
+                <Pressable
+                  onLayout={e => {
+                    if (summary.month === 1 && cardHeight === 0) {
+                      setCardHeight(e.nativeEvent.layout.height);
+                    }
+                  }}
+                  onPress={() => {
+                    onOpenMonth(summary.month);
+                  }}
+                  style={({ pressed }) => [
+                    styles.monthCard,
+                    {
+                      backgroundColor: palette.surface,
+                      borderColor: palette.border,
+                      opacity: pressed ? 0.92 : 1,
+                    },
+                  ]}
+                >
                 <View style={styles.monthCardHeader}>
                   <Text
                     adjustsFontSizeToFit
@@ -528,6 +524,7 @@ export function YearHomeScreen({
                   </View>
                 </View>
               </Pressable>
+              </Reanimated.View>
             ))}
             {Array.from({ length: columnsPerRow - row.length }).map(
               (_, spacerIndex) => (
@@ -668,6 +665,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 12,
     gap: 8,
+  },
+  monthCardShell: {
+    flex: 1,
+    minWidth: 0,
   },
   monthCardSpacer: {
     flex: 1,
