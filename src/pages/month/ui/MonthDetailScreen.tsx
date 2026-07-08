@@ -18,6 +18,13 @@ import {
   type ViewToken,
   useWindowDimensions,
 } from 'react-native';
+import Reanimated, {
+  Easing as REasing,
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
@@ -62,6 +69,7 @@ type MonthDetailScreenProps = {
   onBack: () => void;
   onOpenSettings: () => void;
   onMonthChange: (month: number) => void;
+  originLayout?: { x: number; y: number; width: number; height: number } | null;
   vacationPeriods: VacationPeriod[];
 };
 
@@ -71,6 +79,73 @@ const NOOP_SELECT_DAY = (_date: string) => {};
 const PARALLAX_FACTOR = 0.15;
 const PAGE_OPACITY_MIN = 0.85;
 const PAGE_SCALE_MIN = 0.97;
+
+const OPEN_DURATION_MS = 260;
+const CLOSE_DURATION_MS = 220;
+const OPEN_EASING = REasing.bezier(0.2, 0.85, 0.25, 1);
+const CLOSE_EASING = REasing.bezier(0.4, 0, 0.6, 1);
+const FALLBACK_OPEN_SCALE = 0.96;
+const MIN_ORIGIN_SCALE = 0.18;
+const CORNER_COLLAPSE_SIZE = 92;
+
+type TransitionTargetLayout = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
+type SheetCollapseTargets = {
+  translateX: number;
+  translateY: number;
+  scaleX: number;
+  scaleY: number;
+};
+
+function getBottomRightCollapseLayout(
+  windowWidth: number,
+  windowHeight: number,
+  bottomInset: number,
+): TransitionTargetLayout {
+  const margin = layout.screenPaddingH;
+
+  return {
+    x: Math.max(0, windowWidth - CORNER_COLLAPSE_SIZE - margin),
+    y: Math.max(0, windowHeight - CORNER_COLLAPSE_SIZE - bottomInset - margin),
+    width: CORNER_COLLAPSE_SIZE,
+    height: CORNER_COLLAPSE_SIZE,
+  };
+}
+
+function buildOpenTargets(
+  originLayout: { x: number; y: number; width: number; height: number } | null | undefined,
+  windowWidth: number,
+  windowHeight: number,
+): SheetCollapseTargets {
+  if (originLayout) {
+    return {
+      translateX:
+        originLayout.x + originLayout.width / 2 - windowWidth / 2,
+      translateY:
+        originLayout.y + originLayout.height / 2 - windowHeight / 2,
+      scaleX: Math.max(
+        originLayout.width / Math.max(windowWidth, 1),
+        MIN_ORIGIN_SCALE,
+      ),
+      scaleY: Math.max(
+        originLayout.height / Math.max(windowHeight, 1),
+        MIN_ORIGIN_SCALE,
+      ),
+    };
+  }
+
+  return {
+    translateX: 0,
+    translateY: windowHeight * 0.08,
+    scaleX: FALLBACK_OPEN_SCALE,
+    scaleY: FALLBACK_OPEN_SCALE,
+  };
+}
 
 function getLocalIsoDate(date = new Date()): string {
   const year = date.getFullYear();
@@ -86,6 +161,7 @@ export function MonthDetailScreen({
   onBack,
   onOpenSettings,
   onMonthChange,
+  originLayout,
   vacationPeriods,
 }: MonthDetailScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
@@ -100,7 +176,9 @@ export function MonthDetailScreen({
   const flatListRef = useRef<FlatList>(null);
   const todayDate = useMemo(() => getLocalIsoDate(), []);
 
-  const scrollX = useRef(new Animated.Value(0)).current;
+  const pageWidth = windowWidth;
+  const initialScrollOffset = (month - 1) * pageWidth;
+  const scrollX = useRef(new Animated.Value(initialScrollOffset)).current;
   const onScrollEvent = useMemo(
     () =>
       Animated.event(
@@ -110,7 +188,6 @@ export function MonthDetailScreen({
     [scrollX],
   );
 
-  const pageWidth = windowWidth;
   const monthLayoutMetrics = useMemo(
     () => getMonthDetailLayoutMetrics(windowWidth, windowHeight),
     [windowHeight, windowWidth],
@@ -118,16 +195,126 @@ export function MonthDetailScreen({
   const isTabletPortrait =
     monthLayoutMetrics.layout === 'split' && windowWidth <= windowHeight;
 
+  const initialOpenTargets = useMemo(
+    () => buildOpenTargets(originLayout, windowWidth, windowHeight),
+    // Origin and dimensions are fixed for the lifetime of this overlay mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
+  const progress = useSharedValue(0);
+  const isClosingToCorner = useSharedValue(0);
+  const openTargets = useSharedValue(initialOpenTargets);
+  const collapseTargets = useSharedValue<SheetCollapseTargets>({
+    translateX: 0,
+    translateY: 0,
+    scaleX: FALLBACK_OPEN_SCALE,
+    scaleY: FALLBACK_OPEN_SCALE,
+  });
   const isClosingRef = useRef(false);
   const onBackRef = useRef(onBack);
   onBackRef.current = onBack;
 
+  useEffect(() => {
+    progress.value = withTiming(1, {
+      duration: OPEN_DURATION_MS,
+      easing: OPEN_EASING,
+    });
+  }, [progress]);
+
+  const sheetAnimatedStyle = useAnimatedStyle(() => {
+    const t = progress.value;
+    const closing = isClosingToCorner.value === 1;
+    const open = openTargets.value;
+    const collapse = collapseTargets.value;
+
+    const translateX = closing
+      ? collapse.translateX * (1 - t)
+      : open.translateX * (1 - t);
+    const translateY = closing
+      ? collapse.translateY * (1 - t)
+      : open.translateY * (1 - t);
+    const scaleX = closing
+      ? collapse.scaleX + (1 - collapse.scaleX) * t
+      : open.scaleX + (1 - open.scaleX) * t;
+    const scaleY = closing
+      ? collapse.scaleY + (1 - collapse.scaleY) * t
+      : open.scaleY + (1 - open.scaleY) * t;
+    const opacity = t < 0.2 ? 0.88 + (t / 0.2) * 0.12 : 1;
+
+    return {
+      transform: [
+        { translateX },
+        { translateY },
+        { scaleX },
+        { scaleY },
+      ],
+      opacity,
+    };
+  });
+
+  const backdropAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: progress.value * 0.35,
+  }));
+
+  const contentAnimatedStyle = useAnimatedStyle(() => {
+    if (isClosingToCorner.value === 1) {
+      return { opacity: 1 };
+    }
+
+    const t = progress.value;
+    return {
+      opacity: t < 0.45 ? 0 : (t - 0.45) / 0.55,
+    };
+  });
+
+  const finishClose = useCallback(() => {
+    onBackRef.current();
+  }, []);
+
   const handleBack = useCallback(() => {
     if (isClosingRef.current) return;
     isClosingRef.current = true;
-    // Reanimated plays the exit shared transition as this screen unmounts.
-    onBackRef.current();
-  }, []);
+
+    const corner = getBottomRightCollapseLayout(
+      windowWidth,
+      windowHeight,
+      safeAreaInsets.bottom,
+    );
+    collapseTargets.value = {
+      translateX:
+        corner.x + corner.width / 2 - windowWidth / 2,
+      translateY:
+        corner.y + corner.height / 2 - windowHeight / 2,
+      scaleX: Math.max(
+        corner.width / Math.max(windowWidth, 1),
+        MIN_ORIGIN_SCALE,
+      ),
+      scaleY: Math.max(
+        corner.height / Math.max(windowHeight, 1),
+        MIN_ORIGIN_SCALE,
+      ),
+    };
+    isClosingToCorner.value = 1;
+
+    progress.value = withTiming(
+      0,
+      { duration: CLOSE_DURATION_MS, easing: CLOSE_EASING },
+      finished => {
+        if (finished) {
+          runOnJS(finishClose)();
+        }
+      },
+    );
+  }, [
+    collapseTargets,
+    finishClose,
+    isClosingToCorner,
+    progress,
+    safeAreaInsets.bottom,
+    windowHeight,
+    windowWidth,
+  ]);
 
   useEffect(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -229,9 +416,11 @@ export function MonthDetailScreen({
       orientationCorrectMonthRef.current = activeMonth;
       isScrollingToRef.current = true;
       // Small delay lets FlatList re-layout with new pageWidth
+      const offset = (orientationCorrectMonthRef.current - 1) * windowWidth;
+      scrollX.setValue(offset);
       setTimeout(() => {
         flatListRef.current?.scrollToOffset({
-          offset: (orientationCorrectMonthRef.current - 1) * windowWidth,
+          offset,
           animated: false,
         });
       }, 50);
@@ -374,17 +563,18 @@ export function MonthDetailScreen({
 
   return (
     <View style={styles.overlayRoot} pointerEvents="box-none">
-      <View
-        style={styles.backdrop}
+      <Reanimated.View
+        style={[styles.backdrop, backdropAnimatedStyle]}
         pointerEvents="none"
       />
-      <View
+      <Reanimated.View
         style={[
           styles.sheet,
           {
             backgroundColor: palette.background,
             paddingTop: safeAreaInsets.top + layout.safeAreaTopExtra,
           },
+          sheetAnimatedStyle,
         ]}
       >
         <View style={styles.appBar}>
@@ -442,7 +632,7 @@ export function MonthDetailScreen({
           </View>
         </View>
 
-        <View style={styles.contentFader}>
+        <Reanimated.View style={[styles.contentFader, contentAnimatedStyle]}>
           <Animated.FlatList
             ref={flatListRef}
             data={MONTHS_DATA}
@@ -467,8 +657,8 @@ export function MonthDetailScreen({
             onScroll={onScrollEvent}
             scrollEventThrottle={16}
           />
-        </View>
-      </View>
+        </Reanimated.View>
+      </Reanimated.View>
     </View>
   );
 }

@@ -57,7 +57,10 @@ function getVacationColorForDate(
 type YearHomeScreenProps = {
   calendar: CalendarYear;
   monthSummaries: CalendarMonthSummary[];
-  onOpenMonth: (month: number) => void;
+  onOpenMonth: (
+    month: number,
+    origin?: { x: number; y: number; width: number; height: number },
+  ) => void;
   onOpenSettings: () => void;
   onOpenVacation: () => void;
   vacationPeriods: VacationPeriod[];
@@ -116,6 +119,7 @@ export function YearHomeScreen({
     return counts;
   }, [calendar.days, vacationPeriods]);
   const scrollViewRef = useRef<ScrollView>(null);
+  const monthCardRefs = useRef<Map<number, View>>(new Map());
   const [containerHeight, setContainerHeight] = useState(0);
   const [cardHeight, setCardHeight] = useState(0);
   const todayDate = getLocalIsoDate();
@@ -247,13 +251,21 @@ export function YearHomeScreen({
                 style={styles.monthCardShell}
               >
                 <Pressable
+                  ref={ref => {
+                    if (ref) {
+                      monthCardRefs.current.set(summary.month, ref);
+                    }
+                  }}
                   onLayout={e => {
                     if (summary.month === 1 && cardHeight === 0) {
                       setCardHeight(e.nativeEvent.layout.height);
                     }
                   }}
                   onPress={() => {
-                    onOpenMonth(summary.month);
+                    const cardRef = monthCardRefs.current.get(summary.month);
+                    cardRef?.measureInWindow((x, y, width, height) => {
+                      onOpenMonth(summary.month, { x, y, width, height });
+                    });
                   }}
                   style={({ pressed }) => [
                     styles.monthCard,

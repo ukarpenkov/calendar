@@ -91,6 +91,12 @@ function AppContent() {
     null,
   );
   const [showVacationForm, setShowVacationForm] = useState(false);
+  const [monthOrigin, setMonthOrigin] = useState<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  } | null>(null);
   const vacationRepositoryRef = useRef(createVacationRepository(getDatabase()));
   const statusRef = useRef(status);
   statusRef.current = status;
@@ -334,9 +340,21 @@ function AppContent() {
     );
   }
 
-  const goToMonth = (month: number) => {
+  const goToMonth = (
+    month: number,
+    origin?: { x: number; y: number; width: number; height: number },
+  ) => {
     if (month < 1 || month > 12) {
       return;
+    }
+
+    if (origin) {
+      setMonthOrigin(origin);
+    } else if (
+      statusRef.current.kind !== 'ready' ||
+      statusRef.current.screen.name !== 'month'
+    ) {
+      setMonthOrigin(null);
     }
 
     setStatus(currentStatus => {
@@ -361,6 +379,8 @@ function AppContent() {
   };
 
   const closeMonth = () => {
+    setMonthOrigin(null);
+
     setStatus(currentStatus => {
       if (currentStatus.kind !== 'ready') {
         return currentStatus;
@@ -673,6 +693,7 @@ function AppContent() {
           onBack={closeMonth}
           onOpenSettings={openSettings}
           onMonthChange={goToMonth}
+          originLayout={monthOrigin}
           vacationPeriods={vacationPeriods}
         />
       ) : null}
