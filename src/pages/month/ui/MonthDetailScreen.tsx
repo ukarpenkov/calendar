@@ -19,11 +19,6 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Reanimated, {
-  FadeIn,
-  FadeOut,
-  SharedTransition,
-} from 'react-native-reanimated';
 
 import {
   getDayTypeColors,
@@ -77,12 +72,6 @@ const PARALLAX_FACTOR = 0.15;
 const PAGE_OPACITY_MIN = 0.85;
 const PAGE_SCALE_MIN = 0.97;
 
-const SHEET_ENTER_DURATION_MS = 420;
-const CONTENT_ENTER_DELAY_MS = 90;
-const CONTENT_ENTER_DURATION_MS = 280;
-const CONTENT_EXIT_DURATION_MS = 220;
-const BACKDROP_DURATION_MS = 260;
-
 function getLocalIsoDate(date = new Date()): string {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -129,11 +118,6 @@ export function MonthDetailScreen({
   const isTabletPortrait =
     monthLayoutMetrics.layout === 'split' && windowWidth <= windowHeight;
 
-  // --- Shared-element transition (Reanimated) ---
-  // The sheet carries a `sharedTransitionTag` matching the month card on the
-  // year screen. Reanimated automatically morphs the sheet from the card's
-  // position/size on mount and back to the (currently visible) card on
-  // unmount. All transform math used previously is no longer needed.
   const isClosingRef = useRef(false);
   const onBackRef = useRef(onBack);
   onBackRef.current = onBack;
@@ -157,17 +141,6 @@ export function MonthDetailScreen({
   const [activeMonth, setActiveMonth] = useState(month);
   const activeMonthRef = useRef(month);
   activeMonthRef.current = activeMonth;
-
-  // Tag follows the visible month so closing the sheet returns the morph to
-  // the card the user is currently looking at (not just the opened one).
-  const sheetSharedTag = `month-card-${activeMonth}`;
-
-  // Tuned shared-transition preset. The default SharedTransition duration is
-  // 500ms which feels heavy here; this feels snappy yet smooth. Reanimated
-  // plays the reverse morph automatically when the sheet unmounts.
-  const sheetSharedTransition = SharedTransition.duration(
-    SHEET_ENTER_DURATION_MS,
-  );
 
   const activeDetail = monthDetails[activeMonth];
   // Chevron targets follow the parent `month`; `activeMonth` can lag after
@@ -401,13 +374,11 @@ export function MonthDetailScreen({
 
   return (
     <View style={styles.overlayRoot} pointerEvents="box-none">
-      <Reanimated.View
+      <View
         style={styles.backdrop}
         pointerEvents="none"
-        entering={FadeIn.duration(BACKDROP_DURATION_MS)}
-        exiting={FadeOut.duration(BACKDROP_DURATION_MS)}
       />
-      <Reanimated.View
+      <View
         style={[
           styles.sheet,
           {
@@ -415,8 +386,6 @@ export function MonthDetailScreen({
             paddingTop: safeAreaInsets.top + layout.safeAreaTopExtra,
           },
         ]}
-        sharedTransitionTag={sheetSharedTag}
-        sharedTransitionStyle={sheetSharedTransition}
       >
         <View style={styles.appBar}>
           <View style={[styles.appBarSide, styles.appBarSideStart]}>
@@ -473,13 +442,7 @@ export function MonthDetailScreen({
           </View>
         </View>
 
-        <Reanimated.View
-          style={styles.contentFader}
-          entering={FadeIn.delay(CONTENT_ENTER_DELAY_MS).duration(
-            CONTENT_ENTER_DURATION_MS,
-          )}
-          exiting={FadeOut.duration(CONTENT_EXIT_DURATION_MS)}
-        >
+        <View style={styles.contentFader}>
           <Animated.FlatList
             ref={flatListRef}
             data={MONTHS_DATA}
@@ -504,8 +467,8 @@ export function MonthDetailScreen({
             onScroll={onScrollEvent}
             scrollEventThrottle={16}
           />
-        </Reanimated.View>
-      </Reanimated.View>
+        </View>
+      </View>
     </View>
   );
 }

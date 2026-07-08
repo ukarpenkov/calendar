@@ -8,7 +8,6 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Reanimated from 'react-native-reanimated';
 
 import {
   openWorkingCalendarTelegram,
@@ -243,9 +242,8 @@ export function YearHomeScreen({
         {monthSummaryRows.map((row, rowIndex) => (
           <View key={`month-row-${rowIndex}`} style={styles.monthRow}>
             {row.map(summary => (
-              <Reanimated.View
+              <View
                 key={summary.month}
-                sharedTransitionTag={`month-card-${summary.month}`}
                 style={styles.monthCardShell}
               >
                 <Pressable
@@ -492,7 +490,7 @@ export function YearHomeScreen({
                   </View>
                 </View>
               </Pressable>
-              </Reanimated.View>
+              </View>
             ))}
             {Array.from({ length: columnsPerRow - row.length }).map(
               (_, spacerIndex) => (
