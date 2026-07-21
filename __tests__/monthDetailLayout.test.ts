@@ -33,6 +33,11 @@ test('portrait month detail is always stack (tablet)', () => {
   expect(m.layout).toBe('stack');
 });
 
+test('landscape tablet uses split layout', () => {
+  const m = getMonthDetailLayoutMetrics(1200, 900);
+  expect(m.layout).toBe('split');
+});
+
 test('landscape month detail splits calendar and side column', () => {
   const m = getMonthDetailLayoutMetrics(844, 390);
   expect(m.layout).toBe('split');

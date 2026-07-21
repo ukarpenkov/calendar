@@ -5,9 +5,9 @@ import {
   useMemo,
   useRef,
   useState,
+  type ReactNode,
 } from 'react';
 import {
-  Animated,
   BackHandler,
   FlatList,
   Pressable,
@@ -20,10 +20,13 @@ import {
 } from 'react-native';
 import Reanimated, {
   Easing as REasing,
+  interpolate,
   runOnJS,
+  useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
+  type SharedValue,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -80,9 +83,9 @@ const PARALLAX_FACTOR = 0.15;
 const PAGE_OPACITY_MIN = 0.85;
 const PAGE_SCALE_MIN = 0.97;
 
-const OPEN_DURATION_MS = 260;
-const CLOSE_DURATION_MS = 220;
-const OPEN_EASING = REasing.bezier(0.2, 0.85, 0.25, 1);
+const OPEN_DURATION_MS = 200;
+const CLOSE_DURATION_MS = 180;
+const OPEN_EASING = REasing.bezier(0.2, 0.9, 0.2, 1);
 const CLOSE_EASING = REasing.bezier(0.4, 0, 0.6, 1);
 const FALLBACK_OPEN_SCALE = 0.96;
 const MIN_ORIGIN_SCALE = 0.18;
@@ -102,6 +105,13 @@ type SheetCollapseTargets = {
   scaleY: number;
 };
 
+type MonthPageProps = {
+  children: ReactNode;
+  pageIndex: number;
+  pageWidth: number;
+  scrollX: SharedValue<number>;
+};
+
 function getBottomRightCollapseLayout(
   windowWidth: number,
   windowHeight: number,
@@ -118,16 +128,17 @@ function getBottomRightCollapseLayout(
 }
 
 function buildOpenTargets(
-  originLayout: { x: number; y: number; width: number; height: number } | null | undefined,
+  originLayout:
+    | { x: number; y: number; width: number; height: number }
+    | null
+    | undefined,
   windowWidth: number,
   windowHeight: number,
 ): SheetCollapseTargets {
   if (originLayout) {
     return {
-      translateX:
-        originLayout.x + originLayout.width / 2 - windowWidth / 2,
-      translateY:
-        originLayout.y + originLayout.height / 2 - windowHeight / 2,
+      translateX: originLayout.x + originLayout.width / 2 - windowWidth / 2,
+      translateY: originLayout.y + originLayout.height / 2 - windowHeight / 2,
       scaleX: Math.max(
         originLayout.width / Math.max(windowWidth, 1),
         MIN_ORIGIN_SCALE,
@@ -178,28 +189,22 @@ export function MonthDetailScreen({
 
   const pageWidth = windowWidth;
   const initialScrollOffset = (month - 1) * pageWidth;
-  const scrollX = useRef(new Animated.Value(initialScrollOffset)).current;
-  const onScrollEvent = useMemo(
-    () =>
-      Animated.event(
-        [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-        { useNativeDriver: true },
-      ),
-    [scrollX],
-  );
+  const scrollX = useSharedValue(initialScrollOffset);
+  const onScrollEvent = useAnimatedScrollHandler({
+    onScroll: event => {
+      scrollX.value = event.contentOffset.x;
+    },
+  });
 
   const monthLayoutMetrics = useMemo(
     () => getMonthDetailLayoutMetrics(windowWidth, windowHeight),
     [windowHeight, windowWidth],
   );
-  const isTabletPortrait =
-    monthLayoutMetrics.layout === 'split' && windowWidth <= windowHeight;
 
-  const initialOpenTargets = useMemo(
-    () => buildOpenTargets(originLayout, windowWidth, windowHeight),
-    // Origin and dimensions are fixed for the lifetime of this overlay mount.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+  const initialOpenTargets = buildOpenTargets(
+    originLayout,
+    windowWidth,
+    windowHeight,
   );
 
   const progress = useSharedValue(0);
@@ -213,60 +218,58 @@ export function MonthDetailScreen({
   });
   const isClosingRef = useRef(false);
   const onBackRef = useRef(onBack);
+  const [isContentReady, setIsContentReady] = useState(false);
   onBackRef.current = onBack;
 
   useEffect(() => {
-    progress.value = withTiming(1, {
-      duration: OPEN_DURATION_MS,
-      easing: OPEN_EASING,
-    });
-  }, [progress]);
+    progress.value = withTiming(
+      1,
+      {
+        duration: OPEN_DURATION_MS,
+        easing: OPEN_EASING,
+      },
+      finished => {
+        if (finished) {
+          runOnJS(setIsContentReady)(true);
+        }
+      },
+    );
+  }, [progress, setIsContentReady]);
+
+  useEffect(() => {
+    openTargets.value = buildOpenTargets(
+      originLayout,
+      windowWidth,
+      windowHeight,
+    );
+  }, [openTargets, originLayout, windowHeight, windowWidth]);
 
   const sheetAnimatedStyle = useAnimatedStyle(() => {
-    const t = progress.value;
+    const transitionProgress = progress.value;
     const closing = isClosingToCorner.value === 1;
     const open = openTargets.value;
     const collapse = collapseTargets.value;
 
     const translateX = closing
-      ? collapse.translateX * (1 - t)
-      : open.translateX * (1 - t);
+      ? collapse.translateX * (1 - transitionProgress)
+      : open.translateX * (1 - transitionProgress);
     const translateY = closing
-      ? collapse.translateY * (1 - t)
-      : open.translateY * (1 - t);
+      ? collapse.translateY * (1 - transitionProgress)
+      : open.translateY * (1 - transitionProgress);
     const scaleX = closing
-      ? collapse.scaleX + (1 - collapse.scaleX) * t
-      : open.scaleX + (1 - open.scaleX) * t;
+      ? collapse.scaleX + (1 - collapse.scaleX) * transitionProgress
+      : open.scaleX + (1 - open.scaleX) * transitionProgress;
     const scaleY = closing
-      ? collapse.scaleY + (1 - collapse.scaleY) * t
-      : open.scaleY + (1 - open.scaleY) * t;
-    const opacity = t < 0.2 ? 0.88 + (t / 0.2) * 0.12 : 1;
-
+      ? collapse.scaleY + (1 - collapse.scaleY) * transitionProgress
+      : open.scaleY + (1 - open.scaleY) * transitionProgress;
     return {
-      transform: [
-        { translateX },
-        { translateY },
-        { scaleX },
-        { scaleY },
-      ],
-      opacity,
+      transform: [{ translateX }, { translateY }, { scaleX }, { scaleY }],
     };
   });
 
   const backdropAnimatedStyle = useAnimatedStyle(() => ({
     opacity: progress.value * 0.35,
   }));
-
-  const contentAnimatedStyle = useAnimatedStyle(() => {
-    if (isClosingToCorner.value === 1) {
-      return { opacity: 1 };
-    }
-
-    const t = progress.value;
-    return {
-      opacity: t < 0.45 ? 0 : (t - 0.45) / 0.55,
-    };
-  });
 
   const finishClose = useCallback(() => {
     onBackRef.current();
@@ -282,10 +285,8 @@ export function MonthDetailScreen({
       safeAreaInsets.bottom,
     );
     collapseTargets.value = {
-      translateX:
-        corner.x + corner.width / 2 - windowWidth / 2,
-      translateY:
-        corner.y + corner.height / 2 - windowHeight / 2,
+      translateX: corner.x + corner.width / 2 - windowWidth / 2,
+      translateY: corner.y + corner.height / 2 - windowHeight / 2,
       scaleX: Math.max(
         corner.width / Math.max(windowWidth, 1),
         MIN_ORIGIN_SCALE,
@@ -341,8 +342,9 @@ export function MonthDetailScreen({
   // Flag to prevent onViewableItemsChanged from firing during programmatic scroll
   const isScrollingToRef = useRef(false);
   const programmaticTargetMonthRef = useRef<number | null>(null);
-  // Captures activeMonth at the moment width changes, before FlatList relayout corrupts it
+  // Captures activeMonth at the moment dimensions change, before FlatList relayout.
   const orientationCorrectMonthRef = useRef(activeMonth);
+  const pendingOrientationOffsetRef = useRef<number | null>(null);
 
   // Stable callback for day selection -- does not depend on activeMonth state
   const handleSelectDay = useCallback(
@@ -354,7 +356,10 @@ export function MonthDetailScreen({
   );
 
   // FlatList configuration
-  const MONTHS_DATA = useMemo(() => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], []);
+  const MONTHS_DATA = useMemo(
+    () => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    [],
+  );
 
   const getItemLayout = useCallback(
     (_data: ArrayLike<number> | null | undefined, index: number) => ({
@@ -399,33 +404,41 @@ export function MonthDetailScreen({
 
   // Sync: when parent changes month prop (e.g. chevron press), scroll FlatList
   useEffect(() => {
-    if (month !== activeMonth) {
+    if (isContentReady && month !== activeMonth) {
       isScrollingToRef.current = true;
       programmaticTargetMonthRef.current = month;
       flatListRef.current?.scrollToIndex({ index: month - 1, animated: true });
     }
-  }, [month, activeMonth]);
+  }, [month, activeMonth, isContentReady]);
 
-  // Correct scroll offset after orientation change
-  const prevWindowWidthRef = useRef(windowWidth);
+  // Preserve the visible page through dimension changes. The offset is applied
+  // from FlatList's next onLayout, after the new page width is available.
+  const previousWindowSizeRef = useRef({
+    width: windowWidth,
+    height: windowHeight,
+  });
   useEffect(() => {
-    if (prevWindowWidthRef.current !== windowWidth) {
-      prevWindowWidthRef.current = windowWidth;
-      // Capture the correct month NOW, before FlatList relayout triggers
-      // onViewableItemsChanged with a wrong month (old offset / new width).
+    const previous = previousWindowSizeRef.current;
+    if (previous.width !== windowWidth || previous.height !== windowHeight) {
+      previousWindowSizeRef.current = {
+        width: windowWidth,
+        height: windowHeight,
+      };
       orientationCorrectMonthRef.current = activeMonth;
       isScrollingToRef.current = true;
-      // Small delay lets FlatList re-layout with new pageWidth
-      const offset = (orientationCorrectMonthRef.current - 1) * windowWidth;
-      scrollX.setValue(offset);
-      setTimeout(() => {
-        flatListRef.current?.scrollToOffset({
-          offset,
-          animated: false,
-        });
-      }, 50);
+      pendingOrientationOffsetRef.current =
+        (orientationCorrectMonthRef.current - 1) * windowWidth;
     }
-  }, [windowWidth, activeMonth]);
+  }, [windowWidth, windowHeight, activeMonth]);
+
+  const handleFlatListLayout = useCallback(() => {
+    const offset = pendingOrientationOffsetRef.current;
+    if (offset === null) return;
+
+    pendingOrientationOffsetRef.current = null;
+    scrollX.value = offset;
+    flatListRef.current?.scrollToOffset({ offset, animated: false });
+  }, [scrollX]);
 
   // Auto-select today on initial mount only
   useEffect(() => {
@@ -455,33 +468,6 @@ export function MonthDetailScreen({
       }
 
       const pageIndex = m - 1;
-      const inputRange = [
-        (pageIndex - 1) * pageWidth,
-        pageIndex * pageWidth,
-        (pageIndex + 1) * pageWidth,
-      ];
-
-      const parallaxTranslateX = scrollX.interpolate({
-        inputRange,
-        outputRange: [
-          PARALLAX_FACTOR * pageWidth,
-          0,
-          -PARALLAX_FACTOR * pageWidth,
-        ],
-        extrapolate: 'clamp',
-      });
-
-      const pageOpacity = scrollX.interpolate({
-        inputRange,
-        outputRange: [PAGE_OPACITY_MIN, 1, PAGE_OPACITY_MIN],
-        extrapolate: 'clamp',
-      });
-
-      const pageScale = scrollX.interpolate({
-        inputRange,
-        outputRange: [PAGE_SCALE_MIN, 1, PAGE_SCALE_MIN],
-        extrapolate: 'clamp',
-      });
 
       const isActive = activeMonth === m;
 
@@ -493,17 +479,10 @@ export function MonthDetailScreen({
 
       return (
         <View style={[styles.page, styles.pageClipped, { width: pageWidth }]}>
-          <Animated.View
-            style={[
-              styles.pageAnimatedContent,
-              {
-                transform: [
-                  { translateX: parallaxTranslateX },
-                  { scale: pageScale },
-                ],
-                opacity: pageOpacity,
-              },
-            ]}
+          <MonthPage
+            pageIndex={pageIndex}
+            pageWidth={pageWidth}
+            scrollX={scrollX}
           >
             <ScrollView
               nestedScrollEnabled
@@ -528,14 +507,15 @@ export function MonthDetailScreen({
                 t={t}
                 weekdayLabels={weekdayLabels}
                 selectedDay={resolvedSelectedDay}
-                selectedDayDate={isActive ? selectedDate ?? undefined : undefined}
+                selectedDayDate={
+                  isActive ? selectedDate ?? undefined : undefined
+                }
                 onSelectDay={isActive ? handleSelectDay : NOOP_SELECT_DAY}
                 monthLayoutMetrics={monthLayoutMetrics}
-                isTabletPortrait={isTabletPortrait}
                 vacationPeriods={vacationPeriods}
               />
             </ScrollView>
-          </Animated.View>
+          </MonthPage>
         </View>
       );
     },
@@ -551,7 +531,6 @@ export function MonthDetailScreen({
       selectedDate,
       handleSelectDay,
       monthLayoutMetrics,
-      isTabletPortrait,
       safeAreaInsets.bottom,
       vacationPeriods,
     ],
@@ -632,34 +611,86 @@ export function MonthDetailScreen({
           </View>
         </View>
 
-        <Reanimated.View style={[styles.contentFader, contentAnimatedStyle]}>
-          <Animated.FlatList
-            ref={flatListRef}
-            data={MONTHS_DATA}
-            renderItem={renderPage}
-            keyExtractor={keyExtractor}
-            getItemLayout={getItemLayout}
-            horizontal
-            pagingEnabled
-            initialScrollIndex={month - 1}
-            nestedScrollEnabled
-            showsHorizontalScrollIndicator={false}
-            bounces={false}
-            decelerationRate="fast"
-            keyboardShouldPersistTaps="handled"
-            initialNumToRender={1}
-            windowSize={5}
-            maxToRenderPerBatch={1}
-            removeClippedSubviews={false}
-            onViewableItemsChanged={onViewableItemsChanged}
-            viewabilityConfig={viewabilityConfig}
-            style={styles.horizontalScroll}
-            onScroll={onScrollEvent}
-            scrollEventThrottle={16}
-          />
-        </Reanimated.View>
+        <View style={styles.contentFader}>
+          {isContentReady ? (
+            <Reanimated.FlatList
+              ref={flatListRef}
+              data={MONTHS_DATA}
+              renderItem={renderPage}
+              keyExtractor={keyExtractor}
+              getItemLayout={getItemLayout}
+              horizontal
+              pagingEnabled
+              initialScrollIndex={month - 1}
+              nestedScrollEnabled
+              showsHorizontalScrollIndicator={false}
+              bounces={false}
+              decelerationRate="fast"
+              keyboardShouldPersistTaps="handled"
+              initialNumToRender={1}
+              windowSize={5}
+              maxToRenderPerBatch={1}
+              removeClippedSubviews={false}
+              onViewableItemsChanged={onViewableItemsChanged}
+              viewabilityConfig={viewabilityConfig}
+              style={styles.horizontalScroll}
+              onScroll={onScrollEvent}
+              scrollEventThrottle={16}
+              onLayout={handleFlatListLayout}
+            />
+          ) : null}
+        </View>
       </Reanimated.View>
     </View>
+  );
+}
+
+function MonthPage({
+  children,
+  pageIndex,
+  pageWidth,
+  scrollX,
+}: MonthPageProps) {
+  const animatedStyle = useAnimatedStyle(() => {
+    const centerOffset = pageIndex * pageWidth;
+    const inputRange = [
+      (pageIndex - 1) * pageWidth,
+      centerOffset,
+      (pageIndex + 1) * pageWidth,
+    ];
+
+    return {
+      opacity: interpolate(
+        scrollX.value,
+        inputRange,
+        [PAGE_OPACITY_MIN, 1, PAGE_OPACITY_MIN],
+        'clamp',
+      ),
+      transform: [
+        {
+          translateX: interpolate(
+            scrollX.value,
+            inputRange,
+            [PARALLAX_FACTOR * pageWidth, 0, -PARALLAX_FACTOR * pageWidth],
+            'clamp',
+          ),
+        },
+        {
+          scale: interpolate(
+            scrollX.value,
+            inputRange,
+            [PAGE_SCALE_MIN, 1, PAGE_SCALE_MIN],
+            'clamp',
+          ),
+        },
+      ],
+    };
+  }, [pageIndex, pageWidth]);
+
+  return (
+    <Reanimated.View style={[styles.pageAnimatedContent, animatedStyle]}>
+      {children}
+    </Reanimated.View>
   );
 }
 
@@ -675,7 +706,6 @@ type MonthDetailBodyProps = {
   selectedDayDate?: string;
   onSelectDay: (date: string) => void;
   monthLayoutMetrics: MonthDetailLayoutMetrics;
-  isTabletPortrait: boolean;
   vacationPeriods: VacationPeriod[];
 };
 
@@ -689,13 +719,10 @@ function MonthDetailBody({
   selectedDayDate,
   onSelectDay,
   monthLayoutMetrics,
-  isTabletPortrait,
   vacationPeriods,
 }: MonthDetailBodyProps) {
   const selectedHolidayLabel =
-    selectedDay !== null
-      ? getHolidayDisplayName(selectedDay, language)
-      : null;
+    selectedDay !== null ? getHolidayDisplayName(selectedDay, language) : null;
 
   const isSelectedDayOnVacation =
     selectedDay !== null && isDateOnVacation(selectedDay.date, vacationPeriods);
@@ -724,16 +751,13 @@ function MonthDetailBody({
     return getMonthSideScale(monthLayoutMetrics.sideColumnWidth);
   }, [monthLayoutMetrics]);
 
-  const holidayImage = useMemo(
-    () => {
-      if (selectedDay) {
-        const dayImg = getDayImage(selectedDay, detail.days, vacationPeriods);
-        if (dayImg) return dayImg;
-      }
-      return getHolidayImageForMonth(detail.days);
-    },
-    [selectedDay, detail.days, vacationPeriods],
-  );
+  const holidayImage = useMemo(() => {
+    if (selectedDay) {
+      const dayImg = getDayImage(selectedDay, detail.days, vacationPeriods);
+      if (dayImg) return dayImg;
+    }
+    return getHolidayImageForMonth(detail.days);
+  }, [selectedDay, detail.days, vacationPeriods]);
 
   const calendarCard = (
     <View
@@ -777,7 +801,9 @@ function MonthDetailBody({
                 palette={palette}
                 calendarScale={calendarScale}
                 onSelectDay={onSelectDay}
-                vacationColor={day?.date ? vacationColorByDate.get(day.date) : undefined}
+                vacationColor={
+                  day?.date ? vacationColorByDate.get(day.date) : undefined
+                }
               />
             ))}
           </View>
@@ -847,8 +873,10 @@ function MonthDetailBody({
             {isSelectedDayOnVacation
               ? t('vacation.legend.vacation')
               : selectedDay.workHours === 0
-                ? getDayTypeLabel(selectedDay.type, language)
-                : `${getDayTypeLabel(selectedDay.type, language)} - ${selectedDay.workHours} ${t('common.hoursUnit')}`}
+              ? getDayTypeLabel(selectedDay.type, language)
+              : `${getDayTypeLabel(selectedDay.type, language)} - ${
+                  selectedDay.workHours
+                } ${t('common.hoursUnit')}`}
           </Text>
           {selectedHolidayLabel ? (
             <Text
@@ -913,9 +941,7 @@ function MonthDetailBody({
   if (monthLayoutMetrics.layout === 'split') {
     return (
       <View style={styles.monthSplitRowWrapper}>
-        {isTabletPortrait && holidayImage ? (
-          <HolidayBanner source={holidayImage} />
-        ) : null}
+        {holidayImage ? <HolidayBanner source={holidayImage} /> : null}
         <View style={styles.monthSplitRow}>
           <View
             style={[styles.monthCalendarColumn, { width: calendarColumnWidth }]}
@@ -938,10 +964,7 @@ function MonthDetailBody({
 
   return (
     <View
-      style={[
-        styles.monthContentColumn,
-        { maxWidth: calendarColumnWidth },
-      ]}
+      style={[styles.monthContentColumn, { maxWidth: calendarColumnWidth }]}
     >
       {holidayImage ? <HolidayBanner source={holidayImage} /> : null}
       {calendarCard}
@@ -981,9 +1004,7 @@ function MonthDetailDayCell({
   const colors = getDayTypeColors(day.type, palette);
   const showVacation = !!vacationColor;
 
-  const bgColor = isSelected
-    ? palette.selectedFill
-    : colors.backgroundColor;
+  const bgColor = isSelected ? palette.selectedFill : colors.backgroundColor;
 
   return (
     <Pressable
@@ -1038,12 +1059,7 @@ type TotalItemProps = {
   sideScale: number;
 };
 
-function TotalItem({
-  label,
-  value,
-  palette,
-  sideScale,
-}: TotalItemProps) {
+function TotalItem({ label, value, palette, sideScale }: TotalItemProps) {
   return (
     <View style={styles.totalItem}>
       <Text

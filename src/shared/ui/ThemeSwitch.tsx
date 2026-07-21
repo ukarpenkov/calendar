@@ -1,11 +1,12 @@
-import { useEffect, useRef } from 'react';
-import {
-  Animated,
+import { useEffect } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
+import Reanimated, {
   Easing,
-  Pressable,
-  StyleSheet,
-  View,
-} from 'react-native';
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
 type ThemeSwitchProps = {
   checked: boolean;
@@ -19,46 +20,31 @@ const THUMB_OFFSET = 8;
 const THUMB_TRAVEL = 30;
 
 export function ThemeSwitch({ checked, onPress }: ThemeSwitchProps) {
-  const progress = useRef(new Animated.Value(checked ? 1 : 0)).current;
+  const progress = useSharedValue(checked ? 1 : 0);
 
   useEffect(() => {
-    Animated.timing(progress, {
-      toValue: checked ? 1 : 0,
-      duration: 320,
+    progress.value = withTiming(checked ? 1 : 0, {
+      duration: 180,
       easing: Easing.bezier(0.81, -0.04, 0.38, 1.5),
-      useNativeDriver: true,
-    }).start();
+    });
   }, [checked, progress]);
 
-  const thumbTranslateX = progress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, THUMB_TRAVEL],
-  });
-
-  const starsOpacity = progress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [1, 0],
-  });
-
-  const cloudOpacity = progress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 1],
-  });
-
-  const cloudTranslateY = progress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [8, 0],
-  });
-
-  const moonOpacity = progress.interpolate({
-    inputRange: [0, 0.5, 1],
-    outputRange: [1, 0.25, 0],
-  });
-
-  const sunOpacity = progress.interpolate({
-    inputRange: [0, 0.5, 1],
-    outputRange: [0, 0.35, 1],
-  });
+  const thumbAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: progress.value * THUMB_TRAVEL }],
+  }));
+  const starsAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: 1 - progress.value,
+  }));
+  const cloudAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: progress.value,
+    transform: [{ translateY: interpolate(progress.value, [0, 1], [8, 0]) }],
+  }));
+  const moonAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(progress.value, [0, 0.5, 1], [1, 0.25, 0]),
+  }));
+  const sunAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(progress.value, [0, 0.5, 1], [0, 0.35, 1]),
+  }));
 
   return (
     <Pressable
@@ -71,40 +57,29 @@ export function ThemeSwitch({ checked, onPress }: ThemeSwitchProps) {
         { opacity: pressed ? 0.92 : 1 },
       ]}
     >
-      <Animated.View style={[styles.star, styles.starOne, { opacity: starsOpacity }]} />
-      <Animated.View style={[styles.star, styles.starTwo, { opacity: starsOpacity }]} />
-      <Animated.View
-        style={[styles.star, styles.starThree, { opacity: starsOpacity }]}
+      <Reanimated.View
+        style={[styles.star, styles.starOne, starsAnimatedStyle]}
+      />
+      <Reanimated.View
+        style={[styles.star, styles.starTwo, starsAnimatedStyle]}
+      />
+      <Reanimated.View
+        style={[styles.star, styles.starThree, starsAnimatedStyle]}
       />
 
-      <Animated.View
-        style={[
-          styles.cloudWrap,
-          {
-            opacity: cloudOpacity,
-            transform: [{ translateY: cloudTranslateY }],
-          },
-        ]}
-      >
+      <Reanimated.View style={[styles.cloudWrap, cloudAnimatedStyle]}>
         <View style={styles.cloudBase} />
         <View style={[styles.cloudCircle, styles.cloudCircleLeft]} />
         <View style={[styles.cloudCircle, styles.cloudCircleMiddle]} />
         <View style={[styles.cloudCircle, styles.cloudCircleRight]} />
-      </Animated.View>
+      </Reanimated.View>
 
-      <Animated.View
-        style={[
-          styles.thumb,
-          {
-            transform: [{ translateX: thumbTranslateX }],
-          },
-        ]}
-      >
-        <Animated.View style={[styles.moon, { opacity: moonOpacity }]}>
+      <Reanimated.View style={[styles.thumb, thumbAnimatedStyle]}>
+        <Reanimated.View style={[styles.moon, moonAnimatedStyle]}>
           <View style={styles.moonCutout} />
-        </Animated.View>
-        <Animated.View style={[styles.sun, { opacity: sunOpacity }]} />
-      </Animated.View>
+        </Reanimated.View>
+        <Reanimated.View style={[styles.sun, sunAnimatedStyle]} />
+      </Reanimated.View>
     </Pressable>
   );
 }

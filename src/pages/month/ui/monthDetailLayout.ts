@@ -38,7 +38,10 @@ export function getMonthContentMaxWidth(
 
   if (!isLandscape) {
     if (isTablet) {
-      return Math.max(Math.min(fullContentWidth, TABLET_MONTH_MAX_CONTENT_WIDTH_LANDSCAPE), MONTH_CONTENT_MIN_WIDTH);
+      return Math.max(
+        Math.min(fullContentWidth, TABLET_MONTH_MAX_CONTENT_WIDTH_LANDSCAPE),
+        MONTH_CONTENT_MIN_WIDTH,
+      );
     }
     return fullContentWidth;
   }
@@ -48,8 +51,8 @@ export function getMonthContentMaxWidth(
 }
 
 /**
- * Stack: портрет-телефон — одна колонка.
- * Split: альбом (телефон/планшет) и портрет-планшет — календарь слева, детали и итоги справа.
+ * Stack: любая портретная ориентация — одна колонка.
+ * Split: альбомная ориентация, когда помещаются календарь и боковая колонка.
  */
 export function getMonthDetailLayoutMetrics(
   windowWidth: number,
