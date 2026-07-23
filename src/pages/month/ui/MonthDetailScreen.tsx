@@ -2,6 +2,7 @@ import {
   memo,
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -15,7 +16,8 @@ import {
   StyleSheet,
   Text,
   View,
-  type ViewToken,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
   useWindowDimensions,
 } from 'react-native';
 import Reanimated, {
@@ -25,6 +27,7 @@ import Reanimated, {
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
+  withDelay,
   withTiming,
   type SharedValue,
 } from 'react-native-reanimated';
@@ -83,10 +86,15 @@ const PARALLAX_FACTOR = 0.15;
 const PAGE_OPACITY_MIN = 0.85;
 const PAGE_SCALE_MIN = 0.97;
 
-const OPEN_DURATION_MS = 200;
+const OPEN_DURATION_MS = 260;
 const CLOSE_DURATION_MS = 180;
+const CONTENT_REVEAL_MS = 170;
+const ROTATION_SETTLE_DELAY_MS = 70;
+const ROTATION_FADE_IN_MS = 240;
+const ROTATION_GUARD_MS = 520;
 const OPEN_EASING = REasing.bezier(0.2, 0.9, 0.2, 1);
 const CLOSE_EASING = REasing.bezier(0.4, 0, 0.6, 1);
+const ROTATION_EASING = REasing.out(REasing.cubic);
 const FALLBACK_OPEN_SCALE = 0.96;
 const MIN_ORIGIN_SCALE = 0.18;
 const CORNER_COLLAPSE_SIZE = 92;
@@ -110,6 +118,12 @@ type MonthPageProps = {
   pageIndex: number;
   pageWidth: number;
   scrollX: SharedValue<number>;
+};
+
+type HolidayBannerTransitionProps = {
+  source: ReturnType<typeof getHolidayImageForMonth>;
+  visible: boolean;
+  width: number;
 };
 
 function getBottomRightCollapseLayout(
@@ -208,6 +222,8 @@ export function MonthDetailScreen({
   );
 
   const progress = useSharedValue(0);
+  const openContentOpacity = useSharedValue(0);
+  const rotationContentOpacity = useSharedValue(1);
   const isClosingToCorner = useSharedValue(0);
   const openTargets = useSharedValue(initialOpenTargets);
   const collapseTargets = useSharedValue<SheetCollapseTargets>({
@@ -234,7 +250,16 @@ export function MonthDetailScreen({
         }
       },
     );
-  }, [progress, setIsContentReady]);
+  }, [progress]);
+
+  useEffect(() => {
+    if (!isContentReady) return;
+
+    openContentOpacity.value = withTiming(1, {
+      duration: CONTENT_REVEAL_MS,
+      easing: REasing.out(REasing.cubic),
+    });
+  }, [isContentReady, openContentOpacity]);
 
   useEffect(() => {
     openTargets.value = buildOpenTargets(
@@ -262,14 +287,56 @@ export function MonthDetailScreen({
     const scaleY = closing
       ? collapse.scaleY + (1 - collapse.scaleY) * transitionProgress
       : open.scaleY + (1 - open.scaleY) * transitionProgress;
+
     return {
       transform: [{ translateX }, { translateY }, { scaleX }, { scaleY }],
+      // React unmounts the expensive month list once the close animation
+      // finishes. Fade the final frames first so that work is not visible.
+      opacity: closing
+        ? interpolate(transitionProgress, [0, 0.08], [0, 1], 'clamp')
+        : 1,
     };
   });
 
   const backdropAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: progress.value * 0.35,
+    // Let the month content lead the transition instead of emerging from a
+    // visibly darkened year screen.
+    opacity: interpolate(
+      progress.value,
+      [0, 0.65, 1],
+      [0, 0.02, 0.12],
+      'clamp',
+    ),
   }));
+
+  const contentAnimatedStyle = useAnimatedStyle(() => {
+    const rotationOpacity = rotationContentOpacity.value;
+    const revealOpacity = openContentOpacity.value;
+
+    return {
+      opacity: rotationOpacity * revealOpacity,
+      transform: [
+        {
+          translateY:
+            interpolate(
+              rotationOpacity,
+              [0, 1],
+              [8, 0],
+              'clamp',
+            ) +
+            interpolate(revealOpacity, [0, 1], [6, 0], 'clamp'),
+        },
+        {
+          scale: interpolate(
+            rotationOpacity,
+            [0, 1],
+            [0.992, 1],
+            'clamp',
+          ),
+        },
+      ],
+    };
+  });
 
   const finishClose = useCallback(() => {
     onBackRef.current();
@@ -339,12 +406,10 @@ export function MonthDetailScreen({
   // selectedDate only changes on manual day press, not on swipe
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
-  // Flag to prevent onViewableItemsChanged from firing during programmatic scroll
-  const isScrollingToRef = useRef(false);
-  const programmaticTargetMonthRef = useRef<number | null>(null);
   // Captures activeMonth at the moment dimensions change, before FlatList relayout.
   const orientationCorrectMonthRef = useRef(activeMonth);
   const pendingOrientationOffsetRef = useRef<number | null>(null);
+  const isRotatingRef = useRef(false);
 
   // Stable callback for day selection -- does not depend on activeMonth state
   const handleSelectDay = useCallback(
@@ -372,73 +437,101 @@ export function MonthDetailScreen({
 
   const keyExtractor = useCallback((item: number) => String(item), []);
 
-  const viewabilityConfig = useMemo(
-    () => ({ viewAreaCoveragePercentThreshold: 50 }),
-    [],
-  );
-
-  const onViewableItemsChanged = useCallback(
-    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
-      if (isScrollingToRef.current) {
-        isScrollingToRef.current = false;
-        const target = programmaticTargetMonthRef.current;
-        programmaticTargetMonthRef.current = null;
-        if (target != null && target !== activeMonthRef.current) {
-          activeMonthRef.current = target;
-          setActiveMonth(target);
-        }
+  const handleMomentumScrollEnd = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      // Rotation is a viewport resize, never a month navigation gesture.
+      if (isRotatingRef.current) {
         return;
       }
-      const firstVisible = viewableItems[0];
-      if (firstVisible && typeof firstVisible.item === 'number') {
-        const newMonth = firstVisible.item;
-        if (newMonth !== activeMonthRef.current) {
-          activeMonthRef.current = newMonth;
-          setActiveMonth(newMonth);
-          onMonthChange(newMonth);
-        }
+
+      const pageIndex = Math.round(
+        event.nativeEvent.contentOffset.x / Math.max(pageWidth, 1),
+      );
+      const newMonth = Math.min(12, Math.max(1, pageIndex + 1));
+
+      if (newMonth !== activeMonthRef.current) {
+        activeMonthRef.current = newMonth;
+        setActiveMonth(newMonth);
+        onMonthChange(newMonth);
       }
     },
-    [onMonthChange],
+    [onMonthChange, pageWidth],
   );
 
   // Sync: when parent changes month prop (e.g. chevron press), scroll FlatList
   useEffect(() => {
-    if (isContentReady && month !== activeMonth) {
-      isScrollingToRef.current = true;
-      programmaticTargetMonthRef.current = month;
+    if (month !== activeMonth) {
+      activeMonthRef.current = month;
+      setActiveMonth(month);
       flatListRef.current?.scrollToIndex({ index: month - 1, animated: true });
     }
-  }, [month, activeMonth, isContentReady]);
+  }, [month, activeMonth]);
 
-  // Preserve the visible page through dimension changes. The offset is applied
-  // from FlatList's next onLayout, after the new page width is available.
+  const applyPendingOrientationOffset = useCallback(() => {
+    const offset = pendingOrientationOffsetRef.current;
+    if (offset === null) return;
+
+    scrollX.value = offset;
+    flatListRef.current?.scrollToOffset({ offset, animated: false });
+  }, [scrollX]);
+
+  // Keep the same page aligned while Android replaces the viewport dimensions.
+  // The relayout is hidden briefly because FlatList cannot atomically update
+  // both its item widths and native content offset.
   const previousWindowSizeRef = useRef({
     width: windowWidth,
     height: windowHeight,
   });
-  useEffect(() => {
+  useLayoutEffect(() => {
     const previous = previousWindowSizeRef.current;
-    if (previous.width !== windowWidth || previous.height !== windowHeight) {
-      previousWindowSizeRef.current = {
-        width: windowWidth,
-        height: windowHeight,
-      };
-      orientationCorrectMonthRef.current = activeMonth;
-      isScrollingToRef.current = true;
-      pendingOrientationOffsetRef.current =
-        (orientationCorrectMonthRef.current - 1) * windowWidth;
+    if (previous.width === windowWidth && previous.height === windowHeight) {
+      return;
     }
-  }, [windowWidth, windowHeight, activeMonth]);
 
-  const handleFlatListLayout = useCallback(() => {
-    const offset = pendingOrientationOffsetRef.current;
-    if (offset === null) return;
+    previousWindowSizeRef.current = {
+      width: windowWidth,
+      height: windowHeight,
+    };
+    orientationCorrectMonthRef.current = activeMonthRef.current;
+    isRotatingRef.current = true;
+    pendingOrientationOffsetRef.current =
+      (orientationCorrectMonthRef.current - 1) * windowWidth;
 
-    pendingOrientationOffsetRef.current = null;
-    scrollX.value = offset;
-    flatListRef.current?.scrollToOffset({ offset, animated: false });
-  }, [scrollX]);
+    // Hide the unavoidable native resize frame, then reveal the settled layout.
+    rotationContentOpacity.value = 0;
+    applyPendingOrientationOffset();
+
+    let secondFrame = 0;
+    const firstFrame = requestAnimationFrame(() => {
+      applyPendingOrientationOffset();
+      secondFrame = requestAnimationFrame(() => {
+        applyPendingOrientationOffset();
+        pendingOrientationOffsetRef.current = null;
+        rotationContentOpacity.value = withDelay(
+          ROTATION_SETTLE_DELAY_MS,
+          withTiming(1, {
+            duration: ROTATION_FADE_IN_MS,
+            easing: ROTATION_EASING,
+          }),
+        );
+      });
+    });
+
+    const guardTimer = setTimeout(() => {
+      isRotatingRef.current = false;
+    }, ROTATION_GUARD_MS);
+
+    return () => {
+      cancelAnimationFrame(firstFrame);
+      cancelAnimationFrame(secondFrame);
+      clearTimeout(guardTimer);
+    };
+  }, [
+    applyPendingOrientationOffset,
+    rotationContentOpacity,
+    windowHeight,
+    windowWidth,
+  ]);
 
   // Auto-select today on initial mount only
   useEffect(() => {
@@ -611,11 +704,14 @@ export function MonthDetailScreen({
           </View>
         </View>
 
-        <View style={styles.contentFader}>
+        <Reanimated.View
+          style={[styles.contentFader, contentAnimatedStyle]}
+        >
           {isContentReady ? (
             <Reanimated.FlatList
               ref={flatListRef}
               data={MONTHS_DATA}
+              extraData={pageWidth}
               renderItem={renderPage}
               keyExtractor={keyExtractor}
               getItemLayout={getItemLayout}
@@ -631,15 +727,14 @@ export function MonthDetailScreen({
               windowSize={5}
               maxToRenderPerBatch={1}
               removeClippedSubviews={false}
-              onViewableItemsChanged={onViewableItemsChanged}
-              viewabilityConfig={viewabilityConfig}
               style={styles.horizontalScroll}
               onScroll={onScrollEvent}
+              onMomentumScrollEnd={handleMomentumScrollEnd}
               scrollEventThrottle={16}
-              onLayout={handleFlatListLayout}
+              onLayout={applyPendingOrientationOffset}
             />
           ) : null}
-        </View>
+        </Reanimated.View>
       </Reanimated.View>
     </View>
   );
@@ -938,10 +1033,23 @@ function MonthDetailBody({
     </>
   );
 
-  if (monthLayoutMetrics.layout === 'split') {
-    return (
-      <View style={styles.monthSplitRowWrapper}>
-        {holidayImage ? <HolidayBanner source={holidayImage} /> : null}
+  return (
+    <View
+      style={[
+        monthLayoutMetrics.layout === 'split'
+          ? styles.monthSplitRowWrapper
+          : styles.monthContentColumn,
+        monthLayoutMetrics.layout === 'stack'
+          ? { maxWidth: calendarColumnWidth }
+          : null,
+      ]}
+    >
+      <HolidayBannerTransition
+        source={holidayImage}
+        visible={monthLayoutMetrics.layout === 'stack'}
+        width={calendarColumnWidth}
+      />
+      {monthLayoutMetrics.layout === 'split' ? (
         <View style={styles.monthSplitRow}>
           <View
             style={[styles.monthCalendarColumn, { width: calendarColumnWidth }]}
@@ -958,18 +1066,72 @@ function MonthDetailBody({
             {sideBlocks}
           </View>
         </View>
-      </View>
+      ) : (
+        <>
+          {calendarCard}
+          {sideBlocks}
+        </>
+      )}
+    </View>
+  );
+}
+
+function HolidayBannerTransition({
+  source,
+  visible,
+  width,
+}: HolidayBannerTransitionProps) {
+  const [isMounted, setIsMounted] = useState(visible && source !== null);
+  const visibility = useSharedValue(visible ? 1 : 0);
+
+  useEffect(() => {
+    if (!source) {
+      setIsMounted(false);
+      return;
+    }
+
+    if (visible) {
+      setIsMounted(true);
+      visibility.value = withTiming(1, {
+        duration: 120,
+        easing: REasing.out(REasing.cubic),
+      });
+      return;
+    }
+
+    visibility.value = withTiming(
+      0,
+      {
+        duration: 110,
+        easing: REasing.in(REasing.cubic),
+      },
+      finished => {
+        if (finished) {
+          runOnJS(setIsMounted)(false);
+        }
+      },
     );
+  }, [source, visible, visibility]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: visibility.value,
+    transform: [
+      {
+        translateX: interpolate(visibility.value, [0, 1], [120, 0], 'clamp'),
+      },
+    ],
+  }));
+
+  if (!isMounted || !source) {
+    return null;
   }
 
   return (
-    <View
-      style={[styles.monthContentColumn, { maxWidth: calendarColumnWidth }]}
+    <Reanimated.View
+      style={[{ alignSelf: 'flex-start', width }, animatedStyle]}
     >
-      {holidayImage ? <HolidayBanner source={holidayImage} /> : null}
-      {calendarCard}
-      {sideBlocks}
-    </View>
+      <HolidayBanner source={source} />
+    </Reanimated.View>
   );
 }
 
