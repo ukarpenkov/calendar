@@ -68,13 +68,21 @@ object CalendarWidgetAlarmScheduler {
   fun requestWidgetRefresh(context: Context) {
     val appContext = context.applicationContext
     val appWidgetManager = AppWidgetManager.getInstance(appContext)
-    val componentName = ComponentName(appContext, CalendarAppWidgetProvider::class.java)
+    refreshProvider(appContext, appWidgetManager, CalendarAppWidgetProvider::class.java)
+  }
+
+  private fun refreshProvider(
+    appContext: Context,
+    appWidgetManager: AppWidgetManager,
+    providerClass: Class<*>,
+  ) {
+    val componentName = ComponentName(appContext, providerClass)
     val ids = appWidgetManager.getAppWidgetIds(componentName)
     if (ids.isEmpty()) {
       return
     }
     val intent =
-      Intent(appContext, CalendarAppWidgetProvider::class.java).apply {
+      Intent(appContext, providerClass).apply {
         action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
         putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
       }

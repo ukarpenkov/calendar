@@ -7,7 +7,7 @@
     android:resizeMode="horizontal|vertical"
     android:minResizeWidth="250dp"
     android:minResizeHeight="110dp"
-    android:maxResizeWidth="320dp"
+    android:maxResizeWidth="440dp"
     android:maxResizeHeight="180dp"
     android:updatePeriodMillis="1800000"
     android:initialLayout="@layout/calendar_widget"

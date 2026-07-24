@@ -5,12 +5,10 @@ import { fetchTodayWidgetData } from './widgetData';
 
 export async function updateCalendarWidget(): Promise<void> {
   try {
+    const data = await fetchTodayWidgetData();
     await requestWidgetUpdate({
       widgetName: 'CalendarAppWidgetProvider',
-      renderWidget: async () => {
-        const data = await fetchTodayWidgetData();
-        return <CalendarWidgetLayout data={data} />;
-      },
+      renderWidget: () => <CalendarWidgetLayout data={data} />,
     });
   } catch {
     // Widget may not be added to home screen yet

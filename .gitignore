@@ -1,6 +1,7 @@
 .cursor/
 .claude/
 .mimocode/
+docs/cheatcode.md
 # OSX
 #
 .DS_Store
