@@ -13,6 +13,62 @@ index 4f5ca01..ab931ca 100644
          Bitmap bitmapFromURL = getBitmapFromURL(props.getMap("image").getString("uri"),
              dpToPx(props.getDouble("imageWidth")),
              dpToPx(props.getDouble("imageHeight"))
+diff --git a/node_modules/react-native-android-widget/android/src/main/java/com/reactnativeandroidwidget/RNWidget.java b/node_modules/react-native-android-widget/android/src/main/java/com/reactnativeandroidwidget/RNWidget.java
+index 81aac8b..5af9bb2 100644
+--- a/node_modules/react-native-android-widget/android/src/main/java/com/reactnativeandroidwidget/RNWidget.java
++++ b/node_modules/react-native-android-widget/android/src/main/java/com/reactnativeandroidwidget/RNWidget.java
+@@ -5,11 +5,16 @@ import android.content.ComponentName;
+ import android.content.Intent;
+ import android.graphics.Bitmap;
+ import android.graphics.Canvas;
++import android.graphics.Paint;
++import android.graphics.PorterDuff;
++import android.graphics.PorterDuffXfermode;
+ import android.graphics.Rect;
++import android.graphics.RectF;
+ import android.net.Uri;
+ import android.os.Build;
+ import android.os.Bundle;
+ import android.util.Base64;
++import android.util.TypedValue;
+ import android.view.View;
+ import android.view.ViewGroup;
+ import android.widget.RemoteViews;
+@@ -136,10 +141,38 @@ public class RNWidget {
+     private Bitmap drawViewToBitmap(View rootView) {
+-        Bitmap bitmap = Bitmap.createBitmap(
+-            rootView.getMeasuredWidth(),
+-            rootView.getMeasuredHeight(),
+-            Bitmap.Config.ARGB_8888
+-        );
+-        Canvas bitmapHolder = new Canvas(bitmap);
+-        rootView.draw(bitmapHolder);
+-        return bitmap;
++        int width = rootView.getMeasuredWidth();
++        int height = rootView.getMeasuredHeight();
++        Bitmap source = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
++        Canvas sourceCanvas = new Canvas(source);
++        rootView.draw(sourceCanvas);
++
++        // Round the final RemoteViews bitmap with SRC_IN. DST_IN without saveLayer
++        // is ignored on many devices, which leaves artwork top corners square while
++        // bottom corners still look rounded because of the baked-in asset shape.
++        float radius = TypedValue.applyDimension(
++            TypedValue.COMPLEX_UNIT_DIP,
++            36f,
++            appContext.getResources().getDisplayMetrics()
++        );
++        Bitmap output = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
++        Canvas canvas = new Canvas(output);
++        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
++        canvas.drawRoundRect(new RectF(0, 0, width, height), radius, radius, paint);
++        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
++        canvas.drawBitmap(source, 0, 0, paint);
++        paint.setXfermode(null);
++        source.recycle();
++        return output;
+     }
+ 
 diff --git a/node_modules/react-native-android-widget/android/src/main/java/com/reactnativeandroidwidget/RNWidgetJsCommunication.java b/node_modules/react-native-android-widget/android/src/main/java/com/reactnativeandroidwidget/RNWidgetJsCommunication.java
 index e79f8b9..c3a8d12 100644
 --- a/node_modules/react-native-android-widget/android/src/main/java/com/reactnativeandroidwidget/RNWidgetJsCommunication.java

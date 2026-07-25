@@ -32,7 +32,7 @@ import { layout } from '../../../shared/lib/ui/layout';
 import { SettingsGearButton } from '../../../shared/ui/SettingsGearButton';
 import { VacationButton } from '../../../shared/ui/VacationButton';
 import { YearScreenCalendarMark } from '../../../shared/ui/icons/YearScreenCalendarMark';
-import { getYearGridMetrics } from './yearGridMetrics';
+import { getYearGridMetrics, getYearGridTextStyle } from './yearGridMetrics';
 
 function getLocalIsoDate(): string {
   const now = new Date();
@@ -57,7 +57,10 @@ function getVacationColorForDate(
 type YearHomeScreenProps = {
   calendar: CalendarYear;
   monthSummaries: CalendarMonthSummary[];
-  onOpenMonth: (month: number, origin: { x: number; y: number; width: number; height: number }) => void;
+  onOpenMonth: (
+    month: number,
+    origin?: { x: number; y: number; width: number; height: number },
+  ) => void;
   onOpenSettings: () => void;
   onOpenVacation: () => void;
   vacationPeriods: VacationPeriod[];
@@ -115,8 +118,8 @@ export function YearHomeScreen({
     }
     return counts;
   }, [calendar.days, vacationPeriods]);
-  const monthCardRefs = useRef<Map<number, View>>(new Map());
   const scrollViewRef = useRef<ScrollView>(null);
+  const monthCardRefs = useRef<Map<number, View>>(new Map());
   const [containerHeight, setContainerHeight] = useState(0);
   const [cardHeight, setCardHeight] = useState(0);
   const todayDate = getLocalIsoDate();
@@ -243,33 +246,36 @@ export function YearHomeScreen({
         {monthSummaryRows.map((row, rowIndex) => (
           <View key={`month-row-${rowIndex}`} style={styles.monthRow}>
             {row.map(summary => (
-              <Pressable
+              <View
                 key={summary.month}
-                ref={ref => {
-                  if (ref) {
-                    monthCardRefs.current.set(summary.month, ref);
-                  }
-                }}
-                onLayout={e => {
-                  if (summary.month === 1 && cardHeight === 0) {
-                    setCardHeight(e.nativeEvent.layout.height);
-                  }
-                }}
-                onPress={() => {
-                  const cardRef = monthCardRefs.current.get(summary.month);
-                  cardRef?.measureInWindow((x, y, width, height) => {
-                    onOpenMonth(summary.month, { x, y, width, height });
-                  });
-                }}
-                style={({ pressed }) => [
-                  styles.monthCard,
-                  {
-                    backgroundColor: palette.surface,
-                    borderColor: palette.border,
-                    opacity: pressed ? 0.92 : 1,
-                  },
-                ]}
+                style={styles.monthCardShell}
               >
+                <Pressable
+                  ref={ref => {
+                    if (ref) {
+                      monthCardRefs.current.set(summary.month, ref);
+                    }
+                  }}
+                  onLayout={e => {
+                    if (summary.month === 1 && cardHeight === 0) {
+                      setCardHeight(e.nativeEvent.layout.height);
+                    }
+                  }}
+                  onPress={() => {
+                    const cardRef = monthCardRefs.current.get(summary.month);
+                    cardRef?.measureInWindow((x, y, width, height) => {
+                      onOpenMonth(summary.month, { x, y, width, height });
+                    });
+                  }}
+                  style={({ pressed }) => [
+                    styles.monthCard,
+                    {
+                      backgroundColor: palette.surface,
+                      borderColor: palette.border,
+                      opacity: pressed ? 0.92 : 1,
+                    },
+                  ]}
+                >
                 <View style={styles.monthCardHeader}>
                   <Text
                     adjustsFontSizeToFit
@@ -278,10 +284,10 @@ export function YearHomeScreen({
                     maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
                     style={[
                       styles.monthTitle,
-                      {
-                        color: palette.title,
-                        fontSize: gridMetrics.monthTitleFontSize,
-                      },
+                      getYearGridTextStyle(gridMetrics.monthTitleFontSize, {
+                        fontWeight: '700',
+                      }),
+                      { color: palette.title },
                     ]}
                   >
                     {summary.label}
@@ -297,8 +303,11 @@ export function YearHomeScreen({
                         adjustsFontSizeToFit
                         minimumFontScale={0.6}
                         numberOfLines={1}
-                        maxFontSizeMultiplier={1.1}
-                        style={styles.vacationBadgeText}
+                        maxFontSizeMultiplier={1}
+                        style={[
+                          styles.vacationBadgeText,
+                          getYearGridTextStyle(10, { fontWeight: '700' }),
+                        ]}
                       >
                         {vacationDaysCountByMonth.get(summary.month)}
                       </Text>
@@ -311,10 +320,10 @@ export function YearHomeScreen({
                     maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
                     style={[
                       styles.monthMeta,
-                      {
-                        color: palette.subtitle,
-                        fontSize: gridMetrics.monthMetaFontSize,
-                      },
+                      getYearGridTextStyle(gridMetrics.monthMetaFontSize, {
+                        fontWeight: '600',
+                      }),
+                      { color: palette.subtitle },
                     ]}
                   >
                     {summary.workHours} {t('common.hoursUnit')}
@@ -323,7 +332,14 @@ export function YearHomeScreen({
 
                 <View style={styles.weekHeaderRow}>
                   <View style={styles.weekNumberColumn}>
-                    <Text style={[styles.weekNumberLabel, { color: palette.subtitle }]}>
+                    <Text
+                      maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
+                      style={[
+                        styles.weekNumberLabel,
+                        getYearGridTextStyle(gridMetrics.weekNumberFontSize),
+                        { color: palette.subtitle },
+                      ]}
+                    >
                       #
                     </Text>
                   </View>
@@ -340,10 +356,10 @@ export function YearHomeScreen({
                           maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
                           style={[
                             styles.weekdayLabel,
-                            {
-                              color: palette.subtitle,
-                              fontSize: gridMetrics.weekdayFontSize,
-                            },
+                            getYearGridTextStyle(gridMetrics.weekdayFontSize, {
+                              fontWeight: '600',
+                            }),
+                            { color: palette.subtitle },
                           ]}
                         >
                           {label}
@@ -355,8 +371,19 @@ export function YearHomeScreen({
 
                 <View style={styles.weeksList}>
                   {summary.weeks.map(week => (
-                    <View key={`${summary.month}-${week.isoWeek}`} style={styles.weekRow}>
-                      <View style={styles.weekNumberColumn}>
+                    <View
+                      key={`${summary.month}-${week.isoWeek}`}
+                      style={[
+                        styles.weekRow,
+                        { minHeight: gridMetrics.dayCellSize },
+                      ]}
+                    >
+                      <View
+                        style={[
+                          styles.weekNumberColumn,
+                          { height: gridMetrics.dayCellSize },
+                        ]}
+                      >
                         <Text
                           adjustsFontSizeToFit
                           minimumFontScale={gridMetrics.minimumTextScale}
@@ -364,10 +391,8 @@ export function YearHomeScreen({
                           maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
                           style={[
                             styles.weekNumberValue,
-                            {
-                              color: palette.subtitle,
-                              fontSize: gridMetrics.weekNumberFontSize,
-                            },
+                            getYearGridTextStyle(gridMetrics.weekNumberFontSize),
+                            { color: palette.subtitle },
                           ]}
                         >
                           {week.isoWeek}
@@ -406,10 +431,10 @@ export function YearHomeScreen({
                       maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
                       style={[
                         styles.summaryLabel,
-                        {
-                          color: palette.subtitle,
-                          fontSize: gridMetrics.summaryLabelFontSize,
-                        },
+                        getYearGridTextStyle(gridMetrics.summaryLabelFontSize, {
+                          fontWeight: '500',
+                        }),
+                        { color: palette.subtitle },
                       ]}
                     >
                       {t('year.summary.work')}
@@ -421,10 +446,10 @@ export function YearHomeScreen({
                       maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
                       style={[
                         styles.summaryValue,
-                        {
-                          color: palette.title,
-                          fontSize: gridMetrics.summaryValueFontSize,
-                        },
+                        getYearGridTextStyle(gridMetrics.summaryValueFontSize, {
+                          fontWeight: '700',
+                        }),
+                        { color: palette.title },
                       ]}
                     >
                       {summary.workingDays}
@@ -438,10 +463,10 @@ export function YearHomeScreen({
                       maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
                       style={[
                         styles.summaryLabel,
-                        {
-                          color: palette.subtitle,
-                          fontSize: gridMetrics.summaryLabelFontSize,
-                        },
+                        getYearGridTextStyle(gridMetrics.summaryLabelFontSize, {
+                          fontWeight: '500',
+                        }),
+                        { color: palette.subtitle },
                       ]}
                     >
                       {t('year.summary.off')}
@@ -453,10 +478,10 @@ export function YearHomeScreen({
                       maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
                       style={[
                         styles.summaryValue,
-                        {
-                          color: palette.title,
-                          fontSize: gridMetrics.summaryValueFontSize,
-                        },
+                        getYearGridTextStyle(gridMetrics.summaryValueFontSize, {
+                          fontWeight: '700',
+                        }),
+                        { color: palette.title },
                       ]}
                     >
                       {summary.nonWorkingDays}
@@ -470,10 +495,10 @@ export function YearHomeScreen({
                       maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
                       style={[
                         styles.summaryLabel,
-                        {
-                          color: palette.subtitle,
-                          fontSize: gridMetrics.summaryLabelFontSize,
-                        },
+                        getYearGridTextStyle(gridMetrics.summaryLabelFontSize, {
+                          fontWeight: '500',
+                        }),
+                        { color: palette.subtitle },
                       ]}
                     >
                       {t('year.summary.days')}
@@ -485,10 +510,10 @@ export function YearHomeScreen({
                       maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
                       style={[
                         styles.summaryValue,
-                        {
-                          color: palette.title,
-                          fontSize: gridMetrics.summaryValueFontSize,
-                        },
+                        getYearGridTextStyle(gridMetrics.summaryValueFontSize, {
+                          fontWeight: '700',
+                        }),
+                        { color: palette.title },
                       ]}
                     >
                       {summary.totalDays}
@@ -496,6 +521,7 @@ export function YearHomeScreen({
                   </View>
                 </View>
               </Pressable>
+              </View>
             ))}
             {Array.from({ length: columnsPerRow - row.length }).map(
               (_, spacerIndex) => (
@@ -522,9 +548,13 @@ type MonthDayCellProps = {
 
 function MonthDayCell({ day, vacationColor, isToday, gridMetrics, resolveDayTypeColors }: MonthDayCellProps) {
   const { palette } = useAppTheme();
+  const cellSizeStyle = {
+    width: '100%' as const,
+    aspectRatio: 1,
+  };
 
   if (!day) {
-    return <View style={styles.emptyDayCell} />;
+    return <View style={[styles.emptyDayCell, cellSizeStyle]} />;
   }
 
   const colors = resolveDayTypeColors(day.type);
@@ -534,10 +564,12 @@ function MonthDayCell({ day, vacationColor, isToday, gridMetrics, resolveDayType
     <View
       style={[
         styles.dayCell,
+        cellSizeStyle,
         {
           backgroundColor: colors.backgroundColor,
           borderColor: isToday ? palette.selectedBorder : colors.borderColor,
           borderWidth: isToday ? 2 : 1,
+          borderRadius: Math.max(4, Math.round(gridMetrics.dayCellSize * 0.28)),
         },
       ]}
     >
@@ -548,10 +580,8 @@ function MonthDayCell({ day, vacationColor, isToday, gridMetrics, resolveDayType
         maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
         style={[
           styles.dayCellText,
-          {
-            color: colors.color,
-            fontSize: gridMetrics.dayFontSize,
-          },
+          getYearGridTextStyle(gridMetrics.dayFontSize, { fontWeight: '600' }),
+          { color: colors.color },
         ]}
       >
         {day.day}
@@ -638,6 +668,10 @@ const styles = StyleSheet.create({
     padding: 12,
     gap: 8,
   },
+  monthCardShell: {
+    flex: 1,
+    minWidth: 0,
+  },
   monthCardSpacer: {
     flex: 1,
   },
@@ -656,21 +690,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   vacationBadgeText: {
-    fontSize: 10,
-    fontWeight: '700',
     color: '#FFFFFF',
   },
   monthTitle: {
     flex: 1,
     minWidth: 0,
-    fontSize: 16,
-    fontWeight: '700',
   },
   monthMeta: {
     flexShrink: 1,
     minWidth: 0,
-    fontSize: 12,
-    fontWeight: '600',
   },
   weekHeaderRow: {
     flexDirection: 'row',
@@ -686,7 +714,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   weekNumberLabel: {
-    fontSize: 9,
     textAlign: 'center',
   },
   daysHeaderStrip: {
@@ -697,8 +724,6 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   weekdayLabel: {
-    fontSize: 9,
-    fontWeight: '600',
     textAlign: 'center',
   },
   weeksList: {
@@ -714,7 +739,6 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   weekNumberValue: {
-    fontSize: 9,
     textAlign: 'center',
   },
   daysStrip: {
@@ -735,22 +759,21 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
   },
   emptyDayCell: {
-    height: 18,
     minWidth: 0,
     alignSelf: 'stretch',
   },
   dayCell: {
-    height: 18,
     minWidth: 0,
     alignSelf: 'stretch',
     borderWidth: 1,
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
   },
   dayCellText: {
-    fontSize: 9,
     fontWeight: '600',
+    textAlign: 'center',
   },
   vacationBarSmall: {
     position: 'absolute',
@@ -777,11 +800,9 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   summaryLabel: {
-    fontSize: 10,
-    fontWeight: '500',
+    textAlign: 'center',
   },
   summaryValue: {
-    fontSize: 13,
-    fontWeight: '700',
+    textAlign: 'center',
   },
 });

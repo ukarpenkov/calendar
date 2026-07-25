@@ -1,3 +1,5 @@
+import { Platform, type TextStyle } from 'react-native';
+
 import { layout } from '../../../shared/lib/ui/layout';
 
 const MONTH_ROW_GAP = 12;
@@ -9,6 +11,7 @@ const STRIP_GAP_COUNT = DAYS_IN_WEEK - 1;
 
 export type YearGridMetrics = {
   dayFontSize: number;
+  dayCellSize: number;
   weekdayFontSize: number;
   weekNumberFontSize: number;
   monthTitleFontSize: number;
@@ -18,6 +21,35 @@ export type YearGridMetrics = {
   minimumTextScale: number;
   maxFontSizeMultiplier: number;
 };
+
+/**
+ * Compact year-grid text style for Android OEM fonts (OnePlus Slate, OPPO Sans, …).
+ * RN measures with Roboto-like metrics; OEM fonts + includeFontPadding stretch rows vertically.
+ */
+export function getYearGridTextStyle(
+  fontSize: number,
+  extras: TextStyle = {},
+): TextStyle {
+  const { lineHeight: extraLineHeight, ...restExtras } = extras;
+  const lineHeight =
+    typeof extraLineHeight === 'number'
+      ? extraLineHeight
+      : Math.ceil(fontSize * 1.15);
+
+  return {
+    ...(Platform.OS === 'android'
+      ? {
+          includeFontPadding: false,
+          textAlignVertical: 'center' as const,
+          // Force Roboto metrics so layout matches measurement on OEM skins.
+          fontFamily: 'sans-serif',
+        }
+      : null),
+    ...restExtras,
+    fontSize,
+    lineHeight,
+  };
+}
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
@@ -47,8 +79,12 @@ export function getYearGridMetrics(
   const fontScalePressure = clamp((safeFontScale - 1) / 0.45, 0, 1);
   const pressure = Math.max(widthPressure, fontScalePressure);
 
+  // Keep chips square: size follows slot width, not a fixed height that becomes an oval.
+  const dayCellSize = clamp(Math.round(daySlotWidth), 14, 22);
+
   return {
     dayFontSize: clamp(9 - pressure * 1.6, 7, 9),
+    dayCellSize,
     weekdayFontSize: clamp(9 - pressure * 2, 6.4, 9),
     weekNumberFontSize: clamp(9 - pressure * 1.4, 7, 9),
     monthTitleFontSize: clamp(16 - pressure * 1.4, 14, 16),
@@ -56,6 +92,7 @@ export function getYearGridMetrics(
     summaryLabelFontSize: clamp(10 - pressure, 8.5, 10),
     summaryValueFontSize: clamp(13 - pressure, 11.5, 13),
     minimumTextScale: clamp(0.78 - pressure * 0.1, 0.68, 0.78),
-    maxFontSizeMultiplier: clamp(1.1 - pressure * 0.1, 1, 1.1),
+    // Dense year grid must not grow with system font scale (OnePlus display size, etc.).
+    maxFontSizeMultiplier: 1,
   };
 }

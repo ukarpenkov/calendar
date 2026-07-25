@@ -5,7 +5,7 @@ import type { WidgetDayData } from './widgetData';
 import type { AppLanguage } from '../shared/lib/i18n';
 import { WIDGET_DEFAULT_IMAGE_BY_MONTH } from './imageMapping';
 
-const WIDGET_CORNER_RADIUS = 16;
+const WIDGET_CORNER_RADIUS = 36;
 
 /** Прозрачный корень виджета: видна подложка лаунчера по краям скругления. */
 const TRANSPARENT: `#${string}` = '#00000000';
@@ -130,16 +130,16 @@ export function CalendarWidgetLayout({ data }: CalendarWidgetProps) {
             justifyContent: 'flex-end',
           }}
         >
-          <ImageWidget
-            image={placeholder as any}
-            imageWidth={420}
-            imageHeight={180}
-            radius={WIDGET_CORNER_RADIUS}
-            style={{
-              width: 'match_parent',
-              height: 'wrap_content',
-            }}
-          />
+        <ImageWidget
+          image={placeholder as any}
+          imageWidth={420}
+          imageHeight={180}
+          radius={WIDGET_CORNER_RADIUS}
+          style={{
+            width: 'match_parent',
+            height: 'match_parent',
+          }}
+        />
         </FlexWidget>
         <FlexWidget
           style={{
@@ -192,7 +192,7 @@ export function CalendarWidgetLayout({ data }: CalendarWidgetProps) {
           radius={WIDGET_CORNER_RADIUS}
           style={{
             width: 'match_parent',
-            height: 'wrap_content',
+            height: 'match_parent',
           }}
         />
       </FlexWidget>

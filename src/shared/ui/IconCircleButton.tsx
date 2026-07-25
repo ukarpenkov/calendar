@@ -1,6 +1,13 @@
 import type { ReactNode } from 'react';
-import { useRef } from 'react';
-import { Animated, Easing, Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import Reanimated, {
+  Easing,
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
 
 type IconCircleButtonPalette = {
   border: string;
@@ -26,51 +33,43 @@ export function IconCircleButton({
   variant = 'default',
 }: IconCircleButtonProps) {
   const disabled = !onPress;
-  const scale = useRef(new Animated.Value(1)).current;
-  const backProgress = useRef(new Animated.Value(0)).current;
+  const scale = useSharedValue(1);
+  const backProgress = useSharedValue(0);
 
   const animateTo = (toValue: number) => {
-    Animated.spring(scale, {
-      toValue,
-      friction: 6,
-      tension: 220,
-      useNativeDriver: true,
-    }).start();
+    scale.value = withSpring(toValue, {
+      damping: 18,
+      stiffness: 420,
+    });
   };
 
   const animateBackTo = (toValue: number) => {
-    Animated.timing(backProgress, {
-      toValue,
-      duration: toValue === 1 ? 420 : 360,
+    backProgress.value = withTiming(toValue, {
+      duration: toValue === 1 ? 140 : 120,
       easing:
         toValue === 1
           ? Easing.bezier(0.25, 0.46, 0.45, 0.94)
           : Easing.bezier(0.455, 0.03, 0.515, 0.955),
-      useNativeDriver: true,
-    }).start();
+    });
   };
 
   const isBack = variant === 'back';
-  const backBaseOpacity = backProgress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [1, 0],
-  });
-  const backBaseScale = backProgress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [1, 0.7],
-  });
-  const backAccentOpacity = backProgress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 1],
-  });
-  const backAccentScale = backProgress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [1.3, 1],
-  });
-  const backIconTranslate = backProgress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, -56],
-  });
+  const defaultAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+  const backBaseAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: 1 - backProgress.value,
+    transform: [{ scale: interpolate(backProgress.value, [0, 1], [1, 0.7]) }],
+  }));
+  const backAccentAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: backProgress.value,
+    transform: [{ scale: interpolate(backProgress.value, [0, 1], [1.3, 1]) }],
+  }));
+  const backIconAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: interpolate(backProgress.value, [0, 1], [0, -56]) },
+    ],
+  }));
 
   return (
     <Pressable
@@ -100,7 +99,11 @@ export function IconCircleButton({
       android_ripple={
         disabled || isBack
           ? undefined
-          : { color: 'rgba(128, 128, 128, 0.22)', foreground: true, borderless: false }
+          : {
+              color: 'rgba(128, 128, 128, 0.22)',
+              foreground: true,
+              borderless: false,
+            }
       }
       style={({ pressed }) => [
         isBack ? styles.backButton : styles.button,
@@ -110,48 +113,45 @@ export function IconCircleButton({
             }
           : {
               borderColor: palette.border,
-              backgroundColor: disabled ? palette.surfaceMuted : palette.surface,
+              backgroundColor: disabled
+                ? palette.surfaceMuted
+                : palette.surface,
               opacity: disabled ? 0.5 : pressed ? 0.95 : 1,
             },
       ]}
     >
       {isBack ? (
         <>
-          <Animated.View
+          <Reanimated.View
             pointerEvents="none"
             style={[
               styles.backRing,
               {
                 borderColor: palette.border,
-                opacity: backBaseOpacity,
-                transform: [{ scale: backBaseScale }],
               },
+              backBaseAnimatedStyle,
             ]}
           />
-          <Animated.View
+          <Reanimated.View
             pointerEvents="none"
             style={[
               styles.backRing,
               styles.backRingAccent,
-              {
-                opacity: backAccentOpacity,
-                transform: [{ scale: backAccentScale }],
-              },
+              backAccentAnimatedStyle,
             ]}
           />
-          <Animated.View
+          <Reanimated.View
             pointerEvents="none"
-            style={[
-              styles.backIconTrack,
-              { transform: [{ translateX: backIconTranslate }] },
-            ]}
+            style={[styles.backIconTrack, backIconAnimatedStyle]}
           >
             <View style={styles.backIconSlot}>{children}</View>
             <View style={styles.backIconSlot}>{children}</View>
-          </Animated.View>
+          </Reanimated.View>
         </>
       ) : (
-        <Animated.View style={{ transform: [{ scale }] }}>{children}</Animated.View>
+        <Reanimated.View style={defaultAnimatedStyle}>
+          {children}
+        </Reanimated.View>
       )}
     </Pressable>
   );

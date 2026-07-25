@@ -85,18 +85,18 @@ function AppContent() {
   setBundledCalendarRegionRef.current = setBundledCalendarRegion;
   const [status, setStatus] = useState<AppContentStatus>({ kind: 'loading' });
   const [bootstrapGeneration, setBootstrapGeneration] = useState(0);
-  const [monthOrigin, setMonthOrigin] = useState<{
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  } | null>(null);
   const [jsonImportSavedRevision, setJsonImportSavedRevision] = useState(0);
   const [vacationPeriods, setVacationPeriods] = useState<VacationPeriod[]>([]);
   const [editingPeriod, setEditingPeriod] = useState<VacationPeriod | null>(
     null,
   );
   const [showVacationForm, setShowVacationForm] = useState(false);
+  const [monthOrigin, setMonthOrigin] = useState<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  } | null>(null);
   const vacationRepositoryRef = useRef(createVacationRepository(getDatabase()));
   const statusRef = useRef(status);
   statusRef.current = status;
@@ -379,6 +379,8 @@ function AppContent() {
   };
 
   const closeMonth = () => {
+    setMonthOrigin(null);
+
     setStatus(currentStatus => {
       if (currentStatus.kind !== 'ready') {
         return currentStatus;
