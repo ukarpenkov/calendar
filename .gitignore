@@ -78,3 +78,5 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+android/upload_certificate.pem
+docs/cheatcode.md
