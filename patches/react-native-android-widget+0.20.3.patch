@@ -34,7 +34,7 @@ index 81aac8b..5af9bb2 100644
  import android.view.View;
  import android.view.ViewGroup;
  import android.widget.RemoteViews;
-@@ -136,10 +141,38 @@ public class RNWidget {
+@@ -136,11 +141,26 @@ public class RNWidget {
      private Bitmap drawViewToBitmap(View rootView) {
 -        Bitmap bitmap = Bitmap.createBitmap(
 -            rootView.getMeasuredWidth(),
