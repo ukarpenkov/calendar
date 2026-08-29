@@ -18,7 +18,7 @@ export function shouldApplyBundledCalendarOnRegionChange(
 }
 
 /**
- * Подставляет предзагруженный JSON выбранного региона для активного года 2026.
+ * Подставляет предзагруженный JSON выбранного региона для `BUNDLED_CALENDAR_YEAR`.
  * Для других лет (импорт) — без замены.
  */
 export async function syncActiveYearWithBundledRegion(options: {

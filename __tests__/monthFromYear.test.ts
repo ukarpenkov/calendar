@@ -10,7 +10,7 @@ import {
 } from '../src/entities/calendar';
 import { parseValidateAndNormalizeCalendarImport } from '../src/features/calendar-import';
 
-const bundledCalendar = require('../calendar2026.json');
+const bundledCalendar = require('../calendar2027.json');
 
 describe('getCalendarDaysForMonth', () => {
   const calendar = parseValidateAndNormalizeCalendarImport(bundledCalendar);
@@ -39,7 +39,7 @@ describe('getCalendarDaysForMonth', () => {
   });
 
   it('returns empty when a month contains the wrong number of day rows', () => {
-    const februaryFirst = calendar.days.find(day => day.date === '2026-02-01');
+    const februaryFirst = calendar.days.find(day => day.date === '2027-02-01');
     expect(februaryFirst).toBeDefined();
 
     const corruptedYear = {

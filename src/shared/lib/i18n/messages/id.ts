@@ -40,7 +40,7 @@ export const idTranslations = {
   'settings.rows.importYear.subtitle':
     'Membuka layar khusus untuk alur penggantian tahun melalui JSON lokal.',
   'settings.rows.importYear.action': 'Buka',
-  'settings.rows.bundledCalendar.title': 'Kalender produksi (2026)',
+  'settings.rows.bundledCalendar.title': 'Kalender produksi (2027)',
   'settings.rows.bundledCalendar.subtitle': 'Dataset bawaan: {{region}}.',
   'settings.bundledCalendar.chip.ru': 'Rusia',
   'settings.bundledCalendar.chip.tr': 'Türkiye',
@@ -57,7 +57,7 @@ export const idTranslations = {
   'settings.rows.language.title': 'Bahasa antarmuka',
   'settings.rows.language.subtitle': 'Bahasa saat ini: {{language}}.',
   'settings.rows.language.userImportHint':
-    'Kalender dari impor JSON: mengganti bahasa antarmuka tidak mengganti data. Untuk kalender bawaan gunakan bagian «Kalender produksi (2026)» di bawah.',
+    'Kalender dari impor JSON: mengganti bahasa antarmuka tidak mengganti data. Untuk kalender bawaan gunakan bagian «Kalender produksi (2027)» di bawah.',
   'settings.languageSwitch.userJsonCalendar': 'Kalender JSON',
   'settings.sections.about.title': 'Tentang',
   'settings.sections.about.subtitle':
@@ -71,7 +71,7 @@ export const idTranslations = {
   'settings.about.telegram': 'Telegram',
   'settings.about.appValue': 'Kalender',
   'settings.about.storageValue': 'SQLite luring',
-  'settings.about.defaultDatasetValue': 'Kalender produksi 2026',
+  'settings.about.defaultDatasetValue': 'Kalender produksi 2027',
   'year.reminder.title': 'Template JSON tahun berikutnya',
   'year.reminder.body':
     'Template {{year}} akan dipublikasikan di Telegram. Buka saluran untuk mengunduh JSON baru ketika sudah tersedia.',
@@ -169,7 +169,7 @@ export const idTranslations = {
   'importEntry.error.startOver': 'Mulai dari awal',
   'importEntry.aiPrompt.title': 'Buat dengan AI',
   'importEntry.aiPrompt.description':
-    'Butuh kalender untuk negara atau tahun lain? Ketuk tombol di bawah untuk menyalin prompt. Lalu buka chat AI mana pun (Gemini, ChatGPT, DeepSeek), tempelkan prompt, dan dalam pesan terpisah tambahkan tugas Anda — misalnya:\n\n"Buat kalender produksi Armenia 2026 sesuai aturan resmi negara: hari libur nasional, akhir pekan biasa, pemindahan hari kerja/libur pengganti jika ada, serta hari kerja pendek menjelang libur jika berlaku. Kembalikan satu file JSON siap impor tepat seperti skema di prompt: field year; holidays lengkap dengan name_ru dan name_en (opsional: field nama lokal seperti name_hy); array weekends dan preholidays tanpa tanggal rangkap; hanya JSON yang valid secara sintaks, tanpa penjelasan dan tanpa blok markdown."\n\nSimpan balasan sebagai .json (atau gunakan layar tempel JSON) dan impor di sini.',
+    'Butuh kalender untuk negara atau tahun lain? Ketuk tombol di bawah untuk menyalin prompt. Lalu buka chat AI mana pun (Gemini, ChatGPT, DeepSeek), tempelkan prompt, dan dalam pesan terpisah tambahkan tugas Anda — misalnya:\n\n"Buat kalender produksi Armenia 2027 sesuai aturan resmi negara: hari libur nasional, akhir pekan biasa, pemindahan hari kerja/libur pengganti jika ada, serta hari kerja pendek menjelang libur jika berlaku. Kembalikan satu file JSON siap impor tepat seperti skema di prompt: field year; holidays lengkap dengan name_ru dan name_en (opsional: field nama lokal seperti name_hy); array weekends dan preholidays tanpa tanggal rangkap; hanya JSON yang valid secara sintaks, tanpa penjelasan dan tanpa blok markdown."\n\nSimpan balasan sebagai .json (atau gunakan layar tempel JSON) dan impor di sini.',
   'importEntry.aiPrompt.copyButton': 'Salin prompt ke papan klip',
   'importEntry.aiPrompt.copied': 'Prompt disalin!',
   'importEntry.textJson.title': 'Tempel JSON siap pakai',

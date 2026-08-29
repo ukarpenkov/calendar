@@ -8,6 +8,9 @@ import {
   getHolidayImageForMonth,
 } from '../src/entities/calendar';
 import type { CalendarDay } from '../src/entities/calendar';
+import { getBundledCalendarJsonForRegion } from '../src/entities/calendar/model/bundledCalendarJsonByLanguage';
+import { parseValidateAndNormalizeCalendarImport } from '../src/features/calendar-import';
+import { BUNDLED_CALENDAR_REGION_CODES } from '../src/shared/config/agreedLanguagesAndBundledCalendars';
 
 function buildDay(overrides: Partial<CalendarDay>): CalendarDay {
   return {
@@ -208,6 +211,53 @@ describe('holidayImages', () => {
     expect(getDayImage(id)).toBe(expected);
   });
 
+  it('maps bundled 2027 January 1 titles (RU/JP/TR/ID) to the same new-year image', () => {
+    const jp = buildDay({
+      date: '2027-01-01',
+      month: 1,
+      day: 1,
+      type: 'holiday',
+      holidayNameEn: "New Year's Day",
+      holidayNameRu: '元日',
+      holidayNameJa: '元日',
+      workHours: 0,
+    });
+    const tr = buildDay({
+      date: '2027-01-01',
+      month: 1,
+      day: 1,
+      type: 'holiday',
+      holidayNameEn: "New Year's Day",
+      holidayNameRu: 'Yılbaşı Tatili',
+      holidayNameTr: 'Yılbaşı Tatili',
+      workHours: 0,
+    });
+    const id = buildDay({
+      date: '2027-01-01',
+      month: 1,
+      day: 1,
+      type: 'holiday',
+      holidayNameEn: "New Year's Day",
+      holidayNameRu: 'Tahun Baru Masehi',
+      holidayNameId: 'Tahun Baru Masehi',
+      workHours: 0,
+    });
+    const ru = buildDay({
+      date: '2027-01-01',
+      month: 1,
+      day: 1,
+      type: 'holiday',
+      holidayNameRu: 'Новый год',
+      holidayNameEn: "New Year's Day",
+      workHours: 0,
+    });
+
+    const expected = getDayImage(ru);
+    expect(getDayImage(jp)).toBe(expected);
+    expect(getDayImage(tr)).toBe(expected);
+    expect(getDayImage(id)).toBe(expected);
+  });
+
   it('maps bundled May 1 labour holidays for RU/TR/ID to may1.webp; JP uses other May assets', () => {
     const ruMay1 = buildDay({
       date: '2026-05-01',
@@ -254,11 +304,11 @@ describe('holidayImages', () => {
     expect(getDayImage(jpConstitution)).not.toBe(may1);
   });
 
-  it('maps Japan Coming of Age Day (2026-01-12) to jp_12jan.webp', () => {
+  it('maps Japan Coming of Age Day (2027-01-11) to jp_12jan.webp', () => {
     const comingOfAge = buildDay({
-      date: '2026-01-12',
+      date: '2027-01-11',
       month: 1,
-      day: 12,
+      day: 11,
       type: 'holiday',
       holidayNameEn: 'Coming of Age Day',
       holidayNameRu: '成人の日',
@@ -266,7 +316,7 @@ describe('holidayImages', () => {
       workHours: 0,
     });
     const otherJanuaryHoliday = buildDay({
-      date: '2026-01-01',
+      date: '2027-01-01',
       month: 1,
       day: 1,
       type: 'holiday',
@@ -293,6 +343,30 @@ describe('holidayImages', () => {
       date: '2026-07-20',
       month: 7,
       day: 20,
+      type: 'holiday',
+      holidayNameEn: 'Marine Day',
+      holidayNameRu: '海の日',
+      workHours: 0,
+    });
+
+    expect(getDayImage(mountainDay)).not.toBe(getDayImage(marineDay));
+  });
+
+  it('maps Japan Marine Day (2027-07-19) separately from Mountain Day', () => {
+    const mountainDay = buildDay({
+      date: '2027-08-11',
+      month: 8,
+      day: 11,
+      type: 'holiday',
+      holidayNameEn: 'Mountain Day',
+      holidayNameRu: '山の日',
+      holidayNameJa: '山の日',
+      workHours: 0,
+    });
+    const marineDay = buildDay({
+      date: '2027-07-19',
+      month: 7,
+      day: 19,
       type: 'holiday',
       holidayNameEn: 'Marine Day',
       holidayNameRu: '海の日',
@@ -482,5 +556,27 @@ describe('holidayImages', () => {
     ]);
 
     expect(images.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it('maps every 2027 bundled holiday to a dedicated image, not the fiesta fallback', () => {
+    const fallback = getDayImage(
+      buildDay({
+        date: '2027-02-24',
+        month: 2,
+        type: 'holiday',
+        workHours: 0,
+      }),
+    );
+
+    for (const region of BUNDLED_CALENDAR_REGION_CODES) {
+      const calendar = parseValidateAndNormalizeCalendarImport(
+        getBundledCalendarJsonForRegion(region),
+      );
+      const holidays = calendar.days.filter(day => day.type === 'holiday');
+      expect(holidays.length).toBeGreaterThan(0);
+      for (const day of holidays) {
+        expect(getDayImage(day)).not.toBe(fallback);
+      }
+    }
   });
 });

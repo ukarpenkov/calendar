@@ -21,7 +21,7 @@ test('ICU locales map to the same bundled region as first-launch seed resolver l
   expect(seedRegionForDeviceLocale('de-DE')).toBe('ru');
 });
 
-test('each mapped region loads a distinct validated bundled calendar for 2026', () => {
+test('each mapped region loads a distinct validated bundled calendar for 2027', () => {
   const cases: {
     locale: string;
     assert: (language: AppLanguage, cal: ReturnType<typeof parseValidateAndNormalizeCalendarImport>) => void;
@@ -29,35 +29,35 @@ test('each mapped region loads a distinct validated bundled calendar for 2026', 
     {
       locale: 'tr-TR',
       assert: (_lang, cal) => {
-        const d = cal.days.find(x => x.date === '2026-01-01');
+        const d = cal.days.find(x => x.date === '2027-01-01');
         expect(d?.holidayNameTr).toBe('Yılbaşı Tatili');
       },
     },
     {
       locale: 'id-ID',
       assert: (_lang, cal) => {
-        const d = cal.days.find(x => x.date === '2026-01-01');
+        const d = cal.days.find(x => x.date === '2027-01-01');
         expect(d?.holidayNameId).toBe('Tahun Baru Masehi');
       },
     },
     {
       locale: 'ja-JP',
       assert: (_lang, cal) => {
-        const d = cal.days.find(x => x.date === '2026-01-12');
+        const d = cal.days.find(x => x.date === '2027-01-11');
         expect(d?.holidayNameJa).toBe('成人の日');
       },
     },
     {
       locale: 'ru-RU',
       assert: (_lang, cal) => {
-        const d = cal.days.find(x => x.date === '2026-01-07');
+        const d = cal.days.find(x => x.date === '2027-01-07');
         expect(d?.holidayNameRu).toBe('Рождество Христово');
       },
     },
     {
       locale: 'en-GB',
       assert: (_lang, cal) => {
-        const d = cal.days.find(x => x.date === '2026-01-07');
+        const d = cal.days.find(x => x.date === '2027-01-07');
         expect(d?.holidayNameRu).toBe('Рождество Христово');
       },
     },
@@ -68,7 +68,7 @@ test('each mapped region loads a distinct validated bundled calendar for 2026', 
     const region = appLanguageToDefaultBundledRegion(language);
     const raw = getBundledCalendarJsonForRegion(region);
     const cal = parseValidateAndNormalizeCalendarImport(raw);
-    expect(cal.year).toBe(2026);
+    expect(cal.year).toBe(2027);
     assert(language, cal);
   }
 });

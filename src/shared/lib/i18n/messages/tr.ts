@@ -40,7 +40,7 @@ export const trTranslations = {
   'settings.rows.importYear.subtitle':
     'JSON ile yıl değiştirme akışı için ayrı bir giriş ekranı açar.',
   'settings.rows.importYear.action': 'Aç',
-  'settings.rows.bundledCalendar.title': 'Üretim takvimi (2026)',
+  'settings.rows.bundledCalendar.title': 'Üretim takvimi (2027)',
   'settings.rows.bundledCalendar.subtitle': 'Yerleşik veri kümesi: {{region}}.',
   'settings.bundledCalendar.chip.ru': 'Rusya',
   'settings.bundledCalendar.chip.tr': 'Türkiye',
@@ -57,7 +57,7 @@ export const trTranslations = {
   'settings.rows.language.title': 'Arayüz dili',
   'settings.rows.language.subtitle': 'Geçerli dil: {{language}}.',
   'settings.rows.language.userImportHint':
-    'Takvim JSON içe aktarımından geliyor: arayüz dilini değiştirmek veriyi değiştirmez. Paketlenmiş takvim için aşağıdaki «Üretim takvimi (2026)» bölümünü kullanın.',
+    'Takvim JSON içe aktarımından geliyor: arayüz dilini değiştirmek veriyi değiştirmez. Paketlenmiş takvim için aşağıdaki «Üretim takvimi (2027)» bölümünü kullanın.',
   'settings.languageSwitch.userJsonCalendar': 'JSON takvimi',
   'settings.sections.about.title': 'Hakkında',
   'settings.sections.about.subtitle':
@@ -71,7 +71,7 @@ export const trTranslations = {
   'settings.about.telegram': 'Telegram',
   'settings.about.appValue': 'Takvim',
   'settings.about.storageValue': 'Çevrimdışı SQLite',
-  'settings.about.defaultDatasetValue': 'Üretim takvimi 2026',
+  'settings.about.defaultDatasetValue': 'Üretim takvimi 2027',
   'year.reminder.title': 'Gelecek yıl için JSON şablonu',
   'year.reminder.body':
     '{{year}} şablonu Telegram’da yayınlanacak. Hazır olduğunda yeni JSON’u indirmek için kanalı açın.',
@@ -169,7 +169,7 @@ export const trTranslations = {
   'importEntry.error.startOver': 'Baştan başla',
   'importEntry.aiPrompt.title': 'AI ile oluştur',
   'importEntry.aiPrompt.description':
-    'Farklı bir ülke veya yıl için takvim mi gerekiyor? Aşağıdaki düğmeye dokunarak hazır istemi kopyalayın. Ardından herhangi bir AI sohbeti (Gemini, ChatGPT, DeepSeek) açın, istemi yapıştırın ve şöyle yazın:\n\n"Ermenistan 2026 üretim takvimi oluştur"\n\nSonucu .json olarak kaydedin ve buradan içe aktarın.',
+    'Farklı bir ülke veya yıl için takvim mi gerekiyor? Aşağıdaki düğmeye dokunarak hazır istemi kopyalayın. Ardından herhangi bir AI sohbeti (Gemini, ChatGPT, DeepSeek) açın, istemi yapıştırın ve şöyle yazın:\n\n"Ermenistan 2027 üretim takvimi oluştur"\n\nSonucu .json olarak kaydedin ve buradan içe aktarın.',
   'importEntry.aiPrompt.copyButton': 'İstemi panoya kopyala',
   'importEntry.aiPrompt.copied': 'İstek kopyalandı!',
   'importEntry.textJson.title': 'Hazır JSON metnini yapıştır',

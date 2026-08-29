@@ -10,7 +10,7 @@ import {
 } from '../src/entities/calendar';
 import { parseValidateAndNormalizeCalendarImport } from '../src/features/calendar-import';
 
-const bundledCalendar = require('../calendar2026.json');
+const bundledCalendar = require('../calendar2027.json');
 
 describe('buildCalendarYearViewCache', () => {
   const calendar = parseValidateAndNormalizeCalendarImport(bundledCalendar);

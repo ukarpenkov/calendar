@@ -12,7 +12,7 @@ import {
   validateCalendarImportData,
 } from '../src/features/calendar-import';
 
-const bundledCalendar = require('../calendar2026.json');
+const bundledCalendar = require('../calendar2027.json');
 
 function isoWeekendDatesForYear(year: number): string[] {
   const dates: string[] = [];
@@ -42,16 +42,16 @@ function expectValidationError(callback: () => unknown) {
 }
 
 describe('calendar import pipeline', () => {
-  it('normalizes the bundled 2026 calendar into a full year', () => {
+  it('normalizes the bundled 2027 calendar into a full year', () => {
     const calendar = parseValidateAndNormalizeCalendarImport(bundledCalendar);
 
-    expect(calendar.year).toBe(2026);
+    expect(calendar.year).toBe(2027);
     expect(calendar.days).toHaveLength(365);
     expect(new Set(calendar.days.map(day => day.date)).size).toBe(365);
 
     expect(calendar.days[0]).toMatchObject({
-      date: '2026-01-01',
-      weekday: 4,
+      date: '2027-01-01',
+      weekday: 5,
       type: 'holiday',
       holidayNameRu: 'Новый год',
       holidayNameEn: "New Year's Day",
@@ -63,14 +63,14 @@ describe('calendar import pipeline', () => {
     });
 
     expect(
-      calendar.days.find(day => day.date === '2026-03-08'),
+      calendar.days.find(day => day.date === '2027-03-08'),
     ).toMatchObject({
       type: 'holiday',
       workHours: 0,
     });
 
     expect(
-      calendar.days.find(day => day.date === '2026-04-30'),
+      calendar.days.find(day => day.date === '2027-04-30'),
     ).toMatchObject({
       type: 'shortened',
       isShortened: true,
@@ -78,7 +78,7 @@ describe('calendar import pipeline', () => {
     });
 
     expect(
-      calendar.days.find(day => day.date === '2026-04-01'),
+      calendar.days.find(day => day.date === '2027-04-01'),
     ).toMatchObject({
       type: 'workday',
       isShortened: false,
@@ -90,7 +90,7 @@ describe('calendar import pipeline', () => {
     const validated = validateCalendarImportData(bundledCalendar);
     const calendar = normalizeCalendarImport(validated);
 
-    expect(calendar.days.find(day => day.date === '2026-01-10')).toMatchObject({
+    expect(calendar.days.find(day => day.date === '2027-01-10')).toMatchObject({
       type: 'weekend',
       workHours: 0,
     });

@@ -12,7 +12,7 @@ import {
   type CalendarImportSourceError,
 } from '../src/features/calendar-import';
 
-const bundledCalendar = require('../calendar2026.json');
+const bundledCalendar = require('../calendar2027.json');
 
 jest.mock('@dr.pogodin/react-native-fs', () => ({
   readFile: jest.fn(),
@@ -61,8 +61,8 @@ describe('calendar device import', () => {
   it('reads and validates the selected json file', async () => {
     mockedPick.mockResolvedValue([
       {
-        uri: 'content://calendar2026.json',
-        name: 'calendar2026.json',
+        uri: 'content://calendar2027.json',
+        name: 'calendar2027.json',
         error: null,
         type: 'application/json',
         nativeType: 'application/json',
@@ -75,8 +75,8 @@ describe('calendar device import', () => {
     mockedKeepLocalCopy.mockResolvedValue([
       {
         status: 'success',
-        sourceUri: 'content://calendar2026.json',
-        localUri: 'file:///cache/calendar2026.json',
+        sourceUri: 'content://calendar2027.json',
+        localUri: 'file:///cache/calendar2027.json',
       },
     ]);
     mockedReadFile.mockResolvedValue(JSON.stringify(bundledCalendar));
@@ -86,15 +86,15 @@ describe('calendar device import', () => {
     expect(mockedKeepLocalCopy).toHaveBeenCalledWith({
       files: [
         {
-          uri: 'content://calendar2026.json',
-          fileName: 'calendar2026.json',
+          uri: 'content://calendar2027.json',
+          fileName: 'calendar2027.json',
         },
       ],
       destination: 'cachesDirectory',
     });
-    expect(mockedReadFile).toHaveBeenCalledWith('/cache/calendar2026.json', 'utf8');
-    expect(result?.file.name).toBe('calendar2026.json');
-    expect(result?.calendar.year).toBe(2026);
+    expect(mockedReadFile).toHaveBeenCalledWith('/cache/calendar2027.json', 'utf8');
+    expect(result?.file.name).toBe('calendar2027.json');
+    expect(result?.calendar.year).toBe(2027);
   });
 
   it('rejects non-json files before reading them', async () => {

@@ -41,7 +41,7 @@ export const ruTranslations: Record<TranslationKey, string> = {
     'settings.rows.importYear.subtitle':
       'Открывает отдельный экран входа в flow замены года через локальный JSON.',
     'settings.rows.importYear.action': 'Открыть',
-    'settings.rows.bundledCalendar.title': 'Производственный календарь (2026)',
+    'settings.rows.bundledCalendar.title': 'Производственный календарь (2027)',
     'settings.rows.bundledCalendar.subtitle': 'Встроенный набор: {{region}}.',
     'settings.bundledCalendar.chip.ru': 'Россия',
     'settings.bundledCalendar.chip.tr': 'Турция',
@@ -72,7 +72,7 @@ export const ruTranslations: Record<TranslationKey, string> = {
     'settings.about.telegram': 'Telegram',
     'settings.about.appValue': 'Календарь',
     'settings.about.storageValue': 'Локальный SQLite',
-    'settings.about.defaultDatasetValue': 'Производственный календарь 2026',
+    'settings.about.defaultDatasetValue': 'Производственный календарь 2027',
     'year.reminder.title': 'JSON-шаблон на следующий год',
     'year.reminder.body':
       'Шаблон на {{year}} год будет опубликован в Telegram. Откройте канал, чтобы скачать новый JSON, когда он будет готов.',
@@ -170,7 +170,7 @@ export const ruTranslations: Record<TranslationKey, string> = {
     'importEntry.error.startOver': 'С начала',
     'importEntry.aiPrompt.title': 'Сгенерировать через ИИ',
     'importEntry.aiPrompt.description':
-      'Нужен календарь другой страны или года? Нажмите кнопку ниже, чтобы скопировать готовый промт. Затем откройте любой ИИ-чат (Gemini, ChatGPT, DeepSeek), вставьте промт и отдельным сообщением добавьте задание, например:\n\n«Сгенерируй календарь Армении 2026, верни файл JSON».\n\nСохраните ответ как файл .json (или воспользуйтесь экраном вставки JSON) и импортируйте его здесь.',
+      'Нужен календарь другой страны или года? Нажмите кнопку ниже, чтобы скопировать готовый промт. Затем откройте любой ИИ-чат (Gemini, ChatGPT, DeepSeek), вставьте промт и отдельным сообщением добавьте задание, например:\n\n«Сгенерируй календарь Армении 2027, верни файл JSON».\n\nСохраните ответ как файл .json (или воспользуйтесь экраном вставки JSON) и импортируйте его здесь.',
     'importEntry.aiPrompt.copyButton': 'Скопировать промт в буфер обмена',
     'importEntry.aiPrompt.copied': 'Промт скопирован!',
     'importEntry.textJson.title': 'Вставьте готовый JSON',

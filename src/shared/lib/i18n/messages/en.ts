@@ -38,7 +38,7 @@ export const enTranslations = {
     'settings.rows.importYear.subtitle':
       'Open a dedicated import entry screen and continue with the JSON replacement flow.',
     'settings.rows.importYear.action': 'Open',
-    'settings.rows.bundledCalendar.title': 'Production calendar (2026)',
+    'settings.rows.bundledCalendar.title': 'Production calendar (2027)',
     'settings.rows.bundledCalendar.subtitle': 'Bundled dataset: {{region}}.',
     'settings.bundledCalendar.chip.ru': 'Russia',
     'settings.bundledCalendar.chip.tr': 'Türkiye',
@@ -69,7 +69,7 @@ export const enTranslations = {
     'settings.about.telegram': 'Telegram',
     'settings.about.appValue': 'Calendar',
     'settings.about.storageValue': 'Offline SQLite',
-    'settings.about.defaultDatasetValue': 'Production calendar 2026',
+    'settings.about.defaultDatasetValue': 'Production calendar 2027',
     'year.reminder.title': 'Next year JSON template',
     'year.reminder.body':
       'The {{year}} template will be published in Telegram. Open the channel to download the next JSON when it is ready.',
@@ -166,7 +166,7 @@ export const enTranslations = {
     'importEntry.error.startOver': 'Start over',
     'importEntry.aiPrompt.title': 'Generate with AI',
     'importEntry.aiPrompt.description':
-      'Need a calendar for a different country or year? Tap the button below to copy a ready-made prompt. Then open any AI chat (Gemini, ChatGPT, DeepSeek), paste the prompt, and in a separate message add your request, for example:\n\n"Generate Armenia 2026 calendar, return a JSON file."\n\nSave the reply as a .json file (or use the Paste JSON screen) and import it here.',
+      'Need a calendar for a different country or year? Tap the button below to copy a ready-made prompt. Then open any AI chat (Gemini, ChatGPT, DeepSeek), paste the prompt, and in a separate message add your request, for example:\n\n"Generate Armenia 2027 calendar, return a JSON file."\n\nSave the reply as a .json file (or use the Paste JSON screen) and import it here.',
     'importEntry.aiPrompt.copyButton': 'Copy prompt to clipboard',
     'importEntry.aiPrompt.copied': 'Prompt copied!',
     'importEntry.textJson.title': 'Paste ready JSON',

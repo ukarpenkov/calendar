@@ -9,10 +9,10 @@ import { appLanguageToDefaultBundledRegion } from '../../../shared/lib/bundledCa
  * `BUNDLED_CALENDAR_JSON_FILENAME_BY_REGION` в `agreedLanguagesAndBundledCalendars.ts`.
  */
 const BUNDLED_CALENDAR_JSON_BY_REGION = {
-  ru: require('../../../../calendar2026.json'),
-  tr: require('../../../../calendar2026TR.json'),
-  id: require('../../../../calendar2026IDN.json'),
-  ja: require('../../../../calendar2026JP.json'),
+  ru: require('../../../../calendar2027.json'),
+  tr: require('../../../../calendar2027TR.json'),
+  id: require('../../../../calendar2027IDN.json'),
+  ja: require('../../../../calendar2027JP.json'),
 } as const satisfies Record<BundledCalendarRegionCode, unknown>;
 
 export function getBundledCalendarJsonForRegion(

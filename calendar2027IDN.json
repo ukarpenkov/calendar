@@ -1,0 +1,216 @@
+{
+  "year": 2027,
+  "holidays": [
+    {
+      "date": "2027-01-01",
+      "name_ru": "Tahun Baru Masehi",
+      "name_en": "New Year's Day",
+      "name_id": "Tahun Baru Masehi"
+    },
+    {
+      "date": "2027-01-05",
+      "name_ru": "Isra Mi'raj Nabi Muhammad SAW",
+      "name_en": "Isra and Mi'raj of Prophet Muhammad",
+      "name_id": "Isra Mi'raj Nabi Muhammad SAW"
+    },
+    {
+      "date": "2027-02-06",
+      "name_ru": "Tahun Baru Imlek 2578 Kongzili",
+      "name_en": "Chinese New Year 2578",
+      "name_id": "Tahun Baru Imlek 2578 Kongzili"
+    },
+    {
+      "date": "2027-03-09",
+      "name_ru": "Hari Suci Nyepi Tahun Baru Saka 1949",
+      "name_en": "Day of Silence, Saka New Year",
+      "name_id": "Hari Suci Nyepi Tahun Baru Saka 1949"
+    },
+    {
+      "date": "2027-03-10",
+      "name_ru": "Hari Raya Idul Fitri 1448 H (Hari 1)",
+      "name_en": "Eid al-Fitr 1448 H (Day 1)",
+      "name_id": "Hari Raya Idul Fitri 1448 H (Hari 1)"
+    },
+    {
+      "date": "2027-03-11",
+      "name_ru": "Hari Raya Idul Fitri 1448 H (Hari 2)",
+      "name_en": "Eid al-Fitr 1448 H (Day 2)",
+      "name_id": "Hari Raya Idul Fitri 1448 H (Hari 2)"
+    },
+    {
+      "date": "2027-03-26",
+      "name_ru": "Wafat Isa Al Masih",
+      "name_en": "Good Friday",
+      "name_id": "Wafat Isa Al Masih"
+    },
+    {
+      "date": "2027-03-28",
+      "name_ru": "Paskah",
+      "name_en": "Easter Sunday",
+      "name_id": "Paskah"
+    },
+    {
+      "date": "2027-05-01",
+      "name_ru": "Hari Buruh Internasional",
+      "name_en": "International Workers' Day",
+      "name_id": "Hari Buruh Internasional"
+    },
+    {
+      "date": "2027-05-06",
+      "name_ru": "Kenaikan Isa Al Masih",
+      "name_en": "Ascension of Jesus Christ",
+      "name_id": "Kenaikan Isa Al Masih"
+    },
+    {
+      "date": "2027-05-16",
+      "name_ru": "Hari Raya Idul Adha 1448 H",
+      "name_en": "Eid al-Adha 1448 H",
+      "name_id": "Hari Raya Idul Adha 1448 H"
+    },
+    {
+      "date": "2027-05-20",
+      "name_ru": "Hari Raya Waisak 2571 BE",
+      "name_en": "Vesak Day 2571 BE",
+      "name_id": "Hari Raya Waisak 2571 BE"
+    },
+    {
+      "date": "2027-06-01",
+      "name_ru": "Hari Lahir Pancasila",
+      "name_en": "Pancasila Day",
+      "name_id": "Hari Lahir Pancasila"
+    },
+    {
+      "date": "2027-06-06",
+      "name_ru": "Tahun Baru Islam 1449 H",
+      "name_en": "Islamic New Year 1449 H",
+      "name_id": "Tahun Baru Islam 1449 H"
+    },
+    {
+      "date": "2027-08-14",
+      "name_ru": "Maulid Nabi Muhammad SAW",
+      "name_en": "Birthday of Prophet Muhammad",
+      "name_id": "Maulid Nabi Muhammad SAW"
+    },
+    {
+      "date": "2027-08-17",
+      "name_ru": "Hari Kemerdekaan Republik Indonesia",
+      "name_en": "Independence Day of Indonesia",
+      "name_id": "Hari Kemerdekaan Republik Indonesia"
+    },
+    {
+      "date": "2027-12-25",
+      "name_ru": "Hari Raya Natal",
+      "name_en": "Christmas Day",
+      "name_id": "Hari Raya Natal"
+    }
+  ],
+  "weekends": [
+    "2027-01-02",
+    "2027-01-03",
+    "2027-01-09",
+    "2027-01-10",
+    "2027-01-16",
+    "2027-01-17",
+    "2027-01-23",
+    "2027-01-24",
+    "2027-01-30",
+    "2027-01-31",
+    "2027-02-06",
+    "2027-02-07",
+    "2027-02-13",
+    "2027-02-14",
+    "2027-02-20",
+    "2027-02-21",
+    "2027-02-27",
+    "2027-02-28",
+    "2027-03-06",
+    "2027-03-07",
+    "2027-03-13",
+    "2027-03-14",
+    "2027-03-20",
+    "2027-03-21",
+    "2027-03-27",
+    "2027-03-28",
+    "2027-04-03",
+    "2027-04-04",
+    "2027-04-10",
+    "2027-04-11",
+    "2027-04-17",
+    "2027-04-18",
+    "2027-04-24",
+    "2027-04-25",
+    "2027-05-01",
+    "2027-05-02",
+    "2027-05-08",
+    "2027-05-09",
+    "2027-05-15",
+    "2027-05-16",
+    "2027-05-22",
+    "2027-05-23",
+    "2027-05-29",
+    "2027-05-30",
+    "2027-06-05",
+    "2027-06-06",
+    "2027-06-12",
+    "2027-06-13",
+    "2027-06-19",
+    "2027-06-20",
+    "2027-06-26",
+    "2027-06-27",
+    "2027-07-03",
+    "2027-07-04",
+    "2027-07-10",
+    "2027-07-11",
+    "2027-07-17",
+    "2027-07-18",
+    "2027-07-24",
+    "2027-07-25",
+    "2027-07-31",
+    "2027-08-01",
+    "2027-08-07",
+    "2027-08-08",
+    "2027-08-14",
+    "2027-08-15",
+    "2027-08-21",
+    "2027-08-22",
+    "2027-08-28",
+    "2027-08-29",
+    "2027-09-04",
+    "2027-09-05",
+    "2027-09-11",
+    "2027-09-12",
+    "2027-09-18",
+    "2027-09-19",
+    "2027-09-25",
+    "2027-09-26",
+    "2027-10-02",
+    "2027-10-03",
+    "2027-10-09",
+    "2027-10-10",
+    "2027-10-16",
+    "2027-10-17",
+    "2027-10-23",
+    "2027-10-24",
+    "2027-10-30",
+    "2027-10-31",
+    "2027-11-06",
+    "2027-11-07",
+    "2027-11-13",
+    "2027-11-14",
+    "2027-11-20",
+    "2027-11-21",
+    "2027-11-27",
+    "2027-11-28",
+    "2027-12-04",
+    "2027-12-05",
+    "2027-12-11",
+    "2027-12-12",
+    "2027-12-18",
+    "2027-12-19",
+    "2027-12-25",
+    "2027-12-26"
+  ],
+  "preholidays": [
+    "2027-12-31"
+  ]
+}

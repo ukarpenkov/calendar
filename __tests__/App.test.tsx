@@ -87,8 +87,8 @@ jest.mock('@react-native-documents/picker', () => ({
     ),
 }));
 
-const bundledCalendar2026 = parseValidateAndNormalizeCalendarImport(
-  require('../calendar2026.json'),
+const bundledCalendar2027 = parseValidateAndNormalizeCalendarImport(
+  require('../calendar2027.json'),
 );
 
 const mockedGetActiveCalendarSource = jest.mocked(getActiveCalendarSource);
@@ -138,8 +138,8 @@ test('shows splash while bootstrap is pending', () => {
 });
 
 test('shows year home when bootstrap succeeds', async () => {
-  mockedSeedBundledYearIfNeeded.mockResolvedValue(bundledCalendar2026);
-  mockedGetYearCalendar.mockResolvedValue(bundledCalendar2026);
+  mockedSeedBundledYearIfNeeded.mockResolvedValue(bundledCalendar2027);
+  mockedGetYearCalendar.mockResolvedValue(bundledCalendar2027);
 
   let renderer: ReactTestRenderer.ReactTestRenderer;
 
@@ -147,16 +147,16 @@ test('shows year home when bootstrap succeeds', async () => {
     renderer = ReactTestRenderer.create(<App />);
   });
 
-  expect(JSON.stringify(renderer!.toJSON())).toContain('Year 2026');
+  expect(JSON.stringify(renderer!.toJSON())).toContain('Year 2027');
   expect(JSON.stringify(renderer!.toJSON())).toContain('January');
 });
 
 test('opens month detail after the year screen requests a month', async () => {
   jest.useFakeTimers();
-  jest.setSystemTime(new Date('2026-01-15T12:00:00.000Z'));
+  jest.setSystemTime(new Date('2027-01-15T12:00:00.000Z'));
 
-  mockedSeedBundledYearIfNeeded.mockResolvedValue(bundledCalendar2026);
-  mockedGetYearCalendar.mockResolvedValue(bundledCalendar2026);
+  mockedSeedBundledYearIfNeeded.mockResolvedValue(bundledCalendar2027);
+  mockedGetYearCalendar.mockResolvedValue(bundledCalendar2027);
 
   let renderer: ReactTestRenderer.ReactTestRenderer;
 
@@ -178,8 +178,8 @@ test('opens month detail after the year screen requests a month', async () => {
 });
 
 test('switches to the next month from month detail', async () => {
-  mockedSeedBundledYearIfNeeded.mockResolvedValue(bundledCalendar2026);
-  mockedGetYearCalendar.mockResolvedValue(bundledCalendar2026);
+  mockedSeedBundledYearIfNeeded.mockResolvedValue(bundledCalendar2027);
+  mockedGetYearCalendar.mockResolvedValue(bundledCalendar2027);
 
   let renderer: ReactTestRenderer.ReactTestRenderer;
 
@@ -216,11 +216,11 @@ test('retries bootstrap from the error screen', async () => {
   mockedSeedBundledYearIfNeeded
     .mockRejectedValueOnce(new Error('db failed'))
     .mockResolvedValueOnce({
-      year: 2026,
+      year: 2027,
       days: [],
     });
   mockedGetYearCalendar.mockResolvedValue({
-    year: 2026,
+    year: 2027,
     days: [],
   });
 
@@ -238,13 +238,13 @@ test('retries bootstrap from the error screen', async () => {
     renderer!.root.findByProps({ testID: 'app-bootstrap-retry' }).props.onPress();
   });
 
-  expect(JSON.stringify(renderer!.toJSON())).toContain('Year 2026');
+  expect(JSON.stringify(renderer!.toJSON())).toContain('Year 2027');
 });
 
 test('shows month error when stored days do not match the calendar month', async () => {
   const corruptCalendar = {
-    ...bundledCalendar2026,
-    days: bundledCalendar2026.days.filter(day => day.date !== '2026-02-28'),
+    ...bundledCalendar2027,
+    days: bundledCalendar2027.days.filter(day => day.date !== '2027-02-28'),
   };
 
   mockedSeedBundledYearIfNeeded.mockResolvedValue(corruptCalendar);
@@ -268,16 +268,16 @@ test('shows month error when stored days do not match the calendar month', async
     renderer!.root.findByProps({ testID: 'app-month-error-back' }).props.onPress();
   });
 
-  expect(JSON.stringify(renderer!.toJSON())).toContain('Year 2026');
+  expect(JSON.stringify(renderer!.toJSON())).toContain('Year 2027');
 });
 
 test('opens dedicated JSON import entry from settings', async () => {
   mockedSeedBundledYearIfNeeded.mockResolvedValue({
-    year: 2026,
+    year: 2027,
     days: [],
   });
   mockedGetYearCalendar.mockResolvedValue({
-    year: 2026,
+    year: 2027,
     days: [],
   });
 
@@ -303,11 +303,11 @@ test('opens dedicated JSON import entry from settings', async () => {
 
 test('shows Telegram link in the settings about section', async () => {
   mockedSeedBundledYearIfNeeded.mockResolvedValue({
-    year: 2026,
+    year: 2027,
     days: [],
   });
   mockedGetYearCalendar.mockResolvedValue({
-    year: 2026,
+    year: 2027,
     days: [],
   });
 
@@ -326,14 +326,14 @@ test('shows Telegram link in the settings about section', async () => {
 
 test('shows year-end reminder with Telegram link late in the active year', async () => {
   jest.useFakeTimers();
-  jest.setSystemTime(new Date('2026-11-15T12:00:00.000Z'));
+  jest.setSystemTime(new Date('2027-11-15T12:00:00.000Z'));
 
   mockedSeedBundledYearIfNeeded.mockResolvedValue({
-    year: 2026,
+    year: 2027,
     days: [],
   });
   mockedGetYearCalendar.mockResolvedValue({
-    year: 2026,
+    year: 2027,
     days: [],
   });
 
@@ -363,11 +363,11 @@ test('activates the JSON calendar and switches to English after JSON import', as
 
   mockedGetStoredLanguage.mockResolvedValue('ru');
   mockedSeedBundledYearIfNeeded.mockResolvedValue({
-    year: 2026,
+    year: 2027,
     days: [],
   });
   mockedGetYearCalendar.mockResolvedValue({
-    year: 2026,
+    year: 2027,
     days: [],
   });
   mockedActivateUserJsonImport.mockResolvedValue(importedCalendar);

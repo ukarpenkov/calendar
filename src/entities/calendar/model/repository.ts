@@ -1,7 +1,10 @@
 import type { DB, SQLBatchTuple } from '@op-engineering/op-sqlite';
 
 import { parseValidateAndNormalizeCalendarImport } from '../../../features/calendar-import';
-import type { BundledCalendarRegionCode } from '../../../shared/config/agreedLanguagesAndBundledCalendars';
+import {
+  BUNDLED_CALENDAR_YEAR,
+  type BundledCalendarRegionCode,
+} from '../../../shared/config/agreedLanguagesAndBundledCalendars';
 import {
   ACTIVE_CALENDAR_SOURCE_METADATA_KEY,
   ACTIVE_CALENDAR_USER_JSON_IMPORT_KEY,
@@ -301,6 +304,21 @@ export function createCalendarRepository(
         const calendar = await this.getYearCalendar(activeYear);
 
         if (calendar && isCompleteCalendarYear(calendar)) {
+          const source = await readActiveCalendarSource(db);
+          if (
+            source === 'bundled' &&
+            calendar.year !== BUNDLED_CALENDAR_YEAR
+          ) {
+            const region = await resolveBundledRegionForSeed();
+            const bundledRaw = getBundledCalendarJsonForRegion(region);
+            const bundledCalendar =
+              parseValidateAndNormalizeCalendarImport(bundledRaw);
+
+            await replaceActiveYearRows(db, bundledCalendar, 'bundled');
+
+            return bundledCalendar;
+          }
+
           return calendar;
         }
       }

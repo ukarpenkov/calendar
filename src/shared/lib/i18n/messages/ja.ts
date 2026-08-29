@@ -40,7 +40,7 @@ export const jaTranslations = {
   'settings.rows.importYear.subtitle':
     'ローカル JSON で年を置き換えるフロー用の専用画面を開きます。',
   'settings.rows.importYear.action': '開く',
-  'settings.rows.bundledCalendar.title': '標準の勤務カレンダー（2026）',
+  'settings.rows.bundledCalendar.title': '標準の勤務カレンダー（2027）',
   'settings.rows.bundledCalendar.subtitle': '同梱データ: {{region}}。',
   'settings.bundledCalendar.chip.ru': 'ロシア',
   'settings.bundledCalendar.chip.tr': 'トルコ',
@@ -57,7 +57,7 @@ export const jaTranslations = {
   'settings.rows.language.title': '表示言語',
   'settings.rows.language.subtitle': '現在の言語: {{language}}。',
   'settings.rows.language.userImportHint':
-    'カレンダーは JSON インポート由来のため、表示言語を変えてもデータは置き換わりません。同梱データに切り替える場合は下の「生産カレンダー（2026）」から選んでください。',
+    'カレンダーは JSON インポート由来のため、表示言語を変えてもデータは置き換わりません。同梱データに切り替える場合は下の「生産カレンダー（2027）」から選んでください。',
   'settings.languageSwitch.userJsonCalendar': 'JSON カレンダー',
   'settings.sections.about.title': 'アプリについて',
   'settings.sections.about.subtitle':
@@ -71,7 +71,7 @@ export const jaTranslations = {
   'settings.about.telegram': 'Telegram',
   'settings.about.appValue': 'カレンダー',
   'settings.about.storageValue': 'オフライン SQLite',
-  'settings.about.defaultDatasetValue': '2026 年 勤務カレンダー',
+  'settings.about.defaultDatasetValue': '2027 年 勤務カレンダー',
   'year.reminder.title': '翌年用 JSON テンプレート',
   'year.reminder.body':
     '{{year}} 年用テンプレートは Telegram で公開されます。準備ができたらチャンネルから新しい JSON を取得してください。',
@@ -169,7 +169,7 @@ export const jaTranslations = {
   'importEntry.error.startOver': '最初からやり直す',
   'importEntry.aiPrompt.title': 'AIで生成する',
   'importEntry.aiPrompt.description':
-    '別の国や年のカレンダーが必要ですか？下のボタンをタップしてプロンプトをコピーしてください。その後、任意のAIチャット（Gemini、ChatGPT、DeepSeek）を開き、プロンプトを貼り付けて、例えば次のように入力してください：\n\n「アルメニアの2026年の生産カレンダーを生成してください」\n\n結果のJSONファイルを保存し、ここでインポートしてください。',
+    '別の国や年のカレンダーが必要ですか？下のボタンをタップしてプロンプトをコピーしてください。その後、任意のAIチャット（Gemini、ChatGPT、DeepSeek）を開き、プロンプトを貼り付けて、例えば次のように入力してください：\n\n「アルメニアの2027年の生産カレンダーを生成してください」\n\n結果のJSONファイルを保存し、ここでインポートしてください。',
   'importEntry.aiPrompt.copyButton': 'プロンプトをクリップボードにコピー',
   'importEntry.aiPrompt.copied': 'プロンプトをコピーしました！',
   'importEntry.textJson.title': '完成した JSON を貼り付け',

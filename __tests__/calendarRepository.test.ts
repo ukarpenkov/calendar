@@ -16,8 +16,8 @@ import {
   initializeDatabase,
 } from '../src/shared/lib/db';
 
-const bundledCalendar = require('../calendar2026.json');
-const bundledCalendarTr = require('../calendar2026TR.json');
+const bundledCalendar = require('../calendar2027.json');
+const bundledCalendarTr = require('../calendar2027TR.json');
 const importedCalendar2025 = require('../calendar2025.json');
 
 describe('calendar sqlite repository', () => {
@@ -41,25 +41,25 @@ describe('calendar sqlite repository', () => {
 
     await repository.replaceActiveYear(calendar);
 
-    expect(await repository.getActiveYear()).toBe(2026);
+    expect(await repository.getActiveYear()).toBe(2027);
 
-    const storedCalendar = await repository.getYearCalendar(2026);
-    const aprilDays = await repository.getMonthCalendar(2026, 4);
+    const storedCalendar = await repository.getYearCalendar(2027);
+    const aprilDays = await repository.getMonthCalendar(2027, 4);
 
     expect(storedCalendar?.days).toHaveLength(365);
     expect(aprilDays).toHaveLength(30);
-    expect(aprilDays.find(day => day.date === '2026-04-30')).toMatchObject({
+    expect(aprilDays.find(day => day.date === '2027-04-30')).toMatchObject({
       type: 'shortened',
       workHours: 7,
     });
   });
 
-  it('seeds bundled 2026 when the database is empty', async () => {
+  it('seeds bundled 2027 when the database is empty', async () => {
     const seededCalendar = await repository.seedBundledYearIfNeeded();
 
-    expect(seededCalendar.year).toBe(2026);
+    expect(seededCalendar.year).toBe(2027);
     expect(seededCalendar.days).toHaveLength(365);
-    expect(await repository.getActiveYear()).toBe(2026);
+    expect(await repository.getActiveYear()).toBe(2027);
   });
 
   it('seeds regional bundled JSON when resolver selects a non-default region', async () => {
@@ -69,9 +69,9 @@ describe('calendar sqlite repository', () => {
 
     const seededCalendar = await jaRepository.seedBundledYearIfNeeded();
 
-    expect(seededCalendar.year).toBe(2026);
-    const jan12 = seededCalendar.days.find(d => d.date === '2026-01-12');
-    expect(jan12).toMatchObject({
+    expect(seededCalendar.year).toBe(2027);
+    const comingOfAge = seededCalendar.days.find(d => d.date === '2027-01-11');
+    expect(comingOfAge).toMatchObject({
       type: 'holiday',
       holidayNameRu: '成人の日',
       holidayNameEn: 'Coming of Age Day',
@@ -82,7 +82,7 @@ describe('calendar sqlite repository', () => {
   it('reseeds the bundled year when active metadata points to incomplete data', async () => {
     await db.execute(
       'INSERT INTO app_metadata (key, value) VALUES (?, ?)',
-      ['activeYear', '2026'],
+      ['activeYear', '2027'],
     );
     await db.execute(
       `INSERT INTO calendar_days (
@@ -97,24 +97,24 @@ describe('calendar sqlite repository', () => {
         is_shortened,
         work_hours
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      ['2026-01-01', 2026, 1, 1, 4, 'holiday', 'Новый год', "New Year's Day", 0, 0],
+      ['2027-01-01', 2027, 1, 1, 5, 'holiday', 'Новый год', "New Year's Day", 0, 0],
     );
 
     const seededCalendar = await repository.seedBundledYearIfNeeded();
 
     expect(seededCalendar.days).toHaveLength(365);
-    expect(await repository.getActiveYear()).toBe(2026);
+    expect(await repository.getActiveYear()).toBe(2027);
   });
 
   it('replaces the active dataset when a different year is imported', async () => {
-    const calendar2026 = parseValidateAndNormalizeCalendarImport(bundledCalendar);
+    const calendar2027 = parseValidateAndNormalizeCalendarImport(bundledCalendar);
     const calendar2025 = parseValidateAndNormalizeCalendarImport(importedCalendar2025);
 
-    await repository.replaceActiveYear(calendar2026);
+    await repository.replaceActiveYear(calendar2027);
     await repository.replaceActiveYear(calendar2025, 'user_json_import');
 
     expect(await repository.getActiveYear()).toBe(2025);
-    expect(await repository.getYearCalendar(2026)).toBeNull();
+    expect(await repository.getYearCalendar(2027)).toBeNull();
     expect(await repository.getYearCalendar(2025)).toMatchObject({
       year: 2025,
     });
@@ -134,7 +134,7 @@ describe('calendar sqlite repository', () => {
     );
     expect(importFlag.rows[0]?.value).toBe('1');
 
-    await repository.replaceActiveYear(calendar2026);
+    await repository.replaceActiveYear(calendar2027);
 
     const cleared = await db.execute(
       'SELECT value FROM app_metadata WHERE key = ? LIMIT 1',
@@ -144,17 +144,17 @@ describe('calendar sqlite repository', () => {
   });
 
   it('saves a JSON import without changing the active bundled calendar', async () => {
-    const calendar2026 = parseValidateAndNormalizeCalendarImport(bundledCalendar);
+    const calendar2027 = parseValidateAndNormalizeCalendarImport(bundledCalendar);
     const calendar2025 = parseValidateAndNormalizeCalendarImport(importedCalendar2025);
 
-    await repository.replaceActiveYear(calendar2026, 'bundled');
+    await repository.replaceActiveYear(calendar2027, 'bundled');
     await repository.saveUserJsonImport(calendar2025);
 
-    expect(await repository.getActiveYear()).toBe(2026);
+    expect(await repository.getActiveYear()).toBe(2027);
     expect(await repository.getActiveCalendarSource()).toBe('bundled');
     expect(await repository.getUserJsonImportYear()).toBe(2025);
-    expect(await repository.getYearCalendar(2026)).toMatchObject({
-      year: 2026,
+    expect(await repository.getYearCalendar(2027)).toMatchObject({
+      year: 2027,
     });
 
     const activated = await repository.activateUserJsonImport();
@@ -170,8 +170,8 @@ describe('calendar sqlite repository', () => {
     const calendar = parseValidateAndNormalizeCalendarImport(bundledCalendarTr);
     await repository.replaceActiveYear(calendar, 'bundled');
 
-    const jan1 = (await repository.getMonthCalendar(2026, 1)).find(
-      d => d.date === '2026-01-01',
+    const jan1 = (await repository.getMonthCalendar(2027, 1)).find(
+      d => d.date === '2027-01-01',
     );
 
     expect(jan1).toMatchObject({
@@ -179,5 +179,32 @@ describe('calendar sqlite repository', () => {
       holidayNameTr: 'Yılbaşı Tatili',
       holidayNameEn: "New Year's Day",
     });
+  });
+
+  it('replaces an outdated complete bundled year with the current bundled JSON', async () => {
+    const calendar2025 = parseValidateAndNormalizeCalendarImport(
+      importedCalendar2025,
+    );
+    await repository.replaceActiveYear(calendar2025, 'bundled');
+    expect(await repository.getActiveYear()).toBe(2025);
+
+    const seededCalendar = await repository.seedBundledYearIfNeeded();
+
+    expect(seededCalendar.year).toBe(2027);
+    expect(seededCalendar.days).toHaveLength(365);
+    expect(await repository.getActiveYear()).toBe(2027);
+    expect(await repository.getActiveCalendarSource()).toBe('bundled');
+  });
+
+  it('does not replace a user JSON import when the year is not the bundled year', async () => {
+    const calendar2025 = parseValidateAndNormalizeCalendarImport(
+      importedCalendar2025,
+    );
+    await repository.replaceActiveYear(calendar2025, 'user_json_import');
+
+    const seededCalendar = await repository.seedBundledYearIfNeeded();
+
+    expect(seededCalendar.year).toBe(2025);
+    expect(await repository.getActiveCalendarSource()).toBe('user_json_import');
   });
 });

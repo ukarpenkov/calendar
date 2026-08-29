@@ -38,8 +38,8 @@ test('region list matches bundled filename map 1:1', () => {
   expect(mapKeys).toEqual(codes);
 });
 
-test('bundled calendar year constant matches plan year 2026', () => {
-  expect(BUNDLED_CALENDAR_YEAR).toBe(2026);
+test('bundled calendar year constant matches plan year 2027', () => {
+  expect(BUNDLED_CALENDAR_YEAR).toBe(2027);
 });
 
 test('each bundled JSON for an agreed language validates like an import', () => {

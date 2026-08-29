@@ -55,29 +55,29 @@ Duplicate dates inside the same array are forbidden.
 
 
 ================================================================================
-  READY EXAMPLE (RUSSIA 2026) - FOR REFERENCE
+  READY EXAMPLE (RUSSIA 2027) - SCHEMA SAMPLE, NOT THE BUNDLED FILE
 ================================================================================
 
 {
-  "year": 2026,
+  "year": 2027,
   "holidays": [
-    { "date": "2026-01-01", "name_ru": "Russian name for New Year's Day", "name_en": "New Year's Day" },
-    { "date": "2026-01-07", "name_ru": "Russian name for Orthodox Christmas Day", "name_en": "Orthodox Christmas Day" },
-    { "date": "2026-02-23", "name_ru": "Russian name for Defender of the Fatherland Day", "name_en": "Defender of the Fatherland Day" },
-    { "date": "2026-03-08", "name_ru": "Russian name for International Women's Day", "name_en": "International Women's Day" },
-    { "date": "2026-05-01", "name_ru": "Russian name for Spring and Labor Day", "name_en": "Spring and Labor Day" },
-    { "date": "2026-05-09", "name_ru": "Russian name for Victory Day", "name_en": "Victory Day" },
-    { "date": "2026-06-12", "name_ru": "Russian name for Russia Day", "name_en": "Russia Day" },
-    { "date": "2026-11-04", "name_ru": "Russian name for National Unity Day", "name_en": "National Unity Day" }
+    { "date": "2027-01-01", "name_ru": "Russian name for New Year's Day", "name_en": "New Year's Day" },
+    { "date": "2027-01-07", "name_ru": "Russian name for Orthodox Christmas Day", "name_en": "Orthodox Christmas Day" },
+    { "date": "2027-02-23", "name_ru": "Russian name for Defender of the Fatherland Day", "name_en": "Defender of the Fatherland Day" },
+    { "date": "2027-03-08", "name_ru": "Russian name for International Women's Day", "name_en": "International Women's Day" },
+    { "date": "2027-05-01", "name_ru": "Russian name for Spring and Labor Day", "name_en": "Spring and Labor Day" },
+    { "date": "2027-05-09", "name_ru": "Russian name for Victory Day", "name_en": "Victory Day" },
+    { "date": "2027-06-12", "name_ru": "Russian name for Russia Day", "name_en": "Russia Day" },
+    { "date": "2027-11-04", "name_ru": "Russian name for National Unity Day", "name_en": "National Unity Day" }
   ],
   "weekends": [
-    "2026-01-03", "2026-01-04", "2026-01-10", "2026-01-11",
-    "2026-01-17", "2026-01-18", "2026-01-24", "2026-01-25",
-    "2026-01-31", "2026-02-01", "2026-02-07", "2026-02-08"
+    "2027-01-02", "2027-01-03", "2027-01-09", "2027-01-10",
+    "2027-01-16", "2027-01-17", "2027-01-23", "2027-01-24",
+    "2027-01-30", "2027-01-31", "2027-02-06", "2027-02-07"
   ],
   "preholidays": [
-    "2026-04-30",
-    "2026-05-08"
+    "2027-04-30",
+    "2027-11-03"
   ]
 }
 
@@ -172,20 +172,20 @@ The JSON must strictly match this schema:
      name (e.g. observed / substitute), not in "weekends". If Saturday
      becomes a working day instead, remove that Saturday from "weekends".
 
-=== EXAMPLE (FRAGMENT, RUSSIA 2026) ===
+=== EXAMPLE (FRAGMENT, RUSSIA 2027 — SCHEMA SAMPLE) ===
 
 {
-  "year": 2026,
+  "year": 2027,
   "holidays": [
-    { "date": "2026-01-01", "name_ru": "Russian name for New Year's Day", "name_en": "New Year's Day" },
-    { "date": "2026-01-07", "name_ru": "Russian name for Orthodox Christmas Day", "name_en": "Orthodox Christmas Day" }
+    { "date": "2027-01-01", "name_ru": "Russian name for New Year's Day", "name_en": "New Year's Day" },
+    { "date": "2027-01-07", "name_ru": "Russian name for Orthodox Christmas Day", "name_en": "Orthodox Christmas Day" }
   ],
   "weekends": [
-    "2026-01-03", "2026-01-04", "2026-01-10", "2026-01-11"
+    "2027-01-02", "2027-01-03", "2027-01-09", "2027-01-10"
   ],
   "preholidays": [
-    "2026-04-30",
-    "2026-05-08"
+    "2027-04-30",
+    "2027-11-03"
   ]
 }
 
