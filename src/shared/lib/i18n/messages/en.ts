@@ -66,7 +66,6 @@ export const enTranslations = {
     'settings.about.defaultDataset': 'Default dataset',
     'settings.about.theme': 'Theme',
     'settings.about.language': 'Language',
-    'settings.about.telegram': 'Telegram',
     'settings.about.appValue': 'Calendar',
     'settings.about.storageValue': 'Offline SQLite',
     'settings.about.defaultDatasetValue': 'Production calendar 2027',

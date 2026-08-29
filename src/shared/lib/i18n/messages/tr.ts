@@ -68,7 +68,6 @@ export const trTranslations = {
   'settings.about.defaultDataset': 'Varsayılan veri kümesi',
   'settings.about.theme': 'Tema',
   'settings.about.language': 'Dil',
-  'settings.about.telegram': 'Telegram',
   'settings.about.appValue': 'Takvim',
   'settings.about.storageValue': 'Çevrimdışı SQLite',
   'settings.about.defaultDatasetValue': 'Üretim takvimi 2027',

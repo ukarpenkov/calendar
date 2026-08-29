@@ -68,7 +68,6 @@ export const idTranslations = {
   'settings.about.defaultDataset': 'Dataset default',
   'settings.about.theme': 'Tema',
   'settings.about.language': 'Bahasa',
-  'settings.about.telegram': 'Telegram',
   'settings.about.appValue': 'Kalender',
   'settings.about.storageValue': 'SQLite luring',
   'settings.about.defaultDatasetValue': 'Kalender produksi 2027',

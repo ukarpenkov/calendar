@@ -9,10 +9,6 @@ import { getUserJsonImportYear } from '../../../entities/calendar';
 import { useAppLocalization } from '../../../app/providers/localization';
 import { useAppTheme } from '../../../app/providers/theme';
 import {
-  openWorkingCalendarTelegram,
-  WORKING_CALENDAR_TELEGRAM_PATH,
-} from '../../../features/year-end-reminder';
-import {
   AGREED_APP_LANGUAGE_CODES,
   // BUNDLED_CALENDAR_REGION_CODES,
   // type BundledCalendarRegionCode,
@@ -26,10 +22,7 @@ import {
   type AppLanguage,
 } from '../../../shared/lib/i18n';
 import { layout } from '../../../shared/lib/ui/layout';
-import {
-  ArrowBackIcon,
-  TelegramIcon,
-} from '../../../shared/ui/icons/NavigationIcons';
+import { ArrowBackIcon } from '../../../shared/ui/icons/NavigationIcons';
 import { IconCircleButton } from '../../../shared/ui/IconCircleButton';
 // import { BundledCalendarSwitch } from '../../../shared/ui/BundledCalendarSwitch';
 import { LanguageSwitch } from '../../../shared/ui/LanguageSwitch';
@@ -258,14 +251,6 @@ export function SettingsScreen({
             value={getLanguageLabel(language, language)}
             palette={palette}
           />
-          <AboutLinkLine
-            label={t('settings.about.telegram')}
-            value={WORKING_CALENDAR_TELEGRAM_PATH}
-            palette={palette}
-            onPress={() => {
-              openWorkingCalendarTelegram().catch(() => {});
-            }}
-          />
         </View>
       </SectionCard>
     </ScrollView>
@@ -363,31 +348,6 @@ function AboutLine({ label, value, palette }: AboutLineProps) {
     <View style={styles.aboutLine}>
       <Text style={[styles.aboutLabel, { color: palette.subtitle }]}>{label}</Text>
       <Text style={[styles.aboutValue, { color: palette.title }]}>{value}</Text>
-    </View>
-  );
-}
-
-type AboutLinkLineProps = AboutLineProps & {
-  onPress: () => void;
-};
-
-function AboutLinkLine({ label, value, palette, onPress }: AboutLinkLineProps) {
-  return (
-    <View style={styles.aboutLine}>
-      <Text style={[styles.aboutLabel, { color: palette.subtitle }]}>{label}</Text>
-      <Pressable
-        accessibilityRole="link"
-        onPress={onPress}
-        style={({ pressed }) => [
-          styles.aboutLinkPressable,
-          { opacity: pressed ? 0.88 : 1 },
-        ]}
-      >
-        <TelegramIcon color={palette.selectedBorder} size={16} />
-        <Text style={[styles.aboutLinkValue, { color: palette.selectedBorder }]}>
-          {value}
-        </Text>
-      </Pressable>
     </View>
   );
 }
@@ -513,14 +473,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     textAlign: 'right',
-  },
-  aboutLinkPressable: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  aboutLinkValue: {
-    fontSize: 14,
-    fontWeight: '700',
   },
 });

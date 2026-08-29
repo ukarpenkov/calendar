@@ -69,7 +69,6 @@ export const ruTranslations: Record<TranslationKey, string> = {
     'settings.about.defaultDataset': 'Базовый набор',
     'settings.about.theme': 'Тема',
     'settings.about.language': 'Язык',
-    'settings.about.telegram': 'Telegram',
     'settings.about.appValue': 'Календарь',
     'settings.about.storageValue': 'Локальный SQLite',
     'settings.about.defaultDatasetValue': 'Производственный календарь 2027',

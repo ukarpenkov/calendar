@@ -301,7 +301,7 @@ test('opens dedicated JSON import entry from settings', async () => {
   );
 });
 
-test('shows Telegram link in the settings about section', async () => {
+test('does not show Telegram link in the settings about section', async () => {
   mockedSeedBundledYearIfNeeded.mockResolvedValue({
     year: 2027,
     days: [],
@@ -321,7 +321,9 @@ test('shows Telegram link in the settings about section', async () => {
     renderer!.root.findByType(YearHomeScreen).props.onOpenSettings();
   });
 
-  expect(JSON.stringify(renderer!.toJSON())).toContain('t.me/workingcalendar');
+  expect(JSON.stringify(renderer!.toJSON())).not.toContain(
+    't.me/workingcalendar',
+  );
 });
 
 test('shows year-end reminder with Telegram link late in the active year', async () => {

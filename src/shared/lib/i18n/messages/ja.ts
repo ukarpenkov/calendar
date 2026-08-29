@@ -68,7 +68,6 @@ export const jaTranslations = {
   'settings.about.defaultDataset': '既定のデータセット',
   'settings.about.theme': 'テーマ',
   'settings.about.language': '言語',
-  'settings.about.telegram': 'Telegram',
   'settings.about.appValue': 'カレンダー',
   'settings.about.storageValue': 'オフライン SQLite',
   'settings.about.defaultDatasetValue': '2027 年 勤務カレンダー',
