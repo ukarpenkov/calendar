@@ -14,16 +14,28 @@
       "name_id": "Isra Mi'raj Nabi Muhammad SAW"
     },
     {
+      "date": "2027-02-05",
+      "name_ru": "Cuti Bersama Tahun Baru Imlek",
+      "name_en": "Collective Leave for Chinese New Year",
+      "name_id": "Cuti Bersama Tahun Baru Imlek"
+    },
+    {
       "date": "2027-02-06",
       "name_ru": "Tahun Baru Imlek 2578 Kongzili",
       "name_en": "Chinese New Year 2578",
       "name_id": "Tahun Baru Imlek 2578 Kongzili"
     },
     {
-      "date": "2027-03-09",
+      "date": "2027-03-08",
       "name_ru": "Hari Suci Nyepi Tahun Baru Saka 1949",
       "name_en": "Day of Silence, Saka New Year",
       "name_id": "Hari Suci Nyepi Tahun Baru Saka 1949"
+    },
+    {
+      "date": "2027-03-09",
+      "name_ru": "Cuti Bersama Hari Raya Idul Fitri",
+      "name_en": "Collective Leave for Eid al-Fitr",
+      "name_id": "Cuti Bersama Hari Raya Idul Fitri"
     },
     {
       "date": "2027-03-10",
@@ -36,6 +48,24 @@
       "name_ru": "Hari Raya Idul Fitri 1448 H (Hari 2)",
       "name_en": "Eid al-Fitr 1448 H (Day 2)",
       "name_id": "Hari Raya Idul Fitri 1448 H (Hari 2)"
+    },
+    {
+      "date": "2027-03-12",
+      "name_ru": "Cuti Bersama Hari Raya Idul Fitri",
+      "name_en": "Collective Leave for Eid al-Fitr",
+      "name_id": "Cuti Bersama Hari Raya Idul Fitri"
+    },
+    {
+      "date": "2027-03-15",
+      "name_ru": "Cuti Bersama Hari Raya Idul Fitri",
+      "name_en": "Collective Leave for Eid al-Fitr",
+      "name_id": "Cuti Bersama Hari Raya Idul Fitri"
+    },
+    {
+      "date": "2027-03-25",
+      "name_ru": "Cuti Bersama Wafat Isa Al Masih",
+      "name_en": "Collective Leave for Good Friday",
+      "name_id": "Cuti Bersama Wafat Isa Al Masih"
     },
     {
       "date": "2027-03-26",
@@ -62,10 +92,22 @@
       "name_id": "Kenaikan Isa Al Masih"
     },
     {
-      "date": "2027-05-16",
+      "date": "2027-05-17",
       "name_ru": "Hari Raya Idul Adha 1448 H",
       "name_en": "Eid al-Adha 1448 H",
       "name_id": "Hari Raya Idul Adha 1448 H"
+    },
+    {
+      "date": "2027-05-18",
+      "name_ru": "Cuti Bersama Hari Raya Idul Adha",
+      "name_en": "Collective Leave for Eid al-Adha",
+      "name_id": "Cuti Bersama Hari Raya Idul Adha"
+    },
+    {
+      "date": "2027-05-19",
+      "name_ru": "Cuti Bersama Hari Raya Waisak",
+      "name_en": "Collective Leave for Vesak Day",
+      "name_id": "Cuti Bersama Hari Raya Waisak"
     },
     {
       "date": "2027-05-20",
@@ -86,7 +128,7 @@
       "name_id": "Tahun Baru Islam 1449 H"
     },
     {
-      "date": "2027-08-14",
+      "date": "2027-08-15",
       "name_ru": "Maulid Nabi Muhammad SAW",
       "name_en": "Birthday of Prophet Muhammad",
       "name_id": "Maulid Nabi Muhammad SAW"
@@ -98,10 +140,22 @@
       "name_id": "Hari Kemerdekaan Republik Indonesia"
     },
     {
+      "date": "2027-12-24",
+      "name_ru": "Cuti Bersama Hari Raya Natal",
+      "name_en": "Collective Leave for Christmas",
+      "name_id": "Cuti Bersama Hari Raya Natal"
+    },
+    {
       "date": "2027-12-25",
       "name_ru": "Hari Raya Natal",
       "name_en": "Christmas Day",
       "name_id": "Hari Raya Natal"
+    },
+    {
+      "date": "2027-12-26",
+      "name_ru": "Isra Mi'raj Nabi Muhammad SAW",
+      "name_en": "Isra and Mi'raj of Prophet Muhammad",
+      "name_id": "Isra Mi'raj Nabi Muhammad SAW"
     }
   ],
   "weekends": [
