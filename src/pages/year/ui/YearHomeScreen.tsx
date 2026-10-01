@@ -293,12 +293,7 @@ export function YearHomeScreen({
                     {summary.label}
                   </Text>
                   {(vacationDaysCountByMonth.get(summary.month) ?? 0) > 0 ? (
-                    <View
-                      style={[
-                        styles.vacationBadge,
-                        { backgroundColor: '#2DD4BF' },
-                      ]}
-                    >
+                    <View style={styles.vacationBadge}>
                       <Text
                         adjustsFontSizeToFit
                         minimumFontScale={0.6}
@@ -565,10 +560,10 @@ function MonthDayCell({ day, vacationColor, isToday, gridMetrics, resolveDayType
       style={[
         styles.dayCell,
         cellSizeStyle,
+        isToday ? styles.dayCellToday : null,
         {
           backgroundColor: colors.backgroundColor,
           borderColor: isToday ? palette.selectedBorder : colors.borderColor,
-          borderWidth: isToday ? 2 : 1,
           borderRadius: Math.max(4, Math.round(gridMetrics.dayCellSize * 0.28)),
         },
       ]}
@@ -688,6 +683,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#2DD4BF',
   },
   vacationBadgeText: {
     color: '#FFFFFF',
@@ -770,6 +766,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
+  },
+  dayCellToday: {
+    borderWidth: 2,
   },
   dayCellText: {
     fontWeight: '600',

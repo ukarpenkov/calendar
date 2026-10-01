@@ -338,11 +338,11 @@ export function VacationForm({
               editable={daysEnabled}
               style={[
                 styles.daysInput,
+                daysEnabled ? null : styles.daysInputDisabled,
                 {
                   backgroundColor: daysEnabled ? palette.surfaceMuted : palette.surface,
                   borderColor: palette.border,
                   color: daysEnabled ? palette.title : palette.subtitle,
-                  opacity: daysEnabled ? 1 : 0.5,
                 },
               ]}
             />
@@ -392,11 +392,9 @@ export function VacationForm({
                   onPress={() => setSelectedColor(preset.hex)}
                   style={[
                     styles.colorCircle,
-                    {
-                      backgroundColor: preset.hex,
-                      borderColor: isSelected ? palette.title : 'transparent',
-                      borderWidth: isSelected ? 3 : 0,
-                    },
+                    isSelected ? styles.colorCircleSelected : styles.colorCircleIdle,
+                    { backgroundColor: preset.hex },
+                    isSelected ? { borderColor: palette.title } : null,
                   ]}
                 />
               );
@@ -606,6 +604,13 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
   },
+  colorCircleIdle: {
+    borderWidth: 0,
+    borderColor: 'transparent',
+  },
+  colorCircleSelected: {
+    borderWidth: 3,
+  },
   previewRow: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -662,6 +667,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     flex: 1,
+  },
+  daysInputDisabled: {
+    opacity: 0.5,
   },
   addButton: {
     width: 46,

@@ -77,7 +77,7 @@ export function VacationScreen({
                 paddingBottom: safeAreaInsets.bottom + 20,
               },
             ]}
-            ItemSeparatorComponent={() => <View style={styles.separator} />}
+            ItemSeparatorComponent={VacationListSeparator}
             renderItem={({ item }) => {
               const { totalDays, workDays } = getVacationDaysInRange(
                 item.startDate,
@@ -178,3 +178,7 @@ const styles = StyleSheet.create({
     height: 10,
   },
 });
+
+function VacationListSeparator() {
+  return <View style={styles.separator} />;
+}

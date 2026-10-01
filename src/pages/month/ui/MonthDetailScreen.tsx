@@ -1127,9 +1127,7 @@ function HolidayBannerTransition({
   }
 
   return (
-    <Reanimated.View
-      style={[{ alignSelf: 'flex-start', width }, animatedStyle]}
-    >
+    <Reanimated.View style={[styles.holidayBanner, { width }, animatedStyle]}>
       <HolidayBanner source={source} />
     </Reanimated.View>
   );
@@ -1458,5 +1456,8 @@ const styles = StyleSheet.create({
   totalValue: {
     width: '100%',
     textAlign: 'center',
+  },
+  holidayBanner: {
+    alignSelf: 'flex-start',
   },
 });
