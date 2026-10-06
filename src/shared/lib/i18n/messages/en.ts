@@ -60,14 +60,8 @@ export const enTranslations = {
     'settings.sections.about.title': 'About',
     'settings.sections.about.subtitle':
       'Service information for the current local-first build.',
-    'settings.about.app': 'App',
     'settings.about.version': 'Version',
-    'settings.about.storage': 'Storage',
     'settings.about.defaultDataset': 'Default dataset',
-    'settings.about.theme': 'Theme',
-    'settings.about.language': 'Language',
-    'settings.about.appValue': 'Calendar',
-    'settings.about.storageValue': 'Offline SQLite',
     'settings.about.defaultDatasetValue': 'Production calendar 2027',
     'year.reminder.title': 'Next year JSON template',
     'year.reminder.body':

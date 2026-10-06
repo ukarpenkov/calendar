@@ -222,33 +222,13 @@ export function SettingsScreen({
       >
         <View style={styles.aboutList}>
           <AboutLine
-            label={t('settings.about.app')}
-            value={t('settings.about.appValue')}
-            palette={palette}
-          />
-          <AboutLine
-            label={t('settings.about.version')}
-            value={APP_DISPLAY_VERSION}
-            palette={palette}
-          />
-          <AboutLine
-            label={t('settings.about.storage')}
-            value={t('settings.about.storageValue')}
-            palette={palette}
-          />
-          <AboutLine
             label={t('settings.about.defaultDataset')}
             value={t('settings.about.defaultDatasetValue')}
             palette={palette}
           />
           <AboutLine
-            label={t('settings.about.theme')}
-            value={getThemeModeLabel(language, themeMode)}
-            palette={palette}
-          />
-          <AboutLine
-            label={t('settings.about.language')}
-            value={getLanguageLabel(language, language)}
+            label={t('settings.about.version')}
+            value={APP_DISPLAY_VERSION}
             palette={palette}
           />
         </View>

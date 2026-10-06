@@ -62,14 +62,8 @@ export const jaTranslations = {
   'settings.sections.about.title': 'アプリについて',
   'settings.sections.about.subtitle':
     'ローカル優先ビルドに関する情報です。',
-  'settings.about.app': 'アプリ',
   'settings.about.version': 'バージョン',
-  'settings.about.storage': 'ストレージ',
   'settings.about.defaultDataset': '既定のデータセット',
-  'settings.about.theme': 'テーマ',
-  'settings.about.language': '言語',
-  'settings.about.appValue': 'カレンダー',
-  'settings.about.storageValue': 'オフライン SQLite',
   'settings.about.defaultDatasetValue': '2027 年 勤務カレンダー',
   'year.reminder.title': '翌年用 JSON テンプレート',
   'year.reminder.body':

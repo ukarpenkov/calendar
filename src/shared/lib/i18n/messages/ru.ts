@@ -63,14 +63,8 @@ export const ruTranslations: Record<TranslationKey, string> = {
     'settings.sections.about.title': 'О приложении',
     'settings.sections.about.subtitle':
       'Служебная информация о текущей локальной сборке.',
-    'settings.about.app': 'Приложение',
     'settings.about.version': 'Версия',
-    'settings.about.storage': 'Хранилище',
     'settings.about.defaultDataset': 'Базовый набор',
-    'settings.about.theme': 'Тема',
-    'settings.about.language': 'Язык',
-    'settings.about.appValue': 'Календарь',
-    'settings.about.storageValue': 'Локальный SQLite',
     'settings.about.defaultDatasetValue': 'Производственный календарь 2027',
     'year.reminder.title': 'JSON-шаблон на следующий год',
     'year.reminder.body':

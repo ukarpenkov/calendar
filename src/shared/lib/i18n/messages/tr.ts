@@ -62,14 +62,8 @@ export const trTranslations = {
   'settings.sections.about.title': 'Hakkında',
   'settings.sections.about.subtitle':
     'Yerel öncelikli bu sürüm için servis bilgileri.',
-  'settings.about.app': 'Uygulama',
   'settings.about.version': 'Sürüm',
-  'settings.about.storage': 'Depolama',
   'settings.about.defaultDataset': 'Varsayılan veri kümesi',
-  'settings.about.theme': 'Tema',
-  'settings.about.language': 'Dil',
-  'settings.about.appValue': 'Takvim',
-  'settings.about.storageValue': 'Çevrimdışı SQLite',
   'settings.about.defaultDatasetValue': 'Üretim takvimi 2027',
   'year.reminder.title': 'Gelecek yıl için JSON şablonu',
   'year.reminder.body':

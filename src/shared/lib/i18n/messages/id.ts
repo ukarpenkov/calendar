@@ -62,14 +62,8 @@ export const idTranslations = {
   'settings.sections.about.title': 'Tentang',
   'settings.sections.about.subtitle':
     'Informasi layanan untuk build lokal-utama ini.',
-  'settings.about.app': 'Aplikasi',
   'settings.about.version': 'Versi',
-  'settings.about.storage': 'Penyimpanan',
   'settings.about.defaultDataset': 'Dataset default',
-  'settings.about.theme': 'Tema',
-  'settings.about.language': 'Bahasa',
-  'settings.about.appValue': 'Kalender',
-  'settings.about.storageValue': 'SQLite luring',
   'settings.about.defaultDatasetValue': 'Kalender produksi 2027',
   'year.reminder.title': 'Template JSON tahun berikutnya',
   'year.reminder.body':
