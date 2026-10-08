@@ -20,6 +20,9 @@ type CalendarMonthGridProps = {
   onSelectDay: (date: string) => void;
   vacationColorByDate?: ReadonlyMap<string, string>;
   minDate?: string;
+  maxDate?: string;
+  disabledDates?: ReadonlySet<string>;
+  markedDates?: ReadonlyMap<string, string>;
   preserveDayTypeOnSelection?: boolean;
 };
 
@@ -33,6 +36,9 @@ export const CalendarMonthGrid = memo(function CalendarMonthGrid({
   onSelectDay,
   vacationColorByDate,
   minDate,
+  maxDate,
+  disabledDates,
+  markedDates,
   preserveDayTypeOnSelection = false,
 }: CalendarMonthGridProps) {
   return (
@@ -73,17 +79,31 @@ export const CalendarMonthGrid = memo(function CalendarMonthGrid({
               <MemoizedCalendarDayCell
                 key={`${detail.month}-${week.isoWeek}-${dayIndex}`}
                 day={day}
-                disabled={!!day && !!minDate && day.date < minDate}
+                disabled={
+                  !!day &&
+                  ((!!minDate && day.date < minDate) ||
+                    (!!maxDate && day.date > maxDate) ||
+                    disabledDates?.has(day.date) === true)
+                }
                 accessibilityLabel={
                   day
                     ? `${day.day} ${detail.label}, ${getDayTypeLabel(
                         day.type,
                         language,
-                      )}`
+                      )}${
+                        markedDates?.has(day.date)
+                          ? `, ${markedDates.get(day.date)}`
+                          : ''
+                      }`
                     : undefined
                 }
                 preserveDayTypeOnSelection={preserveDayTypeOnSelection}
-                isSelected={day?.date === selectedDayDate}
+                isRangeEndpoint={!!day && markedDates?.has(day.date) === true}
+                isSelected={
+                  !!day &&
+                  (day.date === selectedDayDate ||
+                    markedDates?.has(day.date) === true)
+                }
                 palette={palette}
                 calendarScale={calendarScale}
                 onSelectDay={onSelectDay}
@@ -109,6 +129,7 @@ type CalendarDayCellProps = {
   disabled?: boolean;
   accessibilityLabel?: string;
   preserveDayTypeOnSelection?: boolean;
+  isRangeEndpoint?: boolean;
 };
 
 function CalendarDayCell({
@@ -121,13 +142,14 @@ function CalendarDayCell({
   disabled = false,
   accessibilityLabel,
   preserveDayTypeOnSelection = false,
+  isRangeEndpoint = false,
 }: CalendarDayCellProps) {
   const cellSize = Math.max(36, 42 * calendarScale);
   const onPress = useCallback(() => {
-    if (day) {
+    if (day && !disabled) {
       onSelectDay(day.date);
     }
-  }, [day, onSelectDay]);
+  }, [day, disabled, onSelectDay]);
 
   if (!day) {
     return <View style={styles.emptyDayCell} />;
@@ -169,23 +191,44 @@ function CalendarDayCell({
           ]}
         />
       ) : null}
-      <Text
-        adjustsFontSizeToFit
-        minimumFontScale={0.65}
-        numberOfLines={1}
-        maxFontSizeMultiplier={1.15}
-        style={[
-          styles.dayCellText,
-          {
-            color: isSelected ? palette.title : colors.color,
-            fontSize: 14 * calendarScale,
-          },
-        ]}
+      <View
+        testID={isRangeEndpoint ? `calendar-endpoint-${day.date}` : undefined}
+        style={
+          isRangeEndpoint
+            ? [
+                styles.endpointBadge,
+                {
+                  backgroundColor: palette.selectedBorder,
+                  width: Math.max(26, 30 * calendarScale),
+                  height: Math.max(26, 30 * calendarScale),
+                },
+              ]
+            : undefined
+        }
       >
-        {day.day}
-      </Text>
+        <Text
+          adjustsFontSizeToFit
+          minimumFontScale={0.65}
+          numberOfLines={1}
+          maxFontSizeMultiplier={1.15}
+          style={[
+            styles.dayCellText,
+            {
+              color: isRangeEndpoint
+                ? palette.selectedFill
+                : isSelected
+                ? palette.title
+                : colors.color,
+              fontSize: 14 * calendarScale,
+            },
+          ]}
+        >
+          {day.day}
+        </Text>
+      </View>
       {showVacation ? (
         <View
+          testID={`calendar-period-${day.date}`}
           style={[
             styles.vacationBar,
             {
@@ -257,5 +300,10 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     borderWidth: 2,
     borderRadius: 10,
+  },
+  endpointBadge: {
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

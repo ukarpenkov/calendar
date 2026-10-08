@@ -647,6 +647,7 @@ function AppContent() {
           key={status.calendar.year}
           year={status.calendar.year}
           initialPeriod={editingPeriod ?? undefined}
+          vacationPeriods={vacationPeriods}
           calendarDays={status.calendar.days}
           palette={palette}
           language={language}

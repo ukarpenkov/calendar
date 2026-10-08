@@ -1,15 +1,13 @@
 import React from 'react';
-import {
-  FlatList,
-  Modal,
-  StyleSheet,
-  TextInput,
-} from 'react-native';
+import { FlatList, Modal, StyleSheet, TextInput } from 'react-native';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 
 import { getCalendarPalette, type CalendarDay } from '../src/entities/calendar';
 import { VacationDatePicker } from '../src/pages/vacation/ui/VacationDatePicker';
 import { VacationForm } from '../src/pages/vacation/ui/VacationForm';
+import { VacationConflictNotice } from '../src/pages/vacation/ui/VacationConflictNotice';
+import type { VacationPeriod } from '../src/features/vacation/model';
+import type { AppLanguage } from '../src/shared/lib/i18n';
 
 jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
@@ -163,12 +161,14 @@ describe('VacationDatePicker', () => {
 describe('VacationForm date selection', () => {
   const renderForm = (
     initialPeriod?: React.ComponentProps<typeof VacationForm>['initialPeriod'],
+    vacationPeriods: VacationPeriod[] = [],
   ) => {
     const onSave = jest.fn();
     render(
       <VacationForm
         year={year}
         initialPeriod={initialPeriod}
+        vacationPeriods={vacationPeriods}
         calendarDays={calendarDays}
         palette={palette}
         language="en"
@@ -201,7 +201,7 @@ describe('VacationForm date selection', () => {
     ).toBe('2028-01-07');
   });
 
-  it('preserves duration when moving the start and clamps days and increment at December 31', () => {
+  it('keeps the end when moving the start and clamps days and increment at December 31', () => {
     const onSave = renderForm({
       id: 1,
       startDate: '2028-12-20',
@@ -209,17 +209,148 @@ describe('VacationForm date selection', () => {
       color: '#3B82F6',
     });
     press('vacation-start-date');
-    press('calendar-day-2028-12-29');
-    expect(renderer.root.findByType(TextInput).props.value).toBe('3');
+    press('calendar-day-2028-12-23');
+    expect(renderer.root.findByType(TextInput).props.value).toBe('4');
     act(() => renderer.root.findByType(TextInput).props.onChangeText('99'));
     press('increment-day-button');
-    expect(renderer.root.findByType(TextInput).props.value).toBe('3');
+    expect(renderer.root.findByType(TextInput).props.value).toBe('9');
+    expect(renderer.root.findAllByType(VacationConflictNotice)).toHaveLength(0);
     save();
     expect(onSave).toHaveBeenLastCalledWith(
-      '2028-12-29',
+      '2028-12-23',
       '2028-12-31',
       '#3B82F6',
     );
+  });
+
+  const existing: VacationPeriod = {
+    id: 2,
+    startDate: '2028-01-10',
+    endDate: '2028-01-12',
+    color: '#3B82F6',
+  };
+  const day = (date: string) =>
+    renderer.root.findByProps({ testID: `calendar-day-${date}` });
+
+  it('shows prominent endpoints and the whole saved period whenever either picker reopens', () => {
+    renderForm({
+      id: 1,
+      startDate: '2028-01-07',
+      endDate: '2028-01-10',
+      color: '#3B82F6',
+    });
+    for (const field of ['start', 'end']) {
+      press(`vacation-${field}-date`);
+      for (const date of ['2028-01-07', '2028-01-10']) {
+        const badge = renderer.root.findByProps({
+          testID: `calendar-endpoint-${date}`,
+        });
+        expect(StyleSheet.flatten(badge.props.style).backgroundColor).toBe(
+          palette.selectedBorder,
+        );
+      }
+      for (const date of [
+        '2028-01-07',
+        '2028-01-08',
+        '2028-01-09',
+        '2028-01-10',
+      ]) {
+        expect(
+          renderer.root.findByProps({ testID: `calendar-period-${date}` }),
+        ).toBeTruthy();
+      }
+      expect(
+        renderer.root.findAllByProps({ testID: 'calendar-period-2028-01-11' }),
+      ).toHaveLength(0);
+      expect(
+        StyleSheet.flatten(day('2028-01-07').props.style({ pressed: false }))
+          .backgroundColor,
+      ).toBe(palette.shortenedFill);
+      expect(
+        StyleSheet.flatten(day('2028-01-08').props.style({ pressed: false }))
+          .backgroundColor,
+      ).toBe(palette.weekendFill);
+      press('date-picker-backdrop');
+    }
+  });
+
+  it('marks both endpoints and restricts each against the other endpoint', () => {
+    renderForm({
+      id: 1,
+      startDate: '2028-01-07',
+      endDate: '2028-01-08',
+      color: '#3B82F6',
+    });
+    press('vacation-end-date');
+    expect(day('2028-01-07').props.accessibilityState.selected).toBe(true);
+    expect(day('2028-01-08').props.accessibilityState.selected).toBe(true);
+    expect(day('2028-01-06').props.disabled).toBe(true);
+    press('date-picker-backdrop');
+    press('vacation-start-date');
+    expect(day('2028-01-09').props.disabled).toBe(true);
+    press('calendar-day-2028-01-09');
+    expect(renderer.root.findAllByType(VacationDatePicker)).toHaveLength(1);
+    press('calendar-day-2028-01-06');
+    expect(renderer.root.findByType(TextInput).props.value).toBe('3');
+  });
+
+  it('blocks occupied days and crossing an existing vacation, including via duration or plus', () => {
+    const onSave = renderForm(undefined, [existing]);
+    press('vacation-start-date');
+    expect(day('2028-01-10').props.disabled).toBe(true);
+    press('calendar-day-2028-01-07');
+    press('vacation-end-date');
+    expect(day('2028-01-13').props.disabled).toBe(true);
+    press('calendar-day-2028-01-13');
+    expect(renderer.root.findAllByType(VacationDatePicker)).toHaveLength(1);
+    press('calendar-day-2028-01-09');
+    press('increment-day-button');
+    expect(renderer.root.findAllByType(VacationConflictNotice)).toHaveLength(1);
+    expect(renderer.root.findByType(TextInput).props.value).toBe('3');
+    press('vacation-conflict-dismiss');
+    expect(renderer.root.findAllByType(VacationConflictNotice)).toHaveLength(0);
+    act(() => renderer.root.findByType(TextInput).props.onChangeText('8'));
+    expect(renderer.root.findAllByType(VacationConflictNotice)).toHaveLength(1);
+    expect(renderer.root.findByType(TextInput).props.value).toBe('3');
+    press('vacation-conflict-dismiss');
+    save();
+    expect(onSave).toHaveBeenCalledWith('2028-01-07', '2028-01-09', '#2DD4BF');
+  });
+
+  it('also blocks crossing a vacation when selecting the end first', () => {
+    const onSave = renderForm(undefined, [existing]);
+    press('vacation-end-date');
+    press('calendar-day-2028-01-15');
+    press('vacation-start-date');
+    expect(day('2028-01-09').props.disabled).toBe(true);
+    expect(day('2028-01-16').props.disabled).toBe(true);
+    expect(day('2028-01-13').props.disabled).toBe(false);
+    press('calendar-day-2028-01-13');
+    save();
+    expect(onSave).toHaveBeenCalledWith('2028-01-13', '2028-01-15', '#2DD4BF');
+  });
+
+  it('allows editing its own dates but continues to exclude other vacations', () => {
+    const onSave = renderForm(existing, [
+      existing,
+      { ...existing, id: 3, startDate: '2028-01-15', endDate: '2028-01-18' },
+    ]);
+    press('vacation-end-date');
+    expect(day('2028-01-10').props.disabled).toBe(false);
+    expect(day('2028-01-12').props.disabled).toBe(false);
+    expect(day('2028-01-15').props.disabled).toBe(true);
+    press('calendar-day-2028-01-14');
+    save();
+    expect(onSave).toHaveBeenCalledWith('2028-01-10', '2028-01-14', '#3B82F6');
+  });
+
+  it('rejects saving an existing overlapping range', () => {
+    const onSave = renderForm(
+      { ...existing, id: 1, startDate: '2028-01-07', endDate: '2028-01-14' },
+      [existing],
+    );
+    save();
+    expect(onSave).not.toHaveBeenCalled();
   });
 
   it('counts February 29 when entering duration and incrementing it', () => {
@@ -243,5 +374,32 @@ describe('VacationForm date selection', () => {
       '2028-03-01',
       '#3B82F6',
     );
+  });
+});
+
+describe('VacationConflictNotice translations', () => {
+  it.each<[AppLanguage, string, string]>([
+    ['ru', 'Даты уже заняты', 'Понятно'],
+    ['en', 'Dates already booked', 'Got it'],
+    ['tr', 'Tarihler zaten dolu', 'Anladım'],
+    ['id', 'Tanggal sudah terpakai', 'Mengerti'],
+    ['ja', 'すでに休暇が登録されています', '確認'],
+  ])('shows the message in %s and dismisses it', (language, title, dismiss) => {
+    const onClose = jest.fn();
+    render(
+      <VacationConflictNotice
+        palette={palette}
+        language={language}
+        onClose={onClose}
+      />,
+    );
+    const json = JSON.stringify(renderer.toJSON());
+    expect(json).toContain(title);
+    expect(json).toContain(dismiss);
+    expect(json).not.toContain('vacation.conflictMessage');
+    press('vacation-conflict-dismiss');
+    expect(onClose).toHaveBeenCalledTimes(1);
+    act(() => renderer.root.findByType(Modal).props.onRequestClose());
+    expect(onClose).toHaveBeenCalledTimes(2);
   });
 });

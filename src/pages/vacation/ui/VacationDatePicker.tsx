@@ -37,6 +37,10 @@ type VacationDatePickerProps = {
   selectedDate: string | null;
   initialDate: string | null;
   minDate?: string;
+  maxDate?: string;
+  disabledDates?: ReadonlySet<string>;
+  startDate?: string | null;
+  endDate?: string | null;
   title: string;
   palette: CalendarPalette;
   language: AppLanguage;
@@ -52,6 +56,10 @@ export function VacationDatePicker({
   selectedDate,
   initialDate,
   minDate,
+  maxDate,
+  disabledDates,
+  startDate,
+  endDate,
   title,
   palette,
   language,
@@ -90,13 +98,42 @@ export function VacationDatePicker({
     () => getShortWeekdayLabels(language),
     [language],
   );
+  const markedDates = useMemo(() => {
+    const dates = new Map<string, string>();
+    if (startDate)
+      dates.set(startDate, getTranslation(language, 'vacation.startDate'));
+    if (endDate) {
+      const label = getTranslation(language, 'vacation.endDate');
+      dates.set(
+        endDate,
+        dates.has(endDate) ? `${dates.get(endDate)}, ${label}` : label,
+      );
+    }
+    return dates;
+  }, [endDate, language, startDate]);
+  const rangeColors = useMemo(() => {
+    const colors = new Map<string, string>();
+    if (startDate && endDate && startDate <= endDate) {
+      for (const day of calendarDays) {
+        if (day.date >= startDate && day.date <= endDate) {
+          colors.set(day.date, palette.selectedBorder);
+        }
+      }
+    }
+    return colors;
+  }, [calendarDays, endDate, palette.selectedBorder, startDate]);
   const selectDay = useCallback(
     (date: string) => {
-      if (Number(date.slice(0, 4)) === year && (!minDate || date >= minDate)) {
+      if (
+        Number(date.slice(0, 4)) === year &&
+        (!minDate || date >= minDate) &&
+        (!maxDate || date <= maxDate) &&
+        !disabledDates?.has(date)
+      ) {
         onSelect(date);
       }
     },
-    [minDate, onSelect, year],
+    [disabledDates, maxDate, minDate, onSelect, year],
   );
   const renderMonth = useCallback(
     ({ item }: { item: CalendarMonthDetail }) => (
@@ -109,6 +146,10 @@ export function VacationDatePicker({
           calendarScale={calendarScale}
           selectedDayDate={selectedDate ?? undefined}
           minDate={minDate}
+          maxDate={maxDate}
+          disabledDates={disabledDates}
+          markedDates={markedDates}
+          vacationColorByDate={rangeColors}
           onSelectDay={selectDay}
           preserveDayTypeOnSelection
         />
@@ -118,6 +159,10 @@ export function VacationDatePicker({
       calendarScale,
       language,
       minDate,
+      maxDate,
+      disabledDates,
+      markedDates,
+      rangeColors,
       pageWidth,
       palette,
       selectDay,
@@ -180,6 +225,44 @@ export function VacationDatePicker({
           ]}
         >
           <Text style={[styles.title, { color: palette.title }]}>{title}</Text>
+          {startDate || endDate ? (
+            <View style={styles.rangeSummary}>
+              {(['start', 'end'] as const).map(field => {
+                const date = field === 'start' ? startDate : endDate;
+                return (
+                  <View key={field} style={styles.rangeEndpoint}>
+                    <Text
+                      style={[
+                        styles.rangeLabel,
+                        field === 'end' && styles.rangeEndText,
+                        { color: palette.subtitle },
+                      ]}
+                    >
+                      {getTranslation(
+                        language,
+                        field === 'start'
+                          ? 'vacation.startDate'
+                          : 'vacation.endDate',
+                      )}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.rangeDate,
+                        field === 'end' && styles.rangeEndText,
+                        {
+                          color: date
+                            ? palette.selectedBorder
+                            : palette.subtitle,
+                        },
+                      ]}
+                    >
+                      {date ? `${date.slice(8, 10)}.${date.slice(5, 7)}` : '—'}
+                    </Text>
+                  </View>
+                );
+              })}
+            </View>
+          ) : null}
           <View style={styles.navigation}>
             <IconCircleButton
               palette={palette}
@@ -282,6 +365,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingTop: 4,
   },
+  rangeSummary: { flexDirection: 'row', gap: 12, paddingHorizontal: 8 },
+  rangeEndpoint: { flex: 1, gap: 2 },
+  rangeLabel: { fontSize: 12 },
+  rangeDate: { fontSize: 18, fontWeight: '700' },
+  rangeEndText: { textAlign: 'right' },
   navigation: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   month: { flex: 1, fontSize: 22, fontWeight: '600', textAlign: 'center' },
   calendarBody: { flexShrink: 1 },
