@@ -644,6 +644,8 @@ function AppContent() {
     if (showVacationForm) {
       return (
         <VacationForm
+          key={status.calendar.year}
+          year={status.calendar.year}
           initialPeriod={editingPeriod ?? undefined}
           calendarDays={status.calendar.days}
           palette={palette}

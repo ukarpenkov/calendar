@@ -71,6 +71,7 @@ describe('VacationForm', () => {
     await ReactTestRenderer.act(async () => {
       renderer = ReactTestRenderer.create(
         <VacationForm
+          year={2026}
           calendarDays={calendarDays}
           palette={palette}
           language="en"
@@ -90,6 +91,7 @@ describe('VacationForm', () => {
     await ReactTestRenderer.act(async () => {
       renderer = ReactTestRenderer.create(
         <VacationForm
+          year={2026}
           initialPeriod={editPeriod}
           calendarDays={calendarDays}
           palette={palette}
@@ -111,6 +113,7 @@ describe('VacationForm', () => {
     await ReactTestRenderer.act(async () => {
       renderer = ReactTestRenderer.create(
         <VacationForm
+          year={2026}
           calendarDays={calendarDays}
           palette={palette}
           language="en"
@@ -135,6 +138,7 @@ describe('VacationForm', () => {
     await ReactTestRenderer.act(async () => {
       renderer = ReactTestRenderer.create(
         <VacationForm
+          year={2026}
           calendarDays={calendarDays}
           palette={palette}
           language="ru"
@@ -158,6 +162,7 @@ describe('VacationForm', () => {
     await ReactTestRenderer.act(async () => {
       renderer = ReactTestRenderer.create(
         <VacationForm
+          year={2026}
           calendarDays={calendarDays}
           palette={palette}
           language="en"
@@ -181,6 +186,7 @@ describe('VacationForm', () => {
     await ReactTestRenderer.act(async () => {
       renderer = ReactTestRenderer.create(
         <VacationForm
+          year={2026}
           calendarDays={calendarDays}
           palette={palette}
           language="en"
@@ -203,6 +209,7 @@ describe('VacationForm', () => {
     await ReactTestRenderer.act(async () => {
       renderer = ReactTestRenderer.create(
         <VacationForm
+          year={2026}
           initialPeriod={editPeriod}
           calendarDays={calendarDays}
           palette={palette}
@@ -224,6 +231,7 @@ describe('VacationForm', () => {
     await ReactTestRenderer.act(async () => {
       renderer = ReactTestRenderer.create(
         <VacationForm
+          year={2026}
           calendarDays={calendarDays}
           palette={palette}
           language="en"
@@ -243,6 +251,7 @@ describe('VacationForm', () => {
     await ReactTestRenderer.act(async () => {
       renderer = ReactTestRenderer.create(
         <VacationForm
+          year={2026}
           initialPeriod={editPeriod}
           calendarDays={calendarDays}
           palette={palette}
@@ -265,6 +274,7 @@ describe('VacationForm', () => {
     await ReactTestRenderer.act(async () => {
       renderer = ReactTestRenderer.create(
         <VacationForm
+          year={2026}
           calendarDays={calendarDays}
           palette={palette}
           language="en"
