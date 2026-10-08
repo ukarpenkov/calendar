@@ -3,20 +3,24 @@
  */
 
 import React, { useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Keyboard, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { CalendarDay, CalendarPalette } from '../../../entities/calendar';
 import type { VacationPeriod } from '../../../features/vacation/model';
-import { getVacationDaysInRange } from '../../../features/vacation/lib';
+import { getMaxVacationDays, getVacationDaysInRange, overlapsVacation } from '../../../features/vacation/lib';
 import type { AppLanguage } from '../../../shared/lib/i18n';
 import { getTranslation } from '../../../shared/lib/i18n';
 import { layout } from '../../../shared/lib/ui/layout';
 import { IconCircleButton } from '../../../shared/ui/IconCircleButton';
-import { ArrowBackIcon } from '../../../shared/ui/icons/NavigationIcons';
+import { ArrowBackIcon, CalendarIcon } from '../../../shared/ui/icons/NavigationIcons';
+import { VacationDatePicker } from './VacationDatePicker';
+import { VacationConflictNotice } from './VacationConflictNotice';
 
 export type VacationFormProps = {
+  year: number;
   initialPeriod?: VacationPeriod;
+  vacationPeriods?: readonly VacationPeriod[];
   calendarDays: CalendarDay[];
   palette: CalendarPalette;
   language: AppLanguage;
@@ -24,6 +28,8 @@ export type VacationFormProps = {
   onDelete?: () => void;
   onCancel: () => void;
 };
+
+const NO_VACATIONS: readonly VacationPeriod[] = [];
 
 const COLOR_PRESETS = [
   { hex: '#2DD4BF', name: 'Teal' },
@@ -34,10 +40,6 @@ const COLOR_PRESETS = [
   { hex: '#22C55E', name: 'Green' },
 ];
 
-function getCurrentYear(): number {
-  return new Date().getFullYear();
-}
-
 function daysBetweenDates(startIso: string, endIso: string): number {
   const start = new Date(startIso);
   const end = new Date(endIso);
@@ -47,32 +49,11 @@ function daysBetweenDates(startIso: string, endIso: string): number {
 
 function addDaysToDate(startIso: string, days: number): string {
   const date = new Date(startIso);
-  date.setDate(date.getDate() + days - 1);
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
+  date.setUTCDate(date.getUTCDate() + days - 1);
+  const y = date.getUTCFullYear();
+  const m = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const d = String(date.getUTCDate()).padStart(2, '0');
   return `${y}-${m}-${d}`;
-}
-
-function getMaxDaysFromStart(startIso: string): number {
-  const year = getCurrentYear();
-  const endOfYear = `${year}-12-31`;
-  return daysBetweenDates(startIso, endOfYear);
-}
-
-function parseDisplayDate(text: string): string | null {
-  const match = text.trim().match(/^(\d{2})\.(\d{2})$/);
-  if (!match) {
-    return null;
-  }
-  const [, d, m] = match;
-  const y = getCurrentYear();
-  const iso = `${y}-${m}-${d}`;
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) {
-    return null;
-  }
-  return iso;
 }
 
 function isoToDisplayDate(iso: string): string {
@@ -83,50 +64,10 @@ function isoToDisplayDate(iso: string): string {
   return `${d}.${m}`;
 }
 
-function formatDayMonthInput(text: string): string {
-  const digits = text.replace(/\D/g, '').slice(0, 4);
-  if (digits.length === 0) {
-    return '';
-  }
-
-  const dayPart = digits.slice(0, 2);
-  const monthPart = digits.slice(2, 4);
-
-  if (dayPart.length === 2) {
-    const day = parseInt(dayPart, 10);
-    if (day < 1 || day > 31) {
-      return dayPart.slice(0, 1);
-    }
-  }
-
-  if (monthPart.length === 2) {
-    const month = parseInt(monthPart, 10);
-    if (month < 1 || month > 12) {
-      return dayPart + '.' + monthPart.slice(0, 1);
-    }
-
-    const day = parseInt(dayPart, 10);
-    if (day > 0) {
-      const y = getCurrentYear();
-      const date = new Date(y, month - 1, day);
-      if (
-        date.getFullYear() !== y ||
-        date.getMonth() !== month - 1 ||
-        date.getDate() !== day
-      ) {
-        return dayPart;
-      }
-    }
-  }
-
-  if (digits.length > 2) {
-    return digits.slice(0, 2) + '.' + digits.slice(2);
-  }
-  return digits;
-}
-
 export function VacationForm({
+  year,
   initialPeriod,
+  vacationPeriods = NO_VACATIONS,
   calendarDays,
   palette,
   language,
@@ -140,48 +81,56 @@ export function VacationForm({
   const t = (key: Parameters<typeof getTranslation>[1]) =>
     getTranslation(language, key);
 
-  const [startDisplay, setStartDisplay] = useState(
-    initialPeriod ? isoToDisplayDate(initialPeriod.startDate) : '',
-  );
-  const [endDisplay, setEndDisplay] = useState(
-    initialPeriod ? isoToDisplayDate(initialPeriod.endDate) : '',
-  );
+  const [startIso, setStartIso] = useState<string | null>(initialPeriod?.startDate ?? null);
+  const [endIso, setEndIso] = useState<string | null>(initialPeriod?.endDate ?? null);
+  const [showConflict, setShowConflict] = useState(false);
+  const [datePicker, setDatePicker] = useState<'start' | 'end' | null>(null);
   const [daysText, setDaysText] = useState(
     initialPeriod ? String(daysBetweenDates(initialPeriod.startDate, initialPeriod.endDate)) : '',
   );
 
-  const startIso = useMemo(() => parseDisplayDate(startDisplay), [startDisplay]);
-  const endIso = useMemo(() => parseDisplayDate(endDisplay), [endDisplay]);
-
-  const handleStartChange = (text: string) => {
-    const formatted = formatDayMonthInput(text);
-    setStartDisplay(formatted);
-    const newStartIso = parseDisplayDate(formatted);
-    if (newStartIso) {
-      const parsedDays = parseInt(daysText, 10);
-      if (!isNaN(parsedDays) && parsedDays > 0) {
-        const maxDays = getMaxDaysFromStart(newStartIso);
-        const clampedDays = Math.min(parsedDays, maxDays);
-        setEndDisplay(isoToDisplayDate(addDaysToDate(newStartIso, clampedDays)));
-        setDaysText(String(clampedDays));
-      } else if (endIso) {
-        const days = daysBetweenDates(newStartIso, endIso);
-        if (days >= 0) {
-          setDaysText(String(days));
-        }
+  const otherVacations = useMemo(
+    () => vacationPeriods.filter(period => period.id !== initialPeriod?.id),
+    [vacationPeriods, initialPeriod?.id],
+  );
+  const disabledDates = useMemo(() => {
+    const dates = new Set<string>();
+    for (const day of calendarDays) {
+      // Check the entire candidate range, including vacations between its ends.
+      const start = datePicker === 'end' ? startIso ?? day.date : day.date;
+      const end = datePicker === 'start' ? endIso ?? day.date : day.date;
+      if (day.year !== year || end < start || overlapsVacation(start, end, otherVacations)) {
+        dates.add(day.date);
       }
     }
+    return dates;
+  }, [calendarDays, datePicker, endIso, otherVacations, startIso, year]);
+
+  const openDatePicker = (field: 'start' | 'end') => {
+    Keyboard.dismiss();
+    setDatePicker(field);
   };
 
-  const handleEndChange = (text: string) => {
-    setEndDisplay(formatDayMonthInput(text));
-    const newEndIso = parseDisplayDate(formatDayMonthInput(text));
-    if (startIso && newEndIso) {
-      const days = daysBetweenDates(startIso, newEndIso);
-      if (days >= 0) {
-        setDaysText(String(days));
-      }
+  const handleStartChange = (date: string) => {
+    if (disabledDates.has(date)) return;
+    setStartIso(date);
+    // The other endpoint stays put when either date is changed.
+    setDaysText(endIso ? String(daysBetweenDates(date, endIso)) : '');
+    setDatePicker(null);
+  };
+
+  const handleEndChange = (date: string) => {
+    if (disabledDates.has(date)) return;
+    setEndIso(date);
+    if (startIso) {
+      setDaysText(String(daysBetweenDates(startIso, date)));
     }
+    setDatePicker(null);
+  };
+
+  const showVacationConflict = () => {
+    Keyboard.dismiss();
+    setShowConflict(true);
   };
 
   const handleDaysChange = (text: string) => {
@@ -189,9 +138,15 @@ export function VacationForm({
     setDaysText(cleaned);
     const parsedDays = parseInt(cleaned, 10);
     if (!isNaN(parsedDays) && parsedDays > 0 && startIso) {
-      const maxDays = getMaxDaysFromStart(startIso);
+      const maxDays = getMaxVacationDays(startIso, year, otherVacations);
+      if (parsedDays > maxDays && maxDays < daysBetweenDates(startIso, `${year}-12-31`)) {
+        setDaysText(endIso ? String(daysBetweenDates(startIso, endIso)) : '');
+        showVacationConflict();
+        return;
+      }
+      if (maxDays === 0) return;
       const clampedDays = Math.min(parsedDays, maxDays);
-      setEndDisplay(isoToDisplayDate(addDaysToDate(startIso, clampedDays)));
+      setEndIso(addDaysToDate(startIso, clampedDays));
       if (parsedDays > maxDays) {
         setDaysText(String(clampedDays));
       }
@@ -201,11 +156,13 @@ export function VacationForm({
   const handleIncrementDay = () => {
     if (!startIso) return;
     const currentDays = parseInt(daysText, 10) || 0;
-    const maxDays = getMaxDaysFromStart(startIso);
+    const maxDays = getMaxVacationDays(startIso, year, otherVacations);
     if (currentDays < maxDays) {
       const newDays = currentDays + 1;
       setDaysText(String(newDays));
-      setEndDisplay(isoToDisplayDate(addDaysToDate(startIso, newDays)));
+      setEndIso(addDaysToDate(startIso, newDays));
+    } else if (maxDays < daysBetweenDates(startIso, `${year}-12-31`)) {
+      showVacationConflict();
     }
   };
   const [selectedColor, setSelectedColor] = useState(
@@ -213,13 +170,13 @@ export function VacationForm({
   );
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const startValid = startDisplay.trim() === '' || startIso !== null;
-  const endValid = endDisplay.trim() === '' || endIso !== null;
-
   const rangeValid =
     startIso !== null &&
     endIso !== null &&
-    endIso >= startIso;
+    endIso >= startIso &&
+    startIso.startsWith(`${year}-`) &&
+    endIso.startsWith(`${year}-`) &&
+    !overlapsVacation(startIso, endIso, otherVacations);
 
   const daysEnabled = startIso !== null;
 
@@ -289,41 +246,49 @@ export function VacationForm({
           <Text style={[styles.cardTitle, { color: palette.title }]}>
             {t('vacation.startDate')}
           </Text>
-          <TextInput
-            value={startDisplay}
-            onChangeText={handleStartChange}
-            placeholder="DD.MM"
-            placeholderTextColor={palette.subtitle}
-            keyboardType="number-pad"
-            maxLength={5}
-            style={[
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('vacation.startDate')}
+            accessibilityValue={{ text: startIso ? isoToDisplayDate(startIso) : 'DD.MM' }}
+            testID="vacation-start-date"
+            onPress={() => openDatePicker('start')}
+            style={({ pressed }) => [
               styles.input,
               {
                 backgroundColor: palette.surfaceMuted,
-                borderColor: startValid ? palette.border : palette.holidayBorder,
-                color: palette.title,
+                borderColor: palette.border,
+                opacity: pressed ? 0.8 : 1,
               },
             ]}
-          />
+          >
+            <Text style={[styles.dateText, { color: startIso ? palette.title : palette.subtitle }]}>
+              {startIso ? isoToDisplayDate(startIso) : 'DD.MM'}
+            </Text>
+            <CalendarIcon color={palette.icon} size={20} />
+          </Pressable>
           <Text style={[styles.cardTitle, { color: palette.title }]}>
             {t('vacation.endDate')}
           </Text>
-          <TextInput
-            value={endDisplay}
-            onChangeText={handleEndChange}
-            placeholder="DD.MM"
-            placeholderTextColor={palette.subtitle}
-            keyboardType="number-pad"
-            maxLength={5}
-            style={[
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('vacation.endDate')}
+            accessibilityValue={{ text: endIso ? isoToDisplayDate(endIso) : 'DD.MM' }}
+            testID="vacation-end-date"
+            onPress={() => openDatePicker('end')}
+            style={({ pressed }) => [
               styles.input,
               {
                 backgroundColor: palette.surfaceMuted,
-                borderColor: endValid ? palette.border : palette.holidayBorder,
-                color: palette.title,
+                borderColor: palette.border,
+                opacity: pressed ? 0.8 : 1,
               },
             ]}
-          />
+          >
+            <Text style={[styles.dateText, { color: endIso ? palette.title : palette.subtitle }]}>
+              {endIso ? isoToDisplayDate(endIso) : 'DD.MM'}
+            </Text>
+            <CalendarIcon color={palette.icon} size={20} />
+          </Pressable>
           <Text style={[styles.cardTitle, { color: palette.title }]}>
             Дней
           </Text>
@@ -365,7 +330,7 @@ export function VacationForm({
           </View>
           {bothFilled && !rangeValid ? (
             <Text style={[styles.errorText, { color: palette.holidayBorder }]}>
-              End date must be after or equal to start date
+              {t('vacation.unavailableRange')}
             </Text>
           ) : null}
         </View>
@@ -483,6 +448,27 @@ export function VacationForm({
           </>
         ) : null}
       </ScrollView>
+      {showConflict ? (
+        <VacationConflictNotice palette={palette} language={language} onClose={() => setShowConflict(false)} />
+      ) : null}
+      {datePicker ? (
+        <VacationDatePicker
+          year={year}
+          calendarDays={calendarDays}
+          selectedDate={datePicker === 'start' ? startIso : endIso}
+          initialDate={datePicker === 'start' ? endIso : startIso}
+          startDate={startIso}
+          endDate={endIso}
+          disabledDates={disabledDates}
+          maxDate={datePicker === 'start' ? endIso ?? undefined : undefined}
+          minDate={datePicker === 'end' ? startIso ?? undefined : undefined}
+          title={t(datePicker === 'start' ? 'vacation.startDate' : 'vacation.endDate')}
+          palette={palette}
+          language={language}
+          onSelect={datePicker === 'start' ? handleStartChange : handleEndChange}
+          onClose={() => setDatePicker(null)}
+        />
+      ) : null}
     </View>
   );
 }
@@ -508,6 +494,7 @@ function ActionButton({
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityLabel={label}
       onPress={onPress}
       disabled={disabled}
       style={({ pressed }) => [
@@ -533,6 +520,7 @@ function GhostButton({ label, onPress, palette }: GhostButtonProps) {
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityLabel={label}
       onPress={onPress}
       style={({ pressed }) => [
         styles.ghostButton,
@@ -587,6 +575,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 14,
     paddingHorizontal: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  dateText: {
     fontSize: 16,
     fontWeight: '500',
   },
