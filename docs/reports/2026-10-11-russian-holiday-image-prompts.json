@@ -1,0 +1,130 @@
+[
+  {
+    "name": "new_year_default",
+    "widget": "day_new_year_default",
+    "holiday": "Новый год",
+    "prompt": "Use case: style-transfer. Redraw image 1 (the existing holiday illustration, EDIT TARGET) as a much richer, atmospheric, premium illustrated calendar panorama. Image 2 is STYLE REFERENCE ONLY: the approved Mexico calendar illustration. Match image 2's refined painterly editorial illustration, detailed architecture and vegetation, rich layered colors, warm cinematic golden light, subtle paper grain, deep teal/navy shadows, luminous cream highlights, sophisticated depth and atmospheric perspective, naturally simplified faces. The original flat geometric image must become as atmospheric and beautifully detailed as the Mexico reference, NOT a flat corporate vector drawing. Keep the holiday subject of image 1 but improve composition freely. Do not copy Mexico's flags, architecture, clothing or cultural motifs. Panoramic full bleed image, exact target 1915:821 (2.33:1), no borders or blank margins, important subjects within central 85%, legible at small calendar/widget size. No text, typography, labels, watermark, dates, year numerals or logos. No photorealism or 3D. Preserve a cozy New Year's Eve gathering in a warmly lit home: family and friends, decorated fir tree, tasteful gold glass ornaments and presents, mandarins and tea on the table, enormous windows onto snowy firs and distant golden fireworks in indigo night. Layered amber lamps and tree lights reflect softly on the glass, richly textured knitwear and wood. Universal winter celebration without national flags or landmarks. Warm welcoming atmosphere; nuanced blue snow and jewel-like lights.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/new_year_default.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-78b0ef23-4283-4ead-813a-e9637f22ec50.png",
+    "appAsset": "assets/days_img/new_year_default.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_new_year_default.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 416506
+  },
+  {
+    "name": "7jan_сristmas",
+    "widget": "day_7jan_cristmas",
+    "holiday": "Рождество Христово",
+    "prompt": "Use case: style-transfer. Redraw image 1 (the existing holiday illustration, EDIT TARGET) as a much richer, atmospheric, premium illustrated calendar panorama. Image 2 is STYLE REFERENCE ONLY: the approved Mexico calendar illustration. Match image 2's refined painterly editorial illustration, detailed architecture and vegetation, rich layered colors, warm cinematic golden light, subtle paper grain, deep teal/navy shadows, luminous cream highlights, sophisticated depth and atmospheric perspective, naturally simplified faces. The original flat geometric image must become as atmospheric and beautifully detailed as the Mexico reference, NOT a flat corporate vector drawing. Keep the holiday subject of image 1 but improve composition freely. Do not copy Mexico's flags, architecture, clothing or cultural motifs. Panoramic full bleed image, exact target 1915:821 (2.33:1), no borders or blank margins, important subjects within central 85%, legible at small calendar/widget size. No text, typography, labels, watermark, dates, year numerals or logos. No photorealism or 3D. Preserve the respectful Nativity scene: Mary and Joseph watching infant Jesus safely swaddled in a manger, humble warm stable, gentle ox and donkey, distant ancient Bethlehem stone houses, a radiant star in an indigo night sky. Honey-gold lantern light and straw, intricate but tasteful wood and stone textures, calm reverent faces, deep teal hills and cypress. Beautiful spiritual Christmas atmosphere, suitable for both Orthodox and Western Christmas. No Santa or fir-tree party.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/7jan_сristmas.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-53d60449-d185-48a2-9a0e-4ae03b7f1105.png",
+    "appAsset": "assets/days_img/7jan_сristmas.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_7jan_cristmas.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 437038
+  },
+  {
+    "name": "feb23_defender_day",
+    "widget": "day_feb23_defender_day",
+    "holiday": "23 февраля",
+    "prompt": "Use case: style-transfer. Redraw image 1 (the existing holiday illustration, EDIT TARGET) as a much richer, atmospheric, premium illustrated calendar panorama. Image 2 is STYLE REFERENCE ONLY: the approved Mexico calendar illustration. Match image 2's refined painterly editorial illustration, detailed architecture and vegetation, rich layered colors, warm cinematic golden light, subtle paper grain, deep teal/navy shadows, luminous cream highlights, sophisticated depth and atmospheric perspective, naturally simplified faces. The original flat geometric image must become as atmospheric and beautifully detailed as the Mexico reference, NOT a flat corporate vector drawing. Keep the holiday subject of image 1 but improve composition freely. Do not copy Mexico's flags, architecture, clothing or cultural motifs. Panoramic full bleed image, exact target 1915:821 (2.33:1), no borders or blank margins, important subjects within central 85%, legible at small calendar/widget size. No text, typography, labels, watermark, dates, year numerals or logos. No photorealism or 3D. Keep the existing warm civilian celebration of men on Defender of the Fatherland Day: a few adult men and an older father enjoying conversation and tea in a cozy timber-and-brick living room overlooking a snowy park; a small neatly wrapped gift, books, wool sweaters, golden winter sun and warm lamps. Friendly intergenerational companionship, dignified everyday people. Transform the abstract original into a believable richly illustrated setting. No weapons, soldiers, military vehicles, uniforms, political emblems or slogans.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-1340cf5a-cd3e-4547-b790-0f86abf56652.png",
+    "appAsset": "assets/days_img/feb23_defender_day.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_feb23_defender_day.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 341434
+  },
+  {
+    "name": "mar8",
+    "widget": "day_mar8",
+    "holiday": "8 марта",
+    "prompt": "Use case: style-transfer. Redraw image 1 (the existing holiday illustration, EDIT TARGET) as a much richer, atmospheric, premium illustrated calendar panorama. Image 2 is STYLE REFERENCE ONLY: the approved Mexico calendar illustration. Match image 2's refined painterly editorial illustration, detailed architecture and vegetation, rich layered colors, warm cinematic golden light, subtle paper grain, deep teal/navy shadows, luminous cream highlights, sophisticated depth and atmospheric perspective, naturally simplified faces. The original flat geometric image must become as atmospheric and beautifully detailed as the Mexico reference, NOT a flat corporate vector drawing. Keep the holiday subject of image 1 but improve composition freely. Do not copy Mexico's flags, architecture, clothing or cultural motifs. Panoramic full bleed image, exact target 1915:821 (2.33:1), no borders or blank margins, important subjects within central 85%, legible at small calendar/widget size. No text, typography, labels, watermark, dates, year numerals or logos. No photorealism or 3D. International Women's Day: women of different adult ages together at an elegant sunlit flower market and cafe terrace, exchanging bouquets of yellow mimosa and coral/white tulips, joyful relaxed companionship, warm golden early spring sun, distant pastel townhouses and leafless trees with first buds. Rich petal detail, glass reflections, delicate fabrics, soft teal shadows, luminous spring atmosphere. Preserve focus on women and spring flowers but REMOVE the giant numeral 8 from the old design; no lettering or numbers.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mar8.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-ff9e717c-9e56-4370-b736-db497c781b8a.png",
+    "appAsset": "assets/days_img/mar8.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_mar8.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 413618
+  },
+  {
+    "name": "may1",
+    "widget": "day_may1",
+    "holiday": "Праздник Весны и Труда",
+    "prompt": "Use case: style-transfer. Redraw image 1 (the existing holiday illustration, EDIT TARGET) as a much richer, atmospheric, premium illustrated calendar panorama. Image 2 is STYLE REFERENCE ONLY: the approved Mexico calendar illustration. Match image 2's refined painterly editorial illustration, detailed architecture and vegetation, rich layered colors, warm cinematic golden light, subtle paper grain, deep teal/navy shadows, luminous cream highlights, sophisticated depth and atmospheric perspective, naturally simplified faces. The original flat geometric image must become as atmospheric and beautifully detailed as the Mexico reference, NOT a flat corporate vector drawing. Keep the holiday subject of image 1 but improve composition freely. Do not copy Mexico's flags, architecture, clothing or cultural motifs. Panoramic full bleed image, exact target 1915:821 (2.33:1), no borders or blank margins, important subjects within central 85%, legible at small calendar/widget size. No text, typography, labels, watermark, dates, year numerals or logos. No photorealism or 3D. Spring and Labour Day: retain the celebration of diverse professions, a small group of adult workers (gardener carrying young plant, craftsperson with tools, doctor in simple white coat, office worker) enjoying a sunny public garden together, blossoming fruit trees framing scene, leafy park and gentle city skyline. Golden spring sunlight through flowers, rich greenery and warm cream, dignified welcoming people. Natural coherent gathering, no giant tools or abstract shapes, no placards or slogans, no national flags so image works internationally.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/may1.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-c915dc30-daa5-4d2e-ad5f-a4349a599d93.png",
+    "appAsset": "assets/days_img/may1.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_may1.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 387558
+  },
+  {
+    "name": "ru_9may",
+    "widget": "day_ru_9may",
+    "holiday": "День Победы",
+    "prompt": "Use case: style-transfer. Redraw image 1 (the existing holiday illustration, EDIT TARGET) as a much richer, atmospheric, premium illustrated calendar panorama. Image 2 is STYLE REFERENCE ONLY: the approved Mexico calendar illustration. Match image 2's refined painterly editorial illustration, detailed architecture and vegetation, rich layered colors, warm cinematic golden light, subtle paper grain, deep teal/navy shadows, luminous cream highlights, sophisticated depth and atmospheric perspective, naturally simplified faces. The original flat geometric image must become as atmospheric and beautifully detailed as the Mexico reference, NOT a flat corporate vector drawing. Keep the holiday subject of image 1 but improve composition freely. Do not copy Mexico's flags, architecture, clothing or cultural motifs. Panoramic full bleed image, exact target 1915:821 (2.33:1), no borders or blank margins, important subjects within central 85%, legible at small calendar/widget size. No text, typography, labels, watermark, dates, year numerals or logos. No photorealism or 3D. Victory Day as solemn remembrance: a family with an older grandmother quietly laying red carnations at an eternal flame in a star-shaped bronze memorial, flowering white apple branches and spring greenery, warm late-afternoon sun, softly detailed stone memorial and quiet park avenue. Preserve the original focus on gratitude, memory and generations together. Flame with small radiant golden glow, deep teal shadows, evocative respectful atmosphere. No combat, weapons, military parade, contemporary political symbols, flags or text.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/ru_9may.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-e733083c-6d06-4652-b9ef-05dcebd9bb79.png",
+    "appAsset": "assets/days_img/ru_9may.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_ru_9may.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 364738
+  },
+  {
+    "name": "jun12_unity",
+    "widget": "day_jun12_unity",
+    "holiday": "День России",
+    "prompt": "Use case: style-transfer. Redraw image 1 (the existing holiday illustration, EDIT TARGET) as a much richer, atmospheric, premium illustrated calendar panorama. Image 2 is STYLE REFERENCE ONLY: the approved Mexico calendar illustration. Match image 2's refined painterly editorial illustration, detailed architecture and vegetation, rich layered colors, warm cinematic golden light, subtle paper grain, deep teal/navy shadows, luminous cream highlights, sophisticated depth and atmospheric perspective, naturally simplified faces. The original flat geometric image must become as atmospheric and beautifully detailed as the Mexico reference, NOT a flat corporate vector drawing. Keep the holiday subject of image 1 but improve composition freely. Do not copy Mexico's flags, architecture, clothing or cultural motifs. Panoramic full bleed image, exact target 1915:821 (2.33:1), no borders or blank margins, important subjects within central 85%, legible at small calendar/widget size. No text, typography, labels, watermark, dates, year numerals or logos. No photorealism or 3D. Russia Day: welcoming civilian summer celebration along the Moscow river embankment, several diverse families and friends in foreground, accurately recognizable red Kremlin towers and Saint Basil's domes in the distant skyline with river reflections, bright leafy trees, warm summer sunset turning stone and water gold. Tasteful Russian tricolor flags, exactly horizontal white top, blue middle, red bottom, without emblems. Festive civic atmosphere, small golden fireworks in blue evening sky, rich architecture details and air depth. No political leaders, slogans, soldiers or weapons.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jun12_unity.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-18480214-f9cc-49e2-a2a1-cf1b4765f248.png",
+    "appAsset": "assets/days_img/jun12_unity.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_jun12_unity.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 382696
+  },
+  {
+    "name": "ru_4nov",
+    "widget": "day_ru_4nov",
+    "holiday": "День народного единства",
+    "prompt": "Use case: style-transfer. Redraw image 1 (the existing holiday illustration, EDIT TARGET) as a much richer, atmospheric, premium illustrated calendar panorama. Image 2 is STYLE REFERENCE ONLY: the approved Mexico calendar illustration. Match image 2's refined painterly editorial illustration, detailed architecture and vegetation, rich layered colors, warm cinematic golden light, subtle paper grain, deep teal/navy shadows, luminous cream highlights, sophisticated depth and atmospheric perspective, naturally simplified faces. The original flat geometric image must become as atmospheric and beautifully detailed as the Mexico reference, NOT a flat corporate vector drawing. Keep the holiday subject of image 1 but improve composition freely. Do not copy Mexico's flags, architecture, clothing or cultural motifs. Panoramic full bleed image, exact target 1915:821 (2.33:1), no borders or blank margins, important subjects within central 85%, legible at small calendar/widget size. No text, typography, labels, watermark, dates, year numerals or logos. No photorealism or 3D. National Unity Day: preserve the idea of diverse Russian people standing warmly together, now a multigenerational group in autumn coats and scarves on a historic town square, warmly lit red-brick Kremlin walls and a distant bronze Minin-and-Pozharsky monument as background cultural reference. Golden late-autumn leaves, blue mist and amber sunset, gentle illuminated windows, nuanced textiles and architecture. Some people seen from behind with arms around shoulders, others naturally in profile, relaxed believable anatomy. Peaceful togetherness, no political leaders, slogans, weapons or campaign imagery.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/ru_4nov.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-a3ae2cb6-228f-4fba-b5dc-33c4ee601baa.png",
+    "appAsset": "assets/days_img/ru_4nov.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_ru_4nov.webp",
+    "width": 1915,
+    "height": 821,
+    "bytes": 353046
+  }
+]
