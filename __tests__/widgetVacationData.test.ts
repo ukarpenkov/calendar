@@ -66,6 +66,19 @@ describe('Widget vacation data', () => {
     mockTestDb.current = null;
   });
 
+  it('reads the saved Spanish language and holiday name for the widget', async () => {
+    await db.execute("INSERT INTO app_metadata (key, value) VALUES ('language', 'es')");
+    await db.execute(
+      'UPDATE calendar_days SET type = ?, holiday_name_es = ?, holiday_name_en = ? WHERE date = ?',
+      ['holiday', 'Día de la Independencia', 'Independence Day of Mexico', getLocalIsoDate()],
+    );
+    expect(await fetchTodayWidgetData()).toMatchObject({
+      language: 'es',
+      holidayName: 'Día de la Independencia',
+      monthLabel: 'Junio',
+    });
+  });
+
   it('isOnVacation true when today is within a vacation period', async () => {
     const today = getLocalIsoDate();
     await db.execute(

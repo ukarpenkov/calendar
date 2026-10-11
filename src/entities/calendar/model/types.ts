@@ -15,6 +15,8 @@ export interface CalendarDay {
   holidayNameId: string | null;
   /** Локализованное название для UI `ja`; опционально в JSON (`name_ja`). */
   holidayNameJa: string | null;
+  /** Локализованное название для UI `es`; опционально в JSON (`name_es`). */
+  holidayNameEs: string | null;
   isShortened: boolean;
   workHours: number;
 }

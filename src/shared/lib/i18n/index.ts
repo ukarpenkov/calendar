@@ -12,6 +12,7 @@ export type { TranslationKey };
 type TranslationParams = Record<string, number | string>;
 
 const MONTH_LABELS: Record<AppLanguage, readonly string[]> = {
+  es: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
   en: [
     'January',
     'February',
@@ -85,6 +86,7 @@ const MONTH_LABELS: Record<AppLanguage, readonly string[]> = {
 };
 
 const MONTH_SHORT_LABELS: Record<AppLanguage, readonly string[]> = {
+  es: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
   en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
   ru: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
   tr: ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'],
@@ -93,6 +95,7 @@ const MONTH_SHORT_LABELS: Record<AppLanguage, readonly string[]> = {
 };
 
 const COMPACT_WEEKDAY_LABELS: Record<AppLanguage, readonly string[]> = {
+  es: ['L', 'M', 'X', 'J', 'V', 'S', 'D'],
   en: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
   ru: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
   tr: ['Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct', 'Pa'],
@@ -101,6 +104,7 @@ const COMPACT_WEEKDAY_LABELS: Record<AppLanguage, readonly string[]> = {
 };
 
 const SHORT_WEEKDAY_LABELS: Record<AppLanguage, readonly string[]> = {
+  es: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
   en: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
   ru: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
   tr: ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cts', 'Paz'],
@@ -109,12 +113,14 @@ const SHORT_WEEKDAY_LABELS: Record<AppLanguage, readonly string[]> = {
 };
 
 const LANGUAGE_LABELS_BY_UI: Record<AppLanguage, Record<AppLanguage, string>> = {
+  es: { en: 'Inglés', ru: 'Ruso', tr: 'Turco', id: 'Indonesio', ja: 'Japonés', es: 'Español' },
   en: {
     en: 'English',
     ru: 'Russian',
     tr: 'Turkish',
     id: 'Indonesian',
     ja: 'Japanese',
+    es: 'Spanish',
   },
   ru: {
     en: 'Английский',
@@ -122,6 +128,7 @@ const LANGUAGE_LABELS_BY_UI: Record<AppLanguage, Record<AppLanguage, string>> = 
     tr: 'Турецкий',
     id: 'Индонезийский',
     ja: 'Японский',
+    es: 'Испанский',
   },
   tr: {
     en: 'İngilizce',
@@ -129,6 +136,7 @@ const LANGUAGE_LABELS_BY_UI: Record<AppLanguage, Record<AppLanguage, string>> = 
     tr: 'Türkçe',
     id: 'Endonezce',
     ja: 'Japonca',
+    es: 'İspanyolca',
   },
   id: {
     en: 'Inggris',
@@ -136,6 +144,7 @@ const LANGUAGE_LABELS_BY_UI: Record<AppLanguage, Record<AppLanguage, string>> = 
     tr: 'Turki',
     id: 'Indonesia',
     ja: 'Jepang',
+    es: 'Spanyol',
   },
   ja: {
     en: '英語',
@@ -143,6 +152,7 @@ const LANGUAGE_LABELS_BY_UI: Record<AppLanguage, Record<AppLanguage, string>> = 
     tr: 'トルコ語',
     id: 'インドネシア語',
     ja: '日本語',
+    es: 'スペイン語',
   },
 };
 
@@ -153,6 +163,7 @@ const LANGUAGE_NATIVE_AUTONYMS: Record<AppLanguage, string> = {
   tr: 'Türkçe',
   id: 'Bahasa Indonesia',
   ja: '日本語',
+  es: 'Español',
 };
 
 function interpolate(template: string, params?: TranslationParams): string {
@@ -175,6 +186,7 @@ const BUNDLED_REGION_LABEL_KEYS: Record<
   tr: 'settings.bundledCalendar.chip.tr',
   id: 'settings.bundledCalendar.chip.id',
   ja: 'settings.bundledCalendar.chip.ja',
+  es: 'settings.bundledCalendar.chip.es',
 };
 
 /**
@@ -200,6 +212,10 @@ export function mapLocaleStringToAppLanguage(locale: string): AppLanguage {
 
   if (normalized.startsWith('ja')) {
     return 'ja';
+  }
+
+  if (normalized.startsWith('es')) {
+    return 'es';
   }
 
   return 'en';
@@ -256,6 +272,10 @@ export function getThemeModeLabel(
 
   if (language === 'ja') {
     return mode === 'dark' ? 'ダーク' : 'ライト';
+  }
+
+  if (language === 'es') {
+    return mode === 'dark' ? 'Oscuro' : 'Claro';
   }
 
   return mode === 'dark' ? 'Dark' : 'Light';

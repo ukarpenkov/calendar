@@ -48,6 +48,7 @@ function makeDay(
     holidayNameTr: null,
     holidayNameId: null,
     holidayNameJa: null,
+    holidayNameEs: null,
     isShortened: type === 'shortened',
     workHours: type === 'workday' ? 8 : type === 'shortened' ? 7 : 0,
   };

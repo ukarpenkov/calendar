@@ -41,6 +41,7 @@ const calendarDays: CalendarDay[] = Array.from({ length: 366 }, (_, index) => {
     holidayNameTr: null,
     holidayNameId: null,
     holidayNameJa: null,
+    holidayNameEs: null,
   };
 });
 const palette = getCalendarPalette(false);

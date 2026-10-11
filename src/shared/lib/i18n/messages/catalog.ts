@@ -1,4 +1,5 @@
 import { enTranslations, type TranslationKey } from './en';
+import { esTranslations } from './es';
 import { idTranslations } from './id';
 import { jaTranslations } from './ja';
 import { ruTranslations } from './ru';
@@ -10,6 +11,7 @@ export const translations = {
   tr: trTranslations,
   id: idTranslations,
   ja: jaTranslations,
+  es: esTranslations,
 } as const;
 
 export type { TranslationKey };

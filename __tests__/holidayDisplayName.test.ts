@@ -20,6 +20,7 @@ function baseDay(overrides: Partial<CalendarDay>): CalendarDay {
     holidayNameTr: null,
     holidayNameId: null,
     holidayNameJa: null,
+    holidayNameEs: null,
     isShortened: false,
     workHours: 0,
     ...overrides,

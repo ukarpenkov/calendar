@@ -169,6 +169,10 @@ async function migrateFromV3ToV4(db: DB): Promise<void> {
   );
 }
 
+async function migrateFromV4ToV5(db: DB): Promise<void> {
+  await db.execute('ALTER TABLE calendar_days ADD COLUMN holiday_name_es TEXT');
+}
+
 async function applyMigrations(db: DB, currentVersion: number): Promise<void> {
   if (currentVersion > DATABASE_SCHEMA_VERSION) {
     throw new Error(
@@ -187,6 +191,9 @@ async function applyMigrations(db: DB, currentVersion: number): Promise<void> {
     }
     if (currentVersion < 4) {
       await migrateFromV3ToV4(db);
+    }
+    if (currentVersion < 5) {
+      await migrateFromV4ToV5(db);
     }
   }
 

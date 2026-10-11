@@ -47,6 +47,7 @@ export const ruTranslations: Record<TranslationKey, string> = {
     'settings.bundledCalendar.chip.tr': 'Турция',
     'settings.bundledCalendar.chip.id': 'Индонезия',
     'settings.bundledCalendar.chip.ja': 'Япония',
+    'settings.bundledCalendar.chip.es': 'Мексика',
     'settings.sections.appearance.title': 'Оформление',
     'settings.sections.appearance.subtitle':
       'Параметры темы управляются через глобальный контекст приложения.',

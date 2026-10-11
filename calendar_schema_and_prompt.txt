@@ -27,7 +27,8 @@ The root object contains 4 required fields:
   "name_en": "...",          // Required. Holiday name in English
   "name_tr": "...",          // Optional. Holiday name in Turkish
   "name_id": "...",          // Optional. Holiday name in Indonesian
-  "name_ja": "..."           // Optional. Holiday name in Japanese
+  "name_ja": "...",          // Optional. Holiday name in Japanese
+  "name_es": "..."           // Optional. Holiday name in Spanish
 }
 
 --- weekends ---

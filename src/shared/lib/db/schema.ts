@@ -1,7 +1,7 @@
 import type { SQLBatchTuple } from '@op-engineering/op-sqlite';
 
 export const DATABASE_NAME = 'calendar.sqlite';
-export const DATABASE_SCHEMA_VERSION = 4;
+export const DATABASE_SCHEMA_VERSION = 5;
 export const ACTIVE_YEAR_METADATA_KEY = 'activeYear';
 export const ACTIVE_CALENDAR_SOURCE_METADATA_KEY = 'active_calendar_source';
 export const USER_JSON_IMPORT_YEAR_METADATA_KEY = 'user_json_import_year';
@@ -32,6 +32,7 @@ export const SCHEMA_COMMANDS: SQLBatchTuple[] = [
       holiday_name_tr TEXT,
       holiday_name_id TEXT,
       holiday_name_ja TEXT,
+      holiday_name_es TEXT,
       is_shortened INTEGER NOT NULL CHECK (is_shortened IN (0, 1)),
       work_hours INTEGER NOT NULL,
       PRIMARY KEY (source, date)

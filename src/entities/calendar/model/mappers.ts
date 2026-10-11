@@ -14,6 +14,7 @@ export interface CalendarDayRow {
   holiday_name_tr: string | null;
   holiday_name_id: string | null;
   holiday_name_ja: string | null;
+  holiday_name_es: string | null;
   is_shortened: number;
   work_hours: number;
 }
@@ -74,6 +75,7 @@ export function mapCalendarDayRow(
     holidayNameTr: readNullableString(row.holiday_name_tr),
     holidayNameId: readNullableString(row.holiday_name_id),
     holidayNameJa: readNullableString(row.holiday_name_ja),
+    holidayNameEs: readNullableString(row.holiday_name_es),
     isShortened: readNumber(row.is_shortened, 'is_shortened') === 1,
     workHours: readNumber(row.work_hours, 'work_hours'),
   };
@@ -92,6 +94,7 @@ export function mapCalendarDayToSqlParams(day: CalendarDay): Scalar[] {
     day.holidayNameTr,
     day.holidayNameId,
     day.holidayNameJa,
+    day.holidayNameEs,
     day.isShortened ? 1 : 0,
     day.workHours,
   ];

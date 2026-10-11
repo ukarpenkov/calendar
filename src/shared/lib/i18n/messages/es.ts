@@ -1,0 +1,200 @@
+import type { TranslationKey } from './en';
+
+export const esTranslations = {
+  'common.appName': 'Calendario',
+  'common.hoursUnit': 'h',
+  'common.backToYear': 'Volver al año',
+  'common.navigateBack': 'Volver',
+  'common.cancel': 'Cancelar',
+  'common.yes': 'Sí',
+  'common.no': 'No',
+  'app.error.bootstrapTitle': 'No se pudo cargar el calendario.',
+  'app.error.bootstrapSubtitle':
+    'Revisa el espacio de almacenamiento e inténtalo de nuevo. También puedes reiniciar la app.',
+  'app.error.bootstrapRetry': 'Reintentar',
+  'app.error.monthTitle': 'No se pudo abrir el mes seleccionado.',
+  'app.error.monthSubtitle': 'Vuelve a la vista anual e inténtalo de nuevo.',
+  'splash.loadingTitle': 'Cargando tu calendario sin conexión',
+  'splash.loadingSubtitle': 'Preparando los datos del calendario...',
+  'year.menu.settings': 'Ajustes',
+  'year.menu.vacation': 'Vacaciones',
+  'year.home.title': 'Año {{year}}',
+  'year.summary.work': 'Laborables',
+  'year.summary.off': 'Descanso',
+  'year.summary.days': 'Días',
+  'month.selectedDay.eyebrow': 'Día seleccionado',
+  'month.totals.totalDays': 'Total de días',
+  'month.totals.workingDays': 'Días laborables',
+  'month.totals.nonWorkingDays': 'Días de descanso',
+  'month.totals.workHours': 'Horas de trabajo',
+  'month.nav.previousMonth': 'Mes anterior',
+  'month.nav.nextMonth': 'Mes siguiente',
+  'settings.title': 'Ajustes',
+  'settings.sections.calendarData.title': 'Datos del calendario',
+  'settings.sections.calendarData.subtitle':
+    'Año activo y opciones para importar un calendario.',
+  'settings.rows.activeYear.title': 'Año activo',
+  'settings.rows.activeYear.subtitle':
+    'El calendario cargado en la app corresponde a {{year}}.',
+  'settings.rows.importYear.title': 'Importar año (JSON)',
+  'settings.rows.importYear.subtitle':
+    'Abre la pantalla de importación para cargar un calendario desde un archivo JSON.',
+  'settings.rows.importYear.action': 'Abrir',
+  'settings.rows.bundledCalendar.title': 'Calendario laboral (2027)',
+  'settings.rows.bundledCalendar.subtitle': 'Calendario incluido: {{region}}.',
+  'settings.bundledCalendar.chip.ru': 'Rusia',
+  'settings.bundledCalendar.chip.tr': 'Turquía',
+  'settings.bundledCalendar.chip.id': 'Indonesia',
+  'settings.bundledCalendar.chip.ja': 'Japón',
+  'settings.bundledCalendar.chip.es': 'México',
+  'settings.sections.appearance.title': 'Apariencia',
+  'settings.sections.appearance.subtitle': 'Personaliza el tema de la app.',
+  'settings.rows.darkTheme.title': 'Tema oscuro',
+  'settings.rows.darkTheme.subtitle': 'Modo actual: {{mode}}.',
+  'settings.sections.localization.title': 'Idioma',
+  'settings.sections.localization.subtitle': 'Cambia el idioma de la interfaz.',
+  'settings.rows.language.title': 'Idioma de la interfaz',
+  'settings.rows.language.subtitle': 'Idioma actual: {{language}}.',
+  'settings.rows.language.userImportHint':
+    'El calendario activo es el calendario JSON guardado. La interfaz permanece en inglés.',
+  'settings.languageSwitch.userJsonCalendar': 'Calendario JSON',
+  'settings.sections.about.title': 'Acerca de',
+  'settings.sections.about.subtitle': 'Información de esta versión de la app.',
+  'settings.about.version': 'Versión',
+  'settings.about.defaultDataset': 'Calendario predeterminado',
+  'settings.about.defaultDatasetValue': 'Calendario laboral 2027',
+  'year.reminder.title': 'Calendario JSON del próximo año',
+  'year.reminder.body':
+    'El calendario de {{year}} se publicará en Telegram. Abre el canal para descargar el archivo JSON cuando esté disponible.',
+  'year.reminder.action': 'Abrir Telegram',
+  'importEntry.title': 'Importar JSON',
+  'importEntry.eyebrow': 'Importación de calendario',
+  'importEntry.heroTitle': 'Prepara un calendario para importar',
+  'importEntry.heroSubtitle':
+    'Aquí puedes guardar y activar un calendario JSON en tu dispositivo.',
+  'importEntry.currentYear.title': 'Año activo',
+  'importEntry.currentYear.subtitle':
+    'Al guardar un calendario JSON, se activará automáticamente y la interfaz cambiará a inglés.',
+  'importEntry.fileCard.title': 'Archivo JSON seleccionado',
+  'importEntry.fileCard.idleSubtitle':
+    'Selecciona un archivo JSON de tu dispositivo para comprobarlo. El año activo no cambiará hasta que confirmes el reemplazo.',
+  'importEntry.fileCard.readySubtitle':
+    'El archivo se validó correctamente y está listo para guardarse como calendario JSON.',
+  'importEntry.fileCard.fileName': 'Archivo',
+  'importEntry.fileCard.detectedYear': 'Año detectado',
+  'importEntry.fileCard.fileSize': 'Tamaño',
+  'importEntry.preview.title': 'Vista previa del calendario validado',
+  'importEntry.preview.subtitle':
+    'El año {{year}} pasó la validación y ya se puede guardar como calendario JSON.',
+  'importEntry.preview.totalDays': 'Total de días',
+  'importEntry.preview.workingDays': 'Días laborables',
+  'importEntry.preview.nonWorkingDays': 'Días de descanso',
+  'importEntry.preview.workHours': 'Horas de trabajo',
+  'importEntry.actions.chooseFile': 'Seleccionar archivo JSON',
+  'importEntry.actions.chooseAnotherFile': 'Seleccionar otro archivo',
+  'importEntry.actions.validating': 'Validando archivo...',
+  'importEntry.actions.replaceYear': 'Guardar calendario JSON',
+  'importEntry.actions.importing': 'Guardando calendario JSON...',
+  'importEntry.confirm.title': '¿Guardar el calendario JSON?',
+  'importEntry.confirm.body':
+    'El año {{importedYear}} se guardará como calendario JSON y se seleccionará automáticamente en lugar del año {{currentYear}}.',
+  'importEntry.confirm.action': 'Guardar calendario',
+  'importEntry.error.validationTitle': 'Error de validación',
+  'importEntry.error.validationBody':
+    'El archivo JSON seleccionado no pasó la validación. El calendario activo no se modificó.',
+  'importEntry.error.unsupportedTitle': 'Archivo no compatible',
+  'importEntry.error.unsupportedBody':
+    'Selecciona un archivo .json con la estructura de importación del calendario.',
+  'importEntry.error.readTitle': 'No se pudo leer el archivo',
+  'importEntry.error.readBody':
+    'No se pudo leer el archivo del dispositivo. El calendario activo no se modificó.',
+  'importEntry.error.pickerTitle': 'No se pudo abrir el selector de archivos',
+  'importEntry.error.pickerBody':
+    'El selector de archivos no devolvió un archivo JSON legible.',
+  'importEntry.error.replaceTitle': 'No se pudo guardar el calendario JSON',
+  'importEntry.error.replaceBody':
+    'La validación fue correcta, pero no se pudo guardar el calendario en el dispositivo. El calendario actual sigue activo.',
+  'importEntry.error.replaceDetail':
+    'Revisa el espacio de almacenamiento e intenta importar de nuevo.',
+  'importEntry.error.genericTitle': 'Error de importación',
+  'importEntry.error.genericBody':
+    'La importación se detuvo antes de reemplazar el calendario activo.',
+  'importEntry.error.genericDetail':
+    'Revisa el archivo seleccionado e inténtalo de nuevo.',
+  'importEntry.flow.title': 'Cómo importar un calendario',
+  'importEntry.flow.step1': '1. Selecciona un archivo JSON del dispositivo.',
+  'importEntry.flow.step2':
+    '2. Comprueba los datos del año antes de guardarlos.',
+  'importEntry.flow.step3':
+    '3. Confirma que quieres guardar el calendario JSON.',
+  'importEntry.step.file': 'Archivo',
+  'importEntry.step.preview': 'Revisar',
+  'importEntry.step.confirm': 'Confirmar',
+  'importEntry.choose.headline':
+    'Carga un calendario anual desde un archivo JSON',
+  'importEntry.choose.supporting':
+    'La app solo lee el archivo que selecciones en este dispositivo. Nada cambia hasta que confirmes el reemplazo.',
+  'importEntry.validating.headline': 'Comprobando tu archivo',
+  'importEntry.validating.supporting':
+    'Revisando el JSON, validando su estructura y preparando la lista de días. Solo tomará un momento.',
+  'importEntry.review.headline': 'El archivo es válido',
+  'importEntry.review.supporting':
+    'Revisa el resumen. Al continuar, podrás confirmar que quieres guardar el calendario JSON.',
+  'importEntry.confirm.screenTitle': 'Confirmar reemplazo',
+  'importEntry.confirm.compare': '{{currentYear}} → {{importedYear}}',
+  'importEntry.confirm.bullet1':
+    'El calendario JSON guardado se reemplazará y pasará a ser el calendario activo.',
+  'importEntry.confirm.bullet2':
+    'El cambio solo afecta a este dispositivo. No se suben datos a la nube.',
+  'importEntry.confirm.bullet3':
+    'El idioma de la app cambiará a inglés después de guardar.',
+  'importEntry.confirm.backToReview': 'Volver al resumen',
+  'importEntry.importing.headline': 'Guardando en el dispositivo',
+  'importEntry.importing.supporting':
+    'Guardando el calendario validado. Mantén la app abierta.',
+  'importEntry.success.headline': 'Importación completa',
+  'importEntry.success.supporting':
+    'El año {{year}} se guardó y se seleccionó como calendario JSON.',
+  'importEntry.success.toCalendar': 'Abrir ajustes',
+  'importEntry.error.tryAgain': 'Reintentar',
+  'importEntry.error.pickAnotherFile': 'Seleccionar otro archivo',
+  'importEntry.error.startOver': 'Empezar de nuevo',
+  'importEntry.aiPrompt.title': 'Generar con IA',
+  'importEntry.aiPrompt.description':
+    '¿Necesitas un calendario de otro país o año? Toca el botón para copiar las instrucciones. Después abre cualquier chat de IA (Gemini, ChatGPT, DeepSeek), pega las instrucciones y añade tu solicitud en otro mensaje, por ejemplo:\n\n«Genera el calendario de Armenia 2027 y devuelve un archivo JSON».\n\nGuarda la respuesta como archivo .json (o usa la pantalla Pegar JSON) e impórtala aquí.',
+  'importEntry.aiPrompt.copyButton': 'Copiar instrucciones',
+  'importEntry.aiPrompt.copied': '¡Instrucciones copiadas!',
+  'importEntry.textJson.title': 'Pegar JSON',
+  'importEntry.textJson.description':
+    'Pega aquí el texto JSON completo. Si la estructura es válida, la app lo leerá automáticamente y abrirá el paso de revisión.',
+  'importEntry.textJson.placeholder': 'Pega aquí el JSON del calendario...',
+  'importEntry.textJson.pasteButton': 'Pegar texto',
+  'importEntry.textJson.sourceName': 'Texto JSON pegado',
+  'vacation.title': 'Vacaciones',
+  'vacation.addTitle': 'Nuevas vacaciones',
+  'vacation.editTitle': 'Editar vacaciones',
+  'vacation.unavailableRange':
+    'Elige fechas dentro del año del calendario que no coincidan con otras vacaciones. La fecha final no puede ser anterior a la inicial.',
+  'vacation.conflictTitle': 'Fechas ya reservadas',
+  'vacation.conflictMessage':
+    'Algunas fechas seleccionadas ya forman parte de otras vacaciones. Elige fechas disponibles.',
+  'vacation.conflictDismiss': 'Entendido',
+  'vacation.startDate': 'Fecha de inicio',
+  'vacation.endDate': 'Fecha de fin',
+  'vacation.color': 'Color',
+  'vacation.save': 'Guardar',
+  'vacation.delete': 'Eliminar',
+  'vacation.deleteConfirm': '¿Eliminar estas vacaciones?',
+  'vacation.empty': 'Aún no tienes vacaciones. Toca + para agregarlas.',
+  'vacation.calendar': 'Calendario',
+  'vacation.list': 'Lista',
+  'vacation.workDays': 'Días laborables',
+  'vacation.totalDays': 'Total de días',
+  'vacation.preHolidayWarning': 'Víspera de festivo: jornada reducida a 7 h',
+  'vacation.legend.title': 'Leyenda',
+  'vacation.legend.workday': 'Laborable',
+  'vacation.legend.weekend': 'Fin de semana',
+  'vacation.legend.holiday': 'Festivo',
+  'vacation.legend.shortened': 'Jornada reducida',
+  'vacation.legend.vacation': 'Vacaciones',
+} as const satisfies Record<TranslationKey, string>;

@@ -167,6 +167,13 @@ export function getDayTypeLabel(type: DayType, language: AppLanguage): string {
     return 'Hari kerja';
   }
 
+  if (language === 'es') {
+    if (type === 'weekend') return 'Fin de semana';
+    if (type === 'holiday') return 'Día festivo';
+    if (type === 'shortened') return 'Jornada reducida';
+    return 'Día laborable';
+  }
+
   if (language === 'ja') {
     if (type === 'weekend') {
       return '週末';

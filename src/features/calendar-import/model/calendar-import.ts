@@ -250,6 +250,7 @@ function validateHolidays(
       { jsonKey: 'name_tr', prop: 'name_tr' as const },
       { jsonKey: 'name_id', prop: 'name_id' as const },
       { jsonKey: 'name_ja', prop: 'name_ja' as const },
+      { jsonKey: 'name_es', prop: 'name_es' as const },
     ] as const;
 
     const entryRecord = entry;
@@ -531,6 +532,7 @@ export function normalizeCalendarImport(
       holidayNameTr: holiday?.name_tr ?? null,
       holidayNameId: holiday?.name_id ?? null,
       holidayNameJa: holiday?.name_ja ?? null,
+      holidayNameEs: holiday?.name_es ?? null,
       isShortened,
       workHours,
     });

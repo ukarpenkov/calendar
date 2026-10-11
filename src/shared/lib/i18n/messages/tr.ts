@@ -46,6 +46,7 @@ export const trTranslations = {
   'settings.bundledCalendar.chip.tr': 'Türkiye',
   'settings.bundledCalendar.chip.id': 'Endonezya',
   'settings.bundledCalendar.chip.ja': 'Japonya',
+  'settings.bundledCalendar.chip.es': 'Meksika',
   'settings.sections.appearance.title': 'Görünüm',
   'settings.sections.appearance.subtitle':
     'Tema ayarları genel uygulama bağlamı üzerinden yönetilir.',

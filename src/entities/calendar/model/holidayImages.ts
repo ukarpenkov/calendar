@@ -1,13 +1,28 @@
 import type { ImageSourcePropType } from 'react-native';
 import type { CalendarDay } from './types';
+import { getWorkdayImageKey } from './workdayImage';
+import type { WorkdayImageKey } from './workdayImage';
 
 const newYearImage = require('../../../../assets/days_img/new_year_default.webp');
 const selectedWorkdayImage = require('../../../../assets/days_img/work_default.webp');
-const mondayWorkdayImage = require('../../../../assets/days_img/default_work_mon.webp');
-const tuesdayWorkdayImage = require('../../../../assets/days_img/default_work_tue.webp');
-const wednesdayWorkdayImage = require('../../../../assets/days_img/default_work_wed.webp');
-const thursdayWorkdayImage = require('../../../../assets/days_img/default_work_thu.webp');
-const fridayWorkdayImage = require('../../../../assets/days_img/default_work_fri.webp');
+const workdayImages: Record<WorkdayImageKey, ImageSourcePropType> = {
+  default_work_mon: require('../../../../assets/days_img/default_work_mon.webp'),
+  default_work_tue: require('../../../../assets/days_img/default_work_tue.webp'),
+  default_work_wed: require('../../../../assets/days_img/default_work_wed.webp'),
+  default_work_thu: require('../../../../assets/days_img/default_work_thu.webp'),
+  default_work_fri: require('../../../../assets/days_img/default_work_fri.webp'),
+  default_work_mon_2: require('../../../../assets/days_img/default_work_mon_2.webp'),
+  default_work_tue_2: require('../../../../assets/days_img/default_work_tue_2.webp'),
+  default_work_wed_2: require('../../../../assets/days_img/default_work_wed_2.webp'),
+  default_work_thu_2: require('../../../../assets/days_img/default_work_thu_2.webp'),
+  default_work_fri_2: require('../../../../assets/days_img/default_work_fri_2.webp'),
+};
+
+function getWorkdayImage(day: CalendarDay): ImageSourcePropType {
+  const key = getWorkdayImageKey(day);
+  return key ? workdayImages[key] : selectedWorkdayImage;
+}
+
 const shortenedDayImage = require('../../../../assets/days_img/default_short_day.webp');
 const selectedWeekendImage = require('../../../../assets/days_img/holday_default.webp');
 const fallbackHolidayImage = require('../../../../assets/days_img/default_fiesta_fallback.webp');
@@ -42,6 +57,26 @@ const idMay28CollectiveLeaveAdhaImage = require('../../../../assets/days_img/id_
 const vacationImage = require('../../../../assets/days_img/default_vacancy_chill.webp');
 
 const countrySpecificHolidayImageByKey: Record<string, ImageSourcePropType> = {
+  "2027-01-01|Año Nuevo": require('../../../../assets/days_img/new_year_default.webp'),
+  "2027-02-01|Mexican Constitution Day": require('../../../../assets/days_img/mx_constitution.webp'),
+  "2027-02-01|День Конституции Мексики": require('../../../../assets/days_img/mx_constitution.webp'),
+  "2027-02-01|Día de la Constitución": require('../../../../assets/days_img/mx_constitution.webp'),
+  "2027-03-15|Benito Juárez’s Birthday": require('../../../../assets/days_img/mx_juarez.webp'),
+  "2027-03-15|День рождения Бенито Хуареса": require('../../../../assets/days_img/mx_juarez.webp'),
+  "2027-03-15|Natalicio de Benito Juárez": require('../../../../assets/days_img/mx_juarez.webp'),
+  "2027-05-01|День труда": require('../../../../assets/days_img/may1.webp'),
+  "2027-05-01|Día del Trabajo": require('../../../../assets/days_img/may1.webp'),
+  "2027-06-06|Mexican Federal Election Day": require('../../../../assets/days_img/mx_election.webp'),
+  "2027-06-06|День федеральных выборов в Мексике": require('../../../../assets/days_img/mx_election.webp'),
+  "2027-06-06|Jornada Electoral Federal": require('../../../../assets/days_img/mx_election.webp'),
+  "2027-09-16|Independence Day of Mexico": require('../../../../assets/days_img/mx_independence.webp'),
+  "2027-09-16|День независимости Мексики": require('../../../../assets/days_img/mx_independence.webp'),
+  "2027-09-16|Día de la Independencia": require('../../../../assets/days_img/mx_independence.webp'),
+  "2027-11-15|Mexican Revolution Day": require('../../../../assets/days_img/mx_revolution.webp'),
+  "2027-11-15|День Мексиканской революции": require('../../../../assets/days_img/mx_revolution.webp'),
+  "2027-11-15|Día de la Revolución Mexicana": require('../../../../assets/days_img/mx_revolution.webp'),
+  "2027-12-25|Рождество": require('../../../../assets/days_img/7jan_сristmas.webp'),
+  "2027-12-25|Navidad": require('../../../../assets/days_img/7jan_сristmas.webp'),
   '2025-01-01|Новый год': newYearImage,
   '2025-01-01|New Year\'s Day': newYearImage,
   '2025-01-02|Новогодние каникулы': newYearImage,
@@ -324,6 +359,7 @@ function getCountrySpecificHolidayImage(
     day.holidayNameTr,
     day.holidayNameId,
     day.holidayNameJa,
+    day.holidayNameEs,
   ];
 
   for (const holidayName of holidayNames) {
@@ -367,22 +403,9 @@ export function getCalendarImagesForDays(
     }
   }
 
-  if (days.some(d => d.type === 'workday')) {
-    images.add(selectedWorkdayImage);
-    if (days.some(d => d.type === 'workday' && d.weekday === 1)) {
-      images.add(mondayWorkdayImage);
-    }
-    if (days.some(d => d.type === 'workday' && d.weekday === 2)) {
-      images.add(tuesdayWorkdayImage);
-    }
-    if (days.some(d => d.type === 'workday' && d.weekday === 3)) {
-      images.add(wednesdayWorkdayImage);
-    }
-    if (days.some(d => d.type === 'workday' && d.weekday === 4)) {
-      images.add(thursdayWorkdayImage);
-    }
-    if (days.some(d => d.type === 'workday' && d.weekday === 5)) {
-      images.add(fridayWorkdayImage);
+  for (const day of days) {
+    if (day.type === 'workday') {
+      images.add(getWorkdayImage(day));
     }
   }
 
@@ -460,12 +483,7 @@ export function getDayImage(
     return shortenedDayImage;
   }
   if (day.type === 'workday') {
-    if (day.weekday === 1) return mondayWorkdayImage;
-    if (day.weekday === 2) return tuesdayWorkdayImage;
-    if (day.weekday === 3) return wednesdayWorkdayImage;
-    if (day.weekday === 4) return thursdayWorkdayImage;
-    if (day.weekday === 5) return fridayWorkdayImage;
-    return selectedWorkdayImage;
+    return getWorkdayImage(day);
   }
   if (day.type === 'weekend') {
     const dayImage = getCalendarImageForDay(day);

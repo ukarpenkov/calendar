@@ -21,6 +21,7 @@ const OPEN_APP_LABELS: Record<AppLanguage, string> = {
   tr: 'Takvimi yüklemek için uygulamayı açın',
   id: 'Buka aplikasi untuk memuat kalender',
   ja: 'カレンダーを読み込むにはアプリを開いてください',
+  es: 'Abre la app para cargar el calendario',
 };
 
 const WEEKEND_LABELS: Record<AppLanguage, string> = {
@@ -29,6 +30,7 @@ const WEEKEND_LABELS: Record<AppLanguage, string> = {
   tr: 'Tatil',
   id: 'Libur',
   ja: '休日',
+  es: 'Día de descanso',
 };
 
 const WORKDAY_LABELS: Record<AppLanguage, string> = {
@@ -37,6 +39,7 @@ const WORKDAY_LABELS: Record<AppLanguage, string> = {
   tr: 'İş günü',
   id: 'Hari kerja',
   ja: '平日',
+  es: 'Día laborable',
 };
 
 const SHORTENED_LABELS: Record<AppLanguage, string> = {
@@ -45,6 +48,7 @@ const SHORTENED_LABELS: Record<AppLanguage, string> = {
   tr: 'Kısaltılmış iş günü',
   id: 'Hari kerja pendek',
   ja: '短時間勤務の日',
+  es: 'Jornada reducida',
 };
 
 const HOLIDAY_FALLBACK_LABELS: Record<AppLanguage, string> = {
@@ -53,6 +57,7 @@ const HOLIDAY_FALLBACK_LABELS: Record<AppLanguage, string> = {
   tr: 'Resmi tatil',
   id: 'Hari libur nasional',
   ja: '祝日',
+  es: 'Día festivo',
 };
 
 const VACATION_LABELS: Record<AppLanguage, string> = {
@@ -61,6 +66,7 @@ const VACATION_LABELS: Record<AppLanguage, string> = {
   tr: 'Tatil',
   id: 'Liburan',
   ja: '休暇',
+  es: 'Vacaciones',
 };
 
 const TEXT_SHADOW = {

@@ -1,6 +1,27 @@
 import type { CalendarDay } from '../entities/calendar/model/types';
+import { getWorkdayImageKey } from '../entities/calendar/model/workdayImage';
 
 const WIDGET_IMAGE_BY_KEY: Record<string, string> = {
+  "2027-01-01|Año Nuevo": "day_new_year_default",
+  "2027-02-01|Mexican Constitution Day": "day_mx_constitution",
+  "2027-02-01|День Конституции Мексики": "day_mx_constitution",
+  "2027-02-01|Día de la Constitución": "day_mx_constitution",
+  "2027-03-15|Benito Juárez’s Birthday": "day_mx_juarez",
+  "2027-03-15|День рождения Бенито Хуареса": "day_mx_juarez",
+  "2027-03-15|Natalicio de Benito Juárez": "day_mx_juarez",
+  "2027-05-01|День труда": "day_may1",
+  "2027-05-01|Día del Trabajo": "day_may1",
+  "2027-06-06|Mexican Federal Election Day": "day_mx_election",
+  "2027-06-06|День федеральных выборов в Мексике": "day_mx_election",
+  "2027-06-06|Jornada Electoral Federal": "day_mx_election",
+  "2027-09-16|Independence Day of Mexico": "day_mx_independence",
+  "2027-09-16|День независимости Мексики": "day_mx_independence",
+  "2027-09-16|Día de la Independencia": "day_mx_independence",
+  "2027-11-15|Mexican Revolution Day": "day_mx_revolution",
+  "2027-11-15|День Мексиканской революции": "day_mx_revolution",
+  "2027-11-15|Día de la Revolución Mexicana": "day_mx_revolution",
+  "2027-12-25|Рождество": "day_7jan_cristmas",
+  "2027-12-25|Navidad": "day_7jan_cristmas",
   '2025-01-01|Новый год': 'day_new_year_default',
   '2025-01-01|New Year\'s Day': 'day_new_year_default',
   '2025-01-02|Новогодние каникулы': 'day_new_year_default',
@@ -280,6 +301,7 @@ function getCountrySpecificDrawable(day: CalendarDay): string | null {
     day.holidayNameTr,
     day.holidayNameId,
     day.holidayNameJa,
+    day.holidayNameEs,
   ];
 
   for (const holidayName of holidayNames) {
@@ -297,12 +319,8 @@ export function getDayDrawableResourceName(day: CalendarDay): string {
     return 'day_default_short_day';
   }
   if (day.type === 'workday') {
-    if (day.weekday === 1) return 'day_default_work_mon';
-    if (day.weekday === 2) return 'day_default_work_tue';
-    if (day.weekday === 3) return 'day_default_work_wed';
-    if (day.weekday === 4) return 'day_default_work_thu';
-    if (day.weekday === 5) return 'day_default_work_fri';
-    return 'day_work_default';
+    const key = getWorkdayImageKey(day);
+    return key ? `day_${key}` : 'day_work_default';
   }
   if (day.type === 'weekend') {
     const specific = getCountrySpecificDrawable(day);

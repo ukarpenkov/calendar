@@ -61,7 +61,7 @@ export async function fetchTodayWidgetData(): Promise<WidgetDayData | null> {
       `SELECT
         date, year, month, day, weekday, type,
         holiday_name_ru, holiday_name_en, holiday_name_tr,
-        holiday_name_id, holiday_name_ja, is_shortened, work_hours
+        holiday_name_id, holiday_name_ja, holiday_name_es, is_shortened, work_hours
       FROM calendar_days
       WHERE source = ? AND date = ?
       LIMIT 1`,
@@ -75,7 +75,7 @@ export async function fetchTodayWidgetData(): Promise<WidgetDayData | null> {
     const day: CalendarDay = mapCalendarDayRow(result.rows[0]);
 
     const storedLanguage = await readMetadataValue(db, 'language');
-    const validLanguages: AppLanguage[] = ['en', 'ru', 'tr', 'id', 'ja'];
+    const validLanguages: AppLanguage[] = ['en', 'ru', 'tr', 'id', 'ja', 'es'];
     const language: AppLanguage =
       storedLanguage && validLanguages.includes(storedLanguage as AppLanguage)
         ? (storedLanguage as AppLanguage)

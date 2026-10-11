@@ -28,6 +28,7 @@ export function getHolidayDisplayName(
     holidayNameTr,
     holidayNameId,
     holidayNameJa,
+    holidayNameEs,
   } = day;
 
   switch (language) {
@@ -38,6 +39,7 @@ export function getHolidayDisplayName(
         holidayNameTr,
         holidayNameId,
         holidayNameJa,
+        holidayNameEs,
       );
     case 'en':
       return firstNonEmpty(
@@ -46,11 +48,14 @@ export function getHolidayDisplayName(
         holidayNameTr,
         holidayNameId,
         holidayNameJa,
+        holidayNameEs,
       );
     case 'tr':
       return firstNonEmpty(holidayNameTr, holidayNameEn, holidayNameRu);
     case 'id':
       return firstNonEmpty(holidayNameId, holidayNameEn, holidayNameRu);
+    case 'es':
+      return firstNonEmpty(holidayNameEs, holidayNameEn, holidayNameRu);
     case 'ja':
       return firstNonEmpty(holidayNameJa, holidayNameEn, holidayNameRu);
     default: {

@@ -12,15 +12,15 @@
 export const BUNDLED_CALENDAR_YEAR = 2027 as const;
 
 /** Порядок — ориентир для UI-списков; не менять без согласования с настройками/миграциями. */
-export const AGREED_APP_LANGUAGE_CODES = ['en', 'ru', 'tr', 'id', 'ja'] as const;
+export const AGREED_APP_LANGUAGE_CODES = ['en', 'ru', 'tr', 'id', 'ja', 'es'] as const;
 
 export type AgreedAppLanguageCode = (typeof AGREED_APP_LANGUAGE_CODES)[number];
 
 /**
- * Регион предзагруженного производственного календаря (4 JSON; `ru` — тот же файл, что для `en`).
+ * Регион предзагруженного производственного календаря (5 JSON; `ru` — тот же файл, что для `en`).
  * Выбор в настройках опирается на эти коды, а не на язык интерфейса.
  */
-export const BUNDLED_CALENDAR_REGION_CODES = ['ru', 'tr', 'id', 'ja'] as const;
+export const BUNDLED_CALENDAR_REGION_CODES = ['ru', 'tr', 'id', 'ja', 'es'] as const;
 
 export type BundledCalendarRegionCode =
   (typeof BUNDLED_CALENDAR_REGION_CODES)[number];
@@ -31,6 +31,7 @@ export const BUNDLED_CALENDAR_JSON_FILENAME_BY_REGION = {
   tr: 'calendar2027TR.json',
   id: 'calendar2027IDN.json',
   ja: 'calendar2027JP.json',
+  es: 'calendar2027MX.json',
 } as const satisfies Record<BundledCalendarRegionCode, string>;
 
 /** Имя файла в корне репозитория (как у текущего `require('../../../../calendar2027.json')`). */
@@ -40,4 +41,5 @@ export const BUNDLED_CALENDAR_JSON_FILENAME_BY_LANGUAGE = {
   tr: 'calendar2027TR.json',
   id: 'calendar2027IDN.json',
   ja: 'calendar2027JP.json',
+  es: 'calendar2027MX.json',
 } as const satisfies Record<AgreedAppLanguageCode, string>;

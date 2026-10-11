@@ -44,6 +44,7 @@ export const enTranslations = {
     'settings.bundledCalendar.chip.tr': 'Türkiye',
     'settings.bundledCalendar.chip.id': 'Indonesia',
     'settings.bundledCalendar.chip.ja': 'Japan',
+    'settings.bundledCalendar.chip.es': 'Mexico',
     'settings.sections.appearance.title': 'Appearance',
     'settings.sections.appearance.subtitle':
       'Theme settings are now controlled through the global app context.',

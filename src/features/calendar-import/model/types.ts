@@ -10,6 +10,8 @@ export interface RawHolidayEntry {
   name_id?: string;
   /** Необязательное локализованное имя для UI на японском (`name_ja` в JSON). */
   name_ja?: string;
+  /** Optional Spanish holiday name. */
+  name_es?: string;
 }
 
 export interface RawCalendarImport {

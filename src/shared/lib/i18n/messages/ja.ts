@@ -46,6 +46,7 @@ export const jaTranslations = {
   'settings.bundledCalendar.chip.tr': 'トルコ',
   'settings.bundledCalendar.chip.id': 'インドネシア',
   'settings.bundledCalendar.chip.ja': '日本',
+  'settings.bundledCalendar.chip.es': 'メキシコ',
   'settings.sections.appearance.title': '外観',
   'settings.sections.appearance.subtitle':
     'テーマはアプリ全体のコンテキストで制御されます。',

@@ -67,6 +67,7 @@ async function readYearDays(
       holiday_name_tr,
       holiday_name_id,
       holiday_name_ja,
+      holiday_name_es,
       is_shortened,
       work_hours
     FROM calendar_days
@@ -202,9 +203,10 @@ async function replaceActiveYearRows(
         holiday_name_tr,
         holiday_name_id,
         holiday_name_ja,
+        holiday_name_es,
         is_shortened,
         work_hours
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [source, ...mapCalendarDayToSqlParams(day)],
     ] as SQLBatchTuple),
     [
@@ -244,9 +246,10 @@ async function saveUserJsonImportRows(
         holiday_name_tr,
         holiday_name_id,
         holiday_name_ja,
+        holiday_name_es,
         is_shortened,
         work_hours
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [source, ...mapCalendarDayToSqlParams(day)],
     ] as SQLBatchTuple),
     [
@@ -376,6 +379,7 @@ export function createCalendarRepository(
           holiday_name_tr,
           holiday_name_id,
           holiday_name_ja,
+          holiday_name_es,
           is_shortened,
           work_hours
         FROM calendar_days

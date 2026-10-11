@@ -38,13 +38,13 @@ const palette: CalendarPalette = {
 };
 
 const calendarDays: CalendarDay[] = [
-  { date: '2026-07-01', year: 2026, month: 7, day: 1, weekday: 3, type: 'workday', holidayNameRu: null, holidayNameEn: null, holidayNameTr: null, holidayNameId: null, holidayNameJa: null, isShortened: false, workHours: 8 },
-  { date: '2026-07-02', year: 2026, month: 7, day: 2, weekday: 4, type: 'workday', holidayNameRu: null, holidayNameEn: null, holidayNameTr: null, holidayNameId: null, holidayNameJa: null, isShortened: false, workHours: 8 },
-  { date: '2026-07-03', year: 2026, month: 7, day: 3, weekday: 5, type: 'workday', holidayNameRu: null, holidayNameEn: null, holidayNameTr: null, holidayNameId: null, holidayNameJa: null, isShortened: false, workHours: 8 },
-  { date: '2026-07-04', year: 2026, month: 7, day: 4, weekday: 6, type: 'weekend', holidayNameRu: null, holidayNameEn: null, holidayNameTr: null, holidayNameId: null, holidayNameJa: null, isShortened: false, workHours: 0 },
-  { date: '2026-07-05', year: 2026, month: 7, day: 5, weekday: 0, type: 'weekend', holidayNameRu: null, holidayNameEn: null, holidayNameTr: null, holidayNameId: null, holidayNameJa: null, isShortened: false, workHours: 0 },
-  { date: '2026-07-06', year: 2026, month: 7, day: 6, weekday: 1, type: 'workday', holidayNameRu: null, holidayNameEn: null, holidayNameTr: null, holidayNameId: null, holidayNameJa: null, isShortened: false, workHours: 8 },
-  { date: '2026-07-07', year: 2026, month: 7, day: 7, weekday: 2, type: 'workday', holidayNameRu: null, holidayNameEn: null, holidayNameTr: null, holidayNameId: null, holidayNameJa: null, isShortened: false, workHours: 8 },
+  { date: '2026-07-01', year: 2026, month: 7, day: 1, weekday: 3, type: 'workday', holidayNameRu: null, holidayNameEn: null, holidayNameTr: null, holidayNameId: null, holidayNameJa: null, holidayNameEs: null, isShortened: false, workHours: 8 },
+  { date: '2026-07-02', year: 2026, month: 7, day: 2, weekday: 4, type: 'workday', holidayNameRu: null, holidayNameEn: null, holidayNameTr: null, holidayNameId: null, holidayNameJa: null, holidayNameEs: null, isShortened: false, workHours: 8 },
+  { date: '2026-07-03', year: 2026, month: 7, day: 3, weekday: 5, type: 'workday', holidayNameRu: null, holidayNameEn: null, holidayNameTr: null, holidayNameId: null, holidayNameJa: null, holidayNameEs: null, isShortened: false, workHours: 8 },
+  { date: '2026-07-04', year: 2026, month: 7, day: 4, weekday: 6, type: 'weekend', holidayNameRu: null, holidayNameEn: null, holidayNameTr: null, holidayNameId: null, holidayNameJa: null, holidayNameEs: null, isShortened: false, workHours: 0 },
+  { date: '2026-07-05', year: 2026, month: 7, day: 5, weekday: 0, type: 'weekend', holidayNameRu: null, holidayNameEn: null, holidayNameTr: null, holidayNameId: null, holidayNameJa: null, holidayNameEs: null, isShortened: false, workHours: 0 },
+  { date: '2026-07-06', year: 2026, month: 7, day: 6, weekday: 1, type: 'workday', holidayNameRu: null, holidayNameEn: null, holidayNameTr: null, holidayNameId: null, holidayNameJa: null, holidayNameEs: null, isShortened: false, workHours: 8 },
+  { date: '2026-07-07', year: 2026, month: 7, day: 7, weekday: 2, type: 'workday', holidayNameRu: null, holidayNameEn: null, holidayNameTr: null, holidayNameId: null, holidayNameJa: null, holidayNameEs: null, isShortened: false, workHours: 8 },
 ];
 
 const editPeriod: VacationPeriod = {

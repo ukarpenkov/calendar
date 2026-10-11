@@ -25,6 +25,7 @@ function buildDay(overrides: Partial<CalendarDay>): CalendarDay {
     holidayNameTr: null,
     holidayNameId: null,
     holidayNameJa: null,
+    holidayNameEs: null,
     isShortened: false,
     workHours: 8,
     ...overrides,

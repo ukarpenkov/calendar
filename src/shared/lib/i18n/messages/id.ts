@@ -46,6 +46,7 @@ export const idTranslations = {
   'settings.bundledCalendar.chip.tr': 'Türkiye',
   'settings.bundledCalendar.chip.id': 'Indonesia',
   'settings.bundledCalendar.chip.ja': 'Jepang',
+  'settings.bundledCalendar.chip.es': 'Meksiko',
   'settings.sections.appearance.title': 'Tampilan',
   'settings.sections.appearance.subtitle':
     'Pengaturan tema dikontrol melalui konteks aplikasi global.',

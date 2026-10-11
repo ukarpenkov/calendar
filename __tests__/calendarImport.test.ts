@@ -58,6 +58,7 @@ describe('calendar import pipeline', () => {
       holidayNameTr: null,
       holidayNameId: null,
       holidayNameJa: null,
+      holidayNameEs: null,
       isShortened: false,
       workHours: 0,
     });

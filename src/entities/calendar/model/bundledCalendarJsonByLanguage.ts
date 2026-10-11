@@ -13,6 +13,7 @@ const BUNDLED_CALENDAR_JSON_BY_REGION = {
   tr: require('../../../../calendar2027TR.json'),
   id: require('../../../../calendar2027IDN.json'),
   ja: require('../../../../calendar2027JP.json'),
+  es: require('../../../../calendar2027MX.json'),
 } as const satisfies Record<BundledCalendarRegionCode, unknown>;
 
 export function getBundledCalendarJsonForRegion(
