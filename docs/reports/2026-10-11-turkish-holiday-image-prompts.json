@@ -1,0 +1,128 @@
+[
+  {
+    "name": "Tr_20match",
+    "widget": "day_tr_20match",
+    "label": "Рамазан-байрам",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: premium illustrated holiday banner for a 2027 calendar app. Redraw image 1, the edit target, with the beautiful atmospheric painterly quality of images 2 and 3, which are style references only. Keep the Turkish holiday identity and core subjects of image 1 but replace the flat faceless vector look completely with richly detailed hand-painted editorial illustration, softly realistic expressive faces, believable anatomy, depth, gorgeous volumetric light, layered scenery and fine material textures. Style references must inform lighting, palette, brushwork and finish, not introduce Japanese or Russian symbols. Wide full-bleed landscape composition, approximately 1915 by 821 pixels, aspect 2.33:1. Elegant harmonious vibrant colors, warm gold highlights, cool teal and navy shadows, painterly sky, inviting warm mood, focal subjects readable in a small calendar card. No text, numbers, dates, captions, watermarks or decorative frame. No collage panels. Turkish flags must use a white crescent and exactly one white five-pointed star on a red field. Specific scene: A warm multigenerational Turkish family reunion for Ramazan Bayramı, relatives greeting and embracing in a beautiful Ottoman-style courtyard overlooking the Bosphorus and domed Istanbul mosques. An elderly woman offers a tray of baklava and lokum, children happily visit their elders, tulip-shaped tea glasses on a carved wooden table. Fine blue and turquoise Iznik tile, woven textiles, brass lanterns, spring flowers and luminous water. Keep the original greeting/reunion narrative. Natural modern Turkish festive clothing with a mix of headscarves and uncovered hair. Early spring late-afternoon golden light.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/Tr_20match.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-321080d1-b57a-4ff3-9026-e276135a2f27.png",
+    "appAsset": "assets/days_img/Tr_20match.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_tr_20match.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 396522
+  },
+  {
+    "name": "tr_23apr",
+    "widget": "day_tr_23apr",
+    "label": "День национального суверенитета и детей",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: premium illustrated holiday banner for a 2027 calendar app. Redraw image 1, the edit target, with the beautiful atmospheric painterly quality of images 2 and 3, which are style references only. Keep the Turkish holiday identity and core subjects of image 1 but replace the flat faceless vector look completely with richly detailed hand-painted editorial illustration, softly realistic expressive faces, believable anatomy, depth, gorgeous volumetric light, layered scenery and fine material textures. Style references must inform lighting, palette, brushwork and finish, not introduce Japanese or Russian symbols. Wide full-bleed landscape composition, approximately 1915 by 821 pixels, aspect 2.33:1. Elegant harmonious vibrant colors, warm gold highlights, cool teal and navy shadows, painterly sky, inviting warm mood, focal subjects readable in a small calendar card. No text, numbers, dates, captions, watermarks or decorative frame. No collage panels. Turkish flags must use a white crescent and exactly one white five-pointed star on a red field. Specific scene: Children joyfully celebrating Turkish National Sovereignty and Children's Day in a flower-filled spring park, a large accurate red Turkish flag with white crescent and five-pointed star held by one child, other children with balloons and a pinwheel. Warm natural joyful expressions, lively but anatomically natural poses. Anıtkabir-inspired warm stone architecture in Ankara in the distance, tulips and spring blossoms, airy sky and soft gold afternoon light. Preserve the original children's celebration narrative, create a coherent Ankara setting rather than collaging Istanbul into it.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/tr_23apr.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-47ee466d-550e-4c90-b779-5ce2144c5eb5.png",
+    "appAsset": "assets/days_img/tr_23apr.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_tr_23apr.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 419954
+  },
+  {
+    "name": "tr_19may",
+    "widget": "day_tr_19may",
+    "label": "День памяти Ататюрка, молодёжи и спорта",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: premium illustrated holiday banner for a 2027 calendar app. Redraw image 1, the edit target, with the beautiful atmospheric painterly quality of images 2 and 3, which are style references only. Keep the Turkish holiday identity and core subjects of image 1 but replace the flat faceless vector look completely with richly detailed hand-painted editorial illustration, softly realistic expressive faces, believable anatomy, depth, gorgeous volumetric light, layered scenery and fine material textures. Style references must inform lighting, palette, brushwork and finish, not introduce Japanese or Russian symbols. Wide full-bleed landscape composition, approximately 1915 by 821 pixels, aspect 2.33:1. Elegant harmonious vibrant colors, warm gold highlights, cool teal and navy shadows, painterly sky, inviting warm mood, focal subjects readable in a small calendar card. No text, numbers, dates, captions, watermarks or decorative frame. No collage panels. Turkish flags must use a white crescent and exactly one white five-pointed star on a red field. Specific scene: Turkish youth and sports celebration, athletic young adults running and playing basketball in an inviting leafy park at golden hour. A young student with a book, another carrying a Turkish flag, expressive natural happy faces. Integrate a dignified recognizable bronze memorial bust of Mustafa Kemal Atatürk wearing kalpak, with fine sculptural detail, into a planted stone memorial near the park. Maintain the original Atatürk commemoration, youth, education and sports themes. Lush late-spring foliage, warm stone, distant urban park, coherent grounded scene, no giant floating portrait.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/tr_19may.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-d3a673e0-e745-48d9-99ab-b8683007d923.png",
+    "appAsset": "assets/days_img/tr_19may.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_tr_19may.webp",
+    "width": 1914,
+    "height": 822,
+    "bytes": 428484
+  },
+  {
+    "name": "tr_KB",
+    "widget": "day_tr_kb",
+    "label": "Курбан-байрам",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: premium illustrated holiday banner for a 2027 calendar app. Redraw image 1, the edit target, with the beautiful atmospheric painterly quality of images 2 and 3, which are style references only. Keep the Turkish holiday identity and core subjects of image 1 but replace the flat faceless vector look completely with richly detailed hand-painted editorial illustration, softly realistic expressive faces, believable anatomy, depth, gorgeous volumetric light, layered scenery and fine material textures. Style references must inform lighting, palette, brushwork and finish, not introduce Japanese or Russian symbols. Wide full-bleed landscape composition, approximately 1915 by 821 pixels, aspect 2.33:1. Elegant harmonious vibrant colors, warm gold highlights, cool teal and navy shadows, painterly sky, inviting warm mood, focal subjects readable in a small calendar card. No text, numbers, dates, captions, watermarks or decorative frame. No collage panels. Turkish flags must use a white crescent and exactly one white five-pointed star on a red field. Specific scene: A tender Turkish family scene for Kurban Bayramı in a traditional Anatolian courtyard: father and child passing a tray of food for sharing, mother beside them, a healthy white sheep resting calmly in the garden nearby. A low carved wooden table with Turkish tea glasses, ceramic plates and fruit, woven kilim cushions, brass lanterns. Ottoman mosque and cypress trees in soft distance, blossoming garden and early-summer golden morning light. Preserve original family, generosity and sheep narrative. Warm modest contemporary Turkish festive clothes, natural faces and hands. No slaughter, no distress, no gore.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/tr_KB.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-a75b011e-0a82-40a1-894e-08a143fe86aa.png",
+    "appAsset": "assets/days_img/tr_KB.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_tr_kb.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 388188
+  },
+  {
+    "name": "tr_15jul",
+    "widget": "day_tr_15jul",
+    "label": "День демократии и национального единства",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: premium illustrated holiday banner for a 2027 calendar app. Redraw image 1, the edit target, with the beautiful atmospheric painterly quality of images 2 and 3, which are style references only. Keep the Turkish holiday identity and core subjects of image 1 but replace the flat faceless vector look completely with richly detailed hand-painted editorial illustration, softly realistic expressive faces, believable anatomy, depth, gorgeous volumetric light, layered scenery and fine material textures. Style references must inform lighting, palette, brushwork and finish, not introduce Japanese or Russian symbols. Wide full-bleed landscape composition, approximately 1915 by 821 pixels, aspect 2.33:1. Elegant harmonious vibrant colors, warm gold highlights, cool teal and navy shadows, painterly sky, inviting warm mood, focal subjects readable in a small calendar card. No text, numbers, dates, captions, watermarks or decorative frame. No collage panels. Turkish flags must use a white crescent and exactly one white five-pointed star on a red field. Specific scene: A peaceful intergenerational Turkish community standing together along the Bosphorus at luminous evening blue hour, seen mostly from behind or in gentle profile. A central person holds a flowing accurate Turkish flag, families have arms around one another. The Bosphorus suspension bridge illuminated in warm red and white, an elegant waterfront mosque, distant Istanbul windows, sparkling reflections and soft luminous clouds. Preserve original solidarity scene and bridge setting. Dignified, contemplative and welcoming national commemoration; no politicians, no confrontation, no weapons. Rich navy and turquoise with warm gold and red accents.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/tr_15jul.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-96845775-c713-4fa9-9f2c-c6873d61bff0.png",
+    "appAsset": "assets/days_img/tr_15jul.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_tr_15jul.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 358302
+  },
+  {
+    "name": "tr_30aug",
+    "widget": "day_tr_30aug",
+    "label": "День Победы",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: premium illustrated holiday banner for a 2027 calendar app. Redraw image 1, the edit target, with the beautiful atmospheric painterly quality of images 2 and 3, which are style references only. Keep the Turkish holiday identity and core subjects of image 1 but replace the flat faceless vector look completely with richly detailed hand-painted editorial illustration, softly realistic expressive faces, believable anatomy, depth, gorgeous volumetric light, layered scenery and fine material textures. Style references must inform lighting, palette, brushwork and finish, not introduce Japanese or Russian symbols. Wide full-bleed landscape composition, approximately 1915 by 821 pixels, aspect 2.33:1. Elegant harmonious vibrant colors, warm gold highlights, cool teal and navy shadows, painterly sky, inviting warm mood, focal subjects readable in a small calendar card. No text, numbers, dates, captions, watermarks or decorative frame. No collage panels. Turkish flags must use a white crescent and exactly one white five-pointed star on a red field. Specific scene: A joyful Turkish family celebrating Victory Day on a lush late-summer waterfront promenade in Istanbul, holding red Turkish flags with accurate white crescents and five-pointed stars. Preserve the original family celebration near the Bosphorus, one child excitedly waving a small flag, adults smiling and looking toward a large flag fluttering from a real visible pole. Detailed Ottoman waterfront architecture, distant suspension bridge, small ferry, glowing water, soft hills and beautifully painted clouds. Golden late-afternoon light, saturated reds, deep blue-green water and rich foliage. Peaceful civilian celebration with natural expressions and fine fabric detail.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/tr_30aug.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-bbac5736-95e4-4aa8-b276-fa7e13f05c6a.png",
+    "appAsset": "assets/days_img/tr_30aug.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_tr_30aug.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 397726
+  },
+  {
+    "name": "tr_29okt",
+    "widget": "day_tr_29okt",
+    "label": "День Республики",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: premium illustrated holiday banner for a 2027 calendar app. Redraw image 1, the edit target, with the beautiful atmospheric painterly quality of images 2 and 3, which are style references only. Keep the Turkish holiday identity and core subjects of image 1 but replace the flat faceless vector look completely with richly detailed hand-painted editorial illustration, softly realistic expressive faces, believable anatomy, depth, gorgeous volumetric light, layered scenery and fine material textures. Style references must inform lighting, palette, brushwork and finish, not introduce Japanese or Russian symbols. Wide full-bleed landscape composition, approximately 1915 by 821 pixels, aspect 2.33:1. Elegant harmonious vibrant colors, warm gold highlights, cool teal and navy shadows, painterly sky, inviting warm mood, focal subjects readable in a small calendar card. No text, numbers, dates, captions, watermarks or decorative frame. No collage panels. Turkish flags must use a white crescent and exactly one white five-pointed star on a red field. Specific scene: A dignified and joyful Republic Day celebration in Ankara at Anıtkabir: families with Turkish flags in the foreground, monumental warm stone colonnade behind, autumn trees and glowing clouds. Integrate a recognizable bronze statue of Mustafa Kemal Atatürk in a formal suit holding his hat, as a real sculptural memorial in the scene, preserving original commemorative subject without a giant floating human. Red-and-white flags ripple in the evening breeze, a small ceremonial aircraft formation high in the sky leaves delicate red and white trails. Rich autumn gold, warm lights, navy shadows, textured stone and cloth. Natural happy faces, coherent ceremonial composition.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/tr_29okt.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-4945e13f-bac5-45ed-a3bb-77551c1a036f.png",
+    "appAsset": "assets/days_img/tr_29okt.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_tr_29okt.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 358772
+  }
+]

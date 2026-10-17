@@ -1,0 +1,257 @@
+[
+  {
+    "name": "jp_12jan",
+    "label": "День совершеннолетия",
+    "widget": "day_jp_12jan",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: Japanese holiday panorama for an existing calendar app and Android widget. Image 1 is the existing illustration, EDIT TARGET: preserve its holiday meaning and core subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico calendar illustration. Redraw the target with the same premium atmospheric painterly editorial style: beautifully detailed architecture, natural foliage, nuanced fabrics and materials, rich layered color, warm cinematic light, deep teal/navy shadows, subtle brushwork and paper grain, atmospheric depth and naturally illustrated faces. Improve the original flat geometric composition into a coherent richly painted scene. Preserve Japanese cultural identity; do not copy Mexican flags, clothing, architecture or motifs. The illustration must remain clearly Japanese and appropriate for its season. Full bleed panoramic ratio 1915:821 (2.33:1), target about 1916x821, important subjects within central 85%, clear when viewed as a small calendar header. No borders, empty margins, text, labels, logos, watermarks, dates, years, readable letters or numerals. No photorealism or 3D. Scene: Young Japanese adults celebrating Coming of Age Day in January, women in exquisitely patterned furisode kimono with warm white stoles and carefully tied obi, men in elegant suits or formal haori and hakama. Joyful friends in a traditional Japanese town courtyard, crisp winter sunlight, subtle bare branches and evergreen pines, distant snow-topped mountain. Keep the original youthful group celebration; avoid a full spring cherry-blossom canopy in this January scene. Beautiful embroidered fabric, tile roofs and timber details.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_12jan.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-48bc5c7f-9dfd-4730-8fa4-2037232e3fb9.png",
+    "appAsset": "assets/days_img/jp_12jan.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_jp_12jan.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 385900
+  },
+  {
+    "name": "jp11_feb",
+    "label": "День основания государства",
+    "widget": "day_jp11_feb",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: Japanese holiday panorama for an existing calendar app and Android widget. Image 1 is the existing illustration, EDIT TARGET: preserve its holiday meaning and core subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico calendar illustration. Redraw the target with the same premium atmospheric painterly editorial style: beautifully detailed architecture, natural foliage, nuanced fabrics and materials, rich layered color, warm cinematic light, deep teal/navy shadows, subtle brushwork and paper grain, atmospheric depth and naturally illustrated faces. Improve the original flat geometric composition into a coherent richly painted scene. Preserve Japanese cultural identity; do not copy Mexican flags, clothing, architecture or motifs. The illustration must remain clearly Japanese and appropriate for its season. Full bleed panoramic ratio 1915:821 (2.33:1), target about 1916x821, important subjects within central 85%, clear when viewed as a small calendar header. No borders, empty margins, text, labels, logos, watermarks, dates, years, readable letters or numerals. No photorealism or 3D. Scene: A peaceful Japanese heritage landscape for National Foundation Day, viewed by a couple in traditional kimono from a lakeside path. Preserve the original red torii, white-walled Japanese castle, arched bridge, sculptural pines and distant mountain. Rich wood grain, stone walls, delicate winter plum blossoms as a small accent, cold clear air warmed by a low golden sun, deep teal water reflections. A poetic heritage panorama, no oversized abstract red disk.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp11_feb.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-db4ca2d3-e47a-47a4-9168-07cdd208433d.png",
+    "appAsset": "assets/days_img/jp11_feb.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_jp11_feb.webp",
+    "width": 1915,
+    "height": 821,
+    "bytes": 415166
+  },
+  {
+    "name": "jp_23feb",
+    "label": "День рождения императора",
+    "widget": "day_jp_23feb",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: Japanese holiday panorama for an existing calendar app and Android widget. Image 1 is the existing illustration, EDIT TARGET: preserve its holiday meaning and core subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico calendar illustration. Redraw the target with the same premium atmospheric painterly editorial style: beautifully detailed architecture, natural foliage, nuanced fabrics and materials, rich layered color, warm cinematic light, deep teal/navy shadows, subtle brushwork and paper grain, atmospheric depth and naturally illustrated faces. Improve the original flat geometric composition into a coherent richly painted scene. Preserve Japanese cultural identity; do not copy Mexican flags, clothing, architecture or motifs. The illustration must remain clearly Japanese and appropriate for its season. Full bleed panoramic ratio 1915:821 (2.33:1), target about 1916x821, important subjects within central 85%, clear when viewed as a small calendar header. No borders, empty margins, text, labels, logos, watermarks, dates, years, readable letters or numerals. No photorealism or 3D. Scene: A respectful public birthday celebration in the grounds of a Japanese imperial palace. Families in winter coats seen mostly from behind gently waving small accurate Japanese flags, white rectangle with centered red circle. A formal figure greeting from a distant palace balcony, too small for a specific portrait, wearing a dark formal suit. Detailed elegant palace architecture, stonework and landscaped pines, crisp February light with warm highlights. Focus on the visitors' shared celebration, not a close-up leader portrait; no generic fantasy castle or spring sakura canopy.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_23feb.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-7a6d6790-9757-4066-a09a-0e92e591537e.png",
+    "appAsset": "assets/days_img/jp_23feb.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_jp_23feb.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 387988
+  },
+  {
+    "name": "jp_20mar",
+    "label": "День весеннего равноденствия",
+    "widget": "day_jp_20mar",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: Japanese holiday panorama for an existing calendar app and Android widget. Image 1 is the existing illustration, EDIT TARGET: preserve its holiday meaning and core subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico calendar illustration. Redraw the target with the same premium atmospheric painterly editorial style: beautifully detailed architecture, natural foliage, nuanced fabrics and materials, rich layered color, warm cinematic light, deep teal/navy shadows, subtle brushwork and paper grain, atmospheric depth and naturally illustrated faces. Improve the original flat geometric composition into a coherent richly painted scene. Preserve Japanese cultural identity; do not copy Mexican flags, clothing, architecture or motifs. The illustration must remain clearly Japanese and appropriate for its season. Full bleed panoramic ratio 1915:821 (2.33:1), target about 1916x821, important subjects within central 85%, clear when viewed as a small calendar header. No borders, empty margins, text, labels, logos, watermarks, dates, years, readable letters or numerals. No photorealism or 3D. Scene: A tranquil Japanese garden at the spring equinox: people quietly appreciating nature near a shimmering pond, one woman in teal kimono with a small flowering branch, seated family members, stone lantern, traditional wooden pavilion, soft flowering cherry branches and fresh spring growth. Glowing low sun and pastel clouds reflected on water, finely painted petals and moss, layered distant hills. Thoughtful calm, renewal and balance.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-74b056d4-fdea-4e54-b3cb-4d7a8f713657.png",
+    "appAsset": "assets/days_img/jp_20mar.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_jp_20mar.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 462198
+  },
+  {
+    "name": "jp_29apr",
+    "label": "День Сёва",
+    "widget": "day_jp_29apr",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: Japanese holiday panorama for an existing calendar app and Android widget. Image 1 is the existing illustration, EDIT TARGET: preserve its holiday meaning and core subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico calendar illustration. Redraw the target with the same premium atmospheric painterly editorial style: beautifully detailed architecture, natural foliage, nuanced fabrics and materials, rich layered color, warm cinematic light, deep teal/navy shadows, subtle brushwork and paper grain, atmospheric depth and naturally illustrated faces. Improve the original flat geometric composition into a coherent richly painted scene. Preserve Japanese cultural identity; do not copy Mexican flags, clothing, architecture or motifs. The illustration must remain clearly Japanese and appropriate for its season. Full bleed panoramic ratio 1915:821 (2.33:1), target about 1916x821, important subjects within central 85%, clear when viewed as a small calendar header. No borders, empty margins, text, labels, logos, watermarks, dates, years, readable letters or numerals. No photorealism or 3D. Scene: A nostalgic yet hopeful Japanese panorama reflecting on everyday life across the Showa era: a craftsperson carefully repairing a vintage wooden radio in the foreground, a woman reading, a family strolling, a cyclist and a photographer, a classic streamlined train crossing a distant bridge, Japanese tile-roof buildings and a modern city beyond. Organically connected vignettes, detailed wood, metal and spring greenery, warm amber afternoon. Avoid militarism, propaganda and giant flag backgrounds. Preserve the original theme of daily life, memory and progress.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_29apr.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-865f85a0-1d17-4b21-942d-62bc961fa229.png",
+    "appAsset": "assets/days_img/jp_29apr.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_jp_29apr.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 433252
+  },
+  {
+    "name": "jp_3may",
+    "label": "День Конституции",
+    "widget": "day_jp_3may",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: Japanese holiday panorama for an existing calendar app and Android widget. Image 1 is the existing illustration, EDIT TARGET: preserve its holiday meaning and core subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico calendar illustration. Redraw the target with the same premium atmospheric painterly editorial style: beautifully detailed architecture, natural foliage, nuanced fabrics and materials, rich layered color, warm cinematic light, deep teal/navy shadows, subtle brushwork and paper grain, atmospheric depth and naturally illustrated faces. Improve the original flat geometric composition into a coherent richly painted scene. Preserve Japanese cultural identity; do not copy Mexican flags, clothing, architecture or motifs. The illustration must remain clearly Japanese and appropriate for its season. Full bleed panoramic ratio 1915:821 (2.33:1), target about 1916x821, important subjects within central 85%, clear when viewed as a small calendar header. No borders, empty margins, text, labels, logos, watermarks, dates, years, readable letters or numerals. No photorealism or 3D. Scene: An inviting Japanese civic scene for Constitution Memorial Day: an open cream-colored book prominently displayed on a wooden lectern, a simple centered red sun emblem on its cover with no writing, a small bronze balance scale nearby. Visitors of different ages, including a wheelchair user, gathered thoughtfully in a garden beside a dignified Japanese civic building. Fresh May greenery, refined stone and timber details, gentle golden light. Integrate book symbolism naturally, without gigantic floating objects or flat infographic shapes.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_3may.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-3465662e-0bfe-4c5e-bded-05e4ff354821.png",
+    "appAsset": "assets/days_img/jp_3may.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_jp_3may.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 409146
+  },
+  {
+    "name": "jp_4may",
+    "label": "День зелени",
+    "widget": "day_jp_4may",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: Japanese holiday panorama for an existing calendar app and Android widget. Image 1 is the existing illustration, EDIT TARGET: preserve its holiday meaning and core subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico calendar illustration. Redraw the target with the same premium atmospheric painterly editorial style: beautifully detailed architecture, natural foliage, nuanced fabrics and materials, rich layered color, warm cinematic light, deep teal/navy shadows, subtle brushwork and paper grain, atmospheric depth and naturally illustrated faces. Improve the original flat geometric composition into a coherent richly painted scene. Preserve Japanese cultural identity; do not copy Mexican flags, clothing, architecture or motifs. The illustration must remain clearly Japanese and appropriate for its season. Full bleed panoramic ratio 1915:821 (2.33:1), target about 1916x821, important subjects within central 85%, clear when viewed as a small calendar header. No borders, empty margins, text, labels, logos, watermarks, dates, years, readable letters or numerals. No photorealism or 3D. Scene: Japanese families and volunteers appreciating nature and planting a young tree in a lush green riverside park. A woman kneels to settle the sapling into soil, a man carries another small potted plant, people stroll on a garden path. Rich fresh May foliage, ferns, mossy stones, distant wooded hills, birds and softly shimmering water, sunlight filtering through leaves. Hands in plausible natural gardening poses. Nature is the main subject; airy, tender and full of life.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_4may.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-33c91be4-a641-494d-8be4-40b719f52391.png",
+    "appAsset": "assets/days_img/jp_4may.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_jp_4may.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 489446
+  },
+  {
+    "name": "jp_5may",
+    "label": "День детей",
+    "widget": "day_jp_5may",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: Japanese holiday panorama for an existing calendar app and Android widget. Image 1 is the existing illustration, EDIT TARGET: preserve its holiday meaning and core subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico calendar illustration. Redraw the target with the same premium atmospheric painterly editorial style: beautifully detailed architecture, natural foliage, nuanced fabrics and materials, rich layered color, warm cinematic light, deep teal/navy shadows, subtle brushwork and paper grain, atmospheric depth and naturally illustrated faces. Improve the original flat geometric composition into a coherent richly painted scene. Preserve Japanese cultural identity; do not copy Mexican flags, clothing, architecture or motifs. The illustration must remain clearly Japanese and appropriate for its season. Full bleed panoramic ratio 1915:821 (2.33:1), target about 1916x821, important subjects within central 85%, clear when viewed as a small calendar header. No borders, empty margins, text, labels, logos, watermarks, dates, years, readable letters or numerals. No photorealism or 3D. Scene: A joyful Japanese Children's Day in May. Children playing in a traditional garden beneath colorful koinobori carp windsocks, wearing or folding paper kabuto helmets, one child holding a harmless paper toy sword and another a pinwheel. Irises at the edge of a pond, tiled Japanese roofs, a stone bridge and fresh green trees, warm sunshine and blue sky. Beautiful individual scales and woven fabric on windsocks, natural smiling faces, accurate child anatomy. No real weapons.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_5may.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-2bc508af-6606-46e5-a390-a64f1501f5e1.png",
+    "appAsset": "assets/days_img/jp_5may.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_jp_5may.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 463936
+  },
+  {
+    "name": "jp_20jul",
+    "label": "День моря",
+    "widget": "day_jp_20jul",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: Japanese holiday panorama for an existing calendar app and Android widget. Image 1 is the existing illustration, EDIT TARGET: preserve its holiday meaning and core subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico calendar illustration. Redraw the target with the same premium atmospheric painterly editorial style: beautifully detailed architecture, natural foliage, nuanced fabrics and materials, rich layered color, warm cinematic light, deep teal/navy shadows, subtle brushwork and paper grain, atmospheric depth and naturally illustrated faces. Improve the original flat geometric composition into a coherent richly painted scene. Preserve Japanese cultural identity; do not copy Mexican flags, clothing, architecture or motifs. The illustration must remain clearly Japanese and appropriate for its season. Full bleed panoramic ratio 1915:821 (2.33:1), target about 1916x821, important subjects within central 85%, clear when viewed as a small calendar header. No borders, empty margins, text, labels, logos, watermarks, dates, years, readable letters or numerals. No photorealism or 3D. Scene: A Japanese family enjoying a luminous summer seashore for Marine Day. Preserve the original connection to the sea: small fishing boat on sparkling blue water, white surf, pine-covered coastal hills, a fishing village and a small coastal torii in the distance. A fisher holding a natural woven basket with the day's seafood, parent and child watching the waves, seabirds overhead. Layered turquoise water, warm sunlit rocks, natural woven materials and summer clothing, calm gratitude toward the sea.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20jul.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-1e7e40a8-7325-4c23-a5e6-3b4268d4dbb9.png",
+    "appAsset": "assets/days_img/jp_20jul.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_jp_20jul.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 413292
+  },
+  {
+    "name": "jp_11aug",
+    "label": "День гор",
+    "widget": "day_jp_11aug",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: Japanese holiday panorama for an existing calendar app and Android widget. Image 1 is the existing illustration, EDIT TARGET: preserve its holiday meaning and core subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico calendar illustration. Redraw the target with the same premium atmospheric painterly editorial style: beautifully detailed architecture, natural foliage, nuanced fabrics and materials, rich layered color, warm cinematic light, deep teal/navy shadows, subtle brushwork and paper grain, atmospheric depth and naturally illustrated faces. Improve the original flat geometric composition into a coherent richly painted scene. Preserve Japanese cultural identity; do not copy Mexican flags, clothing, architecture or motifs. The illustration must remain clearly Japanese and appropriate for its season. Full bleed panoramic ratio 1915:821 (2.33:1), target about 1916x821, important subjects within central 85%, clear when viewed as a small calendar header. No borders, empty margins, text, labels, logos, watermarks, dates, years, readable letters or numerals. No photorealism or 3D. Scene: Japanese hikers with daypacks resting at a beautiful summer mountain viewpoint for Mountain Day. A broad panoramic view across a blue lake, forested ridges and Mount Fuji in clear distance, rugged stone foreground, Japanese pines, grasses and small mountain wildflowers. Warm morning light, atmospheric blue-green layers, detailed outdoor clothing and backpacks. Summer greenery, no winter snowfield around the hikers; keep Fuji's summit snow subtle rather than a huge winter cap. Quiet awe, fresh air and space.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_11aug.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-af2ba370-8b3c-45a3-9d3d-d6ca831c8644.png",
+    "appAsset": "assets/days_img/jp_11aug.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_jp_11aug.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 389112
+  },
+  {
+    "name": "jp_21sep",
+    "label": "День почитания старших",
+    "widget": "day_jp_21sep",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: Japanese holiday panorama for an existing calendar app and Android widget. Image 1 is the existing illustration, EDIT TARGET: preserve its holiday meaning and core subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico calendar illustration. Redraw the target with the same premium atmospheric painterly editorial style: beautifully detailed architecture, natural foliage, nuanced fabrics and materials, rich layered color, warm cinematic light, deep teal/navy shadows, subtle brushwork and paper grain, atmospheric depth and naturally illustrated faces. Improve the original flat geometric composition into a coherent richly painted scene. Preserve Japanese cultural identity; do not copy Mexican flags, clothing, architecture or motifs. The illustration must remain clearly Japanese and appropriate for its season. Full bleed panoramic ratio 1915:821 (2.33:1), target about 1916x821, important subjects within central 85%, clear when viewed as a small calendar header. No borders, empty margins, text, labels, logos, watermarks, dates, years, readable letters or numerals. No photorealism or 3D. Scene: A warm Japanese multigenerational family gathering for Respect for the Aged Day. Young adults offer a wrapped gift and a modest bouquet to smiling grandparents, another person pours tea, all in one coherent home and engawa veranda setting. Shoji screens, tatami, finely crafted wooden furniture, handmade ceramic tea set, a beautiful garden with hints of early autumn. Warm natural afternoon light, believable older faces, understated affection, rich fabric and wood textures. Avoid mixing a generic Western living room into the Japanese setting.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_21sep.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-48afe2d5-d8cf-43f3-9a68-dfaf14f2396f.png",
+    "appAsset": "assets/days_img/jp_21sep.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_jp_21sep.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 371824
+  },
+  {
+    "name": "jp_23sep",
+    "label": "День осеннего равноденствия",
+    "widget": "day_jp_23sep",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: Japanese holiday panorama for an existing calendar app and Android widget. Image 1 is the existing illustration, EDIT TARGET: preserve its holiday meaning and core subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico calendar illustration. Redraw the target with the same premium atmospheric painterly editorial style: beautifully detailed architecture, natural foliage, nuanced fabrics and materials, rich layered color, warm cinematic light, deep teal/navy shadows, subtle brushwork and paper grain, atmospheric depth and naturally illustrated faces. Improve the original flat geometric composition into a coherent richly painted scene. Preserve Japanese cultural identity; do not copy Mexican flags, clothing, architecture or motifs. The illustration must remain clearly Japanese and appropriate for its season. Full bleed panoramic ratio 1915:821 (2.33:1), target about 1916x821, important subjects within central 85%, clear when viewed as a small calendar header. No borders, empty margins, text, labels, logos, watermarks, dates, years, readable letters or numerals. No photorealism or 3D. Scene: A peaceful Japanese family remembering ancestors at the autumn equinox. Parents and child respectfully placing flowers and joining hands at traditional simple grey stone family graves in a quiet temple garden. Subtle incense, stone lantern, distant temple roof, grasses, a few gently turning autumn leaves and layered hills. Soft late-afternoon gold and misty teal distance, thoughtful reassuring mood, dignity and warmth. Stone surfaces have no legible inscriptions; no horror or gloomy cemetery atmosphere.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_23sep.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-f5ecb0fb-ef7b-45e2-9eb7-d319fee996fa.png",
+    "appAsset": "assets/days_img/jp_23sep.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_jp_23sep.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 386824
+  },
+  {
+    "name": "jp_12okt",
+    "label": "День спорта",
+    "widget": "day_jp_12okt",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: Japanese holiday panorama for an existing calendar app and Android widget. Image 1 is the existing illustration, EDIT TARGET: preserve its holiday meaning and core subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico calendar illustration. Redraw the target with the same premium atmospheric painterly editorial style: beautifully detailed architecture, natural foliage, nuanced fabrics and materials, rich layered color, warm cinematic light, deep teal/navy shadows, subtle brushwork and paper grain, atmospheric depth and naturally illustrated faces. Improve the original flat geometric composition into a coherent richly painted scene. Preserve Japanese cultural identity; do not copy Mexican flags, clothing, architecture or motifs. The illustration must remain clearly Japanese and appropriate for its season. Full bleed panoramic ratio 1915:821 (2.33:1), target about 1916x821, important subjects within central 85%, clear when viewed as a small calendar header. No borders, empty margins, text, labels, logos, watermarks, dates, years, readable letters or numerals. No photorealism or 3D. Scene: An energetic Japanese community park on Sports Day in autumn: a woman jogging, a man stretching, another person practicing a balanced yoga pose, a young adult carrying a basketball, a cyclist wearing a helmet on an adjacent path. A tasteful sports stadium and Japanese city silhouette in the distance. October foliage beginning to turn orange and gold, open sky, warm crisp sunlight. Dynamic but anatomically credible poses, realistic bicycle geometry. Preserve the original inclusive everyday exercise theme; no giant symbolic red disk or spring cherry blossoms.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_12okt.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-1208a35d-9bd8-4c4d-b613-c0e057055fd5.png",
+    "appAsset": "assets/days_img/jp_12okt.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_jp_12okt.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 475950
+  },
+  {
+    "name": "jp_3now",
+    "label": "День культуры",
+    "widget": "day_jp_3now",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: Japanese holiday panorama for an existing calendar app and Android widget. Image 1 is the existing illustration, EDIT TARGET: preserve its holiday meaning and core subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico calendar illustration. Redraw the target with the same premium atmospheric painterly editorial style: beautifully detailed architecture, natural foliage, nuanced fabrics and materials, rich layered color, warm cinematic light, deep teal/navy shadows, subtle brushwork and paper grain, atmospheric depth and naturally illustrated faces. Improve the original flat geometric composition into a coherent richly painted scene. Preserve Japanese cultural identity; do not copy Mexican flags, clothing, architecture or motifs. The illustration must remain clearly Japanese and appropriate for its season. Full bleed panoramic ratio 1915:821 (2.33:1), target about 1916x821, important subjects within central 85%, clear when viewed as a small calendar header. No borders, empty margins, text, labels, logos, watermarks, dates, years, readable letters or numerals. No photorealism or 3D. Scene: A richly detailed Japanese cultural festival in an open timber pavilion and garden: a woman painting a traditional landscape, a musician playing an authentic koto, a graceful dancer, a small science demonstration with microscope and a reader nearby. Compose these as a coherent cultural gathering with beautiful autumn maples, ceramics, bamboo details, wooden beams and softly glowing lanterns, deep blue-green shadows. Emphasize arts, learning and shared appreciation. No floating rocket, no giant symbolic montage shapes, no legible calligraphy or text.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_3now.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-3179e971-6e91-4b7f-a1d4-fb23e6da91a6.png",
+    "appAsset": "assets/days_img/jp_3now.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_jp_3now.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 392046
+  },
+  {
+    "name": "jp_23now",
+    "label": "День благодарности труду",
+    "widget": "day_jp_23now",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: Japanese holiday panorama for an existing calendar app and Android widget. Image 1 is the existing illustration, EDIT TARGET: preserve its holiday meaning and core subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico calendar illustration. Redraw the target with the same premium atmospheric painterly editorial style: beautifully detailed architecture, natural foliage, nuanced fabrics and materials, rich layered color, warm cinematic light, deep teal/navy shadows, subtle brushwork and paper grain, atmospheric depth and naturally illustrated faces. Improve the original flat geometric composition into a coherent richly painted scene. Preserve Japanese cultural identity; do not copy Mexican flags, clothing, architecture or motifs. The illustration must remain clearly Japanese and appropriate for its season. Full bleed panoramic ratio 1915:821 (2.33:1), target about 1916x821, important subjects within central 85%, clear when viewed as a small calendar header. No borders, empty margins, text, labels, logos, watermarks, dates, years, readable letters or numerals. No photorealism or 3D. Scene: A warm Japanese community gathering for Labor Thanksgiving Day in late autumn, honoring different kinds of work. Farmer holding golden rice stalks, a vegetable grower with a wooden crate of seasonal produce, a healthcare worker, an engineer with safety helmet, a delivery worker and a teacher with students. People exchange thanks naturally around a shared wooden table near a traditional community hall, autumn maple leaves and baskets of persimmons, rice and vegetables. Rich woven baskets, detailed clothing and foliage, gentle golden afternoon light, appreciative cheerful faces. No American Thanksgiving symbols or turkey.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_23now.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-d68f2a2c-be86-4513-9dbd-cf6e78fdff47.png",
+    "appAsset": "assets/days_img/jp_23now.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_jp_23now.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 386294
+  }
+]

@@ -1,0 +1,236 @@
+[
+  {
+    "name": "default_work_mon",
+    "label": "Понедельник — дорога на работу",
+    "widget": "day_default_work_mon",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic calendar and Android widget illustration. Image 1 is the existing EDIT TARGET and provides the subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico illustration; image 3 is a complementary STYLE REFERENCE ONLY from the approved Russian series. Redraw image 1 with the same premium atmospheric painterly editorial quality as the references: finely detailed environments and vegetation, rich layered colors, luminous warm light, subtle brush and paper texture, deep teal/navy shadows, beautiful depth and atmospheric perspective, expressive naturally illustrated people and credible anatomy. Keep the subject of image 1, improve composition and detail freely. Avoid the old flat corporate vector style. Do not copy the references' holiday symbols, flags, winter setting, architecture or characters. These are universal everyday scenes used by multiple countries. Full bleed panoramic aspect ratio exactly 1915:821 (about 2.33:1), target output about 1916x821, no borders or blank margins, important subjects within central 85%, legible in a small calendar header. No text, captions, labels, logos, watermark, dates or numerals. No photorealism, no 3D render. Scene: A morning commuter train interior, passengers with bags, a woman in mustard jacket with phone, seated readers and laptop user; a layered modern city seen through expansive windows at sunrise. Rich reflections in glass, woven seat fabric, brushed metal, amber sunlight and teal shadows. The atmosphere is a calm fresh start to the working week.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_work_mon.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-9896c3af-1faf-403a-8067-8a491c800cdb.png",
+    "appAsset": "assets/days_img/default_work_mon.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_default_work_mon.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 343966
+  },
+  {
+    "name": "default_work_tue",
+    "label": "Вторник — офис",
+    "widget": "day_default_work_tue",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic calendar and Android widget illustration. Image 1 is the existing EDIT TARGET and provides the subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico illustration; image 3 is a complementary STYLE REFERENCE ONLY from the approved Russian series. Redraw image 1 with the same premium atmospheric painterly editorial quality as the references: finely detailed environments and vegetation, rich layered colors, luminous warm light, subtle brush and paper texture, deep teal/navy shadows, beautiful depth and atmospheric perspective, expressive naturally illustrated people and credible anatomy. Keep the subject of image 1, improve composition and detail freely. Avoid the old flat corporate vector style. Do not copy the references' holiday symbols, flags, winter setting, architecture or characters. These are universal everyday scenes used by multiple countries. Full bleed panoramic aspect ratio exactly 1915:821 (about 2.33:1), target output about 1916x821, no borders or blank margins, important subjects within central 85%, legible in a small calendar header. No text, captions, labels, logos, watermark, dates or numerals. No photorealism, no 3D render. Scene: A bright welcoming contemporary office with individual desks, people focused on laptops, two colleagues chatting over coffee near tall windows. Detailed leafy plants, wood and fabric textures, sunlit city outside, soft shafts of daylight. Quiet productive everyday work.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_work_tue.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-c4387e34-918a-484a-a9f5-f16797d8361f.png",
+    "appAsset": "assets/days_img/default_work_tue.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_default_work_tue.webp",
+    "width": 1915,
+    "height": 821,
+    "bytes": 377384
+  },
+  {
+    "name": "default_work_wed",
+    "label": "Среда — производство",
+    "widget": "day_default_work_wed",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic calendar and Android widget illustration. Image 1 is the existing EDIT TARGET and provides the subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico illustration; image 3 is a complementary STYLE REFERENCE ONLY from the approved Russian series. Redraw image 1 with the same premium atmospheric painterly editorial quality as the references: finely detailed environments and vegetation, rich layered colors, luminous warm light, subtle brush and paper texture, deep teal/navy shadows, beautiful depth and atmospheric perspective, expressive naturally illustrated people and credible anatomy. Keep the subject of image 1, improve composition and detail freely. Avoid the old flat corporate vector style. Do not copy the references' holiday symbols, flags, winter setting, architecture or characters. These are universal everyday scenes used by multiple countries. Full bleed panoramic aspect ratio exactly 1915:821 (about 2.33:1), target output about 1916x821, no borders or blank margins, important subjects within central 85%, legible in a small calendar header. No text, captions, labels, logos, watermark, dates or numerals. No photorealism, no 3D render. Scene: A spacious clean modern manufacturing hall. Two engineers in proper safety helmets in the foreground reviewing the production line with a tablet; operators at enclosed CNC machines in the background. Detailed metal surfaces, overhead beams, warm sunlight through tall industrial windows, deep teal shadows. Credible safe equipment and anatomy.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_work_wed.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-f90a5be7-d9d6-41c0-a44c-db4861d7c67f.png",
+    "appAsset": "assets/days_img/default_work_wed.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_default_work_wed.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 323620
+  },
+  {
+    "name": "default_work_thu",
+    "label": "Четверг — вечерняя работа",
+    "widget": "day_default_work_thu",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic calendar and Android widget illustration. Image 1 is the existing EDIT TARGET and provides the subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico illustration; image 3 is a complementary STYLE REFERENCE ONLY from the approved Russian series. Redraw image 1 with the same premium atmospheric painterly editorial quality as the references: finely detailed environments and vegetation, rich layered colors, luminous warm light, subtle brush and paper texture, deep teal/navy shadows, beautiful depth and atmospheric perspective, expressive naturally illustrated people and credible anatomy. Keep the subject of image 1, improve composition and detail freely. Avoid the old flat corporate vector style. Do not copy the references' holiday symbols, flags, winter setting, architecture or characters. These are universal everyday scenes used by multiple countries. Full bleed panoramic aspect ratio exactly 1915:821 (about 2.33:1), target output about 1916x821, no borders or blank margins, important subjects within central 85%, legible in a small calendar header. No text, captions, labels, logos, watermark, dates or numerals. No photorealism, no 3D render. Scene: A woman concentrating on a laptop in a peaceful office at dusk. Warm brass desk lamp, ceramic mug, books and lush houseplants, large windows opening onto a softly glowing city under a peach and violet sky. Intimate pools of lamplight and deep blue shadows, nuanced fabric and wood textures.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_work_thu.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-1200dea3-185e-468a-8fd6-f131e31ce324.png",
+    "appAsset": "assets/days_img/default_work_thu.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_default_work_thu.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 269396
+  },
+  {
+    "name": "default_work_fri",
+    "label": "Пятница — итоги недели",
+    "widget": "day_default_work_fri",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic calendar and Android widget illustration. Image 1 is the existing EDIT TARGET and provides the subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico illustration; image 3 is a complementary STYLE REFERENCE ONLY from the approved Russian series. Redraw image 1 with the same premium atmospheric painterly editorial quality as the references: finely detailed environments and vegetation, rich layered colors, luminous warm light, subtle brush and paper texture, deep teal/navy shadows, beautiful depth and atmospheric perspective, expressive naturally illustrated people and credible anatomy. Keep the subject of image 1, improve composition and detail freely. Avoid the old flat corporate vector style. Do not copy the references' holiday symbols, flags, winter setting, architecture or characters. These are universal everyday scenes used by multiple countries. Full bleed panoramic aspect ratio exactly 1915:821 (about 2.33:1), target output about 1916x821, no borders or blank margins, important subjects within central 85%, legible in a small calendar header. No text, captions, labels, logos, watermark, dates or numerals. No photorealism, no 3D render. Scene: A relaxed professional team at a wooden conference table, a woman presenting the week's results on a board with simple abstract unlabeled charts. Laptops, notebooks and a plant on the table; soft afternoon sunshine, textured chairs, expansive windows. Friendly satisfying sense of finishing the week. Absolutely no text or numbers on the board.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_work_fri.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-eca2d4b8-12f9-4e61-9f9e-97abc67879f4.png",
+    "appAsset": "assets/days_img/default_work_fri.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_default_work_fri.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 318190
+  },
+  {
+    "name": "default_work_mon_2",
+    "label": "Понедельник — чтение в поезде",
+    "widget": "day_default_work_mon_2",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic calendar and Android widget illustration. Image 1 is the existing EDIT TARGET and provides the subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico illustration; image 3 is a complementary STYLE REFERENCE ONLY from the approved Russian series. Redraw image 1 with the same premium atmospheric painterly editorial quality as the references: finely detailed environments and vegetation, rich layered colors, luminous warm light, subtle brush and paper texture, deep teal/navy shadows, beautiful depth and atmospheric perspective, expressive naturally illustrated people and credible anatomy. Keep the subject of image 1, improve composition and detail freely. Avoid the old flat corporate vector style. Do not copy the references' holiday symbols, flags, winter setting, architecture or characters. These are universal everyday scenes used by multiple countries. Full bleed panoramic aspect ratio exactly 1915:821 (about 2.33:1), target output about 1916x821, no borders or blank margins, important subjects within central 85%, legible in a small calendar header. No text, captions, labels, logos, watermark, dates or numerals. No photorealism, no 3D render. Scene: A quiet morning train with a woman reading an open book in the main seat, coffee cup, work bag, standing commuters and a seated man. Broad windows overlook a sunlit river, railway bridge and layered city skyline. This alternate Monday scene emphasizes the reader and riverside journey. Warm sunrise, detailed upholstery and glass reflections. Book has no legible text.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_work_mon_2.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-c6ae4d8d-27bf-4b75-b48b-71f7b0600e70.png",
+    "appAsset": "assets/days_img/default_work_mon_2.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_default_work_mon_2.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 285338
+  },
+  {
+    "name": "default_work_tue_2",
+    "label": "Вторник — совместная работа",
+    "widget": "day_default_work_tue_2",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic calendar and Android widget illustration. Image 1 is the existing EDIT TARGET and provides the subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico illustration; image 3 is a complementary STYLE REFERENCE ONLY from the approved Russian series. Redraw image 1 with the same premium atmospheric painterly editorial quality as the references: finely detailed environments and vegetation, rich layered colors, luminous warm light, subtle brush and paper texture, deep teal/navy shadows, beautiful depth and atmospheric perspective, expressive naturally illustrated people and credible anatomy. Keep the subject of image 1, improve composition and detail freely. Avoid the old flat corporate vector style. Do not copy the references' holiday symbols, flags, winter setting, architecture or characters. These are universal everyday scenes used by multiple countries. Full bleed panoramic aspect ratio exactly 1915:821 (about 2.33:1), target output about 1916x821, no borders or blank margins, important subjects within central 85%, legible in a small calendar header. No text, captions, labels, logos, watermark, dates or numerals. No photorealism, no 3D render. Scene: Two colleagues collaborate over an open notebook and laptop at a wooden desk in a sunny plant-filled coworking studio; another woman works separately on the right and a man sits near the distant window. Rich shelves, leafy plants, textured teal armchairs and warm yellow accents. This alternate Tuesday emphasizes collaborative planning.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_work_tue_2.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-49cb1c17-7a5a-49ce-85a5-7106ace0008e.png",
+    "appAsset": "assets/days_img/default_work_tue_2.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_default_work_tue_2.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 410558
+  },
+  {
+    "name": "default_work_wed_2",
+    "label": "Среда — мастерская",
+    "widget": "day_default_work_wed_2",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic calendar and Android widget illustration. Image 1 is the existing EDIT TARGET and provides the subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico illustration; image 3 is a complementary STYLE REFERENCE ONLY from the approved Russian series. Redraw image 1 with the same premium atmospheric painterly editorial quality as the references: finely detailed environments and vegetation, rich layered colors, luminous warm light, subtle brush and paper texture, deep teal/navy shadows, beautiful depth and atmospheric perspective, expressive naturally illustrated people and credible anatomy. Keep the subject of image 1, improve composition and detail freely. Avoid the old flat corporate vector style. Do not copy the references' holiday symbols, flags, winter setting, architecture or characters. These are universal everyday scenes used by multiple countries. Full bleed panoramic aspect ratio exactly 1915:821 (about 2.33:1), target output about 1916x821, no borders or blank margins, important subjects within central 85%, legible in a small calendar header. No text, captions, labels, logos, watermark, dates or numerals. No photorealism, no 3D render. Scene: Two engineers in white safety helmets inspect a carefully machined metal prototype on a heavy workbench with rolled blueprints and a warm task lamp. A properly guarded machine and operator in the background, detailed workshop tools, tall industrial windows with golden daylight. This alternate Wednesday is an intimate engineering workshop rather than a large factory overview.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_work_wed_2.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-3ac1bfac-cdb4-4162-9831-04958bea756f.png",
+    "appAsset": "assets/days_img/default_work_wed_2.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_default_work_wed_2.webp",
+    "width": 1915,
+    "height": 821,
+    "bytes": 353028
+  },
+  {
+    "name": "default_work_thu_2",
+    "label": "Четверг — творческая студия",
+    "widget": "day_default_work_thu_2",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic calendar and Android widget illustration. Image 1 is the existing EDIT TARGET and provides the subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico illustration; image 3 is a complementary STYLE REFERENCE ONLY from the approved Russian series. Redraw image 1 with the same premium atmospheric painterly editorial quality as the references: finely detailed environments and vegetation, rich layered colors, luminous warm light, subtle brush and paper texture, deep teal/navy shadows, beautiful depth and atmospheric perspective, expressive naturally illustrated people and credible anatomy. Keep the subject of image 1, improve composition and detail freely. Avoid the old flat corporate vector style. Do not copy the references' holiday symbols, flags, winter setting, architecture or characters. These are universal everyday scenes used by multiple countries. Full bleed panoramic aspect ratio exactly 1915:821 (about 2.33:1), target output about 1916x821, no borders or blank margins, important subjects within central 85%, legible in a small calendar header. No text, captions, labels, logos, watermark, dates or numerals. No photorealism, no 3D render. Scene: A woman writing in a notebook beside her laptop in the foreground, a man reviewing papers at a separate desk in the background. Cozy creative studio at dusk with warm desk lamps, shelves, books and detailed plants; violet and orange city sky. This alternate Thursday emphasizes handwriting, planning and thoughtful work. Papers and books have no legible text.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_work_thu_2.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-8cd920a0-f4d8-402f-bdf4-f756dd1a2f0e.png",
+    "appAsset": "assets/days_img/default_work_thu_2.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_default_work_thu_2.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 272822
+  },
+  {
+    "name": "default_work_fri_2",
+    "label": "Пятница — встреча в лаунже",
+    "widget": "day_default_work_fri_2",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic calendar and Android widget illustration. Image 1 is the existing EDIT TARGET and provides the subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico illustration; image 3 is a complementary STYLE REFERENCE ONLY from the approved Russian series. Redraw image 1 with the same premium atmospheric painterly editorial quality as the references: finely detailed environments and vegetation, rich layered colors, luminous warm light, subtle brush and paper texture, deep teal/navy shadows, beautiful depth and atmospheric perspective, expressive naturally illustrated people and credible anatomy. Keep the subject of image 1, improve composition and detail freely. Avoid the old flat corporate vector style. Do not copy the references' holiday symbols, flags, winter setting, architecture or characters. These are universal everyday scenes used by multiple countries. Full bleed panoramic aspect ratio exactly 1915:821 (about 2.33:1), target output about 1916x821, no borders or blank margins, important subjects within central 85%, legible in a small calendar header. No text, captions, labels, logos, watermark, dates or numerals. No photorealism, no 3D render. Scene: Small team finishing a friendly discussion around a round wooden table in a comfortable office lounge; teal upholstered chairs, a woman with laptop, colleagues with notebooks and coffee, a person returning a book to a shelf. Golden late-afternoon city panorama through windows, rich plants and cozy textiles. This alternate Friday is informal and relaxed.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_work_fri_2.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-e3a9112d-45a9-4fc5-a52e-6e2ea8269f83.png",
+    "appAsset": "assets/days_img/default_work_fri_2.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_default_work_fri_2.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 348714
+  },
+  {
+    "name": "work_default",
+    "label": "Рабочий день — разные профессии",
+    "widget": "day_work_default",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic calendar and Android widget illustration. Image 1 is the existing EDIT TARGET and provides the subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico illustration; image 3 is a complementary STYLE REFERENCE ONLY from the approved Russian series. Redraw image 1 with the same premium atmospheric painterly editorial quality as the references: finely detailed environments and vegetation, rich layered colors, luminous warm light, subtle brush and paper texture, deep teal/navy shadows, beautiful depth and atmospheric perspective, expressive naturally illustrated people and credible anatomy. Keep the subject of image 1, improve composition and detail freely. Avoid the old flat corporate vector style. Do not copy the references' holiday symbols, flags, winter setting, architecture or characters. These are universal everyday scenes used by multiple countries. Full bleed panoramic aspect ratio exactly 1915:821 (about 2.33:1), target output about 1916x821, no borders or blank margins, important subjects within central 85%, legible in a small calendar header. No text, captions, labels, logos, watermark, dates or numerals. No photorealism, no 3D render. Scene: A cohesive panoramic editorial montage celebrating an ordinary working day across professions: doctor with tablet, engineer in hard hat, delivery worker carrying a box, barista, artist at easel and office workers using computers. Preserve the inclusive range of people from the original. Connect the vignettes organically with warm interiors and a layered contemporary city, without hard panel borders or flat geometric blobs. Balanced clear composition with fewer well-rendered details over clutter.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/work_default.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-a4f911d7-0f8f-4219-9b1b-279a7f2bd91c.png",
+    "appAsset": "assets/days_img/work_default.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_work_default.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 372124
+  },
+  {
+    "name": "holday_default",
+    "label": "Выходной — уютный отдых",
+    "widget": "day_holday_default",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic calendar and Android widget illustration. Image 1 is the existing EDIT TARGET and provides the subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico illustration; image 3 is a complementary STYLE REFERENCE ONLY from the approved Russian series. Redraw image 1 with the same premium atmospheric painterly editorial quality as the references: finely detailed environments and vegetation, rich layered colors, luminous warm light, subtle brush and paper texture, deep teal/navy shadows, beautiful depth and atmospheric perspective, expressive naturally illustrated people and credible anatomy. Keep the subject of image 1, improve composition and detail freely. Avoid the old flat corporate vector style. Do not copy the references' holiday symbols, flags, winter setting, architecture or characters. These are universal everyday scenes used by multiple countries. Full bleed panoramic aspect ratio exactly 1915:821 (about 2.33:1), target output about 1916x821, no borders or blank margins, important subjects within central 85%, legible in a small calendar header. No text, captions, labels, logos, watermark, dates or numerals. No photorealism, no 3D render. Scene: A woman in a mustard knitted sweater and cream trousers relaxing with a book on a deep teal sofa in a beautifully cozy home. Soft textured cushions and blanket, warm wooden shelves, abundant detailed houseplants, tea on a low wooden table. Sunlit window overlooking a peaceful leafy neighborhood. Gentle unhurried weekend mood, warm afternoon light. No office equipment or holiday decorations.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/holday_default.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-6a7ad317-0ae5-40b3-b2f3-cc7732dfadde.png",
+    "appAsset": "assets/days_img/holday_default.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_holday_default.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 362764
+  },
+  {
+    "name": "default_short_day",
+    "label": "Сокращённый предпраздничный день",
+    "widget": "day_default_short_day",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic calendar and Android widget illustration. Image 1 is the existing EDIT TARGET and provides the subject. Image 2 is STYLE REFERENCE ONLY, the approved Mexico illustration; image 3 is a complementary STYLE REFERENCE ONLY from the approved Russian series. Redraw image 1 with the same premium atmospheric painterly editorial quality as the references: finely detailed environments and vegetation, rich layered colors, luminous warm light, subtle brush and paper texture, deep teal/navy shadows, beautiful depth and atmospheric perspective, expressive naturally illustrated people and credible anatomy. Keep the subject of image 1, improve composition and detail freely. Avoid the old flat corporate vector style. Do not copy the references' holiday symbols, flags, winter setting, architecture or characters. These are universal everyday scenes used by multiple countries. Full bleed panoramic aspect ratio exactly 1915:821 (about 2.33:1), target output about 1916x821, no borders or blank margins, important subjects within central 85%, legible in a small calendar header. No text, captions, labels, logos, watermark, dates or numerals. No photorealism, no 3D render. Scene: People finishing work early and heading home in warm afternoon sunlight: central woman in a mustard jacket with a shoulder bag waving goodbye to a colleague; a construction professional carrying a work bag and a medical professional putting away a tablet in side vignettes. Integrate a tasteful large analog clock with simple marks, two hands and no numerals into the office wall to suggest an earlier finish. Welcoming city visible outside, greenery, warm wood, cheerful anticipation of a holiday. A coherent painterly panorama rather than flat infographic; no specific national holiday symbols.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_short_day.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/mx_independence.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-46df396c-c1d3-4af9-9171-4309f9ccefff.png",
+    "appAsset": "assets/days_img/default_short_day.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_default_short_day.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 317974
+  }
+]

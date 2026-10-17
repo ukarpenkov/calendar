@@ -1,0 +1,236 @@
+[
+  {
+    "name": "id_16jan",
+    "label": "Исра и Мирадж",
+    "widget": "day_id_16jan",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic Indonesian holiday calendar and Android widget illustration. Image 1 is the existing EDIT TARGET, providing the holiday subject except any explicit subject corrections below. Images 2 and 3 are STYLE REFERENCES ONLY: the user's approved Japan and Russia illustrations. Match their beautiful atmospheric painterly editorial quality, luminous warm gold light, deep teal/navy shadows, rich natural color, layered landscapes, finely detailed architecture and lush vegetation, textured fabrics, subtle brushwork and grain, warm naturally illustrated faces and credible anatomy. The user specifically requests the same colors, detail and pleasant comforting feeling. Replace flat corporate vector shapes with coherent richly painted scenes. Preserve Indonesian identity: do not copy Japanese cherry blossoms, pagodas, kimono, Russian winter or European buildings from the references. Maintain distinct holiday subjects and appropriate Indonesian cultural details. Full bleed panorama at exact target aspect 1915:821 (2.33:1), output about 1916x821, important subjects within central 85%, clear at small calendar size. No borders, blank margins, text, logos, dates, numbers or watermarks. No photorealism, no 3D. Scene: A peaceful Indonesian Muslim evening of reflection for Isra and Mi'raj. An ordinary Indonesian worshipper in a black peci cap and richly textured teal baju koko, seated on a woven prayer mat with palms gently lifted in supplication, overlooking a luminous Indonesian mosque courtyard, palms, reflecting pool and misty tropical hills under a delicate crescent and stars. Fine carved wood and patterned tiles, warm lamps and deep indigo sky, spiritual calm and tenderness. Remove the literal floating staircase and fantasy gateway from the original, express elevation through radiant clouds and light instead. No depiction of Muhammad, angels or any prophetic figure.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/id_16jan.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-76ab250d-6a26-4905-81a6-c5c40ca08f23.png",
+    "appAsset": "assets/days_img/id_16jan.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_id_16jan.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 375752
+  },
+  {
+    "name": "id_17feb",
+    "label": "Китайский Новый год — Имлек",
+    "widget": "day_id_17feb",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic Indonesian holiday calendar and Android widget illustration. Image 1 is the existing EDIT TARGET, providing the holiday subject except any explicit subject corrections below. Images 2 and 3 are STYLE REFERENCES ONLY: the user's approved Japan and Russia illustrations. Match their beautiful atmospheric painterly editorial quality, luminous warm gold light, deep teal/navy shadows, rich natural color, layered landscapes, finely detailed architecture and lush vegetation, textured fabrics, subtle brushwork and grain, warm naturally illustrated faces and credible anatomy. The user specifically requests the same colors, detail and pleasant comforting feeling. Replace flat corporate vector shapes with coherent richly painted scenes. Preserve Indonesian identity: do not copy Japanese cherry blossoms, pagodas, kimono, Russian winter or European buildings from the references. Maintain distinct holiday subjects and appropriate Indonesian cultural details. Full bleed panorama at exact target aspect 1915:821 (2.33:1), output about 1916x821, important subjects within central 85%, clear at small calendar size. No borders, blank margins, text, logos, dates, numbers or watermarks. No photorealism, no 3D. Scene: An Indonesian Chinese community celebrating Imlek in a richly detailed temple courtyard and old neighborhood. A beautiful red, cream and gold barongsai lion costume animated by performers, families watching joyfully, red lanterns, oranges in a ceramic bowl, intricate wood carving, tropical plants and warm evening light. Indonesian Chinese clothing with subtle batik details, credible lion-dance costume construction and human poses, silky tassels and embroidered fabrics. Festive and friendly, no legible Chinese characters, no zodiac animal or year numbers.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/id_17feb.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-68942208-b7cd-4cec-b311-91eb2fe8a904.png",
+    "appAsset": "assets/days_img/id_17feb.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_id_17feb.webp",
+    "width": 1915,
+    "height": 821,
+    "bytes": 393236
+  },
+  {
+    "name": "id_18-24march",
+    "label": "Ньепи и Идул-Фитри — общая праздничная сцена",
+    "widget": "day_id_18_24march",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic Indonesian holiday calendar and Android widget illustration. Image 1 is the existing EDIT TARGET, providing the holiday subject except any explicit subject corrections below. Images 2 and 3 are STYLE REFERENCES ONLY: the user's approved Japan and Russia illustrations. Match their beautiful atmospheric painterly editorial quality, luminous warm gold light, deep teal/navy shadows, rich natural color, layered landscapes, finely detailed architecture and lush vegetation, textured fabrics, subtle brushwork and grain, warm naturally illustrated faces and credible anatomy. The user specifically requests the same colors, detail and pleasant comforting feeling. Replace flat corporate vector shapes with coherent richly painted scenes. Preserve Indonesian identity: do not copy Japanese cherry blossoms, pagodas, kimono, Russian winter or European buildings from the references. Maintain distinct holiday subjects and appropriate Indonesian cultural details. Full bleed panorama at exact target aspect 1915:821 (2.33:1), output about 1916x821, important subjects within central 85%, clear at small calendar size. No borders, blank margins, text, logos, dates, numbers or watermarks. No photorealism, no 3D. Scene: This existing asset is shared by Nyepi and Idul Fitri in the calendar. Redraw it as a sensitive panoramic editorial composition of two DISTINCT Indonesian holiday settings, gently connected by tropical hills and a lake, without implying a joint religious ritual. On the left, tranquil Balinese Hindu Nyepi reflection: a woman in white kebaya and sarong quietly seated on a veranda overlooking a carved Balinese temple with meru roofs and a still lake, delicate flowers and palm-leaf offering nearby, peaceful subdued light. On the right, a warm Indonesian Muslim Lebaran family reunion at a separate timber home: relatives greeting elders, modest festive clothing and peci/hijab, woven ketupat and food on a table, a village mosque in the distance. No loud parade in the Nyepi setting, no airport, airplane, padlock or closed shop icons. Beautiful calm scenes, distinct religious spaces, hospitable families, detailed textiles and foliage, coherent painterly lighting.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/id_18-24march.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-a2e2c48b-5fc7-478b-9194-ef624c5a5c6f.png",
+    "appAsset": "assets/days_img/id_18-24march.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_id_18_24march.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 438550
+  },
+  {
+    "name": "id_3apr",
+    "label": "Страстная пятница",
+    "widget": "day_id_3apr",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic Indonesian holiday calendar and Android widget illustration. Image 1 is the existing EDIT TARGET, providing the holiday subject except any explicit subject corrections below. Images 2 and 3 are STYLE REFERENCES ONLY: the user's approved Japan and Russia illustrations. Match their beautiful atmospheric painterly editorial quality, luminous warm gold light, deep teal/navy shadows, rich natural color, layered landscapes, finely detailed architecture and lush vegetation, textured fabrics, subtle brushwork and grain, warm naturally illustrated faces and credible anatomy. The user specifically requests the same colors, detail and pleasant comforting feeling. Replace flat corporate vector shapes with coherent richly painted scenes. Preserve Indonesian identity: do not copy Japanese cherry blossoms, pagodas, kimono, Russian winter or European buildings from the references. Maintain distinct holiday subjects and appropriate Indonesian cultural details. Full bleed panorama at exact target aspect 1915:821 (2.33:1), output about 1916x821, important subjects within central 85%, clear at small calendar size. No borders, blank margins, text, logos, dates, numbers or watermarks. No photorealism, no 3D. Scene: An Indonesian Christian family in modest clothing with subtle local woven/batik fabric, quietly praying together on a lush hillside path facing a simple wooden cross. A small Indonesian village church and tropical hills across a misty lake, palms, frangipani and warm low sunlight. Reverent, contemplative and gentle, naturally simplified faces and realistic hands. Remove the unrelated Hindu meru temple from the original; Christian setting is clear. No suffering body, blood or graphic crucifixion. Deep teal shade and amber clouds, rich stone and wood texture.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/id_3apr.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-2e0fbfd3-bbee-46c9-8e3b-594ad4d988a4.png",
+    "appAsset": "assets/days_img/id_3apr.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_id_3apr.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 411376
+  },
+  {
+    "name": "id_5apr",
+    "label": "Пасха",
+    "widget": "day_id_5apr",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic Indonesian holiday calendar and Android widget illustration. Image 1 is the existing EDIT TARGET, providing the holiday subject except any explicit subject corrections below. Images 2 and 3 are STYLE REFERENCES ONLY: the user's approved Japan and Russia illustrations. Match their beautiful atmospheric painterly editorial quality, luminous warm gold light, deep teal/navy shadows, rich natural color, layered landscapes, finely detailed architecture and lush vegetation, textured fabrics, subtle brushwork and grain, warm naturally illustrated faces and credible anatomy. The user specifically requests the same colors, detail and pleasant comforting feeling. Replace flat corporate vector shapes with coherent richly painted scenes. Preserve Indonesian identity: do not copy Japanese cherry blossoms, pagodas, kimono, Russian winter or European buildings from the references. Maintain distinct holiday subjects and appropriate Indonesian cultural details. Full bleed panorama at exact target aspect 1915:821 (2.33:1), output about 1916x821, important subjects within central 85%, clear at small calendar size. No borders, blank margins, text, logos, dates, numbers or watermarks. No photorealism, no 3D. Scene: A joyful but peaceful Indonesian Christian Easter morning around a small village church surrounded by tropical greenery. A family walking toward the open church, two people exchanging modest painted Easter eggs near a woven basket, a candle and white lilies in the foreground, a small stone empty-tomb representation in the church garden as a devotional display. Warm sunrise, misty hills, local batik and woven textiles, detailed wooden church porch and flowering plants. A coherent inviting scene, avoid unrelated Hindu temples, snowy European scenery and cartoon rabbits.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/id_5apr.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-63ea71b8-bf9f-401d-a9cb-8835cfba0c7c.png",
+    "appAsset": "assets/days_img/id_5apr.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_id_5apr.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 488572
+  },
+  {
+    "name": "id_14may",
+    "label": "Вознесение Христово",
+    "widget": "day_id_14may",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic Indonesian holiday calendar and Android widget illustration. Image 1 is the existing EDIT TARGET, providing the holiday subject except any explicit subject corrections below. Images 2 and 3 are STYLE REFERENCES ONLY: the user's approved Japan and Russia illustrations. Match their beautiful atmospheric painterly editorial quality, luminous warm gold light, deep teal/navy shadows, rich natural color, layered landscapes, finely detailed architecture and lush vegetation, textured fabrics, subtle brushwork and grain, warm naturally illustrated faces and credible anatomy. The user specifically requests the same colors, detail and pleasant comforting feeling. Replace flat corporate vector shapes with coherent richly painted scenes. Preserve Indonesian identity: do not copy Japanese cherry blossoms, pagodas, kimono, Russian winter or European buildings from the references. Maintain distinct holiday subjects and appropriate Indonesian cultural details. Full bleed panorama at exact target aspect 1915:821 (2.33:1), output about 1916x821, important subjects within central 85%, clear at small calendar size. No borders, blank margins, text, logos, dates, numbers or watermarks. No photorealism, no 3D. Scene: A respectful devotional illustration of the Ascension of Christ for an Indonesian Christian holiday. Jesus in flowing luminous ivory robes with arms open in a gentle blessing, ascending among softly glowing clouds, viewed by an Indonesian congregation below in modest clothing with subtle local textiles. A tropical hillside, palms, lake and small Christian church in the distance; no Hindu meru towers. Light and hopeful rather than theatrical: fine fabric folds, warm cream-gold radiance, deep blue-green landscape, natural people and atmospheric clouds. No text or halos made of letters.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/id_14may.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-8a4b01dc-f7d9-40e6-9618-ae3c56d92946.png",
+    "appAsset": "assets/days_img/id_14may.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_id_14may.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 390226
+  },
+  {
+    "name": "id_27may",
+    "label": "Ид аль-Адха",
+    "widget": "day_id_27may",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic Indonesian holiday calendar and Android widget illustration. Image 1 is the existing EDIT TARGET, providing the holiday subject except any explicit subject corrections below. Images 2 and 3 are STYLE REFERENCES ONLY: the user's approved Japan and Russia illustrations. Match their beautiful atmospheric painterly editorial quality, luminous warm gold light, deep teal/navy shadows, rich natural color, layered landscapes, finely detailed architecture and lush vegetation, textured fabrics, subtle brushwork and grain, warm naturally illustrated faces and credible anatomy. The user specifically requests the same colors, detail and pleasant comforting feeling. Replace flat corporate vector shapes with coherent richly painted scenes. Preserve Indonesian identity: do not copy Japanese cherry blossoms, pagodas, kimono, Russian winter or European buildings from the references. Maintain distinct holiday subjects and appropriate Indonesian cultural details. Full bleed panorama at exact target aspect 1915:821 (2.33:1), output about 1916x821, important subjects within central 85%, clear at small calendar size. No borders, blank margins, text, logos, dates, numbers or watermarks. No photorealism, no 3D. Scene: A serene Indonesian Muslim Eid al-Adha morning. A man in a neat baju koko, sarong and peci gently tending a healthy sheep beside a tropical mosque courtyard; families arriving for prayer, modest festive clothing, geometric woven prayer mats, palms and lush trees, distant rice terraces. Emphasize kindness, gratitude and community. Warm dawn light, beautifully detailed wool, batik fabric, carved timber and plants. No slaughter, knives, blood, distress or animal harm.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/id_27may.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-a77f1c56-2388-478b-90ae-c794922b6381.png",
+    "appAsset": "assets/days_img/id_27may.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_id_27may.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 438656
+  },
+  {
+    "name": "id_28may",
+    "label": "Выходной после Ид аль-Адха",
+    "widget": "day_id_28may",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic Indonesian holiday calendar and Android widget illustration. Image 1 is the existing EDIT TARGET, providing the holiday subject except any explicit subject corrections below. Images 2 and 3 are STYLE REFERENCES ONLY: the user's approved Japan and Russia illustrations. Match their beautiful atmospheric painterly editorial quality, luminous warm gold light, deep teal/navy shadows, rich natural color, layered landscapes, finely detailed architecture and lush vegetation, textured fabrics, subtle brushwork and grain, warm naturally illustrated faces and credible anatomy. The user specifically requests the same colors, detail and pleasant comforting feeling. Replace flat corporate vector shapes with coherent richly painted scenes. Preserve Indonesian identity: do not copy Japanese cherry blossoms, pagodas, kimono, Russian winter or European buildings from the references. Maintain distinct holiday subjects and appropriate Indonesian cultural details. Full bleed panorama at exact target aspect 1915:821 (2.33:1), output about 1916x821, important subjects within central 85%, clear at small calendar size. No borders, blank margins, text, logos, dates, numbers or watermarks. No photorealism, no 3D. Scene: A warm Indonesian Muslim family visit during the holiday after Eid al-Adha: two men in peci and festive shirts greeting each other with a natural handshake, women in elegant modest hijab exchanging a plate of sweets at a beautifully carved wooden home doorway, parents and child arriving along a garden path. A village mosque softly visible behind tropical trees. Deep teal, mustard and warm cream fabrics, rattan, ceramics, delicate lantern glow and golden afternoon sun. Friendly authentic neighborhood hospitality, clear believable hands.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/id_28may.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-42324d35-0e92-4243-a7ed-46e67b475f06.png",
+    "appAsset": "assets/days_img/id_28may.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_id_28may.webp",
+    "width": 1914,
+    "height": 822,
+    "bytes": 441420
+  },
+  {
+    "name": "id_31may",
+    "label": "Весак — Вайсак",
+    "widget": "day_id_31may",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic Indonesian holiday calendar and Android widget illustration. Image 1 is the existing EDIT TARGET, providing the holiday subject except any explicit subject corrections below. Images 2 and 3 are STYLE REFERENCES ONLY: the user's approved Japan and Russia illustrations. Match their beautiful atmospheric painterly editorial quality, luminous warm gold light, deep teal/navy shadows, rich natural color, layered landscapes, finely detailed architecture and lush vegetation, textured fabrics, subtle brushwork and grain, warm naturally illustrated faces and credible anatomy. The user specifically requests the same colors, detail and pleasant comforting feeling. Replace flat corporate vector shapes with coherent richly painted scenes. Preserve Indonesian identity: do not copy Japanese cherry blossoms, pagodas, kimono, Russian winter or European buildings from the references. Maintain distinct holiday subjects and appropriate Indonesian cultural details. Full bleed panorama at exact target aspect 1915:821 (2.33:1), output about 1916x821, important subjects within central 85%, clear at small calendar size. No borders, blank margins, text, logos, dates, numbers or watermarks. No photorealism, no 3D. Scene: A serene Indonesian Buddhist Waisak scene with devotees offering lotus flowers and small candles beside the richly textured stone stupas of Borobudur. A modest stone Buddha sculpture seated in meditation, naturally integrated into the temple architecture rather than gigantic; kneeling worshippers in cream and teal clothing, glowing candles, delicate incense, tropical leaves and misty volcanic hills in the distance. Blue-hour sky with warm gold at the horizon, detailed relief stonework, peaceful reflective mood and beautiful layered depth. No unrelated Hindu ritual details.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/id_31may.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-cf016cc4-def1-4329-a5e8-bb0ea14abf8e.png",
+    "appAsset": "assets/days_img/id_31may.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_id_31may.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 385726
+  },
+  {
+    "name": "id_1jun",
+    "label": "День Панчасилы",
+    "widget": "day_id_1jun",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic Indonesian holiday calendar and Android widget illustration. Image 1 is the existing EDIT TARGET, providing the holiday subject except any explicit subject corrections below. Images 2 and 3 are STYLE REFERENCES ONLY: the user's approved Japan and Russia illustrations. Match their beautiful atmospheric painterly editorial quality, luminous warm gold light, deep teal/navy shadows, rich natural color, layered landscapes, finely detailed architecture and lush vegetation, textured fabrics, subtle brushwork and grain, warm naturally illustrated faces and credible anatomy. The user specifically requests the same colors, detail and pleasant comforting feeling. Replace flat corporate vector shapes with coherent richly painted scenes. Preserve Indonesian identity: do not copy Japanese cherry blossoms, pagodas, kimono, Russian winter or European buildings from the references. Maintain distinct holiday subjects and appropriate Indonesian cultural details. Full bleed panorama at exact target aspect 1915:821 (2.33:1), output about 1916x821, important subjects within central 85%, clear at small calendar size. No borders, blank margins, text, logos, dates, numbers or watermarks. No photorealism, no 3D. Scene: A warm inclusive Indonesian civic gathering for Pancasila Day. Indonesians of different regional and religious backgrounds stand together with a friendly shared gesture of unity in a landscaped public courtyard, wearing a mix of batik, kebaya, modest hijab, peci and regional formal clothing. Accurate Indonesian red-over-white flags; a dignified golden Garuda Pancasila emblem as a carved relief on a civic wall behind them, not a floating infographic. Tropical gardens, warm stone, detailed textiles and welcoming golden light. Preserve meaning of unity and mutual respect. No floating circles, text, slogan, lettering or political party symbols.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/id_1jun.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-fb517052-3849-4f7d-8c43-1a960f79ddfd.png",
+    "appAsset": "assets/days_img/id_1jun.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_id_1jun.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 451162
+  },
+  {
+    "name": "id_16jun",
+    "label": "Исламский Новый год",
+    "widget": "day_id_16jun",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic Indonesian holiday calendar and Android widget illustration. Image 1 is the existing EDIT TARGET, providing the holiday subject except any explicit subject corrections below. Images 2 and 3 are STYLE REFERENCES ONLY: the user's approved Japan and Russia illustrations. Match their beautiful atmospheric painterly editorial quality, luminous warm gold light, deep teal/navy shadows, rich natural color, layered landscapes, finely detailed architecture and lush vegetation, textured fabrics, subtle brushwork and grain, warm naturally illustrated faces and credible anatomy. The user specifically requests the same colors, detail and pleasant comforting feeling. Replace flat corporate vector shapes with coherent richly painted scenes. Preserve Indonesian identity: do not copy Japanese cherry blossoms, pagodas, kimono, Russian winter or European buildings from the references. Maintain distinct holiday subjects and appropriate Indonesian cultural details. Full bleed panorama at exact target aspect 1915:821 (2.33:1), output about 1916x821, important subjects within central 85%, clear at small calendar size. No borders, blank margins, text, logos, dates, numbers or watermarks. No photorealism, no 3D. Scene: IMPORTANT subject correction: this asset is used for Islamic New Year in the app, although the original incorrectly shows Balinese Hindu offerings. Replace that incorrect ritual with a peaceful Indonesian Muslim New Year evening. A multigenerational family and neighbors in baju koko, batik sarongs, peci and modest hijab gather in a warmly lit wooden veranda near a village mosque. An elder reading with children, a tea tray and modest shared food, glowing lanterns and a crescent high in a deep teal starry sky, tropical garden and soft hills. Rich carved wood, rattan, woven textiles, quiet hope and renewal. No Hindu offering baskets, penjor, Hindu temple towers or prophetic figures. No readable scripture or text.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/id_16jun.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-8afcefb1-c23e-4d01-9bd6-94e7b68d6eae.png",
+    "appAsset": "assets/days_img/id_16jun.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_id_16jun.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 349392
+  },
+  {
+    "name": "id_17aug",
+    "label": "День независимости Индонезии",
+    "widget": "day_id_17aug",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic Indonesian holiday calendar and Android widget illustration. Image 1 is the existing EDIT TARGET, providing the holiday subject except any explicit subject corrections below. Images 2 and 3 are STYLE REFERENCES ONLY: the user's approved Japan and Russia illustrations. Match their beautiful atmospheric painterly editorial quality, luminous warm gold light, deep teal/navy shadows, rich natural color, layered landscapes, finely detailed architecture and lush vegetation, textured fabrics, subtle brushwork and grain, warm naturally illustrated faces and credible anatomy. The user specifically requests the same colors, detail and pleasant comforting feeling. Replace flat corporate vector shapes with coherent richly painted scenes. Preserve Indonesian identity: do not copy Japanese cherry blossoms, pagodas, kimono, Russian winter or European buildings from the references. Maintain distinct holiday subjects and appropriate Indonesian cultural details. Full bleed panorama at exact target aspect 1915:821 (2.33:1), output about 1916x821, important subjects within central 85%, clear at small calendar size. No borders, blank margins, text, logos, dates, numbers or watermarks. No photorealism, no 3D. Scene: A joyful Indonesian Independence Day community celebration, families and friends waving accurate Indonesian flags with two equal horizontal bands RED ON TOP, WHITE BELOW. The Monas monument with its golden flame visible in a beautifully layered Jakarta city panorama. Red-and-white bunting across a welcoming neighborhood square, subtle local batik fabrics, tropical palms and flowering plants, golden late-afternoon sun and glowing windows. Energetic warm smiles, natural poses, richly painted fabric folds and architecture, shared pride and togetherness. No numerals, anniversary text, slogans, party symbols or military weapons.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/id_17aug.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-42da1cc6-c10d-4f49-9736-2ed94350f78f.png",
+    "appAsset": "assets/days_img/id_17aug.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_id_17aug.webp",
+    "width": 1916,
+    "height": 821,
+    "bytes": 450486
+  },
+  {
+    "name": "id_24aug",
+    "label": "Маулид",
+    "widget": "day_id_24aug",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: panoramic Indonesian holiday calendar and Android widget illustration. Image 1 is the existing EDIT TARGET, providing the holiday subject except any explicit subject corrections below. Images 2 and 3 are STYLE REFERENCES ONLY: the user's approved Japan and Russia illustrations. Match their beautiful atmospheric painterly editorial quality, luminous warm gold light, deep teal/navy shadows, rich natural color, layered landscapes, finely detailed architecture and lush vegetation, textured fabrics, subtle brushwork and grain, warm naturally illustrated faces and credible anatomy. The user specifically requests the same colors, detail and pleasant comforting feeling. Replace flat corporate vector shapes with coherent richly painted scenes. Preserve Indonesian identity: do not copy Japanese cherry blossoms, pagodas, kimono, Russian winter or European buildings from the references. Maintain distinct holiday subjects and appropriate Indonesian cultural details. Full bleed panorama at exact target aspect 1915:821 (2.33:1), output about 1916x821, important subjects within central 85%, clear at small calendar size. No borders, blank margins, text, logos, dates, numbers or watermarks. No photorealism, no 3D. Scene: An intimate Indonesian Muslim community gathering for Maulid, with families and children listening and reading together on woven mats in a beautiful mosque veranda and courtyard. A father in black peci and green baju koko reading from a book, children listening nearby, women in modest hijab and elders in the background, tea and small dishes for sharing. Warm hanging lamps, richly carved Indonesian timber, patterned textiles, tropical plants, soft mosque domes in the distance and a deep indigo night sky. Tenderness, learning and community. No depiction of Muhammad or any prophetic figure. No readable Arabic or other lettering.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/id_24aug.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a12a1c-e4ee-7042-9ea8-abacc5de58be/exec-e24266cf-a04f-42b9-a891-8a3e3b976a6c.png",
+    "appAsset": "assets/days_img/id_24aug.webp",
+    "widgetAsset": "android/app/src/main/res/drawable/day_id_24aug.webp",
+    "width": 1915,
+    "height": 821,
+    "bytes": 386772
+  }
+]

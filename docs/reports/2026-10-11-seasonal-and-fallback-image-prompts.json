@@ -1,0 +1,170 @@
+[
+  {
+    "name": "default_jan",
+    "widget": "day_default_jan",
+    "label": "Январь",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: premium illustrated wide banner for a calendar app. Image 1 is the edit target; images 2 and 3 are supporting style references only. Redraw the target in the same richly detailed atmospheric hand-painted editorial illustration style as the references: luminous warm light, deep teal and navy shadows, natural expressive softly realistic faces, fine material textures, beautiful layered scenery and painterly clouds. Completely replace the old flat faceless vector rendering. Preserve the target's core seasonal subject, main figure and welcoming emotional tone, following the specific scene below. Do not copy Japanese or Russian architecture or symbols from the style references. Full-bleed wide landscape approximately 1915 x 821 pixels, 2.33:1 aspect ratio, no border or panels. Keep the composition clear at small calendar-card size. Harmonious rich colors and gentle depth; high detail without visual clutter. No text, letters, dates, numbers, logos or watermarks. Natural hands, proportionate faces, believable anatomy and perspective. Specific scene: A dark-haired adult woman in a deep teal winter coat, cream knitted scarf and pompom hat holds a steaming golden ceramic mug on a snowy riverside terrace, seen in three-quarter rear profile. A peaceful snow-covered town across partially frozen water, fir trees and bare frosted branches, a wooden park bench, soft snowflakes. Low January sun in glowing peach sky casts warm light on powder snow with cool blue shadows. Preserve winter tranquility and the original mug and winter clothing, richly render wool, snow crystals and distant lit windows.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_jan.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ]
+  },
+  {
+    "name": "default_feb",
+    "widget": "day_default_feb",
+    "label": "Февраль",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: premium illustrated wide banner for a calendar app. Image 1 is the edit target; images 2 and 3 are supporting style references only. Redraw the target in the same richly detailed atmospheric hand-painted editorial illustration style as the references: luminous warm light, deep teal and navy shadows, natural expressive softly realistic faces, fine material textures, beautiful layered scenery and painterly clouds. Completely replace the old flat faceless vector rendering. Preserve the target's core seasonal subject, main figure and welcoming emotional tone, following the specific scene below. Do not copy Japanese or Russian architecture or symbols from the style references. Full-bleed wide landscape approximately 1915 x 821 pixels, 2.33:1 aspect ratio, no border or panels. Keep the composition clear at small calendar-card size. Harmonious rich colors and gentle depth; high detail without visual clutter. No text, letters, dates, numbers, logos or watermarks. Natural hands, proportionate faces, believable anatomy and perspective. Specific scene: An adult woman in an ochre winter jacket, teal knitted hat and scarf holds a hot mug beside a snow-covered park bench and softly glowing street lamp. A graceful stone arched bridge over a frozen river, layers of winter trees and a distant town, light drifting snowfall. Pale blue late-winter sky with soft rosy golden afternoon light. Detailed snow-laden branches, textured wool, visible steam, quiet hopeful mood. Keep the original winter riverside narrative, differentiate from January with a closer bridge and lamp composition.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_feb.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ]
+  },
+  {
+    "name": "default_march",
+    "widget": "day_default_march",
+    "label": "Март",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: premium illustrated wide banner for a calendar app. Image 1 is the edit target; images 2 and 3 are supporting style references only. Redraw the target in the same richly detailed atmospheric hand-painted editorial illustration style as the references: luminous warm light, deep teal and navy shadows, natural expressive softly realistic faces, fine material textures, beautiful layered scenery and painterly clouds. Completely replace the old flat faceless vector rendering. Preserve the target's core seasonal subject, main figure and welcoming emotional tone, following the specific scene below. Do not copy Japanese or Russian architecture or symbols from the style references. Full-bleed wide landscape approximately 1915 x 821 pixels, 2.33:1 aspect ratio, no border or panels. Keep the composition clear at small calendar-card size. Harmonious rich colors and gentle depth; high detail without visual clutter. No text, letters, dates, numbers, logos or watermarks. Natural hands, proportionate faces, believable anatomy and perspective. Specific scene: An adult woman in a yellow coat, teal knit hat and practical boots crouches gently to admire the first violet crocuses beside melting snow and a small clear stream. Delicate snowdrops in the foreground, pussy willow buds, wet earth and reflections, returning birds over a stone bridge with a soft distant town. Fresh early spring morning, small snow patches and tender green shoots, luminous gentle sunshine. Preserve original first-flowers-after-winter story with realistic flower scale and natural crouching anatomy.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_march.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ]
+  },
+  {
+    "name": "default_april",
+    "widget": "day_default_april",
+    "label": "Апрель",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: premium illustrated wide banner for a calendar app. Image 1 is the edit target; images 2 and 3 are supporting style references only. Redraw the target in the same richly detailed atmospheric hand-painted editorial illustration style as the references: luminous warm light, deep teal and navy shadows, natural expressive softly realistic faces, fine material textures, beautiful layered scenery and painterly clouds. Completely replace the old flat faceless vector rendering. Preserve the target's core seasonal subject, main figure and welcoming emotional tone, following the specific scene below. Do not copy Japanese or Russian architecture or symbols from the style references. Full-bleed wide landscape approximately 1915 x 821 pixels, 2.33:1 aspect ratio, no border or panels. Keep the composition clear at small calendar-card size. Harmonious rich colors and gentle depth; high detail without visual clutter. No text, letters, dates, numbers, logos or watermarks. Natural hands, proportionate faces, believable anatomy and perspective. Specific scene: An adult woman in a teal spring coat and yellow rain boots crouches beside a new sprout on a rain-washed riverside path. Fresh green grass, white-blossomed branches, ivory and yellow tulips, clear puddles reflecting a bright opening sky. An arched stone bridge and softly distant town behind. April morning after a shower, delicate sunbeams and fresh air. Keep original woman's gesture and spring renewal narrative, use mostly fresh grass with only tiny traces of old snow in deep shade, detailed petals and wet paving.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_april.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ]
+  },
+  {
+    "name": "default_may",
+    "widget": "day_default_may",
+    "label": "Май",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: premium illustrated wide banner for a calendar app. Image 1 is the edit target; images 2 and 3 are supporting style references only. Redraw the target in the same richly detailed atmospheric hand-painted editorial illustration style as the references: luminous warm light, deep teal and navy shadows, natural expressive softly realistic faces, fine material textures, beautiful layered scenery and painterly clouds. Completely replace the old flat faceless vector rendering. Preserve the target's core seasonal subject, main figure and welcoming emotional tone, following the specific scene below. Do not copy Japanese or Russian architecture or symbols from the style references. Full-bleed wide landscape approximately 1915 x 821 pixels, 2.33:1 aspect ratio, no border or panels. Keep the composition clear at small calendar-card size. Harmonious rich colors and gentle depth; high detail without visual clutter. No text, letters, dates, numbers, logos or watermarks. Natural hands, proportionate faces, believable anatomy and perspective. Specific scene: A joyful adult woman in a flowing modest ivory summer dress and straw sunhat walks lightly through a lush May meadow holding a small bunch of white field flowers. Fresh green hills, flowering orchard edges, buttercups and daisies at natural scale, a gentle breeze in her hair and dress. Clear turquoise-blue sky with luminous soft clouds, golden late-afternoon sunlight, rich layered meadow depth. Preserve original carefree floral meadow scene, soft natural face and believable walking pose.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_may.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ]
+  },
+  {
+    "name": "default_jun",
+    "widget": "day_default_jun",
+    "label": "Июнь",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: premium illustrated wide banner for a calendar app. Image 1 is the edit target; images 2 and 3 are supporting style references only. Redraw the target in the same richly detailed atmospheric hand-painted editorial illustration style as the references: luminous warm light, deep teal and navy shadows, natural expressive softly realistic faces, fine material textures, beautiful layered scenery and painterly clouds. Completely replace the old flat faceless vector rendering. Preserve the target's core seasonal subject, main figure and welcoming emotional tone, following the specific scene below. Do not copy Japanese or Russian architecture or symbols from the style references. Full-bleed wide landscape approximately 1915 x 821 pixels, 2.33:1 aspect ratio, no border or panels. Keep the composition clear at small calendar-card size. Harmonious rich colors and gentle depth; high detail without visual clutter. No text, letters, dates, numbers, logos or watermarks. Natural hands, proportionate faces, believable anatomy and perspective. Specific scene: An adult woman in a modest white summer dress and straw hat rests comfortably on a grassy coastal hillside beneath a leafy tree. The view opens onto a serene turquoise bay with a single white sailboat, curving pale sand beach, distant layered blue-green hills, wild daisies in the foreground. Clear early-summer golden morning light and fine luminous water reflections, quiet anticipatory holiday mood. Preserve original peaceful seated figure and expansive coastal composition, detailed grass, leaves and linen.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_jun.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ]
+  },
+  {
+    "name": "default_jul",
+    "widget": "day_default_jul",
+    "label": "Июль",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: premium illustrated wide banner for a calendar app. Image 1 is the edit target; images 2 and 3 are supporting style references only. Redraw the target in the same richly detailed atmospheric hand-painted editorial illustration style as the references: luminous warm light, deep teal and navy shadows, natural expressive softly realistic faces, fine material textures, beautiful layered scenery and painterly clouds. Completely replace the old flat faceless vector rendering. Preserve the target's core seasonal subject, main figure and welcoming emotional tone, following the specific scene below. Do not copy Japanese or Russian architecture or symbols from the style references. Full-bleed wide landscape approximately 1915 x 821 pixels, 2.33:1 aspect ratio, no border or panels. Keep the composition clear at small calendar-card size. Harmonious rich colors and gentle depth; high detail without visual clutter. No text, letters, dates, numbers, logos or watermarks. Natural hands, proportionate faces, believable anatomy and perspective. Specific scene: An adult woman in an ivory summer dress and straw hat sits on warm pale stone steps overlooking a sparkling Mediterranean-like sea. White coastal houses among lush green hills to the left, palms, hibiscus and white flowers, a small sailboat in a brilliant turquoise bay. Glowing high-summer afternoon, translucent water, textured sun-warmed plaster and stone, soft long-distance haze. Preserve original seated woman, stone terrace and coastal view, no national flags or named landmarks.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_jul.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ]
+  },
+  {
+    "name": "default_aug",
+    "widget": "day_default_aug",
+    "label": "Август",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: premium illustrated wide banner for a calendar app. Image 1 is the edit target; images 2 and 3 are supporting style references only. Redraw the target in the same richly detailed atmospheric hand-painted editorial illustration style as the references: luminous warm light, deep teal and navy shadows, natural expressive softly realistic faces, fine material textures, beautiful layered scenery and painterly clouds. Completely replace the old flat faceless vector rendering. Preserve the target's core seasonal subject, main figure and welcoming emotional tone, following the specific scene below. Do not copy Japanese or Russian architecture or symbols from the style references. Full-bleed wide landscape approximately 1915 x 821 pixels, 2.33:1 aspect ratio, no border or panels. Keep the composition clear at small calendar-card size. Harmonious rich colors and gentle depth; high detail without visual clutter. No text, letters, dates, numbers, logos or watermarks. Natural hands, proportionate faces, believable anatomy and perspective. Specific scene: An adult woman in a light ivory dress and straw hat stands on a carved pale stone coastal terrace contemplating a rich late-summer sunset over a tranquil bay. Lush flowers, palms and a small folding hand fan on the railing, warm coastal houses along a distant shoreline, layered mountains, orange-pink clouds reflected on violet-blue and turquoise water. Preserve the original travel, terrace and sunset mood, but make a single coherent coastal landscape without the original mixed mosque, pagoda, torii and Mount Fuji landmark collage. Intimate tranquil end-of-summer atmosphere.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_aug.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ]
+  },
+  {
+    "name": "default_sep",
+    "widget": "day_default_sep",
+    "label": "Сентябрь",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: premium illustrated wide banner for a calendar app. Image 1 is the edit target; images 2 and 3 are supporting style references only. Redraw the target in the same richly detailed atmospheric hand-painted editorial illustration style as the references: luminous warm light, deep teal and navy shadows, natural expressive softly realistic faces, fine material textures, beautiful layered scenery and painterly clouds. Completely replace the old flat faceless vector rendering. Preserve the target's core seasonal subject, main figure and welcoming emotional tone, following the specific scene below. Do not copy Japanese or Russian architecture or symbols from the style references. Full-bleed wide landscape approximately 1915 x 821 pixels, 2.33:1 aspect ratio, no border or panels. Keep the composition clear at small calendar-card size. Harmonious rich colors and gentle depth; high detail without visual clutter. No text, letters, dates, numbers, logos or watermarks. Natural hands, proportionate faces, believable anatomy and perspective. Specific scene: An adult woman in a teal light coat and flowing mustard scarf walks along a park path beside a peaceful lake toward a softly detailed distant city. Early autumn trees with a mix of green and golden foliage, a few falling leaves, warm long September afternoon light, grassy banks and intricate lake reflections. Preserve original relaxed walking figure and city park narrative, render soft natural profile, tactile fabric, leaves and a luminous airy sky. Golden early autumn rather than deep red late autumn.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_sep.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ]
+  },
+  {
+    "name": "default_okt",
+    "widget": "day_default_okt",
+    "label": "Октябрь",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: premium illustrated wide banner for a calendar app. Image 1 is the edit target; images 2 and 3 are supporting style references only. Redraw the target in the same richly detailed atmospheric hand-painted editorial illustration style as the references: luminous warm light, deep teal and navy shadows, natural expressive softly realistic faces, fine material textures, beautiful layered scenery and painterly clouds. Completely replace the old flat faceless vector rendering. Preserve the target's core seasonal subject, main figure and welcoming emotional tone, following the specific scene below. Do not copy Japanese or Russian architecture or symbols from the style references. Full-bleed wide landscape approximately 1915 x 821 pixels, 2.33:1 aspect ratio, no border or panels. Keep the composition clear at small calendar-card size. Harmonious rich colors and gentle depth; high detail without visual clutter. No text, letters, dates, numbers, logos or watermarks. Natural hands, proportionate faces, believable anatomy and perspective. Specific scene: An adult woman in a rust-brown coat, golden scarf and small leather shoulder bag pauses along a winding lakeside path in a richly colored October landscape. Copper, amber and deep red maple leaves, a few natural pumpkins among foreground foliage, forested hills reflected in still teal water. Gently glowing afternoon sky and a few distant birds, detailed bark, fallen leaves and warm wool textures. Preserve original quiet autumn walk and harvest cues, cozy reflective mood, no Halloween symbols.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_okt.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ]
+  },
+  {
+    "name": "default_now",
+    "widget": "day_default_now",
+    "label": "Ноябрь",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: premium illustrated wide banner for a calendar app. Image 1 is the edit target; images 2 and 3 are supporting style references only. Redraw the target in the same richly detailed atmospheric hand-painted editorial illustration style as the references: luminous warm light, deep teal and navy shadows, natural expressive softly realistic faces, fine material textures, beautiful layered scenery and painterly clouds. Completely replace the old flat faceless vector rendering. Preserve the target's core seasonal subject, main figure and welcoming emotional tone, following the specific scene below. Do not copy Japanese or Russian architecture or symbols from the style references. Full-bleed wide landscape approximately 1915 x 821 pixels, 2.33:1 aspect ratio, no border or panels. Keep the composition clear at small calendar-card size. Harmonious rich colors and gentle depth; high detail without visual clutter. No text, letters, dates, numbers, logos or watermarks. Natural hands, proportionate faces, believable anatomy and perspective. Specific scene: An adult woman in a mustard raincoat with a teal shoulder bag walks under a deep teal umbrella along a rain-wet city park promenade. Bare branches mixed with the last amber leaves, glowing old-fashioned street lamps, rippling puddles reflecting warm windows and cool smoky-blue sky, softly misty buildings beyond the river. November drizzle with fine visible raindrops, warm inviting light against cool air. Preserve original umbrella walk, make rainy weather beautiful and cozy rather than bleak. Natural anatomy and physically coherent umbrella grip.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_now.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ]
+  },
+  {
+    "name": "default_dec",
+    "widget": "day_default_dec",
+    "label": "Декабрь",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: premium illustrated wide banner for a calendar app. Image 1 is the edit target; images 2 and 3 are supporting style references only. Redraw the target in the same richly detailed atmospheric hand-painted editorial illustration style as the references: luminous warm light, deep teal and navy shadows, natural expressive softly realistic faces, fine material textures, beautiful layered scenery and painterly clouds. Completely replace the old flat faceless vector rendering. Preserve the target's core seasonal subject, main figure and welcoming emotional tone, following the specific scene below. Do not copy Japanese or Russian architecture or symbols from the style references. Full-bleed wide landscape approximately 1915 x 821 pixels, 2.33:1 aspect ratio, no border or panels. Keep the composition clear at small calendar-card size. Harmonious rich colors and gentle depth; high detail without visual clutter. No text, letters, dates, numbers, logos or watermarks. Natural hands, proportionate faces, believable anatomy and perspective. Specific scene: An adult woman with dark hair in a loose bun sits comfortably in a deep teal armchair by a large wooden window, wrapped in a cream knitted blanket with a mustard scarf, holding a steaming dark ceramic mug. Outside is a softly falling December snowfall over a charming town, snowy fir trees, a small stone footbridge and warm street lamps. A candle and small vase of winter sprigs on a wooden side table, richly textured upholstery, warm interior lamplight balanced by cool blue snow. Preserve original cozy indoor winter scene, serene natural expression, no readable lettering.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_dec.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ]
+  },
+  {
+    "name": "default_vacancy_chill",
+    "widget": "day_default_vacancy_chill",
+    "label": "Отпуск",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: premium illustrated wide banner for a calendar app. Image 1 is the edit target; images 2 and 3 are supporting style references only. Redraw the target in the same richly detailed atmospheric hand-painted editorial illustration style as the references: luminous warm light, deep teal and navy shadows, natural expressive softly realistic faces, fine material textures, beautiful layered scenery and painterly clouds. Completely replace the old flat faceless vector rendering. Preserve the target's core seasonal subject, main figure and welcoming emotional tone, following the specific scene below. Do not copy Japanese or Russian architecture or symbols from the style references. Full-bleed wide landscape approximately 1915 x 821 pixels, 2.33:1 aspect ratio, no border or panels. Keep the composition clear at small calendar-card size. Harmonious rich colors and gentle depth; high detail without visual clutter. No text, letters, dates, numbers, logos or watermarks. Natural hands, proportionate faces, believable anatomy and perspective. Specific scene: An adult woman in a tasteful teal swimsuit and straw hat relaxes on a cushioned wooden sun lounger under a cream beach umbrella, sipping a fresh coconut drink through a straw. Peaceful golden sand, gentle clear turquoise waves, lush tropical foliage framing the scene, distant green island and tiny sailboat. Inviting warm late-afternoon holiday light, fine fabric and woven straw textures, sparkling water and beautifully painted airy clouds. Preserve original restful vacation composition, natural relaxed anatomy, tasteful nonsexual framing and quiet escape mood.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_vacancy_chill.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ]
+  },
+  {
+    "name": "default_fiesta_fallback",
+    "widget": "day_default_fiesta_fallback",
+    "label": "Общий праздник",
+    "mode": "built-in imagegen",
+    "prompt": "Use case: style-transfer. Asset type: premium illustrated wide banner for a calendar app. Image 1 is the edit target; images 2 and 3 are supporting style references only. Redraw the target in the same richly detailed atmospheric hand-painted editorial illustration style as the references: luminous warm light, deep teal and navy shadows, natural expressive softly realistic faces, fine material textures, beautiful layered scenery and painterly clouds. Completely replace the old flat faceless vector rendering. Preserve the target's core seasonal subject, main figure and welcoming emotional tone, following the specific scene below. Do not copy Japanese or Russian architecture or symbols from the style references. Full-bleed wide landscape approximately 1915 x 821 pixels, 2.33:1 aspect ratio, no border or panels. Keep the composition clear at small calendar-card size. Harmonious rich colors and gentle depth; high detail without visual clutter. No text, letters, dates, numbers, logos or watermarks. Natural hands, proportionate faces, believable anatomy and perspective. Specific scene: A diverse group of adult friends enjoying a relaxed holiday gathering in an inviting cozy living room. Small groups chatting with warm natural smiles, two friends seated on a teal sofa, others standing near a wooden table with pastries, fruit and glasses of colorful non-alcoholic drinks. Soft golden pendant lamps, candles, subtle warm string lights, leafy houseplants, textured cushions and framed abstract artwork without text. Preserve original friendly indoor social scene, make it warm, detailed and festive yet universally suitable for any country or unspecified holiday. No religious or national symbols, no specific holiday icons.",
+    "referencePaths": [
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/default_fiesta_fallback.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/jp_20mar.webp",
+      "/Users/ukarpenkov/JS/calendar/assets/days_img/feb23_defender_day.webp"
+    ]
+  }
+]

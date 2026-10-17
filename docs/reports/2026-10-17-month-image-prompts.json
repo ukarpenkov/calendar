@@ -1,0 +1,146 @@
+[
+  {
+    "name": "default_jan",
+    "prompt": "Use case: style-transfer. Image 1 is the edit target January calendar illustration. Image 2 is a STYLE REFERENCE ONLY. Upgrade image 1 to the richly detailed painterly editorial illustration quality of image 2, beautiful luminous lighting, rich material textures and layered atmospheric depth. Keep the exact original scene, composition, person position, pose, clothing colors and all key objects. A dark-haired woman on the RIGHT in teal winter coat, cream knitted scarf and pompom hat holding a golden mug, looking across a snowy riverside park with a bench at left, houses across the water, snowy plants and bare trees. Add fine wool knit, hair strands, detailed frosted branches, snow texture, gently steaming mug, subtle house windows and soft water reflections. Beautiful low winter sun at LEFT, warm rim light, cool teal-blue snow shadows. Retain illustration rather than photograph. Do NOT import Mexican buildings, flags, fireworks or symbols. Full-bleed panoramic 1915x821 (2.33:1), preserve original framing; no text, borders, watermark or additional people. Change rendering detail and illumination only.",
+    "mode": "built-in imagegen",
+    "referencePaths": [
+      "assets/days_img/default_jan.webp",
+      "assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a149f8-c579-7c51-9abc-d3f4bf8dd7cf/exec-93a42eb3-ed0b-4ba2-904a-f49a2cff6d40.png",
+    "output": "assets/days_img/default_jan.webp",
+    "widgetOutput": "android/app/src/main/res/drawable/day_default_jan.webp"
+  },
+  {
+    "name": "default_feb",
+    "prompt": "Use case: style-transfer. Image 1 is the EDIT TARGET; image 2 is a STYLE REFERENCE ONLY. Upgrade image 1 into a richly detailed atmospheric hand-painted editorial illustration matching the reference's craftsmanship, beautiful luminous lighting, subtle brushwork, material textures and layered depth. Keep the original scene, composition, main figure position and pose, clothes and key objects. Retain painterly illustration, not photography or flat vector. Do not import Mexican symbols, architecture, flags or fireworks. Full-bleed panoramic 1915x821, 2.33:1, same framing, no borders, text, watermark or extra people. Natural anatomy. Change detail and light only. February: woman on RIGHT in mustard winter jacket, teal knitted beanie and scarf holds a steaming pale mug with dark mittens beside a snowy bench and glowing street lamp. Snowy riverside, stone arched bridge at LEFT, distant city, bare tree at left edge, snow-laden evergreens. Preserve gentle snowfall and winter scene. Refine woven wool, stitching, hair, stone masonry, frost and ice reflections. Low warm sun from upper LEFT, blue winter shadows, lovely soft reflected light.",
+    "mode": "built-in imagegen",
+    "referencePaths": [
+      "assets/days_img/default_feb.webp",
+      "assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a149f8-c579-7c51-9abc-d3f4bf8dd7cf/exec-3d51f547-cba1-40db-a76c-9b0fafe7390c.png",
+    "output": "assets/days_img/default_feb.webp",
+    "widgetOutput": "android/app/src/main/res/drawable/day_default_feb.webp"
+  },
+  {
+    "name": "default_march",
+    "prompt": "Use case: style-transfer. Image 1 is the EDIT TARGET; image 2 is a STYLE REFERENCE ONLY. Upgrade image 1 into a richly detailed atmospheric hand-painted editorial illustration matching the reference's craftsmanship, beautiful luminous lighting, subtle brushwork, material textures and layered depth. Keep the original scene, composition, main figure position and pose, clothes and key objects. Retain painterly illustration, not photography or flat vector. Do not import Mexican symbols, architecture, flags or fireworks. Full-bleed panoramic 1915x821, 2.33:1, same framing, no borders, text, watermark or extra people. Natural anatomy. Change detail and light only. March: dark-haired woman on RIGHT crouches wearing yellow coat, teal beanie, gloves and boots, gently admiring violet crocus shoots beside melting snow and a clear small stream. Large foreground snowdrops at LEFT, pussy willow at RIGHT, budding bare trees, two birds overhead, river and arched bridge with distant skyline. Keep original subjects and arrangement. Fine flower petals, delicate willow fuzz, rippling meltwater, wet soil, luminous early spring sunshine and cool snow shadows.",
+    "mode": "built-in imagegen",
+    "referencePaths": [
+      "assets/days_img/default_march.webp",
+      "assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a149f8-c579-7c51-9abc-d3f4bf8dd7cf/exec-a31bdd7c-47a1-4394-bc64-63fdfbb43f57.png",
+    "output": "assets/days_img/default_march.webp",
+    "widgetOutput": "android/app/src/main/res/drawable/day_default_march.webp"
+  },
+  {
+    "name": "default_april",
+    "prompt": "Use case: style-transfer. Image 1 is the EDIT TARGET; image 2 is a STYLE REFERENCE ONLY. Upgrade image 1 into a richly detailed atmospheric hand-painted editorial illustration matching the reference's craftsmanship, beautiful luminous lighting, subtle brushwork, material textures and layered depth. Keep the original scene, composition, main figure position and pose, clothes and key objects. Retain painterly illustration, not photography or flat vector. Do not import Mexican symbols, architecture, flags or fireworks. Full-bleed panoramic 1915x821, 2.33:1, same framing, no borders, text, watermark or extra people. Natural anatomy. Change detail and light only. April: woman on RIGHT crouches in a teal spring coat, dark trousers and yellow rain boots, reaching toward a small green sprout next to a puddle on a riverside paved path. White flowering tree frames upper LEFT, white/yellow tulips lower LEFT, white flowers at RIGHT, remaining patches of snow, river, stone arched bridge and distant skyline, birds overhead. Preserve all these subjects, original composition and pose. Detailed blossoms, fabric seams, wet paving and reflections. Beautiful bright spring light filtered through flowering branches with fresh green bounce light.",
+    "mode": "built-in imagegen",
+    "referencePaths": [
+      "assets/days_img/default_april.webp",
+      "assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a149f8-c579-7c51-9abc-d3f4bf8dd7cf/exec-fd4e553c-6e1d-4374-8ea5-8d7c613bdbf4.png",
+    "output": "assets/days_img/default_april.webp",
+    "widgetOutput": "android/app/src/main/res/drawable/day_default_april.webp"
+  },
+  {
+    "name": "default_may",
+    "prompt": "Use case: style-transfer. Image 1 is the EDIT TARGET; image 2 is a STYLE REFERENCE ONLY. Upgrade image 1 into a richly detailed atmospheric hand-painted editorial illustration matching the reference's craftsmanship, beautiful luminous lighting, subtle brushwork, material textures and layered depth. Keep the original scene, composition, main figure position and pose, clothes and key objects. Retain painterly illustration, not photography or flat vector. Do not import Mexican symbols, architecture, flags or fireworks. Full-bleed panoramic 1915x821, 2.33:1, same framing, no borders, text, watermark or extra people. Natural anatomy. Change detail and light only. May: dark-haired woman slightly LEFT of center running joyfully to the right through a flowering green meadow, white flowing short-sleeved knee-length dress, white shoes and straw hat with green ribbon, bouquet of white flowers in her right hand, left arm extended behind, one leg raised. Preserve her pose, meadow, rolling hills, large leafy tree left and foreground white/yellow wildflowers, drifting leaves and three distant white birds. Beautiful soft late-spring sunlight with translucent petals, individual grasses, detailed woven hat and fabric folds, lush fresh greens, airy blue sky; gentle golden highlights, not an orange sunset.",
+    "mode": "built-in imagegen",
+    "referencePaths": [
+      "assets/days_img/default_may.webp",
+      "assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a149f8-c579-7c51-9abc-d3f4bf8dd7cf/exec-9adb2c20-d205-4171-811b-0380b45de82a.png",
+    "output": "assets/days_img/default_may.webp",
+    "widgetOutput": "android/app/src/main/res/drawable/day_default_may.webp"
+  },
+  {
+    "name": "default_jun",
+    "prompt": "Use case: style-transfer. Image 1 is the EDIT TARGET; image 2 is a STYLE REFERENCE ONLY. Upgrade image 1 into a richly detailed atmospheric hand-painted editorial illustration matching the reference's craftsmanship, beautiful luminous lighting, subtle brushwork, material textures and layered depth. Keep the original scene, composition, main figure position and pose, clothes and key objects. Retain painterly illustration, not photography or flat vector. Do not import Mexican symbols, architecture, flags or fireworks. Full-bleed panoramic 1915x821, 2.33:1, same framing, no borders, text, watermark or extra people. Natural anatomy. Change detail and light only. June: a dark-haired woman in white sleeveless dress and straw sunhat seated on grass under a large leafy tree at LEFT, leaning back on both hands, legs extended to the right, looking across a blue sea bay. Winding sandy coastline, rolling green hills, layered blue distant mountains, slim cypress trees, one small white sailboat at RIGHT, foreground white daisies and yellow round flowers. Preserve scene and exact spatial arrangement. Dappled summer sunlight through foliage, sparkling calm sea, fine grass, detailed leaves, fabric folds and woven hat, beautiful luminous warm afternoon and cool tree shade. No buildings or additional people.",
+    "mode": "built-in imagegen",
+    "referencePaths": [
+      "assets/days_img/default_jun.webp",
+      "assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a149f8-c579-7c51-9abc-d3f4bf8dd7cf/exec-8c290ca5-e7c2-4c70-a4ba-3a69122bb48a.png",
+    "output": "assets/days_img/default_jun.webp",
+    "widgetOutput": "android/app/src/main/res/drawable/day_default_jun.webp"
+  },
+  {
+    "name": "default_jul",
+    "prompt": "Use case: style-transfer. Image 1 is the EDIT TARGET; image 2 is a STYLE REFERENCE ONLY. Upgrade image 1 into a richly detailed atmospheric hand-painted editorial illustration matching the reference's craftsmanship, beautiful luminous lighting, subtle brushwork, material textures and layered depth. Keep the original scene, composition, main figure position and pose, clothes and key objects. Retain painterly illustration, not photography or flat vector. Do not import Mexican symbols, architecture, flags or fireworks. Full-bleed panoramic 1915x821, 2.33:1, same framing, no borders, text, watermark or extra people. Natural anatomy. Change detail and light only. July: dark-haired woman in white sleeveless dress and straw hat sitting at LEFT on pale stone terrace steps, hands resting beside her, bare legs extending to right, looking at turquoise sea and one white sailboat in CENTER. Preserve Mediterranean white village with blue dome at LEFT, layered coastal mountains, palm tree upper left and palm at right, red hibiscus and white daisies framing foreground. Fine stucco and stone textures, detailed palm fronds and petals, clear luminous water with subtle sun sparkles. Beautiful warm summer sunlight from upper RIGHT with blue teal shadows, detailed natural painterly clouds. Keep original framing and main objects.",
+    "mode": "built-in imagegen",
+    "referencePaths": [
+      "assets/days_img/default_jul.webp",
+      "assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a149f8-c579-7c51-9abc-d3f4bf8dd7cf/exec-41e37613-5f6f-41dc-8c2b-cbc9ca840192.png",
+    "output": "assets/days_img/default_jul.webp",
+    "widgetOutput": "android/app/src/main/res/drawable/day_default_jul.webp"
+  },
+  {
+    "name": "default_aug",
+    "prompt": "Use case: style-transfer. Image 1 is the EDIT TARGET; image 2 is a STYLE REFERENCE ONLY. Upgrade image 1 into a richly detailed atmospheric hand-painted editorial illustration matching the reference's craftsmanship, beautiful luminous lighting, subtle brushwork, material textures and layered depth. Keep the original scene, composition, main figure position and pose, clothes and key objects. Retain painterly illustration, not photography or flat vector. Do not import Mexican symbols, architecture, flags or fireworks. Full-bleed panoramic 1915x821, 2.33:1, same framing, no borders, text, watermark or extra people. Natural anatomy. Change detail and light only. August: preserve the original imaginative travel collage EXACTLY as a collage, do not replace landmarks or rationalize geography. Dark-haired woman seen from behind slightly LEFT of center in cream short-sleeved summer dress and straw hat with dark ribbon, hand resting on balcony railing, watching orange sunset over sea. Blue-domed mosque and minaret LEFT, multitier Asian pagoda CENTER RIGHT on green island, red Japanese torii at RIGHT, Mount Fuji behind it. Palm upper left, pink blossom branch upper right, large red hibiscus lower left, frangipani near center bottom, large cream folding fan lower right. Keep all these elements and placements. Rich painted architectural details, fabric/wood/stone textures, warm luminous sunset rim light, deep blue teal shadows, golden sea reflections, pink violet clouds, refined serene travel illustration. No added Mexican imagery.",
+    "mode": "built-in imagegen",
+    "referencePaths": [
+      "assets/days_img/default_aug.webp",
+      "assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a149f8-c579-7c51-9abc-d3f4bf8dd7cf/exec-46c67a4d-e18c-4c85-a5fd-a554f220de12.png",
+    "output": "assets/days_img/default_aug.webp",
+    "widgetOutput": "android/app/src/main/res/drawable/day_default_aug.webp"
+  },
+  {
+    "name": "default_sep",
+    "prompt": "Use case: style-transfer. Image 1 is the EDIT TARGET; image 2 is a STYLE REFERENCE ONLY. Upgrade image 1 into a richly detailed atmospheric hand-painted editorial illustration matching the reference's craftsmanship, beautiful luminous lighting, subtle brushwork, material textures and layered depth. Keep the original scene, composition, main figure position and pose, clothes and key objects. Retain painterly illustration, not photography or flat vector. Do not import Mexican symbols, architecture, flags or fireworks. Full-bleed panoramic 1915x821, 2.33:1, same framing, no borders, text, watermark or extra people. Natural anatomy. Change detail and light only. September: dark-haired woman at LEFT walking to the right on a pale curving park path in a teal long coat, dark teal ankle-length trousers and dark ankle boots, flowing mustard scarf, hands in coat pockets. Preserve original pose and composition, golden leaves drifting around her, big golden-leaved tree upper LEFT, lake CENTER/RIGHT and softly distant modern city skyline. Fine coat weave, hair strands, individually detailed early-autumn leaves, grass and rippling water. Beautiful mellow September afternoon light, golden translucent foliage, gentle blue-green shadows and atmospheric distance. Keep season, outfit and landscape.",
+    "mode": "built-in imagegen",
+    "referencePaths": [
+      "assets/days_img/default_sep.webp",
+      "assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a149f8-c579-7c51-9abc-d3f4bf8dd7cf/exec-2e888085-03fe-46c5-97e0-c70f5c2d7f71.png",
+    "output": "assets/days_img/default_sep.webp",
+    "widgetOutput": "android/app/src/main/res/drawable/day_default_sep.webp"
+  },
+  {
+    "name": "default_okt",
+    "prompt": "Use case: style-transfer. Image 1 is the EDIT TARGET; image 2 is a STYLE REFERENCE ONLY. Upgrade image 1 into a richly detailed atmospheric hand-painted editorial illustration matching the reference's craftsmanship, beautiful luminous lighting, subtle brushwork, material textures and layered depth. Keep the original scene, composition, main figure position and pose, clothes and key objects. Retain painterly illustration, not photography or flat vector. Do not import Mexican symbols, architecture, flags or fireworks. Full-bleed panoramic 1915x821, 2.33:1, same framing, no borders, text, watermark or extra people. Natural anatomy. Change detail and light only. October: brunette woman LEFT of center seen from behind wearing burnt-orange long coat, mustard scarf flowing left, brown shoulder bag, teal trousers and dark boots, looking across a quiet blue lake at rolling green-gold hills. Preserve winding pale path from bottom center toward right hillside, large orange autumn tree framing LEFT, tall golden deciduous tree RIGHT, dark evergreens, three birds overhead, large pumpkin in lower RIGHT among autumn leaves. Fine detailed leaves, wool scarf, leather bag, pumpkin ridges, tree bark and lake reflections. Beautiful warm low autumn sun and soft copper-gold highlights with rich teal shadows. Preserve all major objects and positions.",
+    "mode": "built-in imagegen",
+    "referencePaths": [
+      "assets/days_img/default_okt.webp",
+      "assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a149f8-c579-7c51-9abc-d3f4bf8dd7cf/exec-43059492-2c70-4694-b5c0-5a5328a4c989.png",
+    "output": "assets/days_img/default_okt.webp",
+    "widgetOutput": "android/app/src/main/res/drawable/day_default_okt.webp"
+  },
+  {
+    "name": "default_now",
+    "prompt": "Use case: style-transfer. Image 1 is the EDIT TARGET; image 2 is a STYLE REFERENCE ONLY. Upgrade image 1 into a richly detailed atmospheric hand-painted editorial illustration matching the reference's craftsmanship, beautiful luminous lighting, subtle brushwork, material textures and layered depth. Keep the original scene, composition, main figure position and pose, clothes and key objects. Retain painterly illustration, not photography or flat vector. Do not import Mexican symbols, architecture, flags or fireworks. Full-bleed panoramic 1915x821, 2.33:1, same framing, no borders, text, watermark or extra people. Natural anatomy. Change detail and light only. November: dark-haired woman RIGHT of center walking toward left along a wet riverside park path wearing mustard raincoat, dark trousers and black ankle boots, teal shoulder bag, holding a large teal umbrella overhead. Preserve umbrella, pose and original layout: tall glowing street lamp LEFT of center, golden-leaf tree at left edge, scattered floating yellow leaves, river and misty city skyline behind, stone railing at RIGHT, foreground puddles, visible diagonal rain. Rich detailed umbrella fabric and raindrops, wet stone, leaf veins and rain rings. Beautiful soft rainy light, warm lamp glow and reflections contrasted with cool blue-green mist; keep rainy weather, no bright sun or extra people.",
+    "mode": "built-in imagegen",
+    "referencePaths": [
+      "assets/days_img/default_now.webp",
+      "assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a149f8-c579-7c51-9abc-d3f4bf8dd7cf/exec-1e16c177-c78e-40e5-a99d-bdaf6c1cae9e.png",
+    "output": "assets/days_img/default_now.webp",
+    "widgetOutput": "android/app/src/main/res/drawable/day_default_now.webp"
+  },
+  {
+    "name": "default_dec",
+    "prompt": "Use case: style-transfer. Image 1 is the EDIT TARGET; image 2 is a STYLE REFERENCE ONLY. Upgrade image 1 into a richly detailed atmospheric hand-painted editorial illustration matching the reference's craftsmanship, beautiful luminous lighting, subtle brushwork, material textures and layered depth. Keep the original scene, composition, main figure position and pose, clothes and key objects. Retain painterly illustration, not photography or flat vector. Do not import Mexican symbols, architecture, flags or fireworks. Full-bleed panoramic 1915x821, 2.33:1, same framing, no borders, text, watermark or extra people. Natural anatomy. Change detail and light only. December: dark-haired woman with a loose bun seated on RIGHT in deep teal armchair, teal top and mustard scarf, cream blanket over lap, holding a steaming dark teal mug with both hands while gazing out a large window. Preserve original composition and objects: yellow candle and dark bowl on foreground table, golden vase with winter twigs far RIGHT, snowy fir trees, bare branch upper LEFT, small stone footbridge, frozen river, glowing lamp and distant city seen outside under gentle snowfall. Rich knitted blanket and scarf, upholstery and ceramic texture, candle wax, frosted window edges. Beautiful warm candle/interior reflected light against soft cool blue winter outdoors with subtle distant amber windows. Cozy atmospheric painterly detail, no added decorations or people.",
+    "mode": "built-in imagegen",
+    "referencePaths": [
+      "assets/days_img/default_dec.webp",
+      "assets/days_img/mx_independence.webp"
+    ],
+    "source": "/Users/ukarpenkov/.codex/generated_images/01a149f8-c579-7c51-9abc-d3f4bf8dd7cf/exec-fa5ac693-fe8c-4f6e-b0ee-76f1ed558251.png",
+    "output": "assets/days_img/default_dec.webp",
+    "widgetOutput": "android/app/src/main/res/drawable/day_default_dec.webp"
+  }
+]
