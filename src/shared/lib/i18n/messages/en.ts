@@ -178,6 +178,7 @@ export const enTranslations = {
     'vacation.conflictDismiss': 'Got it',
     'vacation.startDate': 'Start date',
     'vacation.endDate': 'End date',
+    'vacation.days': 'Days',
     'vacation.color': 'Color',
     'vacation.save': 'Save',
     'vacation.delete': 'Delete',

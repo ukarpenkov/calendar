@@ -290,7 +290,7 @@ export function VacationForm({
             <CalendarIcon color={palette.icon} size={20} />
           </Pressable>
           <Text style={[styles.cardTitle, { color: palette.title }]}>
-            Дней
+            {t('vacation.days')}
           </Text>
           <View style={styles.daysRow}>
             <TextInput

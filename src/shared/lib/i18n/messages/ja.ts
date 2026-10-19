@@ -181,6 +181,7 @@ export const jaTranslations = {
   'vacation.conflictDismiss': '確認',
   'vacation.startDate': '開始日',
   'vacation.endDate': '終了日',
+  'vacation.days': '日数',
   'vacation.color': '色',
   'vacation.save': '保存',
   'vacation.delete': '削除',

@@ -182,6 +182,7 @@ export const ruTranslations: Record<TranslationKey, string> = {
     'vacation.conflictDismiss': 'Понятно',
     'vacation.startDate': 'Дата начала',
     'vacation.endDate': 'Дата окончания',
+    'vacation.days': 'Дней',
     'vacation.color': 'Цвет',
     'vacation.save': 'Сохранить',
     'vacation.delete': 'Удалить',

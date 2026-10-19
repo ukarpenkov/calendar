@@ -1,0 +1,29 @@
+App name:
+2027 Work & Holiday Calendar
+
+Short description:
+See holidays, plan time off and keep your 2027 calendar handy, even offline.
+
+Full description:
+Make room for the days you look forward to.
+
+See your 2027 workdays, weekends and public holidays in one clear calendar. Find opportunities for a longer break, plan your vacation dates and check the month ahead without counting days by hand.
+
+YOUR WHOLE YEAR AT A GLANCE
+See all 12 months on one screen, then tap a month for a closer look. Check working days, days off and working-hour totals based on your selected calendar. Shortened working days are marked where included in the calendar data.
+
+TIME OFF YOU CAN SEE
+Add vacation periods, choose their colors and see how they fit around weekends and holidays. View the total days and working days in each period to help you decide when to take a break.
+
+TODAY, RIGHT ON YOUR HOME SCREEN
+Add a calendar widget to see today's date and day type without opening the app. Seasonal and holiday illustrations bring a little personality to your daily routine.
+
+READY WHEN YOU NEED IT
+Use your calendar offline, with no account required. Calendar data and saved vacation plans stay on your device. Choose a light or dark theme for comfortable viewing.
+
+CHOOSE YOUR CALENDAR
+Includes 2027 calendars for Russia, Türkiye, Indonesia, Japan and Mexico. Select your calendar separately from the interface language. The interface is available in English, Russian, Turkish, Indonesian, Japanese and Spanish.
+
+Need a different country or year? Import a compatible calendar JSON file or paste compatible JSON text. A ready-made prompt is also available to help you prepare a calendar in an external AI chat and import the result. Importing a custom calendar switches the interface to English.
+
+From a quick date check to planning your next vacation, keep the year ahead in view.

@@ -1,0 +1,191 @@
+=== English (United States) | en-US ===
+
+App name:
+2027 Work & Holiday Calendar
+
+Short description:
+See holidays, plan time off and keep your 2027 calendar handy, even offline.
+
+Full description:
+Make room for the days you look forward to.
+
+See your 2027 workdays, weekends and public holidays in one clear calendar. Find opportunities for a longer break, plan your vacation dates and check the month ahead without counting days by hand.
+
+YOUR WHOLE YEAR AT A GLANCE
+See all 12 months on one screen, then tap a month for a closer look. Check working days, days off and working-hour totals based on your selected calendar. Shortened working days are marked where included in the calendar data.
+
+TIME OFF YOU CAN SEE
+Add vacation periods, choose their colors and see how they fit around weekends and holidays. View the total days and working days in each period to help you decide when to take a break.
+
+TODAY, RIGHT ON YOUR HOME SCREEN
+Add a calendar widget to see today's date and day type without opening the app. Seasonal and holiday illustrations bring a little personality to your daily routine.
+
+READY WHEN YOU NEED IT
+Use your calendar offline, with no account required. Calendar data and saved vacation plans stay on your device. Choose a light or dark theme for comfortable viewing.
+
+CHOOSE YOUR CALENDAR
+Includes 2027 calendars for Russia, Türkiye, Indonesia, Japan and Mexico. Switching to a country's language loads its calendar. The interface is available in English, Russian, Turkish, Indonesian, Japanese and Spanish.
+
+Need a different country or year? Import a compatible calendar JSON file or paste compatible JSON text. A ready-made prompt is also available to help you prepare a calendar in an external AI chat and import the result. Importing a custom calendar switches the interface to English.
+
+From a quick date check to planning your next vacation, keep the year ahead in view.
+
+=== Russian | ru-RU ===
+
+App name:
+Календарь 2027: дни и отпуск
+
+Short description:
+Рабочие дни, праздники и отпуск на 2027 год. Календарь и виджет без интернета.
+
+Full description:
+Когда следующие длинные выходные? На какие даты запланировать отпуск? Посмотрите на весь 2027 год сразу — и найдите время для своих планов.
+
+Производственный календарь помогает видеть рабочие дни, выходные и праздники России, проверять итоги месяца и выбирать даты отдыха.
+
+ВЕСЬ ГОД ПЕРЕД ГЛАЗАМИ
+Все 12 месяцев на одном экране. Откройте нужный месяц, чтобы посмотреть даты, количество рабочих и нерабочих дней, а также часы работы по выбранному календарю. Сокращённые дни отмечены отдельно, если они есть в данных.
+
+ОТПУСК В ОБЩЕЙ КАРТИНЕ ГОДА
+Добавляйте периоды отпуска, выбирайте цвета и смотрите, как отдых сочетается с праздниками и выходными. Для каждого периода видно общее количество дней и число рабочих дней.
+
+СЕГОДНЯ — НА ГЛАВНОМ ЭКРАНЕ
+Виджет показывает текущую дату и тип дня. Сезонные и праздничные иллюстрации делают календарь приятной частью повседневной жизни.
+
+ПОД РУКОЙ БЕЗ ИНТЕРНЕТА
+Календарь работает офлайн и не требует регистрации. Данные календаря и сохранённые отпуска остаются на устройстве. Светлая и тёмная темы помогают выбрать удобный вид.
+
+ВЫБИРАЙТЕ СТРАНУ И ЯЗЫК
+В приложении есть календари на 2027 год для России, Турции, Индонезии, Японии и Мексики. При выборе языка одной из этих стран загружается её календарь. Доступны русский, английский, турецкий, индонезийский, японский и испанский языки.
+
+Для другой страны или года можно импортировать совместимый JSON-файл или вставить текст JSON. В приложении есть готовый запрос для подготовки календаря во внешнем ИИ-чате с последующим импортом. После импорта своего календаря интерфейс переключается на английский.
+
+Откройте 2027 год целиком — и начните с дней, которые хотите посвятить себе.
+
+=== Turkish | tr-TR ===
+
+App name:
+2027 Takvim ve Resmi Tatiller
+
+Short description:
+2027 resmi tatilleri ve izin planınız. Çevrimdışı takvim ve widget.
+
+Full description:
+Bir sonraki tatilinizi planlamaya takvimden başlayın.
+
+Türkiye'nin 2027 resmi tatillerini, hafta sonlarını ve iş günlerini bir arada görün. İzin tarihlerinizi seçerken yılın tamamına bakın, tatilinizi uzatabileceğiniz günleri kolayca fark edin.
+
+TÜM YIL TEK EKRANDA
+12 ayı birlikte görüntüleyin, ayrıntılar için istediğiniz aya dokunun. Seçtiğiniz takvime göre iş günü, tatil günü ve çalışma saati toplamlarını inceleyin. Takvim verilerinde yer alan kısaltılmış iş günlerini de görün.
+
+İZİN PLANINIZ GÖZÜNÜZÜN ÖNÜNDE
+İzin dönemleri ekleyin, renklerini seçin ve hafta sonlarıyla resmi tatillerin arasına nasıl denk geldiklerini görün. Her dönem için toplam gün ve iş günü sayısını kontrol edin.
+
+BUGÜNÜ ANA EKRANDA GÖRÜN
+Takvim widget'ı ile uygulamayı açmadan bugünün tarihini ve gün türünü görün. Mevsimlere ve özel günlere uygun görseller takviminize renk katsın.
+
+İNTERNET OLMADAN DA YANINIZDA
+Takviminizi çevrimdışı kullanın. Hesap açmanız gerekmez; takvim verileri ve kaydettiğiniz izinler cihazınızda kalır. Açık veya koyu temayı seçin.
+
+TAKVİM VE DİL SEÇİMİ
+Türkiye, Rusya, Endonezya, Japonya ve Meksika için 2027 takvimleri bulunur. Bu ülkelerden birinin dilini seçtiğinizde ilgili takvim yüklenir. Türkçe, İngilizce, Rusça, Endonezce, Japonca ve İspanyolca arayüz desteği vardır.
+
+Farklı bir ülke veya yıl için uyumlu bir JSON takvim dosyasını içe aktarabilir ya da JSON metnini yapıştırabilirsiniz. Harici bir yapay zekâ sohbetinde takvim hazırlayıp sonucu içe aktarmak için hazır bir istem de bulunur. Özel takvim içe aktarıldığında arayüz İngilizceye geçer.
+
+2027'ye bir bütün olarak bakın, dinlenmeye ayıracağınız günleri şimdiden planlayın.
+
+=== Indonesian | id ===
+
+App name:
+Kalender 2027 dan Hari Libur
+
+Short description:
+Lihat hari libur 2027 dan rencanakan cuti. Kalender offline dengan widget.
+
+Full description:
+Sudah punya rencana untuk libur panjang berikutnya?
+
+Lihat hari libur nasional Indonesia, akhir pekan, dan hari kerja sepanjang 2027 dalam satu kalender. Cari waktu yang pas untuk pulang kampung, bepergian, atau beristirahat di rumah tanpa menghitung tanggal satu per satu.
+
+SETAHUN DALAM SATU TAMPILAN
+Lihat 12 bulan sekaligus, lalu ketuk bulan untuk melihat detailnya. Periksa jumlah hari kerja, hari libur, dan jam kerja berdasarkan kalender yang dipilih. Hari kerja dengan jam lebih pendek ditandai jika tersedia dalam data kalender.
+
+RENCANAKAN CUTI DENGAN JELAS
+Tambahkan periode cuti, pilih warnanya, dan lihat posisinya di antara akhir pekan serta hari libur. Cek jumlah seluruh hari dan hari kerja untuk setiap periode sebelum menentukan tanggal.
+
+TANGGAL HARI INI DI LAYAR UTAMA
+Pasang widget untuk melihat tanggal dan jenis hari tanpa membuka aplikasi. Ilustrasi musiman dan hari istimewa membuat kalender terasa lebih hidup.
+
+BISA DIPAKAI OFFLINE
+Buka kalender tanpa koneksi internet dan tanpa membuat akun. Data kalender dan rencana cuti yang disimpan tetap berada di perangkat. Pilih tema terang atau gelap sesuai kenyamanan.
+
+PILIH KALENDER DAN BAHASA
+Tersedia kalender 2027 untuk Indonesia, Rusia, Turki, Jepang, dan Meksiko. Memilih bahasa salah satu negara tersebut akan memuat kalender yang sesuai. Antarmuka tersedia dalam bahasa Indonesia, Inggris, Rusia, Turki, Jepang, dan Spanyol.
+
+Butuh negara atau tahun lain? Impor file JSON kalender yang kompatibel atau tempel teks JSON. Tersedia juga prompt siap salin untuk menyiapkan kalender melalui layanan chat AI eksternal, lalu mengimpor hasilnya. Setelah kalender khusus diimpor, bahasa antarmuka beralih ke bahasa Inggris.
+
+Lihat tahun depan dengan lebih jelas dan pilih waktu untuk hal-hal yang Anda nantikan.
+
+=== Japanese | ja-JP ===
+
+App name:
+2027年カレンダー・祝日と休暇
+
+Short description:
+2027年の祝日・休日を一覧で確認。休暇の予定を色分けし、ウィジェットで今日をチェック。オフライン対応。
+
+Full description:
+次の連休、どう過ごしますか。
+
+2027年の日本の祝日、休日、勤務日をひとつのカレンダーで確認。年間の並びを見ながら、旅行や帰省、自分のための休暇を計画できます。
+
+1年の見通しを、ひと目で
+12か月をひとつの画面に表示。月をタップすると、日付の詳細や勤務日数、休日数、選択したカレンダーに基づく労働時間の合計を確認できます。短縮勤務日のデータがある場合は、その日も表示します。
+
+休暇の予定を色分け
+休暇の期間を登録し、好きな色で表示。週末や祝日と合わせて、休みの並びを確認できます。各期間の合計日数と勤務日数がわかるので、日程を考える際に役立ちます。
+
+ホーム画面で今日を確認
+ウィジェットに今日の日付と日の種類を表示。アプリを開かずに確認できます。季節や祝日に合わせたイラストも楽しめます。
+
+オフラインで、いつでも手元に
+インターネット接続やアカウント登録は不要。カレンダーのデータと保存した休暇の予定は端末内に保存されます。ライトテーマとダークテーマを選べます。
+
+国と表示言語を選択
+日本、ロシア、トルコ、インドネシア、メキシコの2027年カレンダーを収録。これらの国の言語を選ぶと、対応するカレンダーが読み込まれます。日本語、英語、ロシア語、トルコ語、インドネシア語、スペイン語に対応しています。
+
+別の国や年のカレンダーは、対応形式のJSONファイルを読み込むか、JSONテキストを貼り付けて利用できます。外部のAIチャットでカレンダーを作成し、その結果を読み込むためのプロンプトも用意しています。カスタムカレンダーを読み込むと、表示言語は英語に切り替わります。
+
+2027年を見渡して、楽しみにできる予定を少しずつ。
+
+=== Spanish (Latin America) | es-419 ===
+
+App name:
+Calendario México 2027
+
+Short description:
+Consulta días festivos y planea tus vacaciones de 2027, incluso sin conexión.
+
+Full description:
+Tu próximo descanso empieza con una mirada al calendario.
+
+Consulta los días festivos, fines de semana y días laborables de México en 2027. Revisa cómo caen las fechas y encuentra oportunidades para organizar un fin de semana largo, un viaje o unos días para ti.
+
+TODO EL AÑO A LA VISTA
+Ve los 12 meses en una sola pantalla y toca un mes para consultar sus detalles. Revisa los totales de días laborables, días de descanso y horas de trabajo según el calendario seleccionado. Las jornadas reducidas se muestran cuando están incluidas en los datos.
+
+TUS VACACIONES, EN CONTEXTO
+Agrega periodos de vacaciones, elige sus colores y observa cómo coinciden con fines de semana y días festivos. Consulta el total de días y los días laborables de cada periodo para elegir tus fechas.
+
+HOY, EN TU PANTALLA DE INICIO
+Agrega un widget para ver la fecha de hoy y el tipo de día sin abrir la app. Las ilustraciones de temporada y fechas especiales le dan un toque personal a tu calendario.
+
+DISPONIBLE SIN CONEXIÓN
+Usa el calendario sin internet y sin crear una cuenta. Los datos del calendario y las vacaciones guardadas permanecen en tu dispositivo. Elige el tema claro u oscuro para verlo a tu gusto.
+
+ELIGE PAÍS E IDIOMA
+Incluye calendarios de 2027 para México, Rusia, Turquía, Indonesia y Japón. Al elegir el idioma de uno de esos países, se carga su calendario. La app está disponible en español, inglés, ruso, turco, indonesio y japonés.
+
+Para otro país o año, importa un archivo JSON de calendario compatible o pega el texto JSON. También encontrarás un prompt para preparar un calendario en un chat de IA externo e importar el resultado. Al importar un calendario personalizado, la interfaz cambia a inglés.
+
+Ten el año a la vista y empieza a planear los días que más esperas.

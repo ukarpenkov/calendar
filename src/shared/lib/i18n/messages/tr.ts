@@ -181,6 +181,7 @@ export const trTranslations = {
   'vacation.conflictDismiss': 'Anladım',
   'vacation.startDate': 'Başlangıç tarihi',
   'vacation.endDate': 'Bitiş tarihi',
+  'vacation.days': 'Gün',
   'vacation.color': 'Renk',
   'vacation.save': 'Kaydet',
   'vacation.delete': 'Sil',

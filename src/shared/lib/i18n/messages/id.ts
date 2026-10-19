@@ -181,6 +181,7 @@ export const idTranslations = {
   'vacation.conflictDismiss': 'Mengerti',
   'vacation.startDate': 'Tanggal mulai',
   'vacation.endDate': 'Tanggal akhir',
+  'vacation.days': 'Hari',
   'vacation.color': 'Warna',
   'vacation.save': 'Simpan',
   'vacation.delete': 'Hapus',
