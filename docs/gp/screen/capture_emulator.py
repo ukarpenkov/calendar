@@ -7,10 +7,10 @@ emulator's display override, app settings and screenshot data.
 
 from __future__ import annotations
 
+import argparse
 import io
 import re
 import subprocess
-import sys
 import time
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -40,13 +40,13 @@ UI = {
     "Turkey": ("Ayarlar", "Sonraki ay", "Geri", "Tatil", "Seçilen gün"),
     "Indonesia": ("Pengaturan", "Bulan berikutnya", "Kembali", "Liburan", "Hari terpilih"),
     "Japan": ("設定", "次の月", "戻る", "休暇", "選択した日"),
-    "Mexico": ("Configuración", "Mes siguiente", "Volver", "Vacaciones", "Día seleccionado"),
+    "Mexico": ("Ajustes", "Mes siguiente", "Volver", "Vacaciones", "Día seleccionado"),
 }
 
 
 def adb(*args: str, data: bool = False) -> bytes | str:
     p = subprocess.run(
-        ["adb", "-s", SERIAL, *args], check=True, capture_output=True
+        ["adb", "-s", SERIAL, *args], check=True, capture_output=True, timeout=45
     )
     return p.stdout if data else p.stdout.decode("utf-8", "replace")
 
@@ -184,6 +184,10 @@ def capture_kind(country: str, kind: str) -> None:
     _, month, day, holiday_name = LANGUAGES[country]
     dest = ROOT / country / kind
     set_display(kind)
+    if country == "Indonesia" and kind == "phone":
+        # August has six calendar rows; keep the full holiday name on screen.
+        adb("shell", "wm", "density", "320")
+        time.sleep(2)
     start_year(kind)
     capture(dest / "01-year-overview.png")
 
@@ -217,8 +221,8 @@ def select_country(country: str) -> None:
     start_year("phone")
     if not tap_accessible(UI[country][0], top_only=True):
         # Settings is still labeled in the previously selected app language.
-        for labels in UI.values():
-            if tap_accessible(labels[0], top_only=True):
+        for label in ["Settings", *(labels[0] for labels in UI.values())]:
+            if tap_accessible(label, top_only=True):
                 break
         else:
             raise RuntimeError("Settings button missing")
@@ -228,11 +232,13 @@ def select_country(country: str) -> None:
 
 
 def main() -> None:
-    for country in sys.argv[1:]:
-        if country not in LANGUAGES:
-            raise SystemExit(f"Unknown country: {country}")
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("countries", nargs="+", choices=tuple(LANGUAGES))
+    parser.add_argument("--kinds", nargs="+", choices=("phone", "7-inch", "10-inch"), default=("phone", "7-inch", "10-inch"))
+    args = parser.parse_args()
+    for country in args.countries:
         select_country(country)
-        for kind in ("phone", "7-inch", "10-inch"):
+        for kind in args.kinds:
             capture_kind(country, kind)
 
 

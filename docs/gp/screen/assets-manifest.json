@@ -1,0 +1,392 @@
+[
+  {
+    "file": "Russia/feature-graphic.png",
+    "width": 1024,
+    "height": 500,
+    "bytes": 821936
+  },
+  {
+    "file": "Russia/phone/01-year-overview.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 188019
+  },
+  {
+    "file": "Russia/phone/02-new-year.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 984629
+  },
+  {
+    "file": "Russia/phone/03-vacation-plan.png",
+    "width": 1026,
+    "height": 1824,
+    "bytes": 86121
+  },
+  {
+    "file": "Russia/7-inch/01-year-overview.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 177922
+  },
+  {
+    "file": "Russia/7-inch/02-new-year.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 647806
+  },
+  {
+    "file": "Russia/7-inch/03-vacation-plan.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 66114
+  },
+  {
+    "file": "Russia/10-inch/01-year-overview.png",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 116553
+  },
+  {
+    "file": "Russia/10-inch/02-new-year.png",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 67395
+  },
+  {
+    "file": "Russia/10-inch/03-vacation-plan.png",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 54096
+  },
+  {
+    "file": "Russia/mockups/phone/01-year-overview.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 448359
+  },
+  {
+    "file": "Russia/mockups/phone/02-new-year.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 771590
+  },
+  {
+    "file": "Russia/mockups/phone/03-vacation-plan.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 259051
+  },
+  {
+    "file": "Turkey/feature-graphic.png",
+    "width": 1024,
+    "height": 500,
+    "bytes": 857512
+  },
+  {
+    "file": "Turkey/phone/01-year-overview.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 177977
+  },
+  {
+    "file": "Turkey/phone/02-childrens-day.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 1014003
+  },
+  {
+    "file": "Turkey/phone/03-vacation-plan.png",
+    "width": 1026,
+    "height": 1824,
+    "bytes": 80528
+  },
+  {
+    "file": "Turkey/7-inch/01-year-overview.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 174978
+  },
+  {
+    "file": "Turkey/7-inch/02-childrens-day.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 665821
+  },
+  {
+    "file": "Turkey/7-inch/03-vacation-plan.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 61028
+  },
+  {
+    "file": "Turkey/10-inch/01-year-overview.png",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 113071
+  },
+  {
+    "file": "Turkey/10-inch/02-childrens-day.png",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 71501
+  },
+  {
+    "file": "Turkey/10-inch/03-vacation-plan.png",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 49211
+  },
+  {
+    "file": "Turkey/mockups/phone/01-year-overview.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 427044
+  },
+  {
+    "file": "Turkey/mockups/phone/02-childrens-day.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 783642
+  },
+  {
+    "file": "Turkey/mockups/phone/03-vacation-plan.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 236337
+  },
+  {
+    "file": "Indonesia/feature-graphic.png",
+    "width": 1024,
+    "height": 500,
+    "bytes": 809679
+  },
+  {
+    "file": "Indonesia/phone/01-year-overview.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 180792
+  },
+  {
+    "file": "Indonesia/phone/02-independence-day.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 1044213
+  },
+  {
+    "file": "Indonesia/phone/03-vacation-plan.png",
+    "width": 1026,
+    "height": 1824,
+    "bytes": 74407
+  },
+  {
+    "file": "Indonesia/7-inch/01-year-overview.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 178004
+  },
+  {
+    "file": "Indonesia/7-inch/02-independence-day.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 671036
+  },
+  {
+    "file": "Indonesia/7-inch/03-vacation-plan.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 57974
+  },
+  {
+    "file": "Indonesia/10-inch/01-year-overview.png",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 114871
+  },
+  {
+    "file": "Indonesia/10-inch/02-independence-day.png",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 70506
+  },
+  {
+    "file": "Indonesia/10-inch/03-vacation-plan.png",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 46498
+  },
+  {
+    "file": "Indonesia/mockups/phone/01-year-overview.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 445190
+  },
+  {
+    "file": "Indonesia/mockups/phone/02-independence-day.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 803489
+  },
+  {
+    "file": "Indonesia/mockups/phone/03-vacation-plan.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 242886
+  },
+  {
+    "file": "Japan/feature-graphic.png",
+    "width": 1024,
+    "height": 500,
+    "bytes": 864661
+  },
+  {
+    "file": "Japan/phone/01-year-overview.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 185812
+  },
+  {
+    "file": "Japan/phone/02-foundation-day.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 984692
+  },
+  {
+    "file": "Japan/phone/03-vacation-plan.png",
+    "width": 1026,
+    "height": 1824,
+    "bytes": 79356
+  },
+  {
+    "file": "Japan/7-inch/01-year-overview.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 171524
+  },
+  {
+    "file": "Japan/7-inch/02-foundation-day.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 636326
+  },
+  {
+    "file": "Japan/7-inch/03-vacation-plan.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 61529
+  },
+  {
+    "file": "Japan/10-inch/01-year-overview.png",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 112263
+  },
+  {
+    "file": "Japan/10-inch/02-foundation-day.png",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 65672
+  },
+  {
+    "file": "Japan/10-inch/03-vacation-plan.png",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 49581
+  },
+  {
+    "file": "Japan/mockups/phone/01-year-overview.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 453698
+  },
+  {
+    "file": "Japan/mockups/phone/02-foundation-day.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 780303
+  },
+  {
+    "file": "Japan/mockups/phone/03-vacation-plan.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 254012
+  },
+  {
+    "file": "Mexico/feature-graphic.png",
+    "width": 1024,
+    "height": 500,
+    "bytes": 912197
+  },
+  {
+    "file": "Mexico/phone/01-year-overview.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 191270
+  },
+  {
+    "file": "Mexico/phone/02-independence-day.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 857739
+  },
+  {
+    "file": "Mexico/phone/03-vacation-plan.png",
+    "width": 1026,
+    "height": 1824,
+    "bytes": 88782
+  },
+  {
+    "file": "Mexico/7-inch/01-year-overview.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 177303
+  },
+  {
+    "file": "Mexico/7-inch/02-independence-day.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 578026
+  },
+  {
+    "file": "Mexico/7-inch/03-vacation-plan.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 66093
+  },
+  {
+    "file": "Mexico/10-inch/01-year-overview.png",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 112612
+  },
+  {
+    "file": "Mexico/10-inch/02-independence-day.png",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 72477
+  },
+  {
+    "file": "Mexico/10-inch/03-vacation-plan.png",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 53394
+  },
+  {
+    "file": "Mexico/mockups/phone/01-year-overview.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 484267
+  },
+  {
+    "file": "Mexico/mockups/phone/02-independence-day.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 756972
+  },
+  {
+    "file": "Mexico/mockups/phone/03-vacation-plan.png",
+    "width": 1080,
+    "height": 1920,
+    "bytes": 292790
+  }
+]
