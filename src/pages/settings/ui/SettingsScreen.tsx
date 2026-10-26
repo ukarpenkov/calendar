@@ -335,7 +335,7 @@ function AboutLine({ label, value, palette }: AboutLineProps) {
 const LANGUAGE_SWITCH_NATIVE_LABELS = AGREED_APP_LANGUAGE_CODES.reduce<
   Record<AppLanguage, string>
 >((acc, code) => {
-  acc[code] = getLanguageNativeLabel(code);
+  acc[code] = code === 'es' ? 'México' : getLanguageNativeLabel(code);
   return acc;
 }, {} as Record<AppLanguage, string>);
 
