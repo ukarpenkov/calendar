@@ -3,7 +3,8 @@
  */
 
 import React from 'react';
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
+import { MotionPressable } from '../../../shared/ui/MotionPressable';
 
 import type { CalendarPalette } from '../../../entities/calendar';
 import type { VacationPeriod } from '../../../features/vacation/model';
@@ -38,7 +39,8 @@ export function VacationPeriodCard({
   const end = formatDate(period.endDate, language);
 
   return (
-    <Pressable
+    <MotionPressable
+      accessibilityRole="button"
       style={[
         styles.card,
         {
@@ -55,7 +57,7 @@ export function VacationPeriodCard({
       <Text style={[styles.summary, { color: palette.subtitle }]}>
         {workDays} / {totalDays}
       </Text>
-    </Pressable>
+    </MotionPressable>
   );
 }
 

@@ -14,6 +14,7 @@ jest.mock('react-native-worklets', () =>
 );
 jest.mock('react-native-reanimated', () => {
   const Reanimated = require('react-native-reanimated/mock');
+  Reanimated.useReducedMotion = jest.fn(() => false);
   const Builder = Reanimated.BaseAnimationBuilder;
   if (Builder) {
     if (!Reanimated.SharedTransition) {

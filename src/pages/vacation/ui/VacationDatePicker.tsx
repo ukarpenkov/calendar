@@ -1,6 +1,5 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
-  FlatList,
   Modal,
   Pressable,
   ScrollView,
@@ -11,6 +10,8 @@ import {
   type NativeScrollEvent,
   type NativeSyntheticEvent,
 } from 'react-native';
+import { useReducedMotion } from 'react-native-reanimated';
+import { createPagerNavigation } from '../../../shared/lib/ui/pagerNavigation';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
@@ -48,8 +49,6 @@ type VacationDatePickerProps = {
   onClose: () => void;
 };
 
-const monthKey = (detail: CalendarMonthDetail) => String(detail.month);
-
 export function VacationDatePicker({
   year,
   calendarDays,
@@ -73,7 +72,8 @@ export function VacationDatePicker({
   // Reserve six rows so paging never changes the dialog height.
   const rowHeight = Math.max(36, 42 * calendarScale, (pageWidth - 62) / 7);
   const calendarHeight = Math.ceil(88 + 6 * rowHeight);
-  const listRef = useRef<FlatList<CalendarMonthDetail>>(null);
+  const listRef = useRef<ScrollView>(null);
+  const reduceMotion = useReducedMotion();
   const [month, setMonth] = useState(() => {
     const date = selectedDate ?? initialDate;
     if (date && Number(date.slice(0, 4)) === year) {
@@ -83,6 +83,18 @@ export function VacationDatePicker({
     return today.getFullYear() === year ? today.getMonth() + 1 : 1;
   });
   const targetMonth = useRef(month);
+  const initialOffset = useRef({ x: (month - 1) * pageWidth, y: 0 }).current;
+  const previousWidth = useRef(pageWidth);
+  const navigation = useRef(createPagerNavigation(month, 12)).current;
+  useLayoutEffect(() => {
+    if (previousWidth.current === pageWidth) return;
+    previousWidth.current = pageWidth;
+    navigation.reset(targetMonth.current);
+    listRef.current?.scrollTo({
+      x: (targetMonth.current - 1) * pageWidth,
+      animated: false,
+    });
+  }, [navigation, pageWidth]);
   const months = useMemo(
     () =>
       Array.from({ length: 12 }, (_, index) => {
@@ -171,14 +183,17 @@ export function VacationDatePicker({
     ],
   );
 
-  const moveMonth = (direction: number) => {
-    const next = Math.max(1, Math.min(12, targetMonth.current + direction));
+  const scrollToMonth = (next: number) => {
     targetMonth.current = next;
     setMonth(next);
-    listRef.current?.scrollToOffset({
-      offset: (next - 1) * pageWidth,
-      animated: true,
+    listRef.current?.scrollTo({
+      x: (next - 1) * pageWidth,
+      animated: !reduceMotion,
     });
+  };
+  const moveMonth = (direction: number) => {
+    const next = navigation.move(direction, !reduceMotion);
+    if (next !== null) scrollToMonth(next);
   };
   const finishPaging = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const next = Math.max(
@@ -188,14 +203,17 @@ export function VacationDatePicker({
         Math.round(event.nativeEvent.contentOffset.x / pageWidth) + 1,
       ),
     );
-    targetMonth.current = next;
-    setMonth(next);
+    const target = navigation.settle(next, !reduceMotion);
+    if (target === null) return;
+    targetMonth.current = target;
+    setMonth(target);
+    if (target !== next) scrollToMonth(target);
   };
 
   return (
     <Modal
       transparent
-      animationType="fade"
+      animationType={reduceMotion ? 'none' : 'fade'}
       visible
       onRequestClose={onClose}
       supportedOrientations={['portrait', 'landscape']}
@@ -302,32 +320,56 @@ export function VacationDatePicker({
             bounces={false}
             nestedScrollEnabled
           >
-            <FlatList
-              key={pageWidth}
+            <ScrollView
               ref={listRef}
               testID="date-picker-months"
-              data={months}
-              renderItem={renderMonth}
-              keyExtractor={monthKey}
               horizontal
               pagingEnabled
               nestedScrollEnabled
               bounces={false}
               overScrollMode="never"
               showsHorizontalScrollIndicator={false}
-              initialScrollIndex={month - 1}
-              getItemLayout={(_, index) => ({
-                length: pageWidth,
-                offset: pageWidth * index,
-                index,
-              })}
-              initialNumToRender={1}
-              maxToRenderPerBatch={2}
-              windowSize={3}
+              contentOffset={initialOffset}
               removeClippedSubviews={false}
               onMomentumScrollEnd={finishPaging}
+              onScrollBeginDrag={() => {
+                navigation.beginDrag();
+              }}
+              onScrollEndDrag={event => {
+                const offset = event.nativeEvent.contentOffset.x;
+                if (
+                  !event.nativeEvent.velocity?.x &&
+                  Math.abs(
+                    offset / pageWidth - Math.round(offset / pageWidth),
+                  ) < 0.001
+                ) {
+                  finishPaging(event);
+                }
+              }}
+              onLayout={() => {
+                navigation.reset(targetMonth.current);
+                listRef.current?.scrollTo({
+                  x: (targetMonth.current - 1) * pageWidth,
+                  animated: false,
+                });
+              }}
               style={{ width: pageWidth, height: calendarHeight }}
-            />
+            >
+              {months.map(detail => (
+                <View
+                  key={detail.month}
+                  style={{ width: pageWidth }}
+                  accessibilityElementsHidden={detail.month !== month}
+                  importantForAccessibility={
+                    detail.month === month ? 'auto' : 'no-hide-descendants'
+                  }
+                >
+                  {Math.abs(detail.month - month) <= 1
+                    ? renderMonth({ item: detail })
+                    : null}
+                </View>
+              ))}
+            </ScrollView>
           </ScrollView>
           <Pressable
             accessibilityRole="button"

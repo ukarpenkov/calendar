@@ -1,5 +1,8 @@
 import type { AppLanguage } from '../../../shared/lib/i18n';
-import { getCalendarImagesForDays } from './holidayImages';
+import {
+  getCalendarImagesForDays,
+  getHolidayImageForMonth,
+} from './holidayImages';
 import { buildMonthDetail, type CalendarMonthDetail } from './month-detail';
 import { getCalendarDaysForMonth } from './month-from-year';
 import type { CalendarMonthSummary } from './year-summary';
@@ -13,6 +16,7 @@ export interface CalendarYearViewCache {
   monthDetails: CalendarYearMonthDetails;
   monthSummaries: CalendarMonthSummary[];
   imageSources: ReturnType<typeof getCalendarImagesForDays>;
+  monthImageSources: ReturnType<typeof getCalendarImagesForDays>;
 }
 
 function buildMonthSummaryFromDetail(
@@ -36,6 +40,9 @@ export function buildCalendarYearViewCache(
 ): CalendarYearViewCache {
   const monthDetails: CalendarYearMonthDetails = {};
   const monthSummaries: CalendarMonthSummary[] = [];
+  const monthImages = new Set<
+    ReturnType<typeof getCalendarImagesForDays>[number]
+  >();
 
   for (let month = 1; month <= 12; month += 1) {
     const days = getCalendarDaysForMonth(calendar, month);
@@ -46,11 +53,14 @@ export function buildCalendarYearViewCache(
     const detail = buildMonthDetail(calendar.year, month, days, language);
     monthDetails[month] = detail;
     monthSummaries.push(buildMonthSummaryFromDetail(detail));
+    const image = getHolidayImageForMonth(days);
+    if (image) monthImages.add(image);
   }
 
   return {
     monthDetails,
     monthSummaries,
     imageSources: getCalendarImagesForDays(calendar.days),
+    monthImageSources: Array.from(monthImages),
   };
 }

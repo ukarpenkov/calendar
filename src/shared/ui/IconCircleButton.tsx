@@ -1,10 +1,11 @@
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Reanimated, {
   Easing,
   interpolate,
   useAnimatedStyle,
   useSharedValue,
+  useReducedMotion,
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
@@ -33,24 +34,36 @@ export function IconCircleButton({
   variant = 'default',
 }: IconCircleButtonProps) {
   const disabled = !onPress;
+  const reduceMotion = useReducedMotion();
   const scale = useSharedValue(1);
   const backProgress = useSharedValue(0);
 
+  useEffect(() => {
+    if (disabled) {
+      scale.value = 1;
+      backProgress.value = 0;
+    }
+  }, [backProgress, disabled, scale]);
+
   const animateTo = (toValue: number) => {
-    scale.value = withSpring(toValue, {
-      damping: 18,
-      stiffness: 420,
-    });
+    scale.value = reduceMotion
+      ? 1
+      : withSpring(toValue, {
+          damping: 18,
+          stiffness: 420,
+        });
   };
 
   const animateBackTo = (toValue: number) => {
-    backProgress.value = withTiming(toValue, {
-      duration: toValue === 1 ? 140 : 120,
-      easing:
-        toValue === 1
-          ? Easing.bezier(0.25, 0.46, 0.45, 0.94)
-          : Easing.bezier(0.455, 0.03, 0.515, 0.955),
-    });
+    backProgress.value = reduceMotion
+      ? 0
+      : withTiming(toValue, {
+          duration: toValue === 1 ? 140 : 120,
+          easing:
+            toValue === 1
+              ? Easing.bezier(0.25, 0.46, 0.45, 0.94)
+              : Easing.bezier(0.455, 0.03, 0.515, 0.955),
+        });
   };
 
   const isBack = variant === 'back';
@@ -88,12 +101,10 @@ export function IconCircleButton({
         }
       }}
       onPressOut={() => {
-        if (!disabled) {
-          if (isBack) {
-            animateBackTo(0);
-          } else {
-            animateTo(1);
-          }
+        if (isBack) {
+          animateBackTo(0);
+        } else {
+          animateTo(1);
         }
       }}
       android_ripple={

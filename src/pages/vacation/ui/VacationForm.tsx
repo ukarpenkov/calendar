@@ -3,7 +3,8 @@
  */
 
 import React, { useMemo, useState } from 'react';
-import { Keyboard, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Keyboard, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { MotionPressable } from '../../../shared/ui/MotionPressable';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { CalendarDay, CalendarPalette } from '../../../entities/calendar';
@@ -246,7 +247,7 @@ export function VacationForm({
           <Text style={[styles.cardTitle, { color: palette.title }]}>
             {t('vacation.startDate')}
           </Text>
-          <Pressable
+          <MotionPressable
             accessibilityRole="button"
             accessibilityLabel={t('vacation.startDate')}
             accessibilityValue={{ text: startIso ? isoToDisplayDate(startIso) : 'DD.MM' }}
@@ -265,11 +266,11 @@ export function VacationForm({
               {startIso ? isoToDisplayDate(startIso) : 'DD.MM'}
             </Text>
             <CalendarIcon color={palette.icon} size={20} />
-          </Pressable>
+          </MotionPressable>
           <Text style={[styles.cardTitle, { color: palette.title }]}>
             {t('vacation.endDate')}
           </Text>
-          <Pressable
+          <MotionPressable
             accessibilityRole="button"
             accessibilityLabel={t('vacation.endDate')}
             accessibilityValue={{ text: endIso ? isoToDisplayDate(endIso) : 'DD.MM' }}
@@ -288,7 +289,7 @@ export function VacationForm({
               {endIso ? isoToDisplayDate(endIso) : 'DD.MM'}
             </Text>
             <CalendarIcon color={palette.icon} size={20} />
-          </Pressable>
+          </MotionPressable>
           <Text style={[styles.cardTitle, { color: palette.title }]}>
             {t('vacation.days')}
           </Text>
@@ -311,7 +312,7 @@ export function VacationForm({
                 },
               ]}
             />
-            <Pressable
+            <MotionPressable
               accessibilityRole="button"
               accessibilityLabel="Add day"
               testID="increment-day-button"
@@ -326,7 +327,7 @@ export function VacationForm({
               ]}
             >
               <Text style={styles.addButtonText}>+</Text>
-            </Pressable>
+            </MotionPressable>
           </View>
           {bothFilled && !rangeValid ? (
             <Text style={[styles.errorText, { color: palette.holidayBorder }]}>
@@ -349,7 +350,7 @@ export function VacationForm({
             {COLOR_PRESETS.map(preset => {
               const isSelected = selectedColor === preset.hex;
               return (
-                <Pressable
+                <MotionPressable
                   key={preset.hex}
                   accessibilityRole="button"
                   accessibilityLabel={preset.name}
@@ -492,7 +493,7 @@ function ActionButton({
     variant === 'danger' ? palette.holidayBorder : palette.selectedBorder;
 
   return (
-    <Pressable
+    <MotionPressable
       accessibilityRole="button"
       accessibilityLabel={label}
       onPress={onPress}
@@ -506,7 +507,7 @@ function ActionButton({
       ]}
     >
       <Text style={styles.actionButtonText}>{label}</Text>
-    </Pressable>
+    </MotionPressable>
   );
 }
 
@@ -518,7 +519,7 @@ type GhostButtonProps = {
 
 function GhostButton({ label, onPress, palette }: GhostButtonProps) {
   return (
-    <Pressable
+    <MotionPressable
       accessibilityRole="button"
       accessibilityLabel={label}
       onPress={onPress}
@@ -532,7 +533,7 @@ function GhostButton({ label, onPress, palette }: GhostButtonProps) {
       ]}
     >
       <Text style={[styles.ghostButtonText, { color: palette.title }]}>{label}</Text>
-    </Pressable>
+    </MotionPressable>
   );
 }
 

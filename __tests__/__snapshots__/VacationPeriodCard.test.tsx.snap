@@ -2,6 +2,7 @@
 
 exports[`VacationPeriodCard renders with default props 1`] = `
 <View
+  accessibilityRole="button"
   accessibilityState={
     {
       "busy": undefined,
@@ -33,18 +34,27 @@ exports[`VacationPeriodCard renders with default props 1`] = `
   onStartShouldSetResponder={[Function]}
   style={
     [
+      [
+        {
+          "borderLeftWidth": 4,
+          "borderRadius": 16,
+          "borderWidth": 1,
+          "gap": 4,
+          "paddingHorizontal": 16,
+          "paddingVertical": 12,
+        },
+        {
+          "backgroundColor": "#1B1F27",
+          "borderColor": "#2C3442",
+          "borderLeftColor": "#2DD4BF",
+        },
+      ],
       {
-        "borderLeftWidth": 4,
-        "borderRadius": 16,
-        "borderWidth": 1,
-        "gap": 4,
-        "paddingHorizontal": 16,
-        "paddingVertical": 12,
-      },
-      {
-        "backgroundColor": "#1B1F27",
-        "borderColor": "#2C3442",
-        "borderLeftColor": "#2DD4BF",
+        "transform": [
+          {
+            "scale": 1,
+          },
+        ],
       },
     ]
   }

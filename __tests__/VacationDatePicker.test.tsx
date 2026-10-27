@@ -1,6 +1,7 @@
 import React from 'react';
-import { FlatList, Modal, StyleSheet, TextInput } from 'react-native';
+import { ScrollView, Modal, StyleSheet, TextInput } from 'react-native';
 import ReactTestRenderer, { act } from 'react-test-renderer';
+import { useReducedMotion } from 'react-native-reanimated';
 
 import { getCalendarPalette, type CalendarDay } from '../src/entities/calendar';
 import { VacationDatePicker } from '../src/pages/vacation/ui/VacationDatePicker';
@@ -64,7 +65,10 @@ const save = () =>
     renderer.root.findByProps({ accessibilityLabel: 'Save' }).props.onPress(),
   );
 
-afterEach(() => act(() => renderer?.unmount()));
+afterEach(() => {
+  act(() => renderer?.unmount());
+  jest.restoreAllMocks();
+});
 
 describe('VacationDatePicker', () => {
   const renderPicker = (
@@ -91,22 +95,23 @@ describe('VacationDatePicker', () => {
 
   it('opens the selected month and bounds arrows and swipe pages to the active year', () => {
     renderPicker();
-    const scrollToOffset = jest.spyOn(
-      renderer.root.findByType(FlatList).instance,
-      'scrollToOffset',
+    const scrollTo = jest.spyOn(
+      renderer.root
+        .findAllByType(ScrollView)
+        .find(node => node.props.testID === 'date-picker-months')!.instance,
+      'scrollTo',
     );
     expect(nav('Previous month').props.disabled).toBe(true);
     act(() => nav('Next month').props.onPress());
-    expect(scrollToOffset).toHaveBeenLastCalledWith(
+    expect(scrollTo).toHaveBeenLastCalledWith(
       expect.objectContaining({ animated: true }),
     );
-    expect(renderer.root.findByType(FlatList).props.initialScrollIndex).toBe(1);
-    const list = renderer.root.findByType(FlatList);
-    expect(list.props.data).toHaveLength(12);
-    expect(
-      list.props.data.every((month: { year: number }) => month.year === year),
-    ).toBe(true);
-    const { length: pageWidth } = list.props.getItemLayout(null, 0);
+    expect(JSON.stringify(renderer.toJSON())).toContain('February');
+    const list = renderer.root
+      .findAllByType(ScrollView)
+      .find(node => node.props.testID === 'date-picker-months')!;
+    const pageWidth = StyleSheet.flatten(list.props.style).width;
+    act(() => list.props.onScrollBeginDrag());
     act(() =>
       list.props.onMomentumScrollEnd({
         nativeEvent: { contentOffset: { x: pageWidth * 11 } },
@@ -114,6 +119,64 @@ describe('VacationDatePicker', () => {
     );
     expect(nav('Next month').props.disabled).toBe(true);
     expect(nav('Previous month').props.disabled).toBe(false);
+  });
+
+  it('honors repeated arrow taps without flashing an unprepared month', () => {
+    renderPicker();
+    const list = renderer.root
+      .findAllByType(ScrollView)
+      .find(node => node.props.testID === 'date-picker-months')!;
+    const pageWidth = StyleSheet.flatten(list.props.style).width;
+    const scrollTo = jest.spyOn(list.instance, 'scrollTo');
+    scrollTo.mockClear();
+    act(() => nav('Next month').props.onPress());
+    act(() => nav('Next month').props.onPress());
+    act(() => nav('Next month').props.onPress());
+    expect(scrollTo).toHaveBeenCalledTimes(1);
+    for (const offset of [1, 2]) {
+      act(() =>
+        list.props.onMomentumScrollEnd({
+          nativeEvent: { contentOffset: { x: pageWidth * offset } },
+        }),
+      );
+    }
+    expect(scrollTo).toHaveBeenLastCalledWith({
+      x: pageWidth * 3,
+      animated: true,
+    });
+    expect(
+      renderer.root.findByProps({ accessibilityLiveRegion: 'polite' }).props
+        .children,
+    ).toBe('April');
+    act(() =>
+      list.props.onMomentumScrollEnd({
+        nativeEvent: { contentOffset: { x: pageWidth } },
+      }),
+    );
+    expect(
+      renderer.root.findByProps({ accessibilityLiveRegion: 'polite' }).props
+        .children,
+    ).toBe('April');
+  });
+
+  it('disables modal and arrow animation with reduced motion', () => {
+    jest.mocked(useReducedMotion).mockReturnValue(true);
+    try {
+      renderPicker();
+      const list = renderer.root
+        .findAllByType(ScrollView)
+        .find(node => node.props.testID === 'date-picker-months')!;
+      const scrollTo = jest.spyOn(list.instance, 'scrollTo');
+      act(() => nav('Next month').props.onPress());
+      act(() => nav('Next month').props.onPress());
+      expect(scrollTo).toHaveBeenLastCalledWith(
+        expect.objectContaining({ animated: false }),
+      );
+      expect(JSON.stringify(renderer.toJSON())).toContain('March');
+      expect(renderer.root.findByType(Modal).props.animationType).toBe('none');
+    } finally {
+      jest.mocked(useReducedMotion).mockReturnValue(false);
+    }
   });
 
   it('uses the shared month grid and retains holiday, weekend and shortened colors', () => {
@@ -196,7 +259,12 @@ describe('VacationForm date selection', () => {
       '#2DD4BF',
     );
     press('vacation-start-date');
-    expect(renderer.root.findByType(FlatList).props.initialScrollIndex).toBe(0);
+    expect(
+      renderer.root
+        .findAllByType(ScrollView)
+        .find(node => node.props.testID === 'date-picker-months')!.props
+        .contentOffset.x,
+    ).toBe(0);
     expect(
       renderer.root.findByType(VacationDatePicker).props.selectedDate,
     ).toBe('2028-01-07');
