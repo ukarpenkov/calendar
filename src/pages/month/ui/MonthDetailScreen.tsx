@@ -9,23 +9,20 @@ import {
   type ReactNode,
 } from 'react';
 import {
+  AppState,
   BackHandler,
   ScrollView,
   StyleSheet,
   Text,
   View,
-  type NativeScrollEvent,
-  type NativeSyntheticEvent,
   useWindowDimensions,
 } from 'react-native';
 import Reanimated, {
   cancelAnimation,
   FadeInDown,
-  LinearTransition,
   useReducedMotion,
   interpolate,
   runOnJS,
-  useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -54,7 +51,6 @@ import {
 } from '../../../shared/lib/i18n';
 import { layout } from '../../../shared/lib/ui/layout';
 import { motion } from '../../../shared/lib/ui/motion';
-import { createPagerNavigation } from '../../../shared/lib/ui/pagerNavigation';
 import { getMonthTransitionOrigin, type MonthOrigin } from './monthTransition';
 import { IconCircleButton } from '../../../shared/ui/IconCircleButton';
 import {
@@ -66,7 +62,11 @@ import { SettingsGearButton } from '../../../shared/ui/SettingsGearButton';
 
 import { CalendarMonthGrid } from '../../../entities/calendar/ui/CalendarMonthGrid';
 
-import { HolidayBanner, HOLIDAY_BANNER_ASPECT_RATIO } from './HolidayBanner';
+import { HolidayBanner } from './HolidayBanner';
+import {
+  MonthPagerViewport,
+  type MonthPagerHandle,
+} from './MonthPagerViewport';
 import {
   getMonthCalendarScale,
   getMonthDetailLayoutMetrics,
@@ -94,21 +94,12 @@ const PAGE_SCALE_MIN = 0.97;
 const selectedDayEnter = FadeInDown.duration(motion.change.duration)
   .withInitialValues({ transform: [{ translateY: 8 }] })
   .reduceMotion(ReduceMotion.System);
-const bannerReflow = LinearTransition.duration(240)
-  .easing(motion.open.easing)
-  .reduceMotion(ReduceMotion.System);
 
 type MonthPageProps = {
   children: ReactNode;
   pageIndex: number;
   pageWidth: number;
   scrollX: SharedValue<number>;
-};
-
-type HolidayBannerTransitionProps = {
-  source: ReturnType<typeof getHolidayImageForMonth>;
-  width: number;
-  left: number;
 };
 
 function getLocalIsoDate(date = new Date()): string {
@@ -138,18 +129,14 @@ export function MonthDetailScreen({
     [language],
   );
 
-  const pagerRef = useRef<ScrollView>(null);
-  const reduceMotion = useReducedMotion();
+  const pagerRef = useRef<MonthPagerHandle>(null);
   const todayDate = getLocalIsoDate();
 
   const pageWidth = windowWidth;
-  const initialScrollOffset = useRef((month - 1) * pageWidth).current;
-  const scrollX = useSharedValue(initialScrollOffset);
-  const onScrollEvent = useAnimatedScrollHandler({
-    onScroll: event => {
-      scrollX.value = event.contentOffset.x;
-    },
-  });
+  const [resumeVersion, setResumeVersion] = useState(0);
+  const viewportKey = `${windowWidth}x${windowHeight}`;
+  const pagerKey = `${viewportKey}:${resumeVersion}`;
+  const verticalOffsets = useRef(new Map<string, number>()).current;
 
   const monthLayoutMetrics = useMemo(
     () => getMonthDetailLayoutMetrics(windowWidth, windowHeight),
@@ -259,95 +246,50 @@ export function MonthDetailScreen({
       : null,
   );
   const previousVisible = useRef(false);
-  const nativeMonth = useRef(month);
-  const previousWidth = useRef(pageWidth);
-  const resizing = useRef(false);
-  const navigation = useRef(createPagerNavigation(month, 12)).current;
 
   const handleSelectDay = useCallback(
     (date: string) => setSelectedDate(date),
     [],
   );
-  const alignPage = useCallback(() => {
-    const offset = (month - 1) * pageWidth;
-    scrollX.value = offset;
-    pagerRef.current?.scrollTo({ x: offset, animated: false });
-  }, [month, pageWidth, scrollX]);
-
   useLayoutEffect(() => {
-    const opening = visible && !previousVisible.current;
-    const resized = previousWidth.current !== pageWidth;
-    previousVisible.current = visible;
-    previousWidth.current = pageWidth;
-    if (opening) {
+    if (visible && !previousVisible.current) {
       setSelectedDate(
         monthDetails[month]?.days.some(day => day.date === todayDate)
           ? todayDate
           : null,
       );
     }
-    if (!visible || opening || resized) {
-      nativeMonth.current = month;
-      navigation.reset(month);
-      resizing.current = resized;
-      alignPage();
-      // onLayout aligns again when the native viewport has its new size.
-    } else if (nativeMonth.current !== month) {
-      navigation.expect(month, !reduceMotion);
-      nativeMonth.current = month;
-      pagerRef.current?.scrollTo({
-        x: (month - 1) * pageWidth,
-        animated: !reduceMotion,
-      });
-      if (reduceMotion) scrollX.value = (month - 1) * pageWidth;
+    previousVisible.current = visible;
+  }, [month, monthDetails, todayDate, visible]);
+
+  const previousViewport = useRef(viewportKey);
+  useLayoutEffect(() => {
+    if (previousViewport.current === viewportKey) return;
+    previousViewport.current = viewportKey;
+    if (visible && !isClosingRef.current) {
+      cancelAnimation(progress);
+      progress.value = 1;
     }
-  }, [
-    alignPage,
-    month,
-    monthDetails,
-    navigation,
-    pageWidth,
-    reduceMotion,
-    scrollX,
-    todayDate,
-    visible,
-  ]);
+  }, [progress, viewportKey, visible]);
 
-  const handlePagerLayout = useCallback(() => {
-    navigation.reset(month);
-    nativeMonth.current = month;
-    alignPage();
-    resizing.current = false;
-  }, [alignPage, month, navigation]);
+  useEffect(() => {
+    if (!visible) return;
+    const subscription = AppState.addEventListener('change', state => {
+      if (isClosingRef.current) return;
+      cancelAnimation(progress);
+      progress.value = 1;
+      if (state === 'active') setResumeVersion(version => version + 1);
+    });
+    return () => subscription.remove();
+  }, [progress, visible]);
 
-  const handleMomentumScrollEnd = useCallback(
-    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      if (!visible || resizing.current || isClosingRef.current) return;
-      const next = Math.min(
-        12,
-        Math.max(
-          1,
-          Math.round(event.nativeEvent.contentOffset.x / pageWidth) + 1,
-        ),
-      );
-      const target = navigation.settle(next, !reduceMotion);
-      if (target === null) return;
-      nativeMonth.current = next;
-      if (target !== month) onMonthChange(target);
-    },
-    [month, navigation, onMonthChange, pageWidth, reduceMotion, visible],
-  );
-
-  const moveMonth = (direction: number) => {
-    if (isClosingRef.current) return;
-    const next = navigation.move(direction, !reduceMotion);
-    if (next !== null) onMonthChange(next);
-  };
+  const moveMonth = (direction: number) =>
+    pagerRef.current?.moveMonth(direction);
 
   // Deterministic native pager: twelve light shells, only the current page
   // and its neighbours have calendar views. No delayed FlatList batches.
   const renderPage = useCallback(
-    ({ item: m }: { item: number }) => {
+    (m: number, scrollX: SharedValue<number>) => {
       const detail = monthDetails[m];
       if (!detail || Math.abs(m - activeMonth) > 1) {
         return (
@@ -383,7 +325,20 @@ export function MonthDetailScreen({
             scrollX={scrollX}
           >
             <ScrollView
+              testID={`month-scroll-${m}`}
               nestedScrollEnabled
+              removeClippedSubviews={false}
+              contentOffset={{
+                x: 0,
+                y: verticalOffsets.get(`${viewportKey}:${m}`) ?? 0,
+              }}
+              onScroll={event => {
+                verticalOffsets.set(
+                  `${viewportKey}:${m}`,
+                  event.nativeEvent.contentOffset.y,
+                );
+              }}
+              scrollEventThrottle={32}
               showsVerticalScrollIndicator={false}
               style={styles.pageVertical}
               contentContainerStyle={[
@@ -421,7 +376,6 @@ export function MonthDetailScreen({
       monthDetails,
       activeMonth,
       pageWidth,
-      scrollX,
       palette,
       language,
       t,
@@ -431,6 +385,8 @@ export function MonthDetailScreen({
       monthLayoutMetrics,
       safeAreaInsets.bottom,
       vacationPeriods,
+      verticalOffsets,
+      viewportKey,
     ],
   );
 
@@ -510,45 +466,16 @@ export function MonthDetailScreen({
           </View>
         </View>
 
-        <Reanimated.ScrollView
+        <MonthPagerViewport
+          key={pagerKey}
           ref={pagerRef}
-          testID="month-pager"
-          horizontal
-          pagingEnabled
-          contentOffset={{ x: initialScrollOffset, y: 0 }}
-          nestedScrollEnabled
-          showsHorizontalScrollIndicator={false}
-          bounces={false}
-          overScrollMode="never"
-          decelerationRate="fast"
-          keyboardShouldPersistTaps="handled"
-          removeClippedSubviews={false}
-          style={styles.horizontalScroll}
-          onScroll={onScrollEvent}
-          onScrollBeginDrag={() => {
-            navigation.beginDrag();
-            resizing.current = false;
-          }}
-          onMomentumScrollEnd={handleMomentumScrollEnd}
-          onScrollEndDrag={event => {
-            const offset = event.nativeEvent.contentOffset.x;
-            if (
-              !event.nativeEvent.velocity?.x &&
-              Math.abs(offset / pageWidth - Math.round(offset / pageWidth)) <
-                0.001
-            ) {
-              handleMomentumScrollEnd(event);
-            }
-          }}
-          scrollEventThrottle={16}
-          onLayout={handlePagerLayout}
-        >
-          {Array.from({ length: 12 }, (_, index) => (
-            <View key={index + 1} style={[styles.page, { width: pageWidth }]}>
-              {renderPage({ item: index + 1 })}
-            </View>
-          ))}
-        </Reanimated.ScrollView>
+          month={month}
+          pageWidth={pageWidth}
+          visible={visible}
+          onMonthChange={onMonthChange}
+          isClosingRef={isClosingRef}
+          renderPage={renderPage}
+        />
       </Reanimated.View>
     </View>
   );
@@ -672,13 +599,15 @@ function MonthDetailBody({
     return getHolidayImageForMonth(detail.days);
   }, [selectedDay, detail.days, vacationPeriods]);
 
-  const bannerWidth =
-    monthLayoutMetrics.layout === 'split'
-      ? monthLayoutMetrics.sideColumnWidth
-      : calendarColumnWidth;
-  const bannerSpace = holidayImage
-    ? bannerWidth / HOLIDAY_BANNER_ASPECT_RATIO + layout.holidayBannerGap
-    : 0;
+  const banner = holidayImage ? (
+    <View
+      testID="month-holiday-banner"
+      pointerEvents="none"
+      style={styles.holidayBanner}
+    >
+      <HolidayBanner source={holidayImage} />
+    </View>
+  ) : null;
 
   const calendarCard = (
     <CalendarMonthGrid
@@ -782,6 +711,7 @@ function MonthDetailBody({
 
   const totalsCard = (
     <View
+      testID="month-totals"
       style={[
         styles.totalsCard,
         {
@@ -821,6 +751,10 @@ function MonthDetailBody({
 
   return (
     <View
+      // Rebuild the column hierarchy atomically. No exiting/layout animation
+      // may retain a second image or coordinates from the previous viewport.
+      key={monthLayoutMetrics.layout}
+      testID={`month-content-${detail.month}`}
       style={[
         styles.monthContent,
         monthLayoutMetrics.layout === 'stack'
@@ -828,63 +762,38 @@ function MonthDetailBody({
           : null,
       ]}
     >
-      <HolidayBannerTransition
-        source={holidayImage}
-        width={bannerWidth}
-        left={
-          monthLayoutMetrics.layout === 'split'
-            ? calendarColumnWidth + monthLayoutMetrics.columnGap
-            : 0
-        }
-      />
       {monthLayoutMetrics.layout === 'split' ? (
         <View style={styles.monthSplitRow}>
           <View
+            testID="month-calendar-column"
             style={[styles.monthCalendarColumn, { width: calendarColumnWidth }]}
           >
             {calendarCard}
           </View>
           <View
+            testID="month-side-column"
             style={[
               styles.monthSideColumn,
               styles.monthSideColumnGrow,
               {
                 marginLeft: monthLayoutMetrics.columnGap,
-                paddingTop: bannerSpace,
               },
             ]}
           >
+            {banner}
             {totalsCard}
             {selectedDayCard}
           </View>
         </View>
       ) : (
-        <View style={[styles.monthContentColumn, { paddingTop: bannerSpace }]}>
+        <View style={styles.monthContentColumn}>
+          {banner}
           {calendarCard}
           {selectedDayCard}
           {totalsCard}
         </View>
       )}
     </View>
-  );
-}
-
-function HolidayBannerTransition({
-  source,
-  width,
-  left,
-}: HolidayBannerTransitionProps) {
-  if (!source) return null;
-  return (
-    // Keep the decoded image mounted while moving between the portrait header
-    // and the landscape side column. The content reserves its final height.
-    <Reanimated.View
-      layout={bannerReflow}
-      pointerEvents="none"
-      style={[styles.holidayBanner, { width, left }]}
-    >
-      <HolidayBanner source={source} />
-    </Reanimated.View>
   );
 }
 
@@ -950,9 +859,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
     overflow: 'hidden',
-  },
-  horizontalScroll: {
-    flex: 1,
   },
   contentFader: {
     flex: 1,
@@ -1088,9 +994,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   holidayBanner: {
-    position: 'absolute',
-    top: 0,
-    zIndex: 1,
+    width: '100%',
     borderRadius: 16,
     overflow: 'hidden',
   },

@@ -49,6 +49,9 @@ describe('Widget vacation data', () => {
   const realOpSqlite = jest.requireActual('@op-engineering/op-sqlite');
 
   beforeEach(async () => {
+    // Match the fixture below and keep date-boundary cases independent of today.
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date(2026, 5, 12, 12));
     db = realOpSqlite.open({ name: 'widget-vacation-test.sqlite', location: ':memory:' });
     mockTestDb.current = db;
     await initializeDatabase(db);
@@ -64,6 +67,7 @@ describe('Widget vacation data', () => {
   afterEach(() => {
     db?.close();
     mockTestDb.current = null;
+    jest.useRealTimers();
   });
 
   it('reads the saved Spanish language and holiday name for the widget', async () => {

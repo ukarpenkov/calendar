@@ -6,6 +6,7 @@ declare function require(moduleName: string): unknown;
 
 import React from 'react';
 import ReactTestRenderer from 'react-test-renderer';
+import * as Reanimated from 'react-native-reanimated';
 import App from '../src/app/App';
 import {
   activateUserJsonImport,
@@ -106,6 +107,7 @@ const mockedSetStoredLanguage = jest.mocked(setStoredLanguage);
 let renderer: ReactTestRenderer.ReactTestRenderer;
 afterEach(() => {
   ReactTestRenderer.act(() => renderer?.unmount());
+  jest.restoreAllMocks();
 });
 
 beforeEach(() => {
@@ -258,6 +260,10 @@ test('retains the year and settings while navigating into and back from import',
 });
 
 test('month arrows queue fast taps and ignore stale native scroll completions', async () => {
+  jest.spyOn(Reanimated, 'useAnimatedScrollHandler').mockImplementation(handlers =>
+    (typeof handlers === 'function' ? handlers : handlers.onScroll) as unknown as
+      ReturnType<typeof Reanimated.useAnimatedScrollHandler>,
+  );
   mockedSeedBundledYearIfNeeded.mockResolvedValue(bundledCalendar2027);
   mockedGetYearCalendar.mockResolvedValue(bundledCalendar2027);
   await ReactTestRenderer.act(async () => {
@@ -275,6 +281,11 @@ test('month arrows queue fast taps and ignore stale native scroll completions', 
       .find(node => typeof node.props.disabled === 'boolean')!;
   const pager = monthScreen.findByProps({ testID: 'month-pager' });
   const width = pager.props.contentOffset.x / 4;
+  // Confirm the native viewport is aligned before testing user navigation.
+  ReactTestRenderer.act(() => pager.props.onScroll({
+    contentOffset: { x: 4 * width },
+    layoutMeasurement: { width },
+  }));
   for (let i = 0; i < 3; i++) {
     ReactTestRenderer.act(() => nextButton().props.onPress());
   }
@@ -282,21 +293,30 @@ test('month arrows queue fast taps and ignore stale native scroll completions', 
   for (const month of [6, 7]) {
     ReactTestRenderer.act(() =>
       pager.props.onMomentumScrollEnd({
-        nativeEvent: { contentOffset: { x: (month - 1) * width } },
+        nativeEvent: {
+          contentOffset: { x: (month - 1) * width },
+          layoutMeasurement: { width },
+        },
       }),
     );
   }
   expect(monthScreen.props.month).toBe(8);
   ReactTestRenderer.act(() =>
     pager.props.onMomentumScrollEnd({
-      nativeEvent: { contentOffset: { x: 5 * width } },
+      nativeEvent: {
+        contentOffset: { x: 5 * width },
+        layoutMeasurement: { width },
+      },
     }),
   );
   expect(monthScreen.props.month).toBe(8);
   ReactTestRenderer.act(() => pager.props.onScrollBeginDrag());
   ReactTestRenderer.act(() =>
     pager.props.onMomentumScrollEnd({
-      nativeEvent: { contentOffset: { x: 6 * width } },
+      nativeEvent: {
+        contentOffset: { x: 6 * width },
+        layoutMeasurement: { width },
+      },
     }),
   );
   expect(monthScreen.props.month).toBe(7);
