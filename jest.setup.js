@@ -14,6 +14,18 @@ jest.mock('react-native-worklets', () =>
 );
 jest.mock('react-native-reanimated', () => {
   const Reanimated = require('react-native-reanimated/mock');
+  const React = require('react');
+  const createSharedValue = Reanimated.useSharedValue;
+  // The shipped mock creates a new object on every render. Real shared values
+  // belong to the mounted hook, so preserve its Proxy/API with the same lifetime.
+  Reanimated.useSharedValue = function useSharedValue(initialValue) {
+    const value = React.useRef();
+    if (value.current === undefined) {
+      value.current = createSharedValue(initialValue);
+    }
+    return value.current;
+  };
+  Reanimated.useReducedMotion = jest.fn(() => false);
   const Builder = Reanimated.BaseAnimationBuilder;
   if (Builder) {
     if (!Reanimated.SharedTransition) {
@@ -51,3 +63,21 @@ jest.mock('@react-native-documents/picker', () => ({
 jest.mock('@dr.pogodin/react-native-fs', () => ({
   readFile: jest.fn(),
 }));
+
+// Native commands are deliberately explicit in pager tests: receiving a command
+// does not select a page until the native selection callback is delivered.
+jest.mock('react-native-pager-view', () => {
+  const React = require('react');
+  const { View } = require('react-native');
+  return {
+    __esModule: true,
+    default: React.forwardRef(function MockPagerView(props, ref) {
+      const commands = React.useRef({
+        setPage: jest.fn(),
+        setPageWithoutAnimation: jest.fn(),
+      }).current;
+      React.useImperativeHandle(ref, () => commands, [commands]);
+      return React.createElement(View, { ...props, commands });
+    }),
+  };
+});

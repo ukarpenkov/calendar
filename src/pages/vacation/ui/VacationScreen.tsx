@@ -1,4 +1,4 @@
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { CalendarDay, CalendarPalette } from '../../../entities/calendar';
@@ -8,6 +8,7 @@ import type { AppLanguage } from '../../../shared/lib/i18n';
 import { getTranslation } from '../../../shared/lib/i18n';
 import { layout } from '../../../shared/lib/ui/layout';
 import { IconCircleButton } from '../../../shared/ui/IconCircleButton';
+import { MotionPressable } from '../../../shared/ui/MotionPressable';
 import { ArrowBackIcon } from '../../../shared/ui/icons/NavigationIcons';
 import { VacationPeriodCard } from './VacationPeriodCard';
 
@@ -46,7 +47,9 @@ export function VacationScreen({
         },
       ]}
     >
-      <View style={[styles.appBar, { paddingHorizontal: layout.screenPaddingH }]}>
+      <View
+        style={[styles.appBar, { paddingHorizontal: layout.screenPaddingH }]}
+      >
         <IconCircleButton
           onPress={onBack}
           palette={palette}
@@ -64,7 +67,9 @@ export function VacationScreen({
       <View style={styles.content}>
         {vacationPeriods.length === 0 ? (
           <View style={styles.placeholder}>
-            <Text style={{ color: palette.subtitle }}>{t('vacation.empty')}</Text>
+            <Text style={{ color: palette.subtitle }}>
+              {t('vacation.empty')}
+            </Text>
           </View>
         ) : (
           <FlatList
@@ -99,7 +104,8 @@ export function VacationScreen({
         )}
       </View>
 
-      <Pressable
+      <MotionPressable
+        pressedScale={0.92}
         accessibilityRole="button"
         accessibilityLabel={t('vacation.addTitle')}
         testID="vacation-add"
@@ -111,12 +117,13 @@ export function VacationScreen({
             borderColor: palette.vacationBorder,
             bottom: safeAreaInsets.bottom + 24,
             opacity: pressed ? 0.85 : 1,
-            transform: [{ scale: pressed ? 0.92 : 1 }],
           },
         ]}
       >
-        <Text style={[styles.fabText, { color: palette.vacationBorder }]}>+</Text>
-      </Pressable>
+        <Text style={[styles.fabText, { color: palette.vacationBorder }]}>
+          +
+        </Text>
+      </MotionPressable>
     </View>
   );
 }

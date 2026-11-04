@@ -7,6 +7,7 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useReducedMotion } from 'react-native-reanimated';
 
 import type { CalendarPalette } from '../../../entities/calendar';
 import { getTranslation, type AppLanguage } from '../../../shared/lib/i18n';
@@ -24,11 +25,12 @@ export function VacationConflictNotice({
   onClose,
 }: VacationConflictNoticeProps) {
   const insets = useSafeAreaInsets();
+  const reduceMotion = useReducedMotion();
   return (
     <Modal
       transparent
       visible
-      animationType="fade"
+      animationType={reduceMotion ? 'none' : 'fade'}
       onRequestClose={onClose}
       supportedOrientations={['portrait', 'landscape']}
     >

@@ -7,6 +7,7 @@ declare function require(moduleName: string): unknown;
 import {
   buildCalendarYearViewCache,
   getUtcDaysInMonth,
+  getHolidayImageForMonth,
 } from '../src/entities/calendar';
 import { parseValidateAndNormalizeCalendarImport } from '../src/features/calendar-import';
 
@@ -25,5 +26,11 @@ describe('buildCalendarYearViewCache', () => {
     );
     expect(cache.monthSummaries[4]?.label).toBe('May');
     expect(cache.imageSources.length).toBeGreaterThan(0);
+    for (const detail of Object.values(cache.monthDetails)) {
+      expect(cache.monthImageSources).toContain(
+        getHolidayImageForMonth(detail!.days),
+      );
+    }
+    expect(cache.monthImageSources.length).toBeLessThanOrEqual(12);
   });
 });

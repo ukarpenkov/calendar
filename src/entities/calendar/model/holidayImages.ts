@@ -381,25 +381,20 @@ export function getCalendarImagesForDays(
   days: readonly CalendarDay[],
 ): ImageSourcePropType[] {
   const images = new Set<ImageSourcePropType>();
-  const monthsWithHolidayImage = new Set<number>();
+
+  // The month screen starts with its monthly illustration even when that
+  // month contains holidays. Prepare those first, then day-specific images.
+  for (const day of days) {
+    const image = defaultImageByMonth[day.month];
+    if (image) images.add(image);
+  }
 
   for (const day of days) {
     const image = getCalendarImageForDay(day);
     if (image) {
       images.add(image);
-      monthsWithHolidayImage.add(day.month);
     } else if (day.type === 'holiday') {
       images.add(fallbackHolidayImage);
-    }
-  }
-
-  for (const day of days) {
-    if (!monthsWithHolidayImage.has(day.month)) {
-      const fallback = defaultImageByMonth[day.month];
-      if (fallback) {
-        images.add(fallback);
-        monthsWithHolidayImage.add(day.month);
-      }
     }
   }
 
@@ -416,6 +411,8 @@ export function getCalendarImagesForDays(
   if (days.some(d => d.type === 'weekend')) {
     images.add(selectedWeekendImage);
   }
+
+  images.add(getVacationImage());
 
   return Array.from(images);
 }

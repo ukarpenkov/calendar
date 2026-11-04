@@ -1,12 +1,15 @@
 import { useEffect } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Reanimated, {
-  Easing,
   interpolate,
+  interpolateColor,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+import { motion } from '../lib/ui/motion';
+
+const AnimatedPressable = Reanimated.createAnimatedComponent(Pressable);
 
 type ThemeSwitchProps = {
   checked: boolean;
@@ -23,14 +26,18 @@ export function ThemeSwitch({ checked, onPress }: ThemeSwitchProps) {
   const progress = useSharedValue(checked ? 1 : 0);
 
   useEffect(() => {
-    progress.value = withTiming(checked ? 1 : 0, {
-      duration: 180,
-      easing: Easing.bezier(0.81, -0.04, 0.38, 1.5),
-    });
+    progress.value = withTiming(checked ? 1 : 0, motion.release);
   }, [checked, progress]);
 
   const thumbAnimatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: progress.value * THUMB_TRAVEL }],
+  }));
+  const trackAnimatedStyle = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(
+      progress.value,
+      [0, 1],
+      ['#2A2A2A', '#00A6FF'],
+    ),
   }));
   const starsAnimatedStyle = useAnimatedStyle(() => ({
     opacity: 1 - progress.value,
@@ -47,15 +54,11 @@ export function ThemeSwitch({ checked, onPress }: ThemeSwitchProps) {
   }));
 
   return (
-    <Pressable
+    <AnimatedPressable
       accessibilityRole="switch"
       accessibilityState={{ checked }}
       onPress={onPress}
-      style={({ pressed }) => [
-        styles.switch,
-        checked ? styles.switchChecked : styles.switchUnchecked,
-        { opacity: pressed ? 0.92 : 1 },
-      ]}
+      style={[styles.switch, trackAnimatedStyle]}
     >
       <Reanimated.View
         style={[styles.star, styles.starOne, starsAnimatedStyle]}
@@ -80,7 +83,7 @@ export function ThemeSwitch({ checked, onPress }: ThemeSwitchProps) {
         </Reanimated.View>
         <Reanimated.View style={[styles.sun, sunAnimatedStyle]} />
       </Reanimated.View>
-    </Pressable>
+    </AnimatedPressable>
   );
 }
 
@@ -96,12 +99,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.12,
     shadowRadius: 10,
     elevation: 3,
-  },
-  switchUnchecked: {
-    backgroundColor: '#2A2A2A',
-  },
-  switchChecked: {
-    backgroundColor: '#00A6FF',
   },
   thumb: {
     position: 'absolute',

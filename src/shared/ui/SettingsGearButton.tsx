@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { MotionPressable } from './MotionPressable';
 
 import { SettingsGearIcon } from './icons/SettingsGearIcon';
 
@@ -20,7 +21,8 @@ export function SettingsGearButton({
   accessibilityLabel,
 }: SettingsGearButtonProps) {
   return (
-    <Pressable
+    <MotionPressable
+      pressedScale={0.9}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
       onPress={onPress}
@@ -34,7 +36,7 @@ export function SettingsGearButton({
       ]}
     >
       <SettingsGearIcon color={palette.icon} size={20} />
-    </Pressable>
+    </MotionPressable>
   );
 }
 

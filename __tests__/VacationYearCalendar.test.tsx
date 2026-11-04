@@ -1,5 +1,6 @@
 import React from 'react';
-import ReactTestRenderer from 'react-test-renderer';
+import ReactTestRenderer, { act } from 'react-test-renderer';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { VacationYearCalendar } from '../src/pages/vacation/ui/VacationYearCalendar';
 import type { VacationPeriod } from '../src/features/vacation/model';
@@ -77,29 +78,35 @@ const vacationPeriods: VacationPeriod[] = [
 ];
 
 describe('VacationYearCalendar', () => {
-  it('renders with vacation period — snapshot', () => {
-    const renderer = ReactTestRenderer.create(
-      <VacationYearCalendar
-        year={2026}
-        calendarDays={calendarDays}
-        vacationPeriods={vacationPeriods}
-        palette={palette}
-        language="en"
-      />,
-    );
-    expect(renderer.toJSON()).toMatchSnapshot();
-  });
+  let renderer: ReactTestRenderer.ReactTestRenderer;
+  afterEach(() => act(() => renderer.unmount()));
 
-  it('renders without vacation periods — snapshot', () => {
-    const renderer = ReactTestRenderer.create(
-      <VacationYearCalendar
-        year={2026}
-        calendarDays={calendarDays}
-        vacationPeriods={[]}
-        palette={palette}
-        language="en"
-      />,
-    );
-    expect(renderer.toJSON()).toMatchSnapshot();
-  });
+  it.each([true, false])(
+    'renders all months and vacation markers (vacation: %s)',
+    hasVacation => {
+      act(() => {
+        renderer = ReactTestRenderer.create(
+          <VacationYearCalendar
+            year={2026}
+            calendarDays={calendarDays}
+            vacationPeriods={hasVacation ? vacationPeriods : []}
+            palette={palette}
+            language="en"
+          />,
+        );
+      });
+      const labels = renderer.root
+        .findAllByType(Text)
+        .map(node => node.props.children);
+      expect(labels).toEqual(expect.arrayContaining(['Jan', 'Jun', 'Dec']));
+      const marked = renderer.root
+        .findAllByType(View)
+        .filter(
+          node =>
+            StyleSheet.flatten(node.props.style)?.backgroundColor ===
+            vacationPeriods[0].color + '4D',
+        );
+      expect(marked).toHaveLength(hasVacation ? 15 : 0);
+    },
+  );
 });

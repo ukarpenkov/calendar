@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -9,12 +8,6 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import {
-  openWorkingCalendarTelegram,
-  shouldShowYearEndReminder,
-  WORKING_CALENDAR_TELEGRAM_PATH,
-  YearEndReminderCard,
-} from '../../../features/year-end-reminder';
 import {
   type CalendarDay,
   type CalendarMonthSummary,
@@ -31,6 +24,7 @@ import { getCompactWeekdayLabels } from '../../../shared/lib/i18n';
 import { layout } from '../../../shared/lib/ui/layout';
 import { SettingsGearButton } from '../../../shared/ui/SettingsGearButton';
 import { VacationButton } from '../../../shared/ui/VacationButton';
+import { MotionPressable } from '../../../shared/ui/MotionPressable';
 import { YearScreenCalendarMark } from '../../../shared/ui/icons/YearScreenCalendarMark';
 import { getYearGridMetrics, getYearGridTextStyle } from './yearGridMetrics';
 
@@ -61,6 +55,7 @@ type YearHomeScreenProps = {
     month: number,
     origin?: { x: number; y: number; width: number; height: number },
   ) => void;
+  onPrepareMonth?: (month: number) => void;
   onOpenSettings: () => void;
   onOpenVacation: () => void;
   vacationPeriods: VacationPeriod[];
@@ -70,6 +65,7 @@ export function YearHomeScreen({
   calendar,
   monthSummaries,
   onOpenMonth,
+  onPrepareMonth,
   onOpenSettings,
   onOpenVacation,
   vacationPeriods,
@@ -98,7 +94,6 @@ export function YearHomeScreen({
     [columnsPerRow, monthSummaries],
   );
   const weekdayLabels = getCompactWeekdayLabels(language);
-  const showYearEndReminder = shouldShowYearEndReminder(calendar.year);
   const gridMetrics = useMemo(
     () => getYearGridMetrics(windowWidth, fontScale, columnsPerRow),
     [columnsPerRow, fontScale, windowWidth],
@@ -178,19 +173,6 @@ export function YearHomeScreen({
         </View>
       </View>
 
-      {showYearEndReminder ? (
-        <YearEndReminderCard
-          palette={palette}
-          title={t('year.reminder.title')}
-          body={t('year.reminder.body', { year: calendar.year + 1 })}
-          actionLabel={t('year.reminder.action')}
-          linkLabel={WORKING_CALENDAR_TELEGRAM_PATH}
-          onPress={async () => {
-            await openWorkingCalendarTelegram();
-          }}
-        />
-      ) : null}
-
       <View
         style={[
           styles.legendCard,
@@ -249,21 +231,31 @@ export function YearHomeScreen({
               <View
                 key={summary.month}
                 style={styles.monthCardShell}
+                collapsable={false}
+                ref={ref => {
+                  if (ref) {
+                    monthCardRefs.current.set(summary.month, ref);
+                  } else {
+                    monthCardRefs.current.delete(summary.month);
+                  }
+                }}
               >
-                <Pressable
-                  ref={ref => {
-                    if (ref) {
-                      monthCardRefs.current.set(summary.month, ref);
-                    }
-                  }}
+                <MotionPressable
+                  accessibilityRole="button"
+                  accessibilityLabel={summary.label}
                   onLayout={e => {
                     if (summary.month === 1 && cardHeight === 0) {
                       setCardHeight(e.nativeEvent.layout.height);
                     }
                   }}
+                  onPressIn={() => onPrepareMonth?.(summary.month)}
                   onPress={() => {
                     const cardRef = monthCardRefs.current.get(summary.month);
-                    cardRef?.measureInWindow((x, y, width, height) => {
+                    if (!cardRef) {
+                      onOpenMonth(summary.month);
+                      return;
+                    }
+                    cardRef.measureInWindow((x, y, width, height) => {
                       onOpenMonth(summary.month, { x, y, width, height });
                     });
                   }}
@@ -515,7 +507,7 @@ export function YearHomeScreen({
                     </Text>
                   </View>
                 </View>
-              </Pressable>
+                </MotionPressable>
               </View>
             ))}
             {Array.from({ length: columnsPerRow - row.length }).map(

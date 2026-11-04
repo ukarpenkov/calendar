@@ -1,13 +1,14 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { scheduleIdleTask } from '../shared/lib/ui/scheduleIdleTask';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   AppState,
   BackHandler,
-  Image,
   Pressable,
   StatusBar,
   StyleSheet,
   Text,
   View,
+  useWindowDimensions,
 } from 'react-native';
 import {
   SafeAreaProvider,
@@ -38,7 +39,7 @@ import {
   useAppLocalization,
 } from './providers/localization';
 import { AppThemeProvider, useAppTheme } from './providers/theme';
-import type { AppContentStatus } from './model/user-flow';
+import type { AppContentStatus, ReadyScreen } from './model/user-flow';
 import { ImportEntryScreen } from '../pages/import-entry/ui/ImportEntryScreen';
 import { MonthDetailScreen } from '../pages/month/ui/MonthDetailScreen';
 import { SettingsScreen } from '../pages/settings/ui/SettingsScreen';
@@ -50,6 +51,12 @@ import {
   type VacationPeriod,
 } from '../features/vacation/model';
 import { getDatabase } from '../shared/lib/db';
+import { CalendarImageWarmup } from '../entities/calendar/ui/CalendarImageWarmup';
+import { ScreenLayer } from '../shared/ui/ScreenLayer';
+import { SettingsLayer } from '../shared/ui/SettingsLayer';
+import { getMonthDetailLayoutMetrics } from '../pages/month/ui/monthDetailLayout';
+
+const MemoizedYearHomeScreen = memo(YearHomeScreen);
 
 function App() {
   return (
@@ -77,6 +84,7 @@ function AppRoot() {
 }
 
 function AppContent() {
+  const { width, height } = useWindowDimensions();
   const safeAreaInsets = useSafeAreaInsets();
   const { palette } = useAppTheme();
   const { language, setLanguage, t } = useAppLocalization();
@@ -90,7 +98,9 @@ function AppContent() {
   const [editingPeriod, setEditingPeriod] = useState<VacationPeriod | null>(
     null,
   );
+  const [closingSettings, setClosingSettings] = useState(false);
   const [showVacationForm, setShowVacationForm] = useState(false);
+  const [preparedMonth, setPreparedMonth] = useState<number | null>(null);
   const [monthOrigin, setMonthOrigin] = useState<{
     x: number;
     y: number;
@@ -98,8 +108,23 @@ function AppContent() {
     height: number;
   } | null>(null);
   const vacationRepositoryRef = useRef(createVacationRepository(getDatabase()));
+  const settingsReturnScreen = useRef<
+    Extract<ReadyScreen, { name: 'year' | 'month' }>
+  >({ name: 'year' });
   const statusRef = useRef(status);
   statusRef.current = status;
+  const finishClosingSettings = useCallback(() => {
+    setStatus(currentStatus => {
+      if (
+        currentStatus.kind !== 'ready' ||
+        currentStatus.screen.name !== 'settings'
+      ) {
+        return currentStatus;
+      }
+      return { ...currentStatus, screen: settingsReturnScreen.current };
+    });
+    setClosingSettings(false);
+  }, []);
   const activeCalendar = status.kind === 'ready' ? status.calendar : null;
   const calendarYearView = useMemo(
     () =>
@@ -173,8 +198,10 @@ function AppContent() {
       }
 
       switch (status.screen.name) {
-        case 'month-error':
         case 'settings':
+          setClosingSettings(true);
+          return true;
+        case 'month-error':
         case 'import-entry':
         case 'vacation':
           if (status.screen.name === 'vacation' && showVacationForm) {
@@ -188,9 +215,6 @@ function AppContent() {
             }
             const screenName = current.screen.name;
             if (screenName === 'month-error') {
-              return { ...current, screen: { name: 'year' } };
-            }
-            if (screenName === 'settings') {
               return { ...current, screen: { name: 'year' } };
             }
             if (screenName === 'import-entry') {
@@ -273,25 +297,113 @@ function AppContent() {
   }, [bootstrapGeneration]);
 
   useEffect(() => {
-    if (!calendarYearView) {
-      return;
-    }
-
-    const imageUris = calendarYearView.imageSources
-      .map(source => Image.resolveAssetSource(source)?.uri)
-      .filter((uri): uri is string => Boolean(uri));
-
-    if (imageUris.length === 0) {
-      return;
-    }
-
-    Promise.all(imageUris.map(uri => Image.prefetch(uri).catch(() => false)));
-  }, [calendarYearView]);
+    if (!calendarYearView || preparedMonth !== null) return;
+    const cancel = scheduleIdleTask(() => {
+      const current = new Date().getMonth() + 1;
+      setPreparedMonth(calendarYearView.monthDetails[current] ? current : 1);
+    });
+    return cancel;
+  }, [calendarYearView, preparedMonth]);
 
   const retryBootstrap = () => {
     setStatus({ kind: 'loading' });
     setBootstrapGeneration(generation => generation + 1);
   };
+
+  const goToMonth = useCallback(
+    (
+      month: number,
+      origin?: { x: number; y: number; width: number; height: number },
+    ) => {
+      if (month < 1 || month > 12) {
+        return;
+      }
+
+      setPreparedMonth(month);
+      if (origin) {
+        setMonthOrigin(origin);
+      } else if (
+        statusRef.current.kind !== 'ready' ||
+        statusRef.current.screen.name !== 'month'
+      ) {
+        setMonthOrigin(null);
+      }
+
+      setStatus(currentStatus => {
+        if (currentStatus.kind !== 'ready') {
+          return currentStatus;
+        }
+
+        const monthDetail = calendarYearView?.monthDetails[month];
+
+        if (!monthDetail) {
+          return {
+            ...currentStatus,
+            screen: { name: 'month-error', month },
+          };
+        }
+
+        return {
+          ...currentStatus,
+          screen: { name: 'month', month },
+        };
+      });
+    },
+    [calendarYearView],
+  );
+
+  const closeMonth = useCallback(() => {
+    setMonthOrigin(null);
+
+    setStatus(currentStatus => {
+      if (currentStatus.kind !== 'ready') {
+        return currentStatus;
+      }
+
+      return {
+        ...currentStatus,
+        screen: { name: 'year' },
+      };
+    });
+  }, []);
+
+  const openSettings = useCallback(() => {
+    setClosingSettings(false);
+    const current = statusRef.current;
+    if (
+      current.kind === 'ready' &&
+      (current.screen.name === 'year' || current.screen.name === 'month')
+    ) {
+      settingsReturnScreen.current = current.screen;
+    }
+    setStatus(currentStatus => {
+      if (currentStatus.kind !== 'ready') {
+        return currentStatus;
+      }
+
+      return {
+        ...currentStatus,
+        screen: { name: 'settings' },
+      };
+    });
+  }, []);
+
+  const openVacation = useCallback(() => {
+    setStatus(currentStatus => {
+      if (currentStatus.kind !== 'ready') {
+        return currentStatus;
+      }
+
+      return {
+        ...currentStatus,
+        screen: { name: 'vacation' },
+      };
+    });
+  }, []);
+
+  const prepareMonth = useCallback((month: number) => {
+    if (month >= 1 && month <= 12) setPreparedMonth(month);
+  }, []);
 
   if (status.kind === 'loading') {
     return <SplashScreen />;
@@ -340,97 +452,7 @@ function AppContent() {
     );
   }
 
-  const goToMonth = (
-    month: number,
-    origin?: { x: number; y: number; width: number; height: number },
-  ) => {
-    if (month < 1 || month > 12) {
-      return;
-    }
-
-    if (origin) {
-      setMonthOrigin(origin);
-    } else if (
-      statusRef.current.kind !== 'ready' ||
-      statusRef.current.screen.name !== 'month'
-    ) {
-      setMonthOrigin(null);
-    }
-
-    setStatus(currentStatus => {
-      if (currentStatus.kind !== 'ready') {
-        return currentStatus;
-      }
-
-      const monthDetail = calendarYearView?.monthDetails[month];
-
-      if (!monthDetail) {
-        return {
-          ...currentStatus,
-          screen: { name: 'month-error', month },
-        };
-      }
-
-      return {
-        ...currentStatus,
-        screen: { name: 'month', month },
-      };
-    });
-  };
-
-  const closeMonth = () => {
-    setMonthOrigin(null);
-
-    setStatus(currentStatus => {
-      if (currentStatus.kind !== 'ready') {
-        return currentStatus;
-      }
-
-      return {
-        ...currentStatus,
-        screen: { name: 'year' },
-      };
-    });
-  };
-
-  const openSettings = () => {
-    setStatus(currentStatus => {
-      if (currentStatus.kind !== 'ready') {
-        return currentStatus;
-      }
-
-      return {
-        ...currentStatus,
-        screen: { name: 'settings' },
-      };
-    });
-  };
-
-  const openVacation = () => {
-    setStatus(currentStatus => {
-      if (currentStatus.kind !== 'ready') {
-        return currentStatus;
-      }
-
-      return {
-        ...currentStatus,
-        screen: { name: 'vacation' },
-      };
-    });
-  };
-
-  const closeSettings = () => {
-    setStatus(currentStatus => {
-      if (currentStatus.kind !== 'ready') {
-        return currentStatus;
-      }
-
-      return {
-        ...currentStatus,
-        screen: { name: 'year' },
-      };
-    });
-  };
+  const closeSettings = () => setClosingSettings(true);
 
   const openImportEntry = () => {
     setStatus(currentStatus => {
@@ -617,88 +639,127 @@ function AppContent() {
     );
   }
 
-  if (status.screen.name === 'settings') {
-    return (
-      <SettingsScreen
-        activeYear={status.calendar.year}
-        activeCalendarSource={status.activeCalendarSource}
-        jsonImportSavedRevision={jsonImportSavedRevision}
-        onBack={closeSettings}
-        onOpenImportEntry={openImportEntry}
-        onSelectUserJsonImport={selectUserJsonImportCalendar}
-      />
-    );
-  }
-
-  if (status.screen.name === 'import-entry') {
-    return (
-      <ImportEntryScreen
-        activeYear={status.calendar.year}
-        onBack={closeImportEntry}
-        onImportCompleted={completeImportEntry}
-      />
-    );
-  }
-
-  if (status.screen.name === 'vacation') {
-    if (showVacationForm) {
-      return (
-        <VacationForm
-          key={status.calendar.year}
-          year={status.calendar.year}
-          initialPeriod={editingPeriod ?? undefined}
-          vacationPeriods={vacationPeriods}
-          calendarDays={status.calendar.days}
-          palette={palette}
-          language={language}
-          onSave={onVacationSave}
-          onDelete={editingPeriod ? onVacationDelete : undefined}
-          onCancel={onVacationFormCancel}
-        />
-      );
-    }
-
-    return (
-      <VacationScreen
-        year={status.calendar.year}
-        calendarDays={status.calendar.days}
-        vacationPeriods={vacationPeriods}
-        palette={palette}
-        language={language}
-        onBack={() => {
-          setStatus(current => {
-            if (current.kind !== 'ready') return current;
-            return { ...current, screen: { name: 'year' } };
-          });
-        }}
-        onAdd={onVacationAdd}
-        onEdit={onVacationEdit}
-      />
-    );
-  }
+  const screen = status.screen.name;
+  const showingSettings = screen === 'settings' || screen === 'import-entry';
+  const monthVisible = screen === 'month';
+  const settingsMonth =
+    showingSettings && settingsReturnScreen.current.name === 'month'
+      ? settingsReturnScreen.current.month
+      : null;
+  const yearCovered = screen !== 'year';
+  const monthLayoutMetrics = getMonthDetailLayoutMetrics(width, height);
 
   return (
     <View style={styles.layerStack}>
-      <View style={styles.yearLayer}>
-        <YearHomeScreen
+      {calendarYearView ? (
+        <CalendarImageWarmup
+          sources={calendarYearView.monthImageSources}
+          width={
+            monthLayoutMetrics.layout === 'split'
+              ? monthLayoutMetrics.sideColumnWidth
+              : monthLayoutMetrics.calendarColumnWidth
+          }
+          paused={screen !== 'year'}
+        />
+      ) : null}
+      <View
+        testID="year-layer"
+        collapsable={false}
+        style={styles.yearLayer}
+        pointerEvents={yearCovered ? 'none' : 'auto'}
+        accessibilityElementsHidden={yearCovered}
+        importantForAccessibility={yearCovered ? 'no-hide-descendants' : 'auto'}
+      >
+        <MemoizedYearHomeScreen
           calendar={status.calendar}
           monthSummaries={calendarYearView?.monthSummaries ?? []}
           vacationPeriods={vacationPeriods}
+          onPrepareMonth={prepareMonth}
           onOpenMonth={goToMonth}
           onOpenSettings={openSettings}
           onOpenVacation={openVacation}
         />
       </View>
-      {status.screen.name === 'month' ? (
+      {preparedMonth !== null && calendarYearView ? (
         <MonthDetailScreen
-          monthDetails={calendarYearView?.monthDetails ?? {}}
-          month={status.screen.month}
+          monthDetails={calendarYearView.monthDetails}
+          month={
+            status.screen.name === 'month'
+              ? status.screen.month
+              : settingsMonth ?? preparedMonth
+          }
+          visible={monthVisible || settingsMonth !== null}
+          covered={settingsMonth !== null}
           onBack={closeMonth}
           onOpenSettings={openSettings}
           onMonthChange={goToMonth}
           originLayout={monthOrigin}
           vacationPeriods={vacationPeriods}
         />
+      ) : null}
+      {showingSettings ? (
+        <SettingsLayer
+          backgroundColor={palette.background}
+          closing={closingSettings}
+          covered={screen === 'import-entry'}
+          onClosed={finishClosingSettings}
+        >
+          <SettingsScreen
+            activeYear={status.calendar.year}
+            activeCalendarSource={status.activeCalendarSource}
+            jsonImportSavedRevision={jsonImportSavedRevision}
+            onBack={closeSettings}
+            onOpenImportEntry={openImportEntry}
+            onSelectUserJsonImport={selectUserJsonImportCalendar}
+          />
+        </SettingsLayer>
+      ) : null}
+      {screen === 'import-entry' ? (
+        <ScreenLayer key="import" backgroundColor={palette.background}>
+          <ImportEntryScreen
+            activeYear={status.calendar.year}
+            onBack={closeImportEntry}
+            onImportCompleted={completeImportEntry}
+          />
+        </ScreenLayer>
+      ) : null}
+      {screen === 'vacation' ? (
+        <ScreenLayer
+          key="vacation"
+          backgroundColor={palette.background}
+          covered={showVacationForm}
+        >
+          <VacationScreen
+            year={status.calendar.year}
+            calendarDays={status.calendar.days}
+            vacationPeriods={vacationPeriods}
+            palette={palette}
+            language={language}
+            onBack={closeMonth}
+            onAdd={onVacationAdd}
+            onEdit={onVacationEdit}
+          />
+        </ScreenLayer>
+      ) : null}
+      {screen === 'vacation' && showVacationForm ? (
+        <ScreenLayer
+          key="vacation-form"
+          backgroundColor={palette.background}
+          variant="form"
+        >
+          <VacationForm
+            key={status.calendar.year}
+            year={status.calendar.year}
+            initialPeriod={editingPeriod ?? undefined}
+            vacationPeriods={vacationPeriods}
+            calendarDays={status.calendar.days}
+            palette={palette}
+            language={language}
+            onSave={onVacationSave}
+            onDelete={editingPeriod ? onVacationDelete : undefined}
+            onCancel={onVacationFormCancel}
+          />
+        </ScreenLayer>
       ) : null}
     </View>
   );

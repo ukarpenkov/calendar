@@ -66,10 +66,6 @@ export const idTranslations = {
   'settings.about.version': 'Versi',
   'settings.about.defaultDataset': 'Dataset default',
   'settings.about.defaultDatasetValue': 'Kalender produksi 2027',
-  'year.reminder.title': 'Template JSON tahun berikutnya',
-  'year.reminder.body':
-    'Template {{year}} akan dipublikasikan di Telegram. Buka saluran untuk mengunduh JSON baru ketika sudah tersedia.',
-  'year.reminder.action': 'Buka Telegram',
   'importEntry.title': 'Impor JSON',
   'importEntry.eyebrow': 'Masuk alur impor',
   'importEntry.heroTitle': 'Siapkan penggantian tahun dari JSON lokal',

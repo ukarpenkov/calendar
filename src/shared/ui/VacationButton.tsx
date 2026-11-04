@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { MotionPressable } from './MotionPressable';
 
 import { VacationIcon } from './icons/VacationIcon';
 
@@ -20,7 +21,8 @@ export function VacationButton({
   accessibilityLabel,
 }: VacationButtonProps) {
   return (
-    <Pressable
+    <MotionPressable
+      pressedScale={0.9}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
       onPress={onPress}
@@ -34,7 +36,7 @@ export function VacationButton({
       ]}
     >
       <VacationIcon color={palette.icon} size={20} />
-    </Pressable>
+    </MotionPressable>
   );
 }
 

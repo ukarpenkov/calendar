@@ -103,6 +103,12 @@ const mockedGetYearCalendar = jest.mocked(getYearCalendar);
 const mockedGetStoredLanguage = jest.mocked(getStoredLanguage);
 const mockedSetStoredLanguage = jest.mocked(setStoredLanguage);
 
+let renderer: ReactTestRenderer.ReactTestRenderer;
+afterEach(() => {
+  ReactTestRenderer.act(() => renderer?.unmount());
+  jest.restoreAllMocks();
+});
+
 beforeEach(() => {
   mockedActivateUserJsonImport.mockReset();
   mockedActivateUserJsonImport.mockResolvedValue(null);
@@ -126,8 +132,6 @@ test('shows splash while bootstrap is pending', () => {
     () => new Promise(() => undefined),
   );
 
-  let renderer: ReactTestRenderer.ReactTestRenderer;
-
   ReactTestRenderer.act(() => {
     renderer = ReactTestRenderer.create(<App />);
   });
@@ -140,8 +144,6 @@ test('shows splash while bootstrap is pending', () => {
 test('shows year home when bootstrap succeeds', async () => {
   mockedSeedBundledYearIfNeeded.mockResolvedValue(bundledCalendar2027);
   mockedGetYearCalendar.mockResolvedValue(bundledCalendar2027);
-
-  let renderer: ReactTestRenderer.ReactTestRenderer;
 
   await ReactTestRenderer.act(async () => {
     renderer = ReactTestRenderer.create(<App />);
@@ -157,8 +159,6 @@ test('opens month detail after the year screen requests a month', async () => {
 
   mockedSeedBundledYearIfNeeded.mockResolvedValue(bundledCalendar2027);
   mockedGetYearCalendar.mockResolvedValue(bundledCalendar2027);
-
-  let renderer: ReactTestRenderer.ReactTestRenderer;
 
   try {
     await ReactTestRenderer.act(async () => {
@@ -181,8 +181,6 @@ test('switches to the next month from month detail', async () => {
   mockedSeedBundledYearIfNeeded.mockResolvedValue(bundledCalendar2027);
   mockedGetYearCalendar.mockResolvedValue(bundledCalendar2027);
 
-  let renderer: ReactTestRenderer.ReactTestRenderer;
-
   await ReactTestRenderer.act(async () => {
     renderer = ReactTestRenderer.create(<App />);
   });
@@ -198,10 +196,113 @@ test('switches to the next month from month detail', async () => {
   expect(JSON.stringify(renderer!.toJSON())).toContain('February');
 });
 
+test('prepares real month content before opening and reuses it without reading SQL again', async () => {
+  jest.useFakeTimers();
+  mockedSeedBundledYearIfNeeded.mockResolvedValue(bundledCalendar2027);
+  mockedGetYearCalendar.mockResolvedValue(bundledCalendar2027);
+  try {
+    await ReactTestRenderer.act(async () => {
+      renderer = ReactTestRenderer.create(<App />);
+    });
+    const yearScreen = renderer.root.findByType(YearHomeScreen);
+    ReactTestRenderer.act(() => yearScreen.props.onPrepareMonth(7));
+    const prepared = renderer.root.findByType(MonthDetailScreen);
+    expect(prepared.props.visible).toBe(false);
+    expect(
+      prepared.findAllByProps({ testID: 'calendar-day-2027-07-15' }).length,
+    ).toBeGreaterThan(0);
+    expect(
+      prepared.findAllByProps({ testID: 'calendar-day-2027-08-15' }).length,
+    ).toBeGreaterThan(0);
+    expect(
+      prepared.findAllByProps({ testID: 'calendar-day-2027-01-15' }).length,
+    ).toBeGreaterThan(0);
+
+    ReactTestRenderer.act(() => yearScreen.props.onOpenMonth(7));
+    // No animation timers were advanced: the opening frame already has days.
+    expect(renderer.root.findByType(MonthDetailScreen)).toBe(prepared);
+    expect(prepared.props.visible).toBe(true);
+    ReactTestRenderer.act(() => prepared.props.onMonthChange(8));
+    ReactTestRenderer.act(() => prepared.props.onBack());
+    expect(prepared.props.visible).toBe(false);
+    ReactTestRenderer.act(() => yearScreen.props.onOpenMonth(12));
+    expect(renderer.root.findByType(MonthDetailScreen)).toBe(prepared);
+    expect(
+      prepared.findAllByProps({ testID: 'calendar-day-2027-12-31' }).length,
+    ).toBeGreaterThan(0);
+    expect(mockedGetYearCalendar).toHaveBeenCalledTimes(1);
+    expect(mockedSeedBundledYearIfNeeded).toHaveBeenCalledTimes(1);
+  } finally {
+    ReactTestRenderer.act(() => renderer.unmount());
+    jest.useRealTimers();
+  }
+});
+
+test('retains the year and settings while navigating into and back from import', async () => {
+  mockedSeedBundledYearIfNeeded.mockResolvedValue(bundledCalendar2027);
+  mockedGetYearCalendar.mockResolvedValue(bundledCalendar2027);
+  await ReactTestRenderer.act(async () => {
+    renderer = ReactTestRenderer.create(<App />);
+  });
+  const yearScreen = renderer.root.findByType(YearHomeScreen);
+  await ReactTestRenderer.act(async () => yearScreen.props.onOpenSettings());
+  const settings = renderer.root.findByType(SettingsScreen);
+  ReactTestRenderer.act(() => settings.props.onOpenImportEntry());
+  expect(renderer.root.findByType(YearHomeScreen)).toBe(yearScreen);
+  expect(renderer.root.findByType(SettingsScreen)).toBe(settings);
+  ReactTestRenderer.act(() =>
+    renderer.root.findByType(ImportEntryScreen).props.onBack(),
+  );
+  expect(renderer.root.findByType(SettingsScreen)).toBe(settings);
+  ReactTestRenderer.act(() => settings.props.onBack());
+  expect(renderer.root.findByType(YearHomeScreen)).toBe(yearScreen);
+});
+
+test('month arrows wait for native selection and process rapid taps in order', async () => {
+  mockedSeedBundledYearIfNeeded.mockResolvedValue(bundledCalendar2027);
+  mockedGetYearCalendar.mockResolvedValue(bundledCalendar2027);
+  await ReactTestRenderer.act(async () => {
+    renderer = ReactTestRenderer.create(<App />);
+  });
+  ReactTestRenderer.act(() =>
+    renderer.root.findByType(YearHomeScreen).props.onOpenMonth(5),
+  );
+  const monthScreen = renderer.root.findByType(MonthDetailScreen);
+  const nextButton = () =>
+    monthScreen
+      .findAllByProps({ accessibilityLabel: 'Next month' })
+      .find(node => typeof node.props.disabled === 'boolean')!;
+  const pager = monthScreen.findByProps({ testID: 'month-pager' });
+  for (let i = 0; i < 3; i++) {
+    ReactTestRenderer.act(() => nextButton().props.onPress());
+  }
+  expect(monthScreen.props.month).toBe(5);
+  for (const month of [6, 7, 8]) {
+    ReactTestRenderer.act(() => {
+      pager.props.onPageScrollStateChanged({
+        nativeEvent: { pageScrollState: 'settling' },
+      });
+      pager.props.onPageSelected({ nativeEvent: { position: month - 1 } });
+      pager.props.onPageScrollStateChanged({
+        nativeEvent: { pageScrollState: 'idle' },
+      });
+    });
+    expect(monthScreen.props.month).toBe(month);
+  }
+  ReactTestRenderer.act(() => {
+    pager.props.onPageScrollStateChanged({
+      nativeEvent: { pageScrollState: 'dragging' },
+    });
+    pager.props.onPageSelected({ nativeEvent: { position: 6 } });
+    pager.props.onPageScrollStateChanged({
+      nativeEvent: { pageScrollState: 'idle' },
+    });
+  });
+  expect(monthScreen.props.month).toBe(7);
+});
+
 test('shows error state when bootstrap fails', async () => {
   mockedSeedBundledYearIfNeeded.mockRejectedValue(new Error('db failed'));
-
-  let renderer: ReactTestRenderer.ReactTestRenderer;
 
   await ReactTestRenderer.act(async () => {
     renderer = ReactTestRenderer.create(<App />);
@@ -224,8 +325,6 @@ test('retries bootstrap from the error screen', async () => {
     days: [],
   });
 
-  let renderer: ReactTestRenderer.ReactTestRenderer;
-
   await ReactTestRenderer.act(async () => {
     renderer = ReactTestRenderer.create(<App />);
   });
@@ -235,7 +334,9 @@ test('retries bootstrap from the error screen', async () => {
   );
 
   await ReactTestRenderer.act(async () => {
-    renderer!.root.findByProps({ testID: 'app-bootstrap-retry' }).props.onPress();
+    renderer!.root
+      .findByProps({ testID: 'app-bootstrap-retry' })
+      .props.onPress();
   });
 
   expect(JSON.stringify(renderer!.toJSON())).toContain('Year 2027');
@@ -250,8 +351,6 @@ test('shows month error when stored days do not match the calendar month', async
   mockedSeedBundledYearIfNeeded.mockResolvedValue(corruptCalendar);
   mockedGetYearCalendar.mockResolvedValue(corruptCalendar);
 
-  let renderer: ReactTestRenderer.ReactTestRenderer;
-
   await ReactTestRenderer.act(async () => {
     renderer = ReactTestRenderer.create(<App />);
   });
@@ -265,7 +364,9 @@ test('shows month error when stored days do not match the calendar month', async
   );
 
   await ReactTestRenderer.act(async () => {
-    renderer!.root.findByProps({ testID: 'app-month-error-back' }).props.onPress();
+    renderer!.root
+      .findByProps({ testID: 'app-month-error-back' })
+      .props.onPress();
   });
 
   expect(JSON.stringify(renderer!.toJSON())).toContain('Year 2027');
@@ -280,8 +381,6 @@ test('opens dedicated JSON import entry from settings', async () => {
     year: 2027,
     days: [],
   });
-
-  let renderer: ReactTestRenderer.ReactTestRenderer;
 
   await ReactTestRenderer.act(async () => {
     renderer = ReactTestRenderer.create(<App />);
@@ -311,8 +410,6 @@ test('does not show Telegram link in the settings about section', async () => {
     days: [],
   });
 
-  let renderer: ReactTestRenderer.ReactTestRenderer;
-
   await ReactTestRenderer.act(async () => {
     renderer = ReactTestRenderer.create(<App />);
   });
@@ -326,36 +423,37 @@ test('does not show Telegram link in the settings about section', async () => {
   );
 });
 
-test('shows year-end reminder with Telegram link late in the active year', async () => {
-  jest.useFakeTimers();
-  jest.setSystemTime(new Date('2027-11-15T12:00:00.000Z'));
+test.each(['2027-11-15T12:00:00.000Z', '2027-12-31T12:00:00.000Z'])(
+  'does not advertise next-year JSON in Telegram at %s',
+  async date => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date(date));
 
-  mockedSeedBundledYearIfNeeded.mockResolvedValue({
-    year: 2027,
-    days: [],
-  });
-  mockedGetYearCalendar.mockResolvedValue({
-    year: 2027,
-    days: [],
-  });
-
-  let renderer: ReactTestRenderer.ReactTestRenderer;
-
-  try {
-    await ReactTestRenderer.act(async () => {
-      renderer = ReactTestRenderer.create(<App />);
+    mockedSeedBundledYearIfNeeded.mockResolvedValue({
+      year: 2027,
+      days: [],
+    });
+    mockedGetYearCalendar.mockResolvedValue({
+      year: 2027,
+      days: [],
     });
 
-    expect(JSON.stringify(renderer!.toJSON())).toContain(
-      'Next year JSON template',
-    );
-    expect(JSON.stringify(renderer!.toJSON())).toContain(
-      't.me/workingcalendar',
-    );
-  } finally {
-    jest.useRealTimers();
-  }
-});
+    try {
+      await ReactTestRenderer.act(async () => {
+        renderer = ReactTestRenderer.create(<App />);
+      });
+
+      expect(JSON.stringify(renderer!.toJSON())).not.toContain(
+        'Next year JSON template',
+      );
+      expect(JSON.stringify(renderer!.toJSON())).not.toContain(
+        't.me/workingcalendar',
+      );
+    } finally {
+      jest.useRealTimers();
+    }
+  },
+);
 
 test('activates the JSON calendar and switches to English after JSON import', async () => {
   const importedCalendar = {
@@ -376,8 +474,6 @@ test('activates the JSON calendar and switches to English after JSON import', as
   mockedGetActiveCalendarIsUserJsonImport.mockResolvedValue(true);
   mockedGetUserJsonImportYear.mockResolvedValue(2025);
 
-  let renderer: ReactTestRenderer.ReactTestRenderer;
-
   await ReactTestRenderer.act(async () => {
     renderer = ReactTestRenderer.create(<App />);
   });
@@ -391,9 +487,9 @@ test('activates the JSON calendar and switches to English after JSON import', as
   });
 
   await ReactTestRenderer.act(async () => {
-    renderer!.root.findByType(ImportEntryScreen).props.onImportCompleted(
-      importedCalendar,
-    );
+    renderer!.root
+      .findByType(ImportEntryScreen)
+      .props.onImportCompleted(importedCalendar);
   });
 
   expect(mockedSaveUserJsonImport).not.toHaveBeenCalled();
@@ -402,4 +498,44 @@ test('activates the JSON calendar and switches to English after JSON import', as
   expect(JSON.stringify(renderer!.toJSON())).toContain('Settings');
   expect(JSON.stringify(renderer!.toJSON())).toContain('2025');
   expect(JSON.stringify(renderer!.toJSON())).toContain('JSON calendar');
+});
+
+test('settings cover the current month and return to it with selected day and native page intact', async () => {
+  mockedSeedBundledYearIfNeeded.mockResolvedValue(bundledCalendar2027);
+  mockedGetYearCalendar.mockResolvedValue(bundledCalendar2027);
+  await ReactTestRenderer.act(async () => {
+    renderer = ReactTestRenderer.create(<App />);
+  });
+  ReactTestRenderer.act(() =>
+    renderer.root.findByType(YearHomeScreen).props.onOpenMonth(7),
+  );
+  const month = renderer.root.findByType(MonthDetailScreen);
+  const pager = month.findByProps({ testID: 'month-pager' });
+  const day = () =>
+    month
+      .findAllByProps({ testID: 'calendar-day-2027-07-15' })
+      .find(node => typeof node.props.onPress === 'function')!;
+  ReactTestRenderer.act(() => day().props.onPress());
+  ReactTestRenderer.act(() => month.props.onOpenSettings());
+  expect(month.props.visible).toBe(true);
+  expect(month.props.covered).toBe(true);
+  const monthLayer = month.findByProps({ testID: 'month-layer' });
+  expect(monthLayer.props.collapsable).toBe(false);
+  expect(monthLayer.props.importantForAccessibility).toBe(
+    'no-hide-descendants',
+  );
+  expect(monthLayer.props.pointerEvents).toBe('none');
+  const yearLayer = renderer.root.findByProps({ testID: 'year-layer' });
+  expect(yearLayer.props.collapsable).toBe(false);
+  expect(yearLayer.props.importantForAccessibility).toBe('no-hide-descendants');
+  const settings = renderer.root.findByType(SettingsScreen);
+  ReactTestRenderer.act(() => settings.props.onOpenImportEntry());
+  ReactTestRenderer.act(() =>
+    renderer.root.findByType(ImportEntryScreen).props.onBack(),
+  );
+  ReactTestRenderer.act(() => settings.props.onBack());
+  expect(month.props.month).toBe(7);
+  expect(month.props.covered).toBe(false);
+  expect(month.findByProps({ testID: 'month-pager' })).toBe(pager);
+  expect(day().props.accessibilityState.selected).toBe(true);
 });
