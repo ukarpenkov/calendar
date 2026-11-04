@@ -6,7 +6,6 @@ import {
   useMemo,
   useRef,
   useState,
-  type ReactNode,
 } from 'react';
 import {
   AppState,
@@ -19,14 +18,12 @@ import {
 import Reanimated, {
   cancelAnimation,
   FadeInDown,
-  useReducedMotion,
   interpolate,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
   ReduceMotion,
-  type SharedValue,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -63,6 +60,7 @@ import { CalendarMonthGrid } from '../../../entities/calendar/ui/CalendarMonthGr
 
 import { HolidayBanner } from './HolidayBanner';
 import { MonthPageScrollView } from './MonthPageScrollView';
+import { MonthResponsiveLayout } from './MonthResponsiveLayout';
 import {
   MonthPagerViewport,
   type MonthPagerHandle,
@@ -82,25 +80,16 @@ type MonthDetailScreenProps = {
   onMonthChange: (month: number) => void;
   originLayout?: MonthOrigin | null;
   visible?: boolean;
+  covered?: boolean;
   vacationPeriods: VacationPeriod[];
 };
 
 const APP_BAR_TITLE_MIN_SCALE = 0.7;
 const NOOP_SELECT_DAY = (_date: string) => {};
 
-const PARALLAX_FACTOR = 0.15;
-const PAGE_OPACITY_MIN = 0.85;
-const PAGE_SCALE_MIN = 0.97;
 const selectedDayEnter = FadeInDown.duration(motion.change.duration)
   .withInitialValues({ transform: [{ translateY: 8 }] })
   .reduceMotion(ReduceMotion.System);
-
-type MonthPageProps = {
-  children: ReactNode;
-  pageIndex: number;
-  pageWidth: number;
-  scrollX: SharedValue<number>;
-};
 
 function getLocalIsoDate(date = new Date()): string {
   const year = date.getFullYear();
@@ -118,6 +107,7 @@ export function MonthDetailScreen({
   onMonthChange,
   originLayout,
   visible = true,
+  covered = false,
   vacationPeriods,
 }: MonthDetailScreenProps) {
   const safeAreaInsets = useSafeAreaInsets();
@@ -132,17 +122,15 @@ export function MonthDetailScreen({
   const pagerRef = useRef<MonthPagerHandle>(null);
   const todayDate = getLocalIsoDate();
 
-  const pageWidth = windowWidth;
-  const [resumeVersion, setResumeVersion] = useState(0);
   const viewportKey = `${windowWidth}x${windowHeight}`;
   // A prepared month and the one actually opened can differ. Give each new
-  // opening its matching native initial offset; retain that lifetime while paging.
+  // opening its matching native initial page; retain it through paging and rotation.
   const pagerSession = useRef({ visible, initialMonth: month });
   if (!visible || !pagerSession.current.visible) {
     pagerSession.current.initialMonth = month;
   }
   pagerSession.current.visible = visible;
-  const pagerKey = `${viewportKey}:${resumeVersion}:${pagerSession.current.initialMonth}`;
+  const pagerKey = `${pagerSession.current.initialMonth}`;
   const verticalOffsets = useRef(new Map<string, number>()).current;
 
   const monthLayoutMetrics = useMemo(
@@ -208,7 +196,7 @@ export function MonthDetailScreen({
     if (visibleRef.current && isClosingRef.current) onBackRef.current();
   }, []);
   const handleBack = useCallback(() => {
-    if (!visible || isClosingRef.current) return;
+    if (!visible || covered || isClosingRef.current) return;
     isClosingRef.current = true;
     // Reverse the same path, even if Back interrupts opening. After rotation,
     // the original card coordinates no longer describe the year layout.
@@ -225,6 +213,7 @@ export function MonthDetailScreen({
     });
   }, [
     finishClose,
+    covered,
     progress,
     transitionOrigin,
     visible,
@@ -233,16 +222,16 @@ export function MonthDetailScreen({
   ]);
 
   useEffect(() => {
-    if (!visible) return;
+    if (!visible || covered) return;
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
       handleBack();
       return true;
     });
     return () => sub.remove();
-  }, [handleBack, visible]);
+  }, [covered, handleBack, visible]);
 
-  // The parent month is the single source of truth for title, selection and
-  // pager. Keeping a second React month state caused swipe/chevron races.
+  // The parent month mirrors confirmed native selection, so the title and
+  // interactive dates always describe the selected page.
   const activeMonth = month;
   const activeDetail = monthDetails[month];
   const prevMonth = month > 1 ? month - 1 : null;
@@ -281,11 +270,10 @@ export function MonthDetailScreen({
 
   useEffect(() => {
     if (!visible) return;
-    const subscription = AppState.addEventListener('change', state => {
+    const subscription = AppState.addEventListener('change', () => {
       if (isClosingRef.current) return;
       cancelAnimation(progress);
       progress.value = 1;
-      if (state === 'active') setResumeVersion(version => version + 1);
     });
     return () => subscription.remove();
   }, [progress, visible]);
@@ -293,23 +281,11 @@ export function MonthDetailScreen({
   const moveMonth = (direction: number) =>
     pagerRef.current?.moveMonth(direction);
 
-  // Deterministic native pager: twelve light shells, only the current page
-  // and its neighbours have calendar views. No delayed FlatList batches.
+  // Each native page keeps its own month content, including during fast swipes.
   const renderPage = useCallback(
-    (m: number, scrollX: SharedValue<number>) => {
+    (m: number) => {
       const detail = monthDetails[m];
-      if (!detail || Math.abs(m - activeMonth) > 1) {
-        return (
-          <View
-            style={[
-              styles.page,
-              { width: pageWidth, backgroundColor: palette.background },
-            ]}
-          />
-        );
-      }
-
-      const pageIndex = m - 1;
+      if (!detail) return null;
 
       const isActive = activeMonth === m;
 
@@ -321,60 +297,51 @@ export function MonthDetailScreen({
 
       return (
         <View
-          style={[styles.page, styles.pageClipped, { width: pageWidth }]}
+          style={styles.page}
           pointerEvents={isActive ? 'auto' : 'none'}
           accessibilityElementsHidden={!isActive}
           importantForAccessibility={isActive ? 'auto' : 'no-hide-descendants'}
         >
-          <MonthPage
-            pageIndex={pageIndex}
-            pageWidth={pageWidth}
-            scrollX={scrollX}
+          <MonthPageScrollView
+            testID={`month-scroll-${m}`}
+            nestedScrollEnabled
+            removeClippedSubviews={false}
+            offsetKey={`${viewportKey}:${m}`}
+            savedOffsets={verticalOffsets}
+            scrollEventThrottle={32}
+            showsVerticalScrollIndicator={false}
+            style={styles.pageVertical}
+            contentContainerStyle={[
+              styles.pageVerticalContent,
+              monthLayoutMetrics.layout === 'split'
+                ? styles.pageVerticalContentSplit
+                : null,
+              {
+                paddingBottom:
+                  safeAreaInsets.bottom + layout.yearMonthScrollBottom,
+              },
+            ]}
+            keyboardShouldPersistTaps="handled"
           >
-            <MonthPageScrollView
-              testID={`month-scroll-${m}`}
-              nestedScrollEnabled
-              removeClippedSubviews={false}
-              offsetKey={`${viewportKey}:${m}`}
-              savedOffsets={verticalOffsets}
-              scrollEventThrottle={32}
-              showsVerticalScrollIndicator={false}
-              style={styles.pageVertical}
-              contentContainerStyle={[
-                styles.pageVerticalContent,
-                monthLayoutMetrics.layout === 'split'
-                  ? styles.pageVerticalContentSplit
-                  : null,
-                {
-                  paddingBottom:
-                    safeAreaInsets.bottom + layout.yearMonthScrollBottom,
-                },
-              ]}
-              keyboardShouldPersistTaps="handled"
-            >
-              <MemoizedMonthDetailBody
-                detail={detail}
-                palette={palette}
-                language={language}
-                t={t}
-                weekdayLabels={weekdayLabels}
-                selectedDay={resolvedSelectedDay}
-                selectedDayDate={
-                  isActive ? selectedDate ?? undefined : undefined
-                }
-                onSelectDay={isActive ? handleSelectDay : NOOP_SELECT_DAY}
-                monthLayoutMetrics={monthLayoutMetrics}
-                vacationPeriods={vacationPeriods}
-              />
-            </MonthPageScrollView>
-          </MonthPage>
+            <MemoizedMonthDetailBody
+              detail={detail}
+              palette={palette}
+              language={language}
+              t={t}
+              weekdayLabels={weekdayLabels}
+              selectedDay={resolvedSelectedDay}
+              selectedDayDate={isActive ? selectedDate ?? undefined : undefined}
+              onSelectDay={isActive ? handleSelectDay : NOOP_SELECT_DAY}
+              monthLayoutMetrics={monthLayoutMetrics}
+              vacationPeriods={vacationPeriods}
+            />
+          </MonthPageScrollView>
         </View>
       );
     },
     [
       monthDetails,
       activeMonth,
-      pageWidth,
       palette,
       language,
       t,
@@ -395,10 +362,14 @@ export function MonthDetailScreen({
 
   return (
     <View
+      testID="month-layer"
+      collapsable={false}
       style={styles.overlayRoot}
-      pointerEvents={visible ? 'auto' : 'none'}
-      accessibilityElementsHidden={!visible}
-      importantForAccessibility={visible ? 'auto' : 'no-hide-descendants'}
+      pointerEvents={visible && !covered ? 'auto' : 'none'}
+      accessibilityElementsHidden={!visible || covered}
+      importantForAccessibility={
+        visible && !covered ? 'auto' : 'no-hide-descendants'
+      }
     >
       <Reanimated.View
         style={[styles.backdrop, backdropAnimatedStyle]}
@@ -427,6 +398,7 @@ export function MonthDetailScreen({
           </View>
           <View style={styles.appBarTitleWrap}>
             <Text
+              testID="month-title"
               adjustsFontSizeToFit
               minimumFontScale={APP_BAR_TITLE_MIN_SCALE}
               numberOfLines={1}
@@ -469,67 +441,13 @@ export function MonthDetailScreen({
           key={pagerKey}
           ref={pagerRef}
           month={month}
-          pageWidth={pageWidth}
-          visible={visible}
+          visible={visible && !covered}
           onMonthChange={onMonthChange}
           isClosingRef={isClosingRef}
           renderPage={renderPage}
         />
       </Reanimated.View>
     </View>
-  );
-}
-
-function MonthPage({
-  children,
-  pageIndex,
-  pageWidth,
-  scrollX,
-}: MonthPageProps) {
-  const reduceMotion = useReducedMotion();
-  const animatedStyle = useAnimatedStyle(() => {
-    if (reduceMotion) {
-      return { opacity: 1, transform: [{ translateX: 0 }, { scale: 1 }] };
-    }
-    const centerOffset = pageIndex * pageWidth;
-    const inputRange = [
-      (pageIndex - 1) * pageWidth,
-      centerOffset,
-      (pageIndex + 1) * pageWidth,
-    ];
-
-    return {
-      opacity: interpolate(
-        scrollX.value,
-        inputRange,
-        [PAGE_OPACITY_MIN, 1, PAGE_OPACITY_MIN],
-        'clamp',
-      ),
-      transform: [
-        {
-          translateX: interpolate(
-            scrollX.value,
-            inputRange,
-            [PARALLAX_FACTOR * pageWidth, 0, -PARALLAX_FACTOR * pageWidth],
-            'clamp',
-          ),
-        },
-        {
-          scale: interpolate(
-            scrollX.value,
-            inputRange,
-            [PAGE_SCALE_MIN, 1, PAGE_SCALE_MIN],
-            'clamp',
-          ),
-        },
-      ],
-    };
-  }, [pageIndex, pageWidth, reduceMotion]);
-
-  return (
-    <Reanimated.View style={[styles.pageAnimatedContent, animatedStyle]}>
-      {children}
-    </Reanimated.View>
   );
 }
 
@@ -749,50 +667,18 @@ function MonthDetailBody({
   );
 
   return (
-    <View
-      // Rebuild the column hierarchy atomically. No exiting/layout animation
-      // may retain a second image or coordinates from the previous viewport.
-      key={monthLayoutMetrics.layout}
-      testID={`month-content-${detail.month}`}
-      style={[
-        styles.monthContent,
-        monthLayoutMetrics.layout === 'stack'
-          ? { maxWidth: calendarColumnWidth }
-          : null,
-      ]}
-    >
-      {monthLayoutMetrics.layout === 'split' ? (
-        <View style={styles.monthSplitRow}>
-          <View
-            testID="month-calendar-column"
-            style={[styles.monthCalendarColumn, { width: calendarColumnWidth }]}
-          >
-            {calendarCard}
-          </View>
-          <View
-            testID="month-side-column"
-            style={[
-              styles.monthSideColumn,
-              styles.monthSideColumnGrow,
-              {
-                marginLeft: monthLayoutMetrics.columnGap,
-              },
-            ]}
-          >
-            {banner}
-            {totalsCard}
-            {selectedDayCard}
-          </View>
-        </View>
-      ) : (
-        <View style={styles.monthContentColumn}>
-          {banner}
-          {calendarCard}
-          {selectedDayCard}
+    <MonthResponsiveLayout
+      month={detail.month}
+      metrics={monthLayoutMetrics}
+      banner={banner}
+      calendar={calendarCard}
+      summary={
+        <>
           {totalsCard}
-        </View>
-      )}
-    </View>
+          {selectedDayCard}
+        </>
+      }
+    />
   );
 }
 
@@ -859,17 +745,9 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 22,
     overflow: 'hidden',
   },
-  contentFader: {
-    flex: 1,
-  },
   page: {
-    flexGrow: 1,
-  },
-  pageClipped: {
-    overflow: 'hidden',
-  },
-  pageAnimatedContent: {
     flex: 1,
+    overflow: 'hidden',
   },
   pageVertical: {
     flex: 1,
@@ -882,28 +760,6 @@ const styles = StyleSheet.create({
   },
   pageVerticalContentSplit: {
     alignItems: 'stretch',
-  },
-  monthContent: {
-    width: '100%',
-  },
-  monthSplitRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    width: '100%',
-  },
-  monthCalendarColumn: {
-    flexShrink: 0,
-  },
-  monthSideColumn: {
-    gap: layout.contentStackGap,
-  },
-  monthSideColumnGrow: {
-    flex: 1,
-    minWidth: 0,
-  },
-  monthContentColumn: {
-    width: '100%',
-    gap: 12,
   },
   appBar: {
     flexDirection: 'row',

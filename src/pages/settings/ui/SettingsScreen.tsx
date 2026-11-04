@@ -77,6 +77,7 @@ export function SettingsScreen({
 
   return (
     <ScrollView
+      testID="settings-screen"
       style={[
         styles.container,
         {
@@ -113,7 +114,9 @@ export function SettingsScreen({
       >
         <SettingRow
           title={t('settings.rows.activeYear.title')}
-          subtitle={t('settings.rows.activeYear.subtitle', { year: activeYear })}
+          subtitle={t('settings.rows.activeYear.subtitle', {
+            year: activeYear,
+          })}
           trailing={
             <Text style={[styles.badgeText, { color: palette.title }]}>
               {activeYear}
@@ -166,9 +169,7 @@ export function SettingsScreen({
           subtitle={t('settings.rows.darkTheme.subtitle', {
             mode: getThemeModeLabel(language, themeMode),
           })}
-          trailing={
-            <ThemeSwitch checked={isDarkMode} onPress={toggleTheme} />
-          }
+          trailing={<ThemeSwitch checked={isDarkMode} onPress={toggleTheme} />}
           palette={palette}
         />
       </SectionCard>
@@ -255,7 +256,9 @@ function SectionCard({ title, subtitle, palette, children }: SectionCardProps) {
         },
       ]}
     >
-      <Text style={[styles.sectionTitle, { color: palette.title }]}>{title}</Text>
+      <Text style={[styles.sectionTitle, { color: palette.title }]}>
+        {title}
+      </Text>
       <Text style={[styles.sectionSubtitle, { color: palette.subtitle }]}>
         {subtitle}
       </Text>
@@ -326,7 +329,9 @@ type AboutLineProps = {
 function AboutLine({ label, value, palette }: AboutLineProps) {
   return (
     <View style={styles.aboutLine}>
-      <Text style={[styles.aboutLabel, { color: palette.subtitle }]}>{label}</Text>
+      <Text style={[styles.aboutLabel, { color: palette.subtitle }]}>
+        {label}
+      </Text>
       <Text style={[styles.aboutValue, { color: palette.title }]}>{value}</Text>
     </View>
   );

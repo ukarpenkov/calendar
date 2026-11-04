@@ -6,7 +6,6 @@ declare function require(moduleName: string): unknown;
 
 import React from 'react';
 import ReactTestRenderer from 'react-test-renderer';
-import * as Reanimated from 'react-native-reanimated';
 import App from '../src/app/App';
 import {
   activateUserJsonImport,
@@ -216,8 +215,8 @@ test('prepares real month content before opening and reuses it without reading S
       prepared.findAllByProps({ testID: 'calendar-day-2027-08-15' }).length,
     ).toBeGreaterThan(0);
     expect(
-      prepared.findAllByProps({ testID: 'calendar-day-2027-01-15' }),
-    ).toHaveLength(0);
+      prepared.findAllByProps({ testID: 'calendar-day-2027-01-15' }).length,
+    ).toBeGreaterThan(0);
 
     ReactTestRenderer.act(() => yearScreen.props.onOpenMonth(7));
     // No animation timers were advanced: the opening frame already has days.
@@ -259,11 +258,7 @@ test('retains the year and settings while navigating into and back from import',
   expect(renderer.root.findByType(YearHomeScreen)).toBe(yearScreen);
 });
 
-test('month arrows queue fast taps and ignore stale native scroll completions', async () => {
-  jest.spyOn(Reanimated, 'useAnimatedScrollHandler').mockImplementation(handlers =>
-    (typeof handlers === 'function' ? handlers : handlers.onScroll) as unknown as
-      ReturnType<typeof Reanimated.useAnimatedScrollHandler>,
-  );
+test('month arrows wait for native selection and process rapid taps in order', async () => {
   mockedSeedBundledYearIfNeeded.mockResolvedValue(bundledCalendar2027);
   mockedGetYearCalendar.mockResolvedValue(bundledCalendar2027);
   await ReactTestRenderer.act(async () => {
@@ -275,50 +270,34 @@ test('month arrows queue fast taps and ignore stale native scroll completions', 
   const monthScreen = renderer.root.findByType(MonthDetailScreen);
   const nextButton = () =>
     monthScreen
-      .findAllByProps({
-        accessibilityLabel: 'Next month',
-      })
+      .findAllByProps({ accessibilityLabel: 'Next month' })
       .find(node => typeof node.props.disabled === 'boolean')!;
   const pager = monthScreen.findByProps({ testID: 'month-pager' });
-  const width = pager.props.contentOffset.x / 4;
-  // Confirm the native viewport is aligned before testing user navigation.
-  ReactTestRenderer.act(() => pager.props.onScroll({
-    contentOffset: { x: 4 * width },
-    layoutMeasurement: { width },
-  }));
   for (let i = 0; i < 3; i++) {
     ReactTestRenderer.act(() => nextButton().props.onPress());
   }
-  expect(monthScreen.props.month).toBe(6);
-  for (const month of [6, 7]) {
-    ReactTestRenderer.act(() =>
-      pager.props.onMomentumScrollEnd({
-        nativeEvent: {
-          contentOffset: { x: (month - 1) * width },
-          layoutMeasurement: { width },
-        },
-      }),
-    );
+  expect(monthScreen.props.month).toBe(5);
+  for (const month of [6, 7, 8]) {
+    ReactTestRenderer.act(() => {
+      pager.props.onPageScrollStateChanged({
+        nativeEvent: { pageScrollState: 'settling' },
+      });
+      pager.props.onPageSelected({ nativeEvent: { position: month - 1 } });
+      pager.props.onPageScrollStateChanged({
+        nativeEvent: { pageScrollState: 'idle' },
+      });
+    });
+    expect(monthScreen.props.month).toBe(month);
   }
-  expect(monthScreen.props.month).toBe(8);
-  ReactTestRenderer.act(() =>
-    pager.props.onMomentumScrollEnd({
-      nativeEvent: {
-        contentOffset: { x: 5 * width },
-        layoutMeasurement: { width },
-      },
-    }),
-  );
-  expect(monthScreen.props.month).toBe(8);
-  ReactTestRenderer.act(() => pager.props.onScrollBeginDrag());
-  ReactTestRenderer.act(() =>
-    pager.props.onMomentumScrollEnd({
-      nativeEvent: {
-        contentOffset: { x: 6 * width },
-        layoutMeasurement: { width },
-      },
-    }),
-  );
+  ReactTestRenderer.act(() => {
+    pager.props.onPageScrollStateChanged({
+      nativeEvent: { pageScrollState: 'dragging' },
+    });
+    pager.props.onPageSelected({ nativeEvent: { position: 6 } });
+    pager.props.onPageScrollStateChanged({
+      nativeEvent: { pageScrollState: 'idle' },
+    });
+  });
   expect(monthScreen.props.month).toBe(7);
 });
 
@@ -516,4 +495,44 @@ test('activates the JSON calendar and switches to English after JSON import', as
   expect(JSON.stringify(renderer!.toJSON())).toContain('Settings');
   expect(JSON.stringify(renderer!.toJSON())).toContain('2025');
   expect(JSON.stringify(renderer!.toJSON())).toContain('JSON calendar');
+});
+
+test('settings cover the current month and return to it with selected day and native page intact', async () => {
+  mockedSeedBundledYearIfNeeded.mockResolvedValue(bundledCalendar2027);
+  mockedGetYearCalendar.mockResolvedValue(bundledCalendar2027);
+  await ReactTestRenderer.act(async () => {
+    renderer = ReactTestRenderer.create(<App />);
+  });
+  ReactTestRenderer.act(() =>
+    renderer.root.findByType(YearHomeScreen).props.onOpenMonth(7),
+  );
+  const month = renderer.root.findByType(MonthDetailScreen);
+  const pager = month.findByProps({ testID: 'month-pager' });
+  const day = () =>
+    month
+      .findAllByProps({ testID: 'calendar-day-2027-07-15' })
+      .find(node => typeof node.props.onPress === 'function')!;
+  ReactTestRenderer.act(() => day().props.onPress());
+  ReactTestRenderer.act(() => month.props.onOpenSettings());
+  expect(month.props.visible).toBe(true);
+  expect(month.props.covered).toBe(true);
+  const monthLayer = month.findByProps({ testID: 'month-layer' });
+  expect(monthLayer.props.collapsable).toBe(false);
+  expect(monthLayer.props.importantForAccessibility).toBe(
+    'no-hide-descendants',
+  );
+  expect(monthLayer.props.pointerEvents).toBe('none');
+  const yearLayer = renderer.root.findByProps({ testID: 'year-layer' });
+  expect(yearLayer.props.collapsable).toBe(false);
+  expect(yearLayer.props.importantForAccessibility).toBe('no-hide-descendants');
+  const settings = renderer.root.findByType(SettingsScreen);
+  ReactTestRenderer.act(() => settings.props.onOpenImportEntry());
+  ReactTestRenderer.act(() =>
+    renderer.root.findByType(ImportEntryScreen).props.onBack(),
+  );
+  ReactTestRenderer.act(() => settings.props.onBack());
+  expect(month.props.month).toBe(7);
+  expect(month.props.covered).toBe(false);
+  expect(month.findByProps({ testID: 'month-pager' })).toBe(pager);
+  expect(day().props.accessibilityState.selected).toBe(true);
 });

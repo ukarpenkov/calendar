@@ -18,6 +18,8 @@ type MonthPageScrollViewProps = Omit<
 export function MonthPageScrollView({
   offsetKey,
   savedOffsets,
+  onScrollEndDrag,
+  onMomentumScrollEnd,
   ...props
 }: MonthPageScrollViewProps) {
   const initialOffset = useRef({
@@ -25,6 +27,25 @@ export function MonthPageScrollView({
     y: savedOffsets.get(offsetKey) ?? 0,
   }).current;
   const mounted = useRef(true);
+  const scroll = useRef<ScrollView>(null);
+  const viewport = useRef({ key: offsetKey, generation: 0 });
+  if (viewport.current.key !== offsetKey) {
+    viewport.current = {
+      key: offsetKey,
+      generation: viewport.current.generation + 1,
+    };
+  }
+  const generation = viewport.current.generation;
+  const restoredKey = useRef(offsetKey);
+
+  useLayoutEffect(() => {
+    if (restoredKey.current === offsetKey) return;
+    restoredKey.current = offsetKey;
+    scroll.current?.scrollTo({
+      y: savedOffsets.get(offsetKey) ?? 0,
+      animated: false,
+    });
+  }, [offsetKey, savedOffsets]);
 
   useLayoutEffect(() => {
     mounted.current = true;
@@ -37,18 +58,27 @@ export function MonthPageScrollView({
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
       // A disposed native view can still deliver an event after rotation/resume.
       // It must not overwrite the replacement page's saved position.
-      if (mounted.current) {
+      if (mounted.current && viewport.current.generation === generation) {
         savedOffsets.set(offsetKey, event.nativeEvent.contentOffset.y);
       }
     },
-    [offsetKey, savedOffsets],
+    [generation, offsetKey, savedOffsets],
   );
 
   return (
     <ScrollView
       {...props}
+      ref={scroll}
       contentOffset={initialOffset}
       onScroll={onScroll}
+      onScrollEndDrag={event => {
+        onScroll(event);
+        onScrollEndDrag?.(event);
+      }}
+      onMomentumScrollEnd={event => {
+        onScroll(event);
+        onMomentumScrollEnd?.(event);
+      }}
     />
   );
 }

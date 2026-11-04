@@ -1,337 +1,144 @@
 import {
   forwardRef,
   useCallback,
+  useEffect,
   useImperativeHandle,
   useLayoutEffect,
   useRef,
   type ReactNode,
   type RefObject,
 } from 'react';
+import { AppState, StyleSheet, View } from 'react-native';
+import PagerView, {
+  type PagerViewOnPageSelectedEvent,
+  type PageScrollStateChangedNativeEvent,
+} from 'react-native-pager-view';
+import { useReducedMotion } from 'react-native-reanimated';
 import {
-  ScrollView,
-  StyleSheet,
-  View,
-  type LayoutChangeEvent,
-  type NativeScrollEvent,
-  type NativeSyntheticEvent,
-} from 'react-native';
-import Animated, {
-  cancelAnimation,
-  useAnimatedScrollHandler,
-  useAnimatedStyle,
-  useReducedMotion,
-  useSharedValue,
-  withTiming,
-  type SharedValue,
-} from 'react-native-reanimated';
-import { motion } from '../../../shared/lib/ui/motion';
-import { createPagerNavigation } from '../../../shared/lib/ui/pagerNavigation';
+  createPagerNavigation,
+  type PageCommand,
+} from '../model/monthPagerNavigation';
 
-const PAGE_COUNT = 12;
-const POSITION_TOLERANCE = 1;
-const ALIGNMENT_ATTEMPTS = 12;
-
-export type MonthPagerHandle = {
-  moveMonth: (direction: number) => void;
-};
+const MONTH_COUNT = 12;
+export type MonthPagerHandle = { moveMonth: (direction: number) => void };
 
 type MonthPagerViewportProps = {
   month: number;
-  pageWidth: number;
   visible: boolean;
   onMonthChange: (month: number) => void;
   isClosingRef: RefObject<boolean>;
-  renderPage: (month: number, scrollX: SharedValue<number>) => ReactNode;
+  renderPage: (month: number) => ReactNode;
 };
 
-/**
- * One native viewport lifetime. The parent remounts this component after a
- * viewport change or resume, preserving calendar selection outside the pager.
- * Old native callbacks can therefore never animate a replacement viewport.
- */
+/** ViewPager2 owns gestures, page placement and animation on the Android UI thread. */
 export const MonthPagerViewport = forwardRef<
   MonthPagerHandle,
   MonthPagerViewportProps
 >(function MonthPagerViewport(
-  { month, pageWidth, visible, onMonthChange, isClosingRef, renderPage },
+  { month, visible, onMonthChange, isClosingRef, renderPage },
   ref,
 ) {
-  const pagerRef = useRef<ScrollView>(null);
-  const activePageRef = useRef<View>(null);
-  const mounted = useRef(true);
-  const alignmentFrame = useRef<number | undefined>(undefined);
-  const alignmentRequest = useRef(0);
-  const previousVisible = useRef(false);
-  const nativeMonth = useRef(month);
-  const current = useRef({ month, visible, onMonthChange });
-  current.current = { month, visible, onMonthChange };
-  const navigation = useRef(createPagerNavigation(month, PAGE_COUNT)).current;
-  const reduceMotion = useReducedMotion();
-
-  // Updating contentOffset on every month change would cancel arrow animations.
-  const initialOffset = useRef({ x: (month - 1) * pageWidth, y: 0 }).current;
-  const scrollX = useSharedValue(initialOffset.x);
-  const targetOffset = useSharedValue(initialOffset.x);
-  const ready = useSharedValue(false);
-  const opacity = useSharedValue(0);
-  const animatedStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
+  const pager = useRef<PagerView>(null);
+  const initialPage = useRef(month - 1).current;
+  const navigation = useRef(createPagerNavigation(month, MONTH_COUNT)).current;
+  const mounted = useRef(false);
+  const wasVisible = useRef(visible);
+  const current = useRef({ visible, onMonthChange });
+  current.current = { visible, onMonthChange };
+  const reducedMotion = useReducedMotion();
 
   useLayoutEffect(() => {
     mounted.current = true;
     return () => {
       mounted.current = false;
-      alignmentRequest.current += 1;
-      if (alignmentFrame.current !== undefined) {
-        cancelAnimationFrame(alignmentFrame.current);
-      }
-      cancelAnimation(opacity);
     };
-  }, [opacity]);
+  }, []);
 
-  const alignPage = useCallback(() => {
-    if (!mounted.current) return;
-    const offset = (current.current.month - 1) * pageWidth;
-    targetOffset.value = offset;
-    scrollX.value = offset;
-    pagerRef.current?.scrollTo({ x: offset, animated: false });
-  }, [pageWidth, scrollX, targetOffset]);
-
-  const confirmPagePosition = useCallback(() => {
-    if (!mounted.current || ready.value) return;
-    if (alignmentFrame.current !== undefined) {
-      cancelAnimationFrame(alignmentFrame.current);
-    }
-    const request = ++alignmentRequest.current;
-    let attempts = 0;
-    const isCurrent = () =>
-      mounted.current && alignmentRequest.current === request && !ready.value;
-
-    const schedule = () => {
-      if (!isCurrent() || attempts >= ALIGNMENT_ATTEMPTS) return;
-      alignmentFrame.current = requestAnimationFrame(() => {
-        alignmentFrame.current = undefined;
-        if (!isCurrent()) return;
-        attempts += 1;
-        const pager = pagerRef.current;
-        const page = activePageRef.current;
-        const nativePager = pager?.getNativeScrollRef();
-        if (!pager || !page || !nativePager) {
-          schedule();
-          return;
-        }
-        // Both bounds include the sheet's opening scale. Compare them to each
-        // other, rather than comparing a scaled width with the window width.
-        nativePager.measureInWindow((pagerX, _y, width) => {
-          if (!isCurrent()) return;
-          if (width <= 0) {
-            schedule();
-            return;
-          }
-          page.measureInWindow((pageX, _pageY, measuredWidth) => {
-            if (!isCurrent()) return;
-            if (pagerRef.current !== pager || activePageRef.current !== page) {
-              schedule();
-              return;
-            }
-            if (
-              Math.abs(pageX - pagerX) < POSITION_TOLERANCE &&
-              Math.abs(measuredWidth - width) < POSITION_TOLERANCE
-            ) {
-              // Native placement and the parallax model must agree. An earlier
-              // initialization event may have reported a clamped scroll offset.
-              scrollX.value = targetOffset.value;
-              ready.value = true;
-              opacity.value = withTiming(1, motion.change);
-            } else {
-              alignPage();
-              schedule();
-            }
-          });
-        });
-      });
-    };
-    schedule();
-  }, [alignPage, opacity, ready, scrollX, targetOffset]);
-
-  const onScroll = useAnimatedScrollHandler(
-    {
-      onScroll: event => {
-        if (
-          Math.abs(event.layoutMeasurement.width - pageWidth) >
-          POSITION_TOLERANCE
-        )
-          return;
-        scrollX.value = event.contentOffset.x;
-        if (
-          !ready.value &&
-          Math.abs(event.contentOffset.x - targetOffset.value) <
-            POSITION_TOLERANCE
-        ) {
-          ready.value = true;
-          opacity.value = withTiming(1, motion.change);
-        }
-      },
-    },
-    [pageWidth],
+  const run = useCallback((command: PageCommand | null) => {
+    if (!command || !pager.current) return;
+    if (command.animated) pager.current.setPage(command.month - 1);
+    else pager.current.setPageWithoutAnimation(command.month - 1);
+  }, []);
+  const canNavigate = useCallback(
+    () => mounted.current && current.current.visible && !isClosingRef.current,
+    [isClosingRef],
   );
 
   useLayoutEffect(() => {
-    const opening = visible && !previousVisible.current;
-    previousVisible.current = visible;
-    if (!visible || opening || !ready.value) {
-      navigation.reset(month);
-      nativeMonth.current = month;
-      alignPage();
-      confirmPagePosition();
-    } else if (nativeMonth.current !== month) {
-      navigation.expect(month, !reduceMotion);
-      nativeMonth.current = month;
-      pagerRef.current?.scrollTo({
-        x: (month - 1) * pageWidth,
-        animated: !reduceMotion,
-      });
-      if (reduceMotion) scrollX.value = (month - 1) * pageWidth;
-    }
-  }, [
-    alignPage,
-    confirmPagePosition,
-    month,
-    navigation,
-    pageWidth,
-    ready,
-    reduceMotion,
-    scrollX,
-    visible,
-  ]);
+    // The normal path is native selection -> parent month, with no scroll back.
+    // This branch only handles an external change (for example a new calendar).
+    const reopening = visible && !wasVisible.current;
+    wasVisible.current = visible;
+    if (reopening || month !== navigation.selected) run(navigation.jump(month));
+  }, [month, navigation, run, visible]);
 
-  const onLayout = useCallback(
-    (event: LayoutChangeEvent) => {
-      if (
-        !mounted.current ||
-        ready.value ||
-        Math.abs(event.nativeEvent.layout.width - pageWidth) >
-          POSITION_TOLERANCE
-      )
-        return;
-      alignPage();
-      confirmPagePosition();
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', state => {
+      if (state === 'active' && canNavigate()) {
+        // Drop an interrupted gesture/arrow queue without rebuilding any pages.
+        run(navigation.jump(navigation.selected));
+      }
+    });
+    return () => subscription.remove();
+  }, [canNavigate, navigation, run]);
+
+  const onPageSelected = useCallback(
+    (event: PagerViewOnPageSelectedEvent) => {
+      if (!canNavigate()) return;
+      const next = event.nativeEvent.position + 1;
+      const previous = navigation.selected;
+      if (!navigation.select(next)) return;
+      if (next !== previous) current.current.onMonthChange(next);
+      run(navigation.next(!reducedMotion));
     },
-    [alignPage, confirmPagePosition, pageWidth, ready],
+    [canNavigate, navigation, reducedMotion, run],
   );
 
-  const onContentSizeChange = useCallback(() => {
-    if (!mounted.current || ready.value) return;
-    alignPage();
-    confirmPagePosition();
-  }, [alignPage, confirmPagePosition, ready]);
-
-  const onMomentumScrollEnd = useCallback(
-    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      if (
-        !mounted.current ||
-        !current.current.visible ||
-        !ready.value ||
-        isClosingRef.current
-      )
-        return;
-      if (
-        Math.abs(event.nativeEvent.layoutMeasurement.width - pageWidth) >
-        POSITION_TOLERANCE
-      )
-        return;
-      const next = Math.min(
-        PAGE_COUNT,
-        Math.max(
-          1,
-          Math.round(event.nativeEvent.contentOffset.x / pageWidth) + 1,
-        ),
-      );
-      const target = navigation.settle(next, !reduceMotion);
-      if (target === null) return;
-      nativeMonth.current = next;
-      if (target !== current.current.month)
-        current.current.onMonthChange(target);
+  const onPageScrollStateChanged = useCallback(
+    (event: PageScrollStateChangedNativeEvent) => {
+      if (!canNavigate()) return;
+      navigation.scrollState(event.nativeEvent.pageScrollState);
+      run(navigation.next(!reducedMotion));
     },
-    [isClosingRef, navigation, pageWidth, ready, reduceMotion],
+    [canNavigate, navigation, reducedMotion, run],
   );
-
-  const onScrollBeginDrag = useCallback(() => {
-    if (
-      !mounted.current ||
-      !current.current.visible ||
-      !ready.value ||
-      isClosingRef.current
-    )
-      return;
-    navigation.beginDrag();
-  }, [isClosingRef, navigation, ready]);
 
   useImperativeHandle(
     ref,
     () => ({
-      moveMonth(direction: number) {
-        if (
-          !mounted.current ||
-          !current.current.visible ||
-          isClosingRef.current
-        )
-          return;
-        const target = navigation.move(direction, !reduceMotion && ready.value);
-        if (target !== null) current.current.onMonthChange(target);
+      moveMonth(direction) {
+        if (!canNavigate()) return;
+        navigation.request(direction);
+        run(navigation.next(!reducedMotion));
       },
     }),
-    [isClosingRef, navigation, ready, reduceMotion],
+    [canNavigate, navigation, reducedMotion, run],
   );
 
   return (
-    <Animated.ScrollView
-      ref={pagerRef}
+    <PagerView
+      ref={pager}
       testID="month-pager"
-      horizontal
-      pagingEnabled
-      contentOffset={initialOffset}
-      nestedScrollEnabled
-      showsHorizontalScrollIndicator={false}
-      bounces={false}
+      style={styles.pager}
+      initialPage={initialPage}
+      orientation="horizontal"
+      layoutDirection="ltr"
+      scrollEnabled={visible}
+      offscreenPageLimit={1}
       overScrollMode="never"
-      decelerationRate="fast"
-      keyboardShouldPersistTaps="handled"
-      removeClippedSubviews={false}
-      style={[styles.pager, animatedStyle]}
-      onScroll={onScroll}
-      onScrollBeginDrag={onScrollBeginDrag}
-      onMomentumScrollEnd={onMomentumScrollEnd}
-      onScrollEndDrag={event => {
-        const offset = event.nativeEvent.contentOffset.x;
-        if (
-          !event.nativeEvent.velocity?.x &&
-          Math.abs(offset / pageWidth - Math.round(offset / pageWidth)) < 0.001
-        ) {
-          onMomentumScrollEnd(event);
-        }
-      }}
-      scrollEventThrottle={16}
-      onLayout={onLayout}
-      onContentSizeChange={onContentSizeChange}
+      onPageSelected={onPageSelected}
+      onPageScrollStateChanged={onPageScrollStateChanged}
     >
-      {Array.from({ length: PAGE_COUNT }, (_, index) => {
-        const page = index + 1;
-        return (
-          <View
-            key={page}
-            ref={page === month ? activePageRef : undefined}
-            collapsable={false}
-            style={[styles.page, { width: pageWidth }]}
-          >
-            {renderPage(page, scrollX)}
-          </View>
-        );
-      })}
-    </Animated.ScrollView>
+      {Array.from({ length: MONTH_COUNT }, (_, index) => (
+        <View key={index + 1} collapsable={false} style={styles.page}>
+          {renderPage(index + 1)}
+        </View>
+      ))}
+    </PagerView>
   );
 });
 
 const styles = StyleSheet.create({
   pager: { flex: 1 },
-  page: { flexGrow: 1 },
+  page: { width: '100%', height: '100%' },
 });

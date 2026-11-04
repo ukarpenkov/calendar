@@ -22,6 +22,21 @@ export const motion = {
     easing: Easing.bezier(0.4, 0, 0.2, 1),
     reduceMotion: ReduceMotion.System,
   },
+  settingsOpen: {
+    duration: 340,
+    easing: Easing.bezier(0.22, 1, 0.36, 1),
+    reduceMotion: ReduceMotion.System,
+  },
+  settingsClose: {
+    duration: 280,
+    easing: Easing.bezier(0.4, 0, 0.2, 1),
+    reduceMotion: ReduceMotion.System,
+  },
+  reflow: {
+    duration: 240,
+    easing: Easing.out(Easing.cubic),
+    reduceMotion: ReduceMotion.System,
+  },
   change: {
     duration: 160,
     easing: Easing.out(Easing.cubic),
