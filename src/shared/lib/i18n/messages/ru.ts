@@ -67,10 +67,6 @@ export const ruTranslations: Record<TranslationKey, string> = {
     'settings.about.version': 'Версия',
     'settings.about.defaultDataset': 'Базовый набор',
     'settings.about.defaultDatasetValue': 'Производственный календарь 2027',
-    'year.reminder.title': 'JSON-шаблон на следующий год',
-    'year.reminder.body':
-      'Шаблон на {{year}} год будет опубликован в Telegram. Откройте канал, чтобы скачать новый JSON, когда он будет готов.',
-    'year.reminder.action': 'Открыть Telegram',
     'importEntry.title': 'Импорт JSON',
     'importEntry.eyebrow': 'Точка входа в импорт',
     'importEntry.heroTitle': 'Подготовка замены года локальным JSON',

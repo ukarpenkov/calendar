@@ -9,12 +9,6 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
-  openWorkingCalendarTelegram,
-  shouldShowYearEndReminder,
-  WORKING_CALENDAR_TELEGRAM_PATH,
-  YearEndReminderCard,
-} from '../../../features/year-end-reminder';
-import {
   type CalendarDay,
   type CalendarMonthSummary,
   type CalendarYear,
@@ -100,7 +94,6 @@ export function YearHomeScreen({
     [columnsPerRow, monthSummaries],
   );
   const weekdayLabels = getCompactWeekdayLabels(language);
-  const showYearEndReminder = shouldShowYearEndReminder(calendar.year);
   const gridMetrics = useMemo(
     () => getYearGridMetrics(windowWidth, fontScale, columnsPerRow),
     [columnsPerRow, fontScale, windowWidth],
@@ -179,19 +172,6 @@ export function YearHomeScreen({
           />
         </View>
       </View>
-
-      {showYearEndReminder ? (
-        <YearEndReminderCard
-          palette={palette}
-          title={t('year.reminder.title')}
-          body={t('year.reminder.body', { year: calendar.year + 1 })}
-          actionLabel={t('year.reminder.action')}
-          linkLabel={WORKING_CALENDAR_TELEGRAM_PATH}
-          onPress={async () => {
-            await openWorkingCalendarTelegram();
-          }}
-        />
-      ) : null}
 
       <View
         style={[

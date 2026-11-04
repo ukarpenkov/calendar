@@ -66,10 +66,6 @@ export const jaTranslations = {
   'settings.about.version': 'バージョン',
   'settings.about.defaultDataset': '既定のデータセット',
   'settings.about.defaultDatasetValue': '2027 年 勤務カレンダー',
-  'year.reminder.title': '翌年用 JSON テンプレート',
-  'year.reminder.body':
-    '{{year}} 年用テンプレートは Telegram で公開されます。準備ができたらチャンネルから新しい JSON を取得してください。',
-  'year.reminder.action': 'Telegram を開く',
   'importEntry.title': 'JSON インポート',
   'importEntry.eyebrow': 'インポートの入口',
   'importEntry.heroTitle': 'ローカル JSON で年を置き換える準備',

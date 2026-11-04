@@ -66,10 +66,6 @@ export const trTranslations = {
   'settings.about.version': 'Sürüm',
   'settings.about.defaultDataset': 'Varsayılan veri kümesi',
   'settings.about.defaultDatasetValue': 'Üretim takvimi 2027',
-  'year.reminder.title': 'Gelecek yıl için JSON şablonu',
-  'year.reminder.body':
-    '{{year}} şablonu Telegram’da yayınlanacak. Hazır olduğunda yeni JSON’u indirmek için kanalı açın.',
-  'year.reminder.action': 'Telegram’ı aç',
   'importEntry.title': 'JSON içe aktarma',
   'importEntry.eyebrow': 'İçe aktarma girişi',
   'importEntry.heroTitle': 'Yerel JSON ile yıl değişimine hazırlık',

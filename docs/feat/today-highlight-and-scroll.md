@@ -27,7 +27,7 @@ ScrollView без `ref`, без вызова `scrollTo`. Открывается 
 - После монтирования и получения layout-размеров карточек (через `onLayout` или `useEffect` с `setTimeout(0)`) вычислить `scrollY` для позиции, где карточка текущего месяца будет в центре экрана.
 - Вызвать `scrollViewRef.current?.scrollTo({ y: targetY, animated: false })`.
 - Учесть columnsPerRow: если карточек 2 в ряд — targetY для rows[floor(month-1 / 2)]; если 4 — rows[floor(month-1 / 4)].
-- Учесть `safeAreaInsets.top` и высоту `appBar` + `YearEndReminderCard` (если виден) + `legendCard` при вычислении центра.
+- Учесть `safeAreaInsets.top` и высоту `appBar` + `legendCard` при вычислении центра.
 
 **Расчёт targetY:**
 ```

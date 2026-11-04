@@ -63,10 +63,6 @@ export const esTranslations = {
   'settings.about.version': 'Versión',
   'settings.about.defaultDataset': 'Calendario predeterminado',
   'settings.about.defaultDatasetValue': 'Calendario laboral 2027',
-  'year.reminder.title': 'Calendario JSON del próximo año',
-  'year.reminder.body':
-    'El calendario de {{year}} se publicará en Telegram. Abre el canal para descargar el archivo JSON cuando esté disponible.',
-  'year.reminder.action': 'Abrir Telegram',
   'importEntry.title': 'Importar JSON',
   'importEntry.eyebrow': 'Importación de calendario',
   'importEntry.heroTitle': 'Prepara un calendario para importar',

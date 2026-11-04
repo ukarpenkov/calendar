@@ -64,10 +64,6 @@ export const enTranslations = {
     'settings.about.version': 'Version',
     'settings.about.defaultDataset': 'Default dataset',
     'settings.about.defaultDatasetValue': 'Production calendar 2027',
-    'year.reminder.title': 'Next year JSON template',
-    'year.reminder.body':
-      'The {{year}} template will be published in Telegram. Open the channel to download the next JSON when it is ready.',
-    'year.reminder.action': 'Open Telegram',
     'importEntry.title': 'JSON import',
     'importEntry.eyebrow': 'Import flow entry',
     'importEntry.heroTitle': 'Prepare a local JSON replacement',

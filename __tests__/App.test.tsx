@@ -423,34 +423,37 @@ test('does not show Telegram link in the settings about section', async () => {
   );
 });
 
-test('shows year-end reminder with Telegram link late in the active year', async () => {
-  jest.useFakeTimers();
-  jest.setSystemTime(new Date('2027-11-15T12:00:00.000Z'));
+test.each(['2027-11-15T12:00:00.000Z', '2027-12-31T12:00:00.000Z'])(
+  'does not advertise next-year JSON in Telegram at %s',
+  async date => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date(date));
 
-  mockedSeedBundledYearIfNeeded.mockResolvedValue({
-    year: 2027,
-    days: [],
-  });
-  mockedGetYearCalendar.mockResolvedValue({
-    year: 2027,
-    days: [],
-  });
-
-  try {
-    await ReactTestRenderer.act(async () => {
-      renderer = ReactTestRenderer.create(<App />);
+    mockedSeedBundledYearIfNeeded.mockResolvedValue({
+      year: 2027,
+      days: [],
+    });
+    mockedGetYearCalendar.mockResolvedValue({
+      year: 2027,
+      days: [],
     });
 
-    expect(JSON.stringify(renderer!.toJSON())).toContain(
-      'Next year JSON template',
-    );
-    expect(JSON.stringify(renderer!.toJSON())).toContain(
-      't.me/workingcalendar',
-    );
-  } finally {
-    jest.useRealTimers();
-  }
-});
+    try {
+      await ReactTestRenderer.act(async () => {
+        renderer = ReactTestRenderer.create(<App />);
+      });
+
+      expect(JSON.stringify(renderer!.toJSON())).not.toContain(
+        'Next year JSON template',
+      );
+      expect(JSON.stringify(renderer!.toJSON())).not.toContain(
+        't.me/workingcalendar',
+      );
+    } finally {
+      jest.useRealTimers();
+    }
+  },
+);
 
 test('activates the JSON calendar and switches to English after JSON import', async () => {
   const importedCalendar = {
