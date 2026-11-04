@@ -11,7 +11,6 @@ import {
 import {
   AppState,
   BackHandler,
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -63,6 +62,7 @@ import { SettingsGearButton } from '../../../shared/ui/SettingsGearButton';
 import { CalendarMonthGrid } from '../../../entities/calendar/ui/CalendarMonthGrid';
 
 import { HolidayBanner } from './HolidayBanner';
+import { MonthPageScrollView } from './MonthPageScrollView';
 import {
   MonthPagerViewport,
   type MonthPagerHandle,
@@ -135,7 +135,14 @@ export function MonthDetailScreen({
   const pageWidth = windowWidth;
   const [resumeVersion, setResumeVersion] = useState(0);
   const viewportKey = `${windowWidth}x${windowHeight}`;
-  const pagerKey = `${viewportKey}:${resumeVersion}`;
+  // A prepared month and the one actually opened can differ. Give each new
+  // opening its matching native initial offset; retain that lifetime while paging.
+  const pagerSession = useRef({ visible, initialMonth: month });
+  if (!visible || !pagerSession.current.visible) {
+    pagerSession.current.initialMonth = month;
+  }
+  pagerSession.current.visible = visible;
+  const pagerKey = `${viewportKey}:${resumeVersion}:${pagerSession.current.initialMonth}`;
   const verticalOffsets = useRef(new Map<string, number>()).current;
 
   const monthLayoutMetrics = useMemo(
@@ -324,20 +331,12 @@ export function MonthDetailScreen({
             pageWidth={pageWidth}
             scrollX={scrollX}
           >
-            <ScrollView
+            <MonthPageScrollView
               testID={`month-scroll-${m}`}
               nestedScrollEnabled
               removeClippedSubviews={false}
-              contentOffset={{
-                x: 0,
-                y: verticalOffsets.get(`${viewportKey}:${m}`) ?? 0,
-              }}
-              onScroll={event => {
-                verticalOffsets.set(
-                  `${viewportKey}:${m}`,
-                  event.nativeEvent.contentOffset.y,
-                );
-              }}
+              offsetKey={`${viewportKey}:${m}`}
+              savedOffsets={verticalOffsets}
               scrollEventThrottle={32}
               showsVerticalScrollIndicator={false}
               style={styles.pageVertical}
@@ -367,7 +366,7 @@ export function MonthDetailScreen({
                 monthLayoutMetrics={monthLayoutMetrics}
                 vacationPeriods={vacationPeriods}
               />
-            </ScrollView>
+            </MonthPageScrollView>
           </MonthPage>
         </View>
       );

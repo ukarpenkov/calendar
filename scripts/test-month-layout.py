@@ -68,7 +68,7 @@ def main():
     selected_id = None
     month_id = None
 
-    def check(name, split):
+    def snapshot_in_viewport(name, split):
         # Sensor input returns before configuration reaches the activity. Wait only
         # for the requested native viewport; wrong banner geometry still fails.
         for attempt in range(4):
@@ -81,6 +81,10 @@ def main():
             time.sleep(.15)
         else:
             raise AssertionError(f'{name}: native viewport did not settle')
+        return root
+
+    def check(name, split):
+        root = snapshot_in_viewport(name, split)
         months = [n for n in root.iter('node') if node_id(n).startswith('month-content-')]
         assert len(months) == 1, f'{name}: visible months: {len(months)}'
         assert node_id(months[0]) == month_id, f'{name}: month changed'
@@ -188,6 +192,44 @@ def main():
                 swipe.wait(timeout=5)
         wake()
         check('lock-during-swipe', False)
+
+        # Restore a nonzero vertical offset, then rerender the selected day.
+        # The page's initial offset must not become a controlled live position.
+        rotate(1)
+        root = check('before-vertical-scroll', True)
+        original_day = bounds(unique(root, selected_id))
+        pager = bounds(unique(root, 'month-pager'))
+        x = (pager[0] + pager[2]) // 2
+        y = (pager[1] + pager[3]) // 2
+        shell('input', 'swipe', x, y + 100, x, y - 100, 600)
+        scrolled = snapshot('vertical-scrolled')
+        anchor = bounds(unique(scrolled, selected_id))
+        assert anchor[1] < original_day[1] - 20, 'Vertical swipe did not scroll'
+
+        def check_scrolled(name):
+            root = snapshot_in_viewport(name, True)
+            actual = bounds(unique(root, selected_id))
+            assert all(abs(a - b) <= 2 for a, b in zip(actual, anchor)), (
+                f'{name}: vertical position changed: {actual} / {anchor}'
+            )
+            images = [n for n in unique(root, 'month-pager').iter('node')
+                      if n.get('class') == 'android.widget.ImageView']
+            assert len(images) == 1, f'{name}: {len(images)} visible images'
+            print(f'PASS {name}: retained day bounds={actual}', flush=True)
+            return root
+
+        shell('input', 'keyevent', 'KEYCODE_SLEEP')
+        wake()
+        check_scrolled('scrolled-lock-unlock')
+        rotate(0)
+        check('scrolled-rotate-portrait', False)
+        rotate(1)
+        root = check_scrolled('scrolled-rotate-return')
+        next_day = unique(root, selected_id[:-2] + '16')
+        x1, y1, x2, y2 = bounds(next_day)
+        shell('input', 'tap', (x1 + x2) // 2, (y1 + y2) // 2)
+        root = check_scrolled('scrolled-selection')
+        assert unique(root, selected_id[:-2] + '16').get('selected') == 'true'
         print(f'Native layout checks passed. Artifacts: {output}', flush=True)
     finally:
         wake()

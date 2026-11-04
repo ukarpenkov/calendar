@@ -108,6 +108,12 @@ function selectedDayCell() {
     .find(node => typeof node.props.onPress === 'function')!;
 }
 
+function verticalScroll() {
+  return renderer.root
+    .findAllByType(ScrollView)
+    .find(node => node.props.testID === 'month-scroll-7')!;
+}
+
 function expectBannerInFlow(split: boolean) {
   const body = content();
   expect(body.findAllByType(HolidayBanner)).toHaveLength(1);
@@ -318,10 +324,46 @@ test('a new native viewport starts at the current month; paging keeps its existi
   expect(resumedPager.props.contentOffset.x).toBe(7 * landscape.width);
 });
 
+test.each([false, true])(
+  'opening another month replaces the prewarmed native offset (prepare before opening: %s)',
+  prepareBeforeOpening => {
+    act(() => {
+      renderer = create(
+        <MonthDetailScreen {...props} month={11} visible={false} />,
+      );
+    });
+    const oldPager = renderer.root.findByProps({ testID: 'month-pager' });
+    expect(oldPager.props.contentOffset.x).toBe(10 * portrait.width);
+
+    if (prepareBeforeOpening) {
+      act(() =>
+        renderer.update(
+          <MonthDetailScreen {...props} month={7} visible={false} />,
+        ),
+      );
+    }
+    const preparedPager = renderer.root.findByProps({ testID: 'month-pager' });
+    act(() =>
+      renderer.update(<MonthDetailScreen {...props} month={7} visible />),
+    );
+    const openedPager = renderer.root.findByProps({ testID: 'month-pager' });
+    expect(openedPager).not.toBe(oldPager);
+    expect(openedPager.props.contentOffset.x).toBe(6 * portrait.width);
+    if (prepareBeforeOpening) expect(openedPager).toBe(preparedPager);
+
+    // Normal navigation still uses native scrolling within the same viewport.
+    act(() =>
+      renderer.update(<MonthDetailScreen {...props} month={8} visible />),
+    );
+    expect(renderer.root.findByProps({ testID: 'month-pager' })).toBe(
+      openedPager,
+    );
+    expect(openedPager.props.contentOffset.x).toBe(6 * portrait.width);
+  },
+);
+
 test('unlock preserves vertical scrolling and keeps offsets separate for each orientation', () => {
   render();
-  const verticalScroll = () =>
-    renderer.root.findByProps({ testID: 'month-scroll-7' });
   act(() =>
     verticalScroll().props.onScroll({
       nativeEvent: { contentOffset: { y: 210 } },
@@ -334,6 +376,31 @@ test('unlock preserves vertical scrolling and keeps offsets separate for each or
   expect(verticalScroll().props.contentOffset.y).toBe(0);
   rotate(portrait);
   expect(verticalScroll().props.contentOffset.y).toBe(210);
+});
+
+test('a disposed vertical scroll cannot overwrite the resumed page or reposition it on rerender', () => {
+  render();
+  const oldScroll = verticalScroll().props.onScroll;
+  act(() =>
+    oldScroll({ nativeEvent: { contentOffset: { y: 210 } } }),
+  );
+  changeAppState('background');
+  changeAppState('active');
+  const initialOffset = verticalScroll().props.contentOffset;
+  expect(initialOffset.y).toBe(210);
+
+  act(() => {
+    verticalScroll().props.onScroll({
+      nativeEvent: { contentOffset: { y: 320 } },
+    });
+    oldScroll({ nativeEvent: { contentOffset: { y: 0 } } });
+    selectedDayCell().props.onPress();
+  });
+  // Selection rerenders the page, but must not send another native offset.
+  expect(verticalScroll().props.contentOffset).toBe(initialOffset);
+  changeAppState('background');
+  changeAppState('active');
+  expect(verticalScroll().props.contentOffset.y).toBe(320);
 });
 
 test('content stays hidden until a scroll event confirms the current viewport and target page', () => {
