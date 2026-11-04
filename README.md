@@ -1,133 +1,167 @@
-# 📅 Calendar — Your Year, On Device
+Production Calendar
 
-A **React Native** mobile app for **Android** that shows a full **production calendar** at a glance: workdays, weekends, holidays, and shortened days — with monthly summaries and **no account or cloud** required.
+An offline-first Android application built with React Native and TypeScript for viewing and managing production calendars.
 
----
+The application provides an annual overview of working days, weekends, public holidays, and shortened working days. It includes monthly statistics and supports importing custom calendar datasets from local JSON files.
 
-## ✨ What it does
+All data is stored locally on the device. The application does not require an account, backend service, or internet connection.
 
-- 🗓 **Year overview** — see the whole year on one screen; tap a month for detail and totals (working days, non-working days, hours for a 40-hour week).
-- ✨ **Motion** — subtle **animations** for transitions and interactions so the UI feels responsive without getting in the way.
-- 🖼 **Date imagery** — **custom images** for notable dates (holidays, themes), so days are easier to spot at a glance.
-- 🌙 **Comfortable viewing** — **light** and **dark** themes so you can read the calendar anywhere.
-- 🌍 **Bilingual UI** — interface oriented toward **Russian** and **English** usage.
-- 📥 **Bring your own year** — import a validated **local JSON** file to replace the active calendar; the app ships with a bundled **2026** dataset so the first launch always has real data.
-- 🔒 **Privacy by design** — **client-only**: no backend, no sync, no sign-in. Everything stays on the device.
+Features
 
----
+- Annual calendar — full-year overview with navigation to individual months.
+- Monthly statistics — working days, non-working days, and calculated working hours based on a 40-hour workweek.
+- Day classification — visual distinction between working days, weekends, public holidays, and shortened working days.
+- Custom date illustrations — images associated with selected holidays and notable dates.
+- UI animations — animated transitions and interactions.
+- Theme support — light and dark appearance modes.
+- Localization — Russian and English interfaces.
+- JSON import — import custom production calendar datasets from local files.
+- Offline storage — persistent calendar data stored in SQLite.
 
-## 🎯 Why this app stands out
+The application includes a bundled production calendar for 2026, available immediately after installation.
 
-| | |
-| --- | --- |
-| 📴 **Offline-first** | Calendar data lives in **SQLite** on the phone; you are not tied to connectivity. |
-| ✅ **Strict validation** | Imported JSON is checked before it replaces your data — bad files are rejected with clear feedback. |
-| 🔄 **Predictable updates** | Importing a new year **replaces** the current dataset in one coherent step (with confirmation), not a messy merge. |
-| 🧱 **Maintainable codebase** | **TypeScript**, explicit domain types, and **Feature-Sliced Design** under `src/` keep features easy to find and evolve. |
+Tech Stack
 
----
+Component| Technology
+Framework| React Native 0.84
+UI| React 19
+Language| TypeScript
+Database| SQLite ("@op-engineering/op-sqlite")
+File selection| "@react-native-documents/picker"
+File system| "@dr.pogodin/react-native-fs"
+Graphics| "react-native-svg"
+Safe area handling| "react-native-safe-area-context"
+Bundler| Metro
+Testing| Jest
+Code quality| ESLint, Prettier
+Runtime requirement| Node.js >= 22.11
 
-## 🛠 Tech stack
+Architecture
 
-| Layer | Choice |
-| --- | --- |
-| **Framework** | [React Native](https://reactnative.dev/) **0.84** |
-| **Language** | **TypeScript** |
-| **UI runtime** | **React 19** |
-| **Local database** | **SQLite** via [`@op-engineering/op-sqlite`](https://github.com/OP-Engineering/op-sqlite) — canonical store for the active year |
-| **Import** | Local **JSON** → validate → write to SQLite |
-| **Files** | [`@react-native-documents/picker`](https://github.com/react-native-documents/picker), [`@dr.pogodin/react-native-fs`](https://github.com/birdofpreyru/react-native-fs) |
-| **Graphics** | [`react-native-svg`](https://github.com/software-mansion/react-native-svg) |
-| **Layout** | [`react-native-safe-area-context`](https://github.com/th3rdwave/react-native-safe-area-context) |
-| **Tooling** | **Metro**, **Jest**, **ESLint**, **Prettier** |
-| **Node** | **≥ 22.11** (see `engines` in `package.json`) |
+The project follows Feature-Sliced Design (FSD) principles, separating application initialization, pages, widgets, features, domain entities, and shared functionality.
 
----
+Project Structure
 
-## 🏗 Project layout
+.
+├── android/              # Native Android project
+├── docs/                 # Project documentation
+├── scripts/              # Development utilities
+└── src/
+    ├── app/              # Application initialization
+    ├── pages/            # Application screens
+    ├── widgets/          # Composite UI components
+    ├── features/         # Application features
+    ├── entities/         # Domain entities
+    └── shared/           # Shared utilities and components
 
-- `src/` — app code in **FSD** style: `app`, `pages`, `widgets`, `features`, `entities`, `shared`
-- `android/` — native Android project (no Expo workflow)
-- Bundled calendar data and import contracts live alongside domain and persistence layers (see `docs/` for the full product plan)
+The project uses the React Native CLI workflow without Expo.
 
----
+Data Persistence
 
-## 🚀 Quick start
+SQLite serves as the primary storage for the active production calendar.
 
-```bash
+On initial launch, the application uses the bundled 2026 dataset.
+
+Calendar data can subsequently be replaced through a local JSON import.
+
+The import process follows these steps:
+
+1. Select a JSON file from the device.
+2. Validate the file against the expected data structure.
+3. Reject invalid data and display an error.
+4. Request confirmation before replacing the existing calendar.
+5. Write the validated dataset to SQLite.
+
+Importing a calendar replaces the active dataset rather than merging it with existing records.
+
+No remote API, synchronization service, or user authentication is required.
+
+Getting Started
+
+Prerequisites
+
+- Node.js >= 22.11
+- npm
+- JDK and Android SDK configured for React Native development
+- Android emulator or physical Android device
+
+Installation
+
+Install dependencies:
+
 npm install
+
+Start Metro:
+
+npm start
+
+In a separate terminal, build and launch the Android application:
+
 npm run android
-```
 
-On **Windows**, `npm run android` runs `scripts/run-android.cjs`, which fills in `JAVA_HOME`, `ANDROID_HOME`, and SDK tool paths when your terminal does not (common in some IDE-integrated shells). **Fully quit and reopen the editor** after changing system environment variables, or rely on this script.
+Windows Environment
 
----
+On Windows, "npm run android" invokes "scripts/run-android.cjs".
 
-## 💻 Development: Metro and the Android app
+The script configures "JAVA_HOME", "ANDROID_HOME", and Android SDK tool paths when they are unavailable in the current terminal environment.
 
-In **debug** builds the native app loads JavaScript from **Metro**, not from a file inside the APK. If Metro is stopped or unreachable, you may see a red screen like **“Unable to load script.”**
+After modifying system environment variables, restart the terminal or IDE to ensure the changes are applied.
 
-Use **two terminals** while developing:
+Development
 
-1. **Terminal 1 — Metro (keep it running)**
+Metro Bundler
 
-   ```bash
-   npm start
-   ```
+Android debug builds load the JavaScript bundle from Metro rather than embedding it directly in the APK.
 
-2. **Terminal 2 — install / run Android**
+Metro must be running and accessible from the Android emulator or device.
 
-   ```bash
-   npm run android
-   ```
+If Metro is unavailable, the application may display an "Unable to load script" error.
 
-### Matching the dev server port
+Custom Metro Port
 
-`react-native run-android` bakes the bundler port into the native build (via `react-native run-android --port …`). **Metro must listen on the same port** as the last install you used.
+The Metro server and Android build must use the same port.
 
-- If you installed with a custom port, start Metro on that port and reinstall so everything stays aligned:
+For example, to use port "8083":
 
-  ```bash
-  npm start -- --port 8083
-  npm run android -- --port 8083
-  ```
+Start Metro:
 
-- **Simplest reset:** stop extra Metro / Node processes so **8081** is free, then use defaults everywhere:
+npm start -- --port 8083
 
-  ```bash
-  npm start
-  npm run android
-  ```
+Build and run Android:
 
-  Do **not** pass `--port` on either command unless you intend to keep using that port consistently.
+npm run android -- --port 8083
 
-After Metro is up, use **Reload** on the device (or press `R` twice in the Metro terminal) if the app was already open.
+The React Native CLI configures the bundler port during the native build. Changing the Metro port may require reinstalling the application.
 
----
+The default port is "8081".
 
-## 🧪 Scripts
+To return to the default configuration, stop conflicting Metro processes and run:
 
-| Command | Purpose |
-| --- | --- |
-| `npm start` | Start Metro bundler |
-| `npm run android` | Build and run on Android (with Windows-friendly env helper) |
-| `npm test` | Run Jest tests |
-| `npm run lint` | ESLint |
+npm start
+npm run android
 
----
+After Metro starts, reload the application if it is already running.
 
-## 📄 License & docs
+Available Scripts
 
-See repository metadata for license (if present). For architecture and roadmap details, see [`docs/GLOBAL-DEVELOPMENT-PLAN.md`](docs/GLOBAL-DEVELOPMENT-PLAN.md).
+Command| Description
+"npm start"| Start the Metro development server
+"npm run android"| Build, install, and launch the Android application
+"npm test"| Execute Jest tests
+"npm run lint"| Run ESLint checks
 
----
+Documentation
 
-## 📱 Google Play
+Additional information about the architecture, implementation, and development roadmap is available in:
 
-Install the app from [Google Play](https://play.google.com/store/apps/details?id=com.prodyk.calendar).
+"Global Development Plan" (docs/GLOBAL-DEVELOPMENT-PLAN.md)
 
----
+Distribution
 
-<p align="center">
-  <sub>Built with ☕ and clarity — your calendar, your device, your rules.</sub>
-</p>
+The Android application is available on Google Play:
+
+"Production Calendar — Google Play" (https://play.google.com/store/apps/details?id=com.prodyk.calendar)
+
+License
+
+Refer to the repository metadata for licensing information, if available.
