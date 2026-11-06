@@ -9,7 +9,7 @@ import ReactTestRenderer from 'react-test-renderer';
 import {
   AppLocalizationProvider,
   useAppLocalization,
-} from '../src/app/providers/localization';
+} from '../src/shared/lib/localization';
 import {
   getStoredLanguage,
   setStoredLanguage,

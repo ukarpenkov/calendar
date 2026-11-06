@@ -16,9 +16,9 @@ import { getBundledRegionToApplyOnManualAppLanguageChange } from '../../shared/l
 import type { AppLanguage } from '../../shared/lib/i18n';
 import { scheduleIdleTask } from '../../shared/lib/ui/scheduleIdleTask';
 import { updateCalendarWidget } from '../../widgets/registerWidget';
-import { useBundledCalendarRegion } from '../providers/bundled-calendar-region';
-import { useAppLocalization } from '../providers/localization';
-import { useAppTheme } from '../providers/theme';
+import { useBundledCalendarRegion } from '../../features/calendar-language-sync';
+import { useAppLocalization } from '../../shared/lib/localization';
+import { useAppTheme } from '../../shared/lib/theme';
 import { useAppBootstrap } from './useAppBootstrap';
 import { useHardwareBack } from './useHardwareBack';
 import type { ReadyScreen } from './user-flow';

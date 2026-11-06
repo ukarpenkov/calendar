@@ -17,6 +17,7 @@ import { IconCircleButton } from '../../../shared/ui/IconCircleButton';
 import { ArrowBackIcon, CalendarIcon } from '../../../shared/ui/icons/NavigationIcons';
 import { VacationDatePicker } from './VacationDatePicker';
 import { VacationConflictNotice } from './VacationConflictNotice';
+import { ActionButton, GhostButton } from './VacationFormButtons';
 import {
   addDaysToDate,
   daysBetweenDates,
@@ -455,69 +456,6 @@ export function VacationForm({
   );
 }
 
-type ActionButtonProps = {
-  label: string;
-  onPress: () => void;
-  disabled: boolean;
-  palette: CalendarPalette;
-  variant?: 'default' | 'danger';
-};
-
-function ActionButton({
-  label,
-  onPress,
-  disabled,
-  palette,
-  variant = 'default',
-}: ActionButtonProps) {
-  const backgroundColor =
-    variant === 'danger' ? palette.holidayBorder : palette.selectedBorder;
-
-  return (
-    <MotionPressable
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      onPress={onPress}
-      disabled={disabled}
-      style={({ pressed }) => [
-        styles.actionButton,
-        {
-          backgroundColor,
-          opacity: disabled ? 0.5 : pressed ? 0.9 : 1,
-        },
-      ]}
-    >
-      <Text style={styles.actionButtonText}>{label}</Text>
-    </MotionPressable>
-  );
-}
-
-type GhostButtonProps = {
-  label: string;
-  onPress: () => void;
-  palette: CalendarPalette;
-};
-
-function GhostButton({ label, onPress, palette }: GhostButtonProps) {
-  return (
-    <MotionPressable
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.ghostButton,
-        {
-          borderColor: palette.border,
-          backgroundColor: palette.surface,
-          opacity: pressed ? 0.85 : 1,
-        },
-      ]}
-    >
-      <Text style={[styles.ghostButtonText, { color: palette.title }]}>{label}</Text>
-    </MotionPressable>
-  );
-}
-
 const styles = StyleSheet.create({
   root: {
     flex: 1,
@@ -601,30 +539,6 @@ const styles = StyleSheet.create({
   previewLabel: {
     fontSize: 13,
     fontWeight: '500',
-  },
-  actionButton: {
-    minHeight: 46,
-    borderRadius: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 16,
-  },
-  actionButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '700',
-  },
-  ghostButton: {
-    minHeight: 46,
-    borderRadius: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 16,
-    borderWidth: 1,
-  },
-  ghostButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
   },
   confirmRow: {
     gap: 12,
