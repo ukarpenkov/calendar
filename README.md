@@ -15,11 +15,11 @@ All data is stored locally on the device. The application does not require an ac
 - **Custom date illustrations** — images associated with selected holidays and notable dates.
 - **UI animations** — animated transitions and interactions.
 - **Theme support** — light and dark appearance modes.
-- **Localization** — Russian and English interfaces.
+- **Localization** — English, Russian, Turkish, Indonesian, Japanese, and Spanish.
 - **JSON import** — import custom production calendar datasets from local files.
 - **Offline storage** — persistent calendar data stored in SQLite.
 
-The application includes a bundled production calendar for 2026, available immediately after installation.
+The application includes bundled 2027 production calendars for Russia, Turkey, Indonesia, Japan, and Mexico, available immediately after installation.
 
 ## Tech Stack
 
@@ -62,9 +62,11 @@ The project uses the React Native CLI workflow without Expo.
 
 ### Data Persistence
 
+Bundled year files live in `assets/calendars/`. Design notes and screenshots live in `docs/design-archive/`.
+
 SQLite serves as the primary storage for the active production calendar.
 
-On initial launch, the application uses the bundled 2026 dataset.
+On initial launch, the application uses the bundled 2027 dataset for the selected region.
 
 Calendar data can subsequently be replaced through a local JSON import.
 

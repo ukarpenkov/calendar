@@ -2,7 +2,7 @@ import React from 'react';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 import { View, Text, StyleSheet } from 'react-native';
 
-jest.mock('../src/app/providers/theme', () => ({
+jest.mock('../src/shared/lib/theme', () => ({
   useAppTheme: () => ({
     palette: {
       background: '#FFFFFF',
@@ -18,7 +18,7 @@ jest.mock('../src/app/providers/theme', () => ({
   }),
 }));
 
-jest.mock('../src/app/providers/localization', () => ({
+jest.mock('../src/shared/lib/localization', () => ({
   useAppLocalization: () => ({
     language: 'en',
     t: (key: string) => key,

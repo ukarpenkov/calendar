@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ScrollView,
-  StyleSheet,
   Text,
   View,
   useWindowDimensions,
@@ -9,17 +8,16 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
-  type CalendarDay,
   type CalendarMonthSummary,
   type CalendarYear,
-  type DayType,
   getDayTypeColors,
   getDayTypeLabel,
-  type DayTypeColors,
 } from '../../../entities/calendar';
 import type { VacationPeriod } from '../../../features/vacation/model';
-import { useAppLocalization } from '../../../app/providers/localization';
-import { useAppTheme } from '../../../app/providers/theme';
+import { getLocalIsoDate } from '../../../shared/lib/date/localIsoDate';
+import { getVacationColorForDate } from '../../../shared/lib/date/vacationRange';
+import { useAppLocalization } from '../../../shared/lib/localization';
+import { useAppTheme } from '../../../shared/lib/theme';
 import { getCompactWeekdayLabels } from '../../../shared/lib/i18n';
 import { layout } from '../../../shared/lib/ui/layout';
 import { SettingsGearButton } from '../../../shared/ui/SettingsGearButton';
@@ -27,26 +25,8 @@ import { VacationButton } from '../../../shared/ui/VacationButton';
 import { MotionPressable } from '../../../shared/ui/MotionPressable';
 import { YearScreenCalendarMark } from '../../../shared/ui/icons/YearScreenCalendarMark';
 import { getYearGridMetrics, getYearGridTextStyle } from './yearGridMetrics';
-
-function getLocalIsoDate(): string {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
-
-function getVacationColorForDate(
-  date: string,
-  vacationPeriods: VacationPeriod[],
-): string | undefined {
-  for (const period of vacationPeriods) {
-    if (date >= period.startDate && date <= period.endDate) {
-      return period.color;
-    }
-  }
-  return undefined;
-}
+import { YearMonthDayCell as MonthDayCell } from './YearMonthDayCell';
+import { styles } from './yearHomeStyles';
 
 type YearHomeScreenProps = {
   calendar: CalendarYear;
@@ -396,9 +376,7 @@ export function YearHomeScreen({
                               vacationColor={day?.date ? getVacationColorForDate(day.date, vacationPeriods) : undefined}
                               isToday={day?.date === todayDate}
                               gridMetrics={gridMetrics}
-                              resolveDayTypeColors={type =>
-                                getDayTypeColors(type, palette)
-                              }
+                              palette={palette}
                             />
                           </View>
                         ))}
@@ -525,275 +503,3 @@ export function YearHomeScreen({
   );
 }
 
-type MonthDayCellProps = {
-  day: CalendarDay | null;
-  vacationColor?: string;
-  isToday?: boolean;
-  gridMetrics: ReturnType<typeof getYearGridMetrics>;
-  resolveDayTypeColors: (type: DayType) => DayTypeColors;
-};
-
-function MonthDayCell({ day, vacationColor, isToday, gridMetrics, resolveDayTypeColors }: MonthDayCellProps) {
-  const { palette } = useAppTheme();
-  const cellSizeStyle = {
-    width: '100%' as const,
-    aspectRatio: 1,
-  };
-
-  if (!day) {
-    return <View style={[styles.emptyDayCell, cellSizeStyle]} />;
-  }
-
-  const colors = resolveDayTypeColors(day.type);
-  const showVacation = !!vacationColor;
-
-  return (
-    <View
-      style={[
-        styles.dayCell,
-        cellSizeStyle,
-        isToday ? styles.dayCellToday : null,
-        {
-          backgroundColor: colors.backgroundColor,
-          borderColor: isToday ? palette.selectedBorder : colors.borderColor,
-          borderRadius: Math.max(4, Math.round(gridMetrics.dayCellSize * 0.28)),
-        },
-      ]}
-    >
-      <Text
-        adjustsFontSizeToFit
-        minimumFontScale={gridMetrics.minimumTextScale}
-        numberOfLines={1}
-        maxFontSizeMultiplier={gridMetrics.maxFontSizeMultiplier}
-        style={[
-          styles.dayCellText,
-          getYearGridTextStyle(gridMetrics.dayFontSize, { fontWeight: '600' }),
-          { color: colors.color },
-        ]}
-      >
-        {day.day}
-      </Text>
-      {showVacation ? (
-        <View
-          style={[
-            styles.vacationBarSmall,
-            { backgroundColor: vacationColor },
-          ]}
-        />
-      ) : null}
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  content: {
-    paddingHorizontal: layout.screenPaddingH,
-    gap: layout.contentStackGap,
-  },
-  appBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    minHeight: 56,
-  },
-  /** Same width as trailing column so the year stays visually centered. */
-  appBarLeading: {
-    width: 36,
-    height: 36,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  appBarTrailing: {
-    flexDirection: 'row',
-    gap: 8,
-    alignItems: 'center',
-  },
-  appBarTitle: {
-    flex: 1,
-    textAlign: 'center',
-    fontSize: 24,
-    lineHeight: 30,
-    fontWeight: '600',
-  },
-  legendCard: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 16,
-    padding: 12,
-    borderWidth: 1,
-    borderRadius: 16,
-  },
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  legendSwatch: {
-    width: 12,
-    height: 12,
-    borderWidth: 1,
-    borderRadius: 4,
-  },
-  legendLabel: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  monthsGrid: {
-    gap: 12,
-  },
-  monthRow: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  monthCard: {
-    flex: 1,
-    minWidth: 0,
-    borderWidth: 1,
-    borderRadius: 20,
-    padding: 12,
-    gap: 8,
-  },
-  monthCardShell: {
-    flex: 1,
-    minWidth: 0,
-  },
-  monthCardSpacer: {
-    flex: 1,
-  },
-  monthCardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 8,
-  },
-  vacationBadge: {
-    minWidth: 20,
-    height: 18,
-    borderRadius: 9,
-    paddingHorizontal: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#2DD4BF',
-  },
-  vacationBadgeText: {
-    color: '#FFFFFF',
-  },
-  monthTitle: {
-    flex: 1,
-    minWidth: 0,
-  },
-  monthMeta: {
-    flexShrink: 1,
-    minWidth: 0,
-  },
-  weekHeaderRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 2,
-    width: '100%',
-    minWidth: 0,
-  },
-  weekNumberColumn: {
-    width: 22,
-    flexShrink: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  weekNumberLabel: {
-    textAlign: 'center',
-  },
-  daysHeaderStrip: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 2,
-    minWidth: 0,
-  },
-  weekdayLabel: {
-    textAlign: 'center',
-  },
-  weeksList: {
-    gap: 4,
-    width: '100%',
-    minWidth: 0,
-  },
-  weekRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 2,
-    width: '100%',
-    minWidth: 0,
-  },
-  weekNumberValue: {
-    textAlign: 'center',
-  },
-  daysStrip: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 2,
-    minWidth: 0,
-  },
-  dayColumnHeader: {
-    flex: 1,
-    minWidth: 0,
-    alignItems: 'center',
-  },
-  dayColumn: {
-    flex: 1,
-    minWidth: 0,
-    alignItems: 'stretch',
-  },
-  emptyDayCell: {
-    minWidth: 0,
-    alignSelf: 'stretch',
-  },
-  dayCell: {
-    minWidth: 0,
-    alignSelf: 'stretch',
-    borderWidth: 1,
-    borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-  },
-  dayCellToday: {
-    borderWidth: 2,
-  },
-  dayCellText: {
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  vacationBarSmall: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 2,
-    borderBottomLeftRadius: 3,
-    borderBottomRightRadius: 3,
-  },
-  summaryRow: {
-    marginTop: 'auto',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 8,
-    borderRadius: 12,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-  },
-  summaryItem: {
-    flex: 1,
-    minWidth: 0,
-    alignItems: 'center',
-    gap: 2,
-  },
-  summaryLabel: {
-    textAlign: 'center',
-  },
-  summaryValue: {
-    textAlign: 'center',
-  },
-});

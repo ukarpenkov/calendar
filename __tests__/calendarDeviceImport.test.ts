@@ -12,7 +12,7 @@ import {
   type CalendarImportSourceError,
 } from '../src/features/calendar-import';
 
-const bundledCalendar = require('../calendar2027.json');
+const bundledCalendar = require('../assets/calendars/calendar2027.json');
 
 jest.mock('@dr.pogodin/react-native-fs', () => ({
   readFile: jest.fn(),

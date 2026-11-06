@@ -12,7 +12,7 @@ import {
   validateCalendarImportData,
 } from '../src/features/calendar-import';
 
-const bundledCalendar = require('../calendar2027.json');
+const bundledCalendar = require('../assets/calendars/calendar2027.json');
 
 function isoWeekendDatesForYear(year: number): string[] {
   const dates: string[] = [];

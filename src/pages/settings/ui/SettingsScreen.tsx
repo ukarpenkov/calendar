@@ -3,19 +3,14 @@ import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useBundledCalendarRegion } from '../../../app/providers/bundled-calendar-region';
+import { useBundledCalendarRegion } from '../../../features/calendar-language-sync';
 import type { CalendarDataSource } from '../../../entities/calendar';
 import { getUserJsonImportYear } from '../../../entities/calendar';
-import { useAppLocalization } from '../../../app/providers/localization';
-import { useAppTheme } from '../../../app/providers/theme';
-import {
-  AGREED_APP_LANGUAGE_CODES,
-  // BUNDLED_CALENDAR_REGION_CODES,
-  // type BundledCalendarRegionCode,
-} from '../../../shared/config/agreedLanguagesAndBundledCalendars';
+import { useAppLocalization } from '../../../shared/lib/localization';
+import { useAppTheme } from '../../../shared/lib/theme';
+import { AGREED_APP_LANGUAGE_CODES } from '../../../shared/config/agreedLanguagesAndBundledCalendars';
 import { APP_DISPLAY_VERSION } from '../../../shared/config/appDisplayVersion';
 import {
-  // getBundledRegionLabel,
   getLanguageLabel,
   getLanguageNativeLabel,
   getThemeModeLabel,
@@ -24,7 +19,6 @@ import {
 import { layout } from '../../../shared/lib/ui/layout';
 import { ArrowBackIcon } from '../../../shared/ui/icons/NavigationIcons';
 import { IconCircleButton } from '../../../shared/ui/IconCircleButton';
-// import { BundledCalendarSwitch } from '../../../shared/ui/BundledCalendarSwitch';
 import { LanguageSwitch } from '../../../shared/ui/LanguageSwitch';
 import { ThemeSwitch } from '../../../shared/ui/ThemeSwitch';
 
@@ -125,27 +119,6 @@ export function SettingsScreen({
           palette={palette}
         />
         <Divider palette={palette} />
-        {/*
-        <View style={styles.languageSettingBlock}>
-          <View style={styles.rowCopy}>
-            <Text style={[styles.rowTitle, { color: palette.title }]}>
-              {t('settings.rows.bundledCalendar.title')}
-            </Text>
-            <Text style={[styles.rowSubtitle, { color: palette.subtitle }]}>
-              {t('settings.rows.bundledCalendar.subtitle', {
-                region: getBundledRegionLabel(language, bundledCalendarRegion),
-              })}
-            </Text>
-          </View>
-          <BundledCalendarSwitch
-            selectedRegion={bundledCalendarRegion}
-            onSelectRegion={setBundledCalendarRegion}
-            palette={palette}
-            labels={BUNDLED_CALENDAR_SWITCH_LABELS[language]}
-          />
-        </View>
-        <Divider palette={palette} />
-        */}
         <SettingRow
           title={t('settings.rows.importYear.title')}
           subtitle={t('settings.rows.importYear.subtitle')}
@@ -343,18 +316,6 @@ const LANGUAGE_SWITCH_NATIVE_LABELS = AGREED_APP_LANGUAGE_CODES.reduce<
   acc[code] = code === 'es' ? 'México' : getLanguageNativeLabel(code);
   return acc;
 }, {} as Record<AppLanguage, string>);
-
-// const BUNDLED_CALENDAR_SWITCH_LABELS = AGREED_APP_LANGUAGE_CODES.reduce(
-//   (acc, uiLang) => {
-//     const labels = {} as Record<BundledCalendarRegionCode, string>;
-//     for (const region of BUNDLED_CALENDAR_REGION_CODES) {
-//       labels[region] = getBundledRegionLabel(uiLang, region);
-//     }
-//     acc[uiLang] = labels;
-//     return acc;
-//   },
-//   {} as Record<AppLanguage, Record<BundledCalendarRegionCode, string>>,
-// );
 
 const styles = StyleSheet.create({
   container: {

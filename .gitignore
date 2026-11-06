@@ -71,6 +71,9 @@ yarn-error.log
 
 # testing
 /coverage
+/calendar.sqlite
+/calendar.sqlite-shm
+/calendar.sqlite-wal
 
 # Yarn
 .yarn/*

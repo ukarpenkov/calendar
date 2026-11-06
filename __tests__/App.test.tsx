@@ -49,6 +49,19 @@ jest.mock('../src/entities/calendar', () => ({
   seedBundledYearIfNeeded: jest.fn(),
 }));
 
+jest.mock('../src/shared/lib/db', () => {
+  const { open } = jest.requireActual('@op-engineering/op-sqlite');
+  const testDb = open({ name: 'app-test.sqlite', location: ':memory:' });
+  return {
+    ...jest.requireActual('../src/shared/lib/db'),
+    getDatabase: () => testDb,
+  };
+});
+
+jest.mock('../src/widgets/registerWidget', () => ({
+  updateCalendarWidget: jest.fn(),
+}));
+
 jest.mock('@react-native-clipboard/clipboard', () => ({
   getString: jest.fn().mockResolvedValue(''),
   setString: jest.fn(),
@@ -88,7 +101,7 @@ jest.mock('@react-native-documents/picker', () => ({
 }));
 
 const bundledCalendar2027 = parseValidateAndNormalizeCalendarImport(
-  require('../calendar2027.json'),
+  require('../assets/calendars/calendar2027.json'),
 );
 
 const mockedGetActiveCalendarSource = jest.mocked(getActiveCalendarSource);
