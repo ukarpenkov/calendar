@@ -376,9 +376,7 @@ export function YearHomeScreen({
                               vacationColor={day?.date ? getVacationColorForDate(day.date, vacationPeriods) : undefined}
                               isToday={day?.date === todayDate}
                               gridMetrics={gridMetrics}
-                              resolveDayTypeColors={type =>
-                                getDayTypeColors(type, palette)
-                              }
+                              palette={palette}
                             />
                           </View>
                         ))}

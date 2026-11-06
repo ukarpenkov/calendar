@@ -1,7 +1,11 @@
+import { memo } from 'react';
 import { Text, View } from 'react-native';
 
-import type { CalendarDay, DayType, DayTypeColors } from '../../../entities/calendar';
-import { useAppTheme } from '../../../shared/lib/theme';
+import {
+  getDayTypeColors,
+  type CalendarDay,
+  type CalendarPalette,
+} from '../../../entities/calendar';
 import { getYearGridMetrics, getYearGridTextStyle } from './yearGridMetrics';
 import { styles } from './yearHomeStyles';
 
@@ -10,21 +14,23 @@ type MonthDayCellProps = {
   vacationColor?: string;
   isToday?: boolean;
   gridMetrics: ReturnType<typeof getYearGridMetrics>;
-  resolveDayTypeColors: (type: DayType) => DayTypeColors;
+  palette: CalendarPalette;
 };
 
-export function YearMonthDayCell({ day, vacationColor, isToday, gridMetrics, resolveDayTypeColors }: MonthDayCellProps) {
-  const { palette } = useAppTheme();
-  const cellSizeStyle = {
-    width: '100%' as const,
-    aspectRatio: 1,
-  };
+const cellSizeStyle = { width: '100%' as const, aspectRatio: 1 };
 
+function YearMonthDayCellView({
+  day,
+  vacationColor,
+  isToday,
+  gridMetrics,
+  palette,
+}: MonthDayCellProps) {
   if (!day) {
     return <View style={[styles.emptyDayCell, cellSizeStyle]} />;
   }
 
-  const colors = resolveDayTypeColors(day.type);
+  const colors = getDayTypeColors(day.type, palette);
   const showVacation = !!vacationColor;
 
   return (
@@ -65,3 +71,4 @@ export function YearMonthDayCell({ day, vacationColor, isToday, gridMetrics, res
   );
 }
 
+export const YearMonthDayCell = memo(YearMonthDayCellView);
