@@ -1,4 +1,4 @@
 export {
   AppLocalizationProvider,
   useAppLocalization,
-} from './LocalizationProvider';
+} from '../../../shared/lib/localization';

@@ -9,17 +9,17 @@ import {
   type PropsWithChildren,
 } from 'react';
 
-import {
-  notifyCalendarSyncOnBundledRegionChange,
-  type BundledRegionChangeCause,
-} from '../../../features/calendar-language-sync';
-import type { BundledCalendarRegionCode } from '../../../shared/config/agreedLanguagesAndBundledCalendars';
-import { appLanguageToDefaultBundledRegion } from '../../../shared/lib/bundledCalendarRegion';
-import { detectDeviceLanguage } from '../../../shared/lib/i18n';
+import type { BundledCalendarRegionCode } from '../../shared/config/agreedLanguagesAndBundledCalendars';
+import { appLanguageToDefaultBundledRegion } from '../../shared/lib/bundledCalendarRegion';
+import { detectDeviceLanguage } from '../../shared/lib/i18n';
 import {
   getStoredBundledCalendarRegion,
   setStoredBundledCalendarRegion,
-} from '../../../shared/lib/settings';
+} from '../../shared/lib/settings';
+import {
+  notifyCalendarSyncOnBundledRegionChange,
+  type BundledRegionChangeCause,
+} from './bundledRegionChangeRegistry';
 
 export type SetBundledCalendarRegionOptions = {
   changeCause?: BundledRegionChangeCause;

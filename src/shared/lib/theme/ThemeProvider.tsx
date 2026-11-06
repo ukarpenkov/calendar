@@ -14,7 +14,7 @@ import {
   getCalendarPalette,
   type CalendarPalette,
 } from '../../../entities/calendar';
-import { getStoredTheme, setStoredTheme } from '../../../shared/lib/settings';
+import { getStoredTheme, setStoredTheme } from '../settings';
 
 export type ThemeMode = 'light' | 'dark';
 

@@ -23,7 +23,7 @@ const mockedGetActiveCalendarIsUserJsonImport = jest.mocked(
 );
 
 const calendar2027 = parseValidateAndNormalizeCalendarImport(
-  require('../calendar2027.json'),
+  require('../assets/calendars/calendar2027.json'),
 );
 
 beforeEach(() => {

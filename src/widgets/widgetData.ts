@@ -5,6 +5,7 @@ import type { CalendarDay } from '../entities/calendar/model/types';
 import { getHolidayDisplayName } from '../entities/calendar/model/holiday-display-name';
 import { initializeDatabase } from '../shared/lib/db/database';
 import { DATABASE_NAME, ACTIVE_CALENDAR_SOURCE_METADATA_KEY } from '../shared/lib/db/schema';
+import { getLocalIsoDate } from '../shared/lib/date/localIsoDate';
 import { detectDeviceLanguage, getMonthLabel, getShortWeekdayLabels } from '../shared/lib/i18n';
 import type { AppLanguage } from '../shared/lib/i18n';
 import { getDayDrawableResourceName, getVacationDrawableResourceName } from './imageMapping';
@@ -22,14 +23,6 @@ export interface WidgetDayData {
   weekdayLabel: string;
   isOnVacation: boolean;
   vacationColor: string | null;
-}
-
-function getLocalIsoDate(): string {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
 }
 
 async function readMetadataValue(

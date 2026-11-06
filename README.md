@@ -10,8 +10,8 @@ A **React Native** mobile app for **Android** that shows a full **production cal
 - ✨ **Motion** — subtle **animations** for transitions and interactions so the UI feels responsive without getting in the way.
 - 🖼 **Date imagery** — **custom images** for notable dates (holidays, themes), so days are easier to spot at a glance.
 - 🌙 **Comfortable viewing** — **light** and **dark** themes so you can read the calendar anywhere.
-- 🌍 **Bilingual UI** — interface oriented toward **Russian** and **English** usage.
-- 📥 **Bring your own year** — import a validated **local JSON** file to replace the active calendar; the app ships with a bundled **2026** dataset so the first launch always has real data.
+- 🌍 **Six UI languages** — English, Russian, Turkish, Indonesian, Japanese, and Spanish.
+- 📥 **Bring your own year** — import a validated **local JSON** file to replace the active calendar. The app ships with bundled **2027** calendars for Russia, Turkey, Indonesia, Japan, and Mexico, so the first launch always has real data.
 - 🔒 **Privacy by design** — **client-only**: no backend, no sync, no sign-in. Everything stays on the device.
 
 ---
@@ -48,7 +48,7 @@ A **React Native** mobile app for **Android** that shows a full **production cal
 
 - `src/` — app code in **FSD** style: `app`, `pages`, `widgets`, `features`, `entities`, `shared`
 - `android/` — native Android project (no Expo workflow)
-- Bundled calendar data and import contracts live alongside domain and persistence layers (see `docs/` for the full product plan)
+- Bundled year files live in `assets/calendars/`. Design archive (`pencil-new.pen`, screenshots) lives in `docs/design-archive/`. See `docs/` for the product plan.
 
 ---
 

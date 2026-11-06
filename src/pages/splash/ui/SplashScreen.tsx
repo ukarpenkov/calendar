@@ -1,8 +1,8 @@
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useAppLocalization } from '../../../app/providers/localization';
-import { useAppTheme } from '../../../app/providers/theme';
+import { useAppLocalization } from '../../../shared/lib/localization';
+import { useAppTheme } from '../../../shared/lib/theme';
 import { YearScreenCalendarMark } from '../../../shared/ui/icons/YearScreenCalendarMark';
 
 /** Larger than app bar (~32); slightly below legacy raster splash (~124). */

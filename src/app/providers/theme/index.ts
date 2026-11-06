@@ -2,4 +2,4 @@ export {
   AppThemeProvider,
   useAppTheme,
   type ThemeMode,
-} from './ThemeProvider';
+} from '../../../shared/lib/theme';

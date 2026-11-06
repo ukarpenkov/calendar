@@ -3,11 +3,11 @@ import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useBundledCalendarRegion } from '../../../app/providers/bundled-calendar-region';
+import { useBundledCalendarRegion } from '../../../features/calendar-language-sync';
 import type { CalendarDataSource } from '../../../entities/calendar';
 import { getUserJsonImportYear } from '../../../entities/calendar';
-import { useAppLocalization } from '../../../app/providers/localization';
-import { useAppTheme } from '../../../app/providers/theme';
+import { useAppLocalization } from '../../../shared/lib/localization';
+import { useAppTheme } from '../../../shared/lib/theme';
 import {
   AGREED_APP_LANGUAGE_CODES,
   // BUNDLED_CALENDAR_REGION_CODES,

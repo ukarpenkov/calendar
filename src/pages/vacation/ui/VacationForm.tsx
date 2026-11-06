@@ -17,6 +17,11 @@ import { IconCircleButton } from '../../../shared/ui/IconCircleButton';
 import { ArrowBackIcon, CalendarIcon } from '../../../shared/ui/icons/NavigationIcons';
 import { VacationDatePicker } from './VacationDatePicker';
 import { VacationConflictNotice } from './VacationConflictNotice';
+import {
+  addDaysToDate,
+  daysBetweenDates,
+  isoToDisplayDate,
+} from './vacationFormDates';
 
 export type VacationFormProps = {
   year: number;
@@ -40,30 +45,6 @@ const COLOR_PRESETS = [
   { hex: '#EC4899', name: 'Pink' },
   { hex: '#22C55E', name: 'Green' },
 ];
-
-function daysBetweenDates(startIso: string, endIso: string): number {
-  const start = new Date(startIso);
-  const end = new Date(endIso);
-  const diffMs = end.getTime() - start.getTime();
-  return Math.round(diffMs / (1000 * 60 * 60 * 24)) + 1;
-}
-
-function addDaysToDate(startIso: string, days: number): string {
-  const date = new Date(startIso);
-  date.setUTCDate(date.getUTCDate() + days - 1);
-  const y = date.getUTCFullYear();
-  const m = String(date.getUTCMonth() + 1).padStart(2, '0');
-  const d = String(date.getUTCDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
-}
-
-function isoToDisplayDate(iso: string): string {
-  if (!iso) {
-    return '';
-  }
-  const [_y, m, d] = iso.split('-');
-  return `${d}.${m}`;
-}
 
 export function VacationForm({
   year,

@@ -23,12 +23,12 @@ jest.mock('react-native/Libraries/Utilities/useWindowDimensions', () => ({
 jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
 }));
-jest.mock('../src/app/providers/theme', () => {
+jest.mock('../src/shared/lib/theme', () => {
   const { getCalendarPalette } = jest.requireActual('../src/entities/calendar');
   const palette = getCalendarPalette(false);
   return { useAppTheme: () => ({ palette }) };
 });
-jest.mock('../src/app/providers/localization', () => {
+jest.mock('../src/shared/lib/localization', () => {
   const { getTranslation } = jest.requireActual('../src/shared/lib/i18n');
   return {
     useAppLocalization: () => ({
@@ -39,7 +39,7 @@ jest.mock('../src/app/providers/localization', () => {
 });
 
 const calendar = parseValidateAndNormalizeCalendarImport(
-  require('../calendar2027.json'),
+  require('../assets/calendars/calendar2027.json'),
 );
 const { monthDetails } = buildCalendarYearViewCache(calendar, 'en');
 const portrait = { width: 390, height: 844, scale: 3, fontScale: 1 };

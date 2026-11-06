@@ -22,13 +22,15 @@ test('agreed language list matches bundled filename map 1:1', () => {
   expect(mapKeys).toEqual(codes);
 });
 
-test('each bundled JSON file exists at repository root', () => {
+test('each bundled JSON file exists in assets/calendars', () => {
   const uniqueFiles = new Set([
     ...Object.values(BUNDLED_CALENDAR_JSON_FILENAME_BY_LANGUAGE),
     ...Object.values(BUNDLED_CALENDAR_JSON_FILENAME_BY_REGION),
   ]);
   for (const file of uniqueFiles) {
-    expect(fs.existsSync(path.join(repoRoot, file))).toBe(true);
+    expect(fs.existsSync(path.join(repoRoot, 'assets/calendars', file))).toBe(
+      true,
+    );
   }
 });
 

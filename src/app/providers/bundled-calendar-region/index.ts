@@ -1,4 +1,4 @@
 export {
   BundledCalendarRegionProvider,
   useBundledCalendarRegion,
-} from './BundledCalendarRegionProvider';
+} from '../../../features/calendar-language-sync/BundledCalendarRegionProvider';

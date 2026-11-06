@@ -25,7 +25,7 @@ export const BUNDLED_CALENDAR_REGION_CODES = ['ru', 'tr', 'id', 'ja', 'es'] as c
 export type BundledCalendarRegionCode =
   (typeof BUNDLED_CALENDAR_REGION_CODES)[number];
 
-/** Имя файла в корне репозитория (как у текущего `require('../../../../calendar2027.json')`). */
+/** File name inside `assets/calendars`. */
 export const BUNDLED_CALENDAR_JSON_FILENAME_BY_REGION = {
   ru: 'calendar2027.json',
   tr: 'calendar2027TR.json',
@@ -34,7 +34,7 @@ export const BUNDLED_CALENDAR_JSON_FILENAME_BY_REGION = {
   es: 'calendar2027MX.json',
 } as const satisfies Record<BundledCalendarRegionCode, string>;
 
-/** Имя файла в корне репозитория (как у текущего `require('../../../../calendar2027.json')`). */
+/** File name inside `assets/calendars`. English uses the same file as Russian. */
 export const BUNDLED_CALENDAR_JSON_FILENAME_BY_LANGUAGE = {
   ru: 'calendar2027.json',
   en: 'calendar2027.json',

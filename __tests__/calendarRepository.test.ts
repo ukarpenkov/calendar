@@ -16,9 +16,9 @@ import {
   initializeDatabase,
 } from '../src/shared/lib/db';
 
-const bundledCalendar = require('../calendar2027.json');
-const bundledCalendarTr = require('../calendar2027TR.json');
-const importedCalendar2025 = require('../calendar2025.json');
+const bundledCalendar = require('../assets/calendars/calendar2027.json');
+const bundledCalendarTr = require('../assets/calendars/calendar2027TR.json');
+const importedCalendar2025 = require('./fixtures/calendar2025.json');
 
 describe('calendar sqlite repository', () => {
   let db: DB;

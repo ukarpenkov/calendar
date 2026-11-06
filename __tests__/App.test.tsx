@@ -88,7 +88,7 @@ jest.mock('@react-native-documents/picker', () => ({
 }));
 
 const bundledCalendar2027 = parseValidateAndNormalizeCalendarImport(
-  require('../calendar2027.json'),
+  require('../assets/calendars/calendar2027.json'),
 );
 
 const mockedGetActiveCalendarSource = jest.mocked(getActiveCalendarSource);

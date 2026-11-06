@@ -15,8 +15,8 @@ import {
   getTranslation,
   type AppLanguage,
   type TranslationKey,
-} from '../../../shared/lib/i18n';
-import { getStoredLanguage, setStoredLanguage } from '../../../shared/lib/settings';
+} from '../i18n';
+import { getStoredLanguage, setStoredLanguage } from '../settings';
 
 type LocalizationParams = Record<string, number | string>;
 
@@ -69,6 +69,7 @@ export function AppLocalizationProvider({ children }: PropsWithChildren) {
 
       hasManualLanguageSelectionRef.current = true;
       setLanguage(nextLanguage);
+      // Hands the language change to useCalendarSession, which updates the bundled region.
       notifyCalendarSyncOnAppLanguageChange(language, nextLanguage);
 
       setStoredLanguage(nextLanguage).catch(() => {
